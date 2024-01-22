@@ -1,0 +1,7 @@
+.highlight {
+  padding: 0.5rem 2rem;
+  display: inline-block;
+  border-radius: var(--mantine-radius-sm);
+  background: var(--mantine-color-red-light);
+  color: var(--mantine-color-red-light-color);
+}

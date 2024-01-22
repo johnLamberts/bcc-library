@@ -1,0 +1,77 @@
+import AdminLayout from "@layouts/AdminLayout";
+import AdminDashboard from "@pages/AdminDashboard";
+import StudentManagement from "@pages/StudentManagement";
+import LevelEducation from "@pages/SystemSettings/LevelEducation";
+import TeacherManagement from "@pages/TeacherManagement";
+import UserManagement from "@pages/UserManagement";
+import { Suspense } from "react";
+import { Route, Routes } from "react-router-dom";
+import { Toaster } from "sonner";
+import { GradeSection, GradeLevel, AcademicCourse } from "./routes";
+import { Flex, Loader } from "@mantine/core";
+import UserRole from "@pages/SystemSettings/UserRoles";
+import UserReport from "@pages/Reports/UserReport";
+import BookType from "@pages/SystemSettings/BookType";
+import CategorySection from "@pages/SystemSettings/CategorySection";
+import BookGenre from "@pages/SystemSettings/BookGenres";
+import CatalogueManagement from "@pages/CatalogueManagement";
+import BookAuthor from "@pages/SystemSettings/BookAuthor";
+
+function App() {
+  // Will Refactor this after I finish the admin page with fully functionality
+  return (
+    <>
+      <Toaster richColors />
+      <Suspense
+        fallback={
+          <>
+            <Flex
+              justify={"center"}
+              align={"center"}
+              mih={"100vh"}
+              pos="relative"
+            >
+              <Loader color="red.5" />
+            </Flex>
+          </>
+        }
+      >
+        <Routes>
+          <Route element={<AdminLayout />}>
+            <Route index element={<AdminDashboard />} />
+            <Route path="/dashboard" element={<AdminDashboard />} />
+            <Route path="/user-management" element={<UserManagement />} />
+            <Route path="/student-management" element={<StudentManagement />} />
+            <Route path="/teacher-management" element={<TeacherManagement />} />
+            <Route
+              path="/catalogue-management"
+              element={<CatalogueManagement />}
+            />
+
+            {/* System Settings */}
+
+            {/* student settings */}
+            <Route path="/level-education" element={<LevelEducation />} />
+            <Route path="/academic-course" element={<AcademicCourse />} />
+            <Route path="/grade-level" element={<GradeLevel />} />
+            <Route path="/grade-section" element={<GradeSection />} />
+
+            {/* user settings */}
+            <Route path="/user-role" element={<UserRole />} />
+
+            {/* Catalogue Settings */}
+            <Route path="/book-type" element={<BookType />} />
+            <Route path="/category-section" element={<CategorySection />} />
+            <Route path="/book-genre" element={<BookGenre />} />
+            <Route path="/book-author" element={<BookAuthor />} />
+
+            {/* reports */}
+            <Route path="/user-report" element={<UserReport />} />
+          </Route>
+        </Routes>
+      </Suspense>
+    </>
+  );
+}
+
+export default App;

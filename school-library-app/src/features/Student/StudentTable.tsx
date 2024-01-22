@@ -1,0 +1,317 @@
+import {
+  Group,
+  Box,
+  Button,
+  Text,
+  Flex,
+  ActionIcon,
+  Tooltip,
+  Stack,
+  ScrollArea,
+  Avatar,
+  Badge,
+} from "@mantine/core";
+import { IconEdit, IconEyeMinus, IconPlus } from "@tabler/icons-react";
+import {
+  MRT_ColumnDef,
+  MRT_Row,
+  MRT_ShowHideColumnsButton,
+  MRT_TableOptions,
+  MRT_ToggleDensePaddingButton,
+  MRT_ToggleGlobalFilterButton,
+  MantineReactTable,
+  useMantineReactTable,
+} from "mantine-react-table";
+import { useMemo } from "react";
+
+import classes from "@pages/styles/user.module.css";
+import StudentForm from "./StudentForm";
+import { useCreateStudent } from "./hooks/useCreateStudent";
+import useReadStudents from "./hooks/useReadStudents";
+import { IStudents } from "./models/student.interface";
+import { modals } from "@mantine/modals";
+import useModifyStudentStatus from "./hooks/useModifyStudentStatus";
+import useModifyStudent from "./hooks/useModifyStudent";
+
+const StudentTable = () => {
+  const { isCreatingUser, createUsers } = useCreateStudent();
+
+  const {
+    data: studentData = [],
+    isLoading: isLoadingStudent,
+    isError: isLoadingStudentError,
+    isFetching: isFetchingStudent,
+  } = useReadStudents();
+
+  const { modifyStudentStatus, isPending: isUpdatingStatus } =
+    useModifyStudentStatus();
+
+  const { modifyStudent, isPending: isUpdating } = useModifyStudent();
+
+  const optimizedStudentsData = useMemo(() => studentData, [studentData]);
+
+  const customColumns = useMemo<MRT_ColumnDef<IStudents>[]>(
+    () => [
+      {
+        accessorKey: "id",
+        header: "Id",
+        enableEditing: false,
+        size: 80,
+      },
+      {
+        accessorKey: "studentImage",
+        header: "Student Picture",
+        Cell: ({ row }) => {
+          return (
+            <Avatar src={`${row.getValue("studentImage")}`} alt="it's me" />
+          );
+        },
+      },
+      {
+        accessorKey: "studentNumber",
+        header: "Student Number",
+      },
+      {
+        accessorKey: "firstName",
+        header: "First Name",
+      },
+      {
+        accessorKey: "middleName",
+        header: "Middle Name",
+      },
+      {
+        accessorKey: "lastName",
+        header: "Last Name",
+      },
+      {
+        accessorKey: "email",
+        header: "Email",
+      },
+      {
+        accessorKey: "gradeSection",
+        header: "Grade Section",
+      },
+      {
+        accessorKey: "academicCourse",
+        header: "Academic Course",
+      },
+      {
+        accessorKey: "levelOfEducation",
+        header: "Level of Education",
+      },
+      {
+        accessorKey: "gradeLevel",
+        header: "Grade Level",
+      },
+
+      {
+        accessorKey: "isEnabled",
+        header: "Account Status",
+        Cell: ({ cell }) =>
+          cell.getValue() ? (
+            <Badge color="green.8" size="md">
+              Enable
+            </Badge>
+          ) : (
+            <Badge color="red.8" size="md">
+              Disabled
+            </Badge>
+          ),
+      },
+    ],
+    []
+  );
+
+  // STATUS action
+  const openUpdateStatusConfirmModal = (row: MRT_Row<IStudents>) =>
+    modals.openConfirmModal({
+      title: (
+        <Text>
+          Are you sure you want to{" "}
+          <b>{!row.original.isEnabled ? "enabled" : "disabled"}</b> this
+          student?
+        </Text>
+      ),
+      children: (
+        <Text>
+          Are you sure you want to delete{" "}
+          <b>
+            {row.original.studentNumber}: {row.original.email}
+          </b>
+          ? This action cannot be undone.
+        </Text>
+      ),
+      labels: {
+        confirm: `${!row.original.isEnabled ? "Enabled" : "Disabled"}`,
+        cancel: "Cancel",
+      },
+      confirmProps: { color: "red" },
+      onConfirm: () => {
+        // modifyUserStatus(row.original);
+        modifyStudentStatus(row.original);
+      },
+    });
+
+  // CREATE action
+  const handleCreateLevel: MRT_TableOptions<IStudents>["onCreatingRowSave"] =
+    async ({ values, table }) => {
+      await createUsers(values);
+
+      table.setCreatingRow(null);
+    };
+
+  const handleSaveLevel: MRT_TableOptions<IStudents>["onEditingRowSave"] =
+    async ({ values, table }) => {
+      await modifyStudent(values);
+      table.setEditingRow(null);
+    };
+
+  const table = useMantineReactTable({
+    data: optimizedStudentsData,
+    columns: customColumns,
+    createDisplayMode: "modal",
+    editDisplayMode: "modal",
+    enableRowActions: true,
+    enableEditing: true,
+    positionActionsColumn: "last",
+    onCreatingRowSave: handleCreateLevel,
+    onEditingRowSave: handleSaveLevel,
+    mantineTableContainerProps: {
+      style: {
+        height: "100%",
+      },
+    },
+    mantineCreateRowModalProps: {
+      centered: true,
+      size: "xl",
+      title: "Adding form for Student",
+      scrollAreaComponent: ScrollArea.Autosize,
+    },
+    mantineEditRowModalProps: {
+      centered: true,
+      size: "xl",
+      title: "Editing form for Student",
+      scrollAreaComponent: ScrollArea.Autosize,
+    },
+    state: {
+      isLoading: isLoadingStudent,
+      isSaving: isCreatingUser || isUpdatingStatus || isUpdating,
+      showAlertBanner: isLoadingStudentError,
+      showProgressBars: isFetchingStudent,
+    },
+
+    initialState: {
+      pagination: { pageIndex: 0, pageSize: 5 },
+      columnVisibility: {
+        id: false,
+      },
+    },
+
+    renderRowActions: ({ row }) => (
+      <>
+        <Flex gap="md">
+          <Tooltip label="Edit">
+            <ActionIcon
+              variant="light"
+              onClick={() => table.setEditingRow(row)}
+            >
+              <IconEdit />
+            </ActionIcon>
+          </Tooltip>
+
+          <Tooltip label="Disabled">
+            <ActionIcon
+              variant="light"
+              onClick={() => {
+                openUpdateStatusConfirmModal(row);
+              }}
+            >
+              <IconEyeMinus />
+            </ActionIcon>
+          </Tooltip>
+        </Flex>
+      </>
+    ),
+
+    renderToolbarInternalActions: ({ table }) => {
+      return (
+        <Flex gap="xs" align="center">
+          <MRT_ToggleGlobalFilterButton table={table} />{" "}
+          <MRT_ToggleDensePaddingButton table={table} />
+          <MRT_ShowHideColumnsButton table={table} />
+        </Flex>
+      );
+    },
+
+    renderEditRowModalContent: ({ row, table }) => {
+      return (
+        <>
+          <Stack>
+            <StudentForm
+              table={table}
+              row={row}
+              onSave={(data) =>
+                handleSaveLevel({
+                  values: data,
+                  table: table,
+                  row: row,
+                  exitEditingMode: () => null,
+                })
+              }
+            />
+          </Stack>
+        </>
+      );
+    },
+    renderCreateRowModalContent: ({ table, row }) => {
+      return (
+        <>
+          <Stack>
+            <StudentForm
+              table={table}
+              row={row}
+              onCreate={(data) =>
+                handleCreateLevel({
+                  values: data,
+                  table: table,
+                  row: row,
+                  exitCreatingMode: () => null,
+                })
+              }
+            />
+          </Stack>
+        </>
+      );
+    },
+  });
+
+  return (
+    <>
+      <Box maw={"78vw"}>
+        <Group justify="space-between">
+          <Box className={classes.highlight}>
+            <Text fz={"xl"} fw={"bold"} c={"red"}>
+              Student Management
+            </Text>
+          </Box>
+          <Group>
+            <Button
+              variant="light"
+              onClick={() => table.setCreatingRow(true)}
+              leftSection={<IconPlus size={14} />}
+              bg={" var(--mantine-color-red-light)"}
+              color={" var(--mantine-color-red-light-color)"}
+            >
+              Add Student
+            </Button>
+          </Group>
+        </Group>
+
+        <Box mt={"lg"}>
+          <MantineReactTable table={table} />
+        </Box>
+      </Box>
+    </>
+  );
+};
+export default StudentTable;
