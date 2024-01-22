@@ -26,31 +26,35 @@ import { useMemo } from "react";
 
 import classes from "@pages/styles/user.module.css";
 import StudentForm from "./CatalogueForm";
-import { useCreateStudent } from "./hooks/useCreateStudent";
-import useReadStudents from "./hooks/useReadStudents";
-import { IStudents } from "./models/books.interface";
+import { IBooks } from "./models/books.interface";
 import { modals } from "@mantine/modals";
 import useModifyStudentStatus from "./hooks/useModifyStudentStatus";
-import useModifyStudent from "./hooks/useModifyStudent";
+import useModifyStudent from "./hooks/useModifyCatalogue";
+import { useCreateCatalogue } from "./hooks/useCreateCatalogue";
+import useReadCatalogue from "./hooks/useReadCatalogue";
+import useModifyCatalogue from "./hooks/useModifyCatalogue";
 
 const CatalogueTable = () => {
-  const { isCreatingUser, createUsers } = useCreateStudent();
+  const { isCreatingCatalogue, createCatalogue } = useCreateCatalogue();
 
   const {
-    data: studentData = [],
+    data: booksCatalogueData = [],
     isLoading: isLoadingStudent,
     isError: isLoadingStudentError,
     isFetching: isFetchingStudent,
-  } = useReadStudents();
+  } = useReadCatalogue();
 
   const { modifyStudentStatus, isPending: isUpdatingStatus } =
     useModifyStudentStatus();
 
-  const { modifyStudent, isPending: isUpdating } = useModifyStudent();
+  const { modifyCatalogue, isPending: isUpdating } = useModifyCatalogue();
 
-  const optimizedStudentsData = useMemo(() => studentData, [studentData]);
+  const optimizedCatalogueData = useMemo(
+    () => booksCatalogueData,
+    [booksCatalogueData]
+  );
 
-  const customColumns = useMemo<MRT_ColumnDef<IStudents>[]>(
+  const customColumns = useMemo<MRT_ColumnDef<IBooks>[]>(
     () => [
       {
         accessorKey: "id",
@@ -59,71 +63,72 @@ const CatalogueTable = () => {
         size: 80,
       },
       {
-        accessorKey: "studentImage",
-        header: "Student Picture",
+        accessorKey: "bookImageCover",
+        header: "Book Picture",
         Cell: ({ row }) => {
           return (
-            <Avatar src={`${row.getValue("studentImage")}`} alt="it's me" />
+            <Avatar src={`${row.getValue("bookImageCover")}`} alt="it's me" />
           );
         },
       },
-      {
-        accessorKey: "studentNumber",
-        header: "Student Number",
-      },
-      {
-        accessorKey: "firstName",
-        header: "First Name",
-      },
-      {
-        accessorKey: "middleName",
-        header: "Middle Name",
-      },
-      {
-        accessorKey: "lastName",
-        header: "Last Name",
-      },
-      {
-        accessorKey: "email",
-        header: "Email",
-      },
-      {
-        accessorKey: "gradeSection",
-        header: "Grade Section",
-      },
-      {
-        accessorKey: "academicCourse",
-        header: "Academic Course",
-      },
-      {
-        accessorKey: "levelOfEducation",
-        header: "Level of Education",
-      },
-      {
-        accessorKey: "gradeLevel",
-        header: "Grade Level",
-      },
+      // {
+      //   accessorKey: "studentNumber",
+      //   header: "Student Number",
+      // },
+      // {
+      //   accessorKey: "firstName",
+      //   header: "First Name",
+      // },
+      // {
+      //   accessorKey: "middleName",
+      //   header: "Middle Name",
+      // },
+      // {
+      //   accessorKey: "lastName",
+      //   header: "Last Name",
+      // },
+      // {
+      //   accessorKey: "email",
+      //   header: "Email",
+      // },
+      // {
+      //   accessorKey: "gradeSection",
+      //   header: "Grade Section",
+      // },
+      // {
+      //   accessorKey: "academicCourse",
+      //   header: "Academic Course",
+      // },
+      // {
+      //   accessorKey: "levelOfEducation",
+      //   header: "Level of Education",
+      // },
+      // {
+      //   accessorKey: "gradeLevel",
+      //   header: "Grade Level",
+      // },
 
-      {
-        accessorKey: "isEnabled",
-        header: "Account Status",
-        Cell: ({ cell }) =>
-          cell.getValue() ? (
-            <Badge color="green.8" size="md">
-              Enable
-            </Badge>
-          ) : (
-            <Badge color="red.8" size="md">
-              Disabled
-            </Badge>
-          ),
-      },
+      // {
+      //   accessorKey: "isEnabled",
+      //   header: "Account Status",
+      //   Cell: ({ cell }) =>
+      //     cell.getValue() ? (
+      //       <Badge color="green.8" size="md">
+      //         Enable
+      //       </Badge>
+      //     ) : (
+      //       <Badge color="red.8" size="md">
+      //         Disabled
+      //       </Badge>
+      //     ),
+      // },
     ],
     []
   );
 
   // STATUS action
-  const openUpdateStatusConfirmModal = (row: MRT_Row<IStudents>) =>
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const openUpdateStatusConfirmModal = (row: MRT_Row<any>) =>
     modals.openConfirmModal({
       title: (
         <Text>
@@ -153,21 +158,25 @@ const CatalogueTable = () => {
     });
 
   // CREATE action
-  const handleCreateLevel: MRT_TableOptions<IStudents>["onCreatingRowSave"] =
+  const handleCreateLevel: MRT_TableOptions<IBooks>["onCreatingRowSave"] =
     async ({ values, table }) => {
-      await createUsers(values);
+      // console.log(values);
+      await createCatalogue(values);
 
-      table.setCreatingRow(null);
+      // table.setCreatingRow(null);
     };
 
-  const handleSaveLevel: MRT_TableOptions<IStudents>["onEditingRowSave"] =
-    async ({ values, table }) => {
-      await modifyStudent(values);
-      table.setEditingRow(null);
-    };
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const handleSaveLevel: MRT_TableOptions<IBooks>["onEditingRowSave"] = async ({
+    values,
+    table,
+  }) => {
+    await modifyCatalogue(values);
+    // table.setEditingRow(null);
+  };
 
   const table = useMantineReactTable({
-    data: optimizedStudentsData,
+    data: optimizedCatalogueData,
     columns: customColumns,
     createDisplayMode: "modal",
     editDisplayMode: "modal",
@@ -184,18 +193,18 @@ const CatalogueTable = () => {
     mantineCreateRowModalProps: {
       centered: true,
       size: "xl",
-      title: "Adding form for Student",
+      title: "Adding form for Catalogue",
       scrollAreaComponent: ScrollArea.Autosize,
     },
     mantineEditRowModalProps: {
       centered: true,
       size: "xl",
-      title: "Editing form for Student",
+      title: "Editing form for Catalogue",
       scrollAreaComponent: ScrollArea.Autosize,
     },
     state: {
       isLoading: isLoadingStudent,
-      isSaving: isCreatingUser || isUpdatingStatus || isUpdating,
+      isSaving: isCreatingCatalogue || isUpdatingStatus || isUpdating,
       showAlertBanner: isLoadingStudentError,
       showProgressBars: isFetchingStudent,
     },

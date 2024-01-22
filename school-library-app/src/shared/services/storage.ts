@@ -16,7 +16,9 @@ const fileOrImageRef = (pathRef: string | undefined) => {
   return ref(storage, pathRef);
 };
 
-const uploadFileOrImage = async (avatarImage: string | File | undefined) => {
+const uploadFileOrImage = async (
+  avatarImage: string | File | undefined | null
+) => {
   try {
     let userImageRef;
     let pathUrl;

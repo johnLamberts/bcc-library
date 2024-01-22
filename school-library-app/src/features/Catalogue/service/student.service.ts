@@ -1,13 +1,13 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { collection, getDocs, orderBy, query } from "firebase/firestore";
 import { FIRESTORE_COLLECTION_QUERY_KEY } from "src/shared/enums";
 import { firestore } from "src/shared/firebase/firebase";
-import { IStudents } from "../models/books.interface";
 import axios from "axios";
 import { uploadFileOrImage, downloadUrl } from "src/shared/services/storage";
 import generateRandomPassword from "src/utils/helpers/generateRandomPassword";
 import { generateStudentNumber } from "src/utils/helpers/generateStudentNumber";
 
-const addStudent = async (student: Partial<IStudents>) => {
+const addStudent = async (student: Partial<any>) => {
   try {
     if (student.studentImage === null || student.studentImage === undefined) {
       return await axios({
@@ -72,7 +72,7 @@ const getStudents = async () => {
         ...doc.data(),
         id: doc.id,
       };
-    }) as IStudents[];
+    }) as any[];
   } catch (err) {
     throw new Error(`${err}`);
   }
@@ -83,7 +83,7 @@ const updateStudentStatus = async ({
   userUID,
   userDocID,
   id: userId,
-}: Partial<IStudents>) => {
+}: Partial<any>) => {
   try {
     const status = isEnabled === false ? true : false;
 
@@ -112,7 +112,7 @@ const updateStudent = async ({
   userDocID,
   userUID,
   ...student
-}: Partial<IStudents>) => {
+}: Partial<any>) => {
   try {
     if (
       student.studentImage

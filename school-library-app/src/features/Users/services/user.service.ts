@@ -87,7 +87,6 @@ const updateUser = async (user: Partial<IUser>, userId: string) => {
     }
   } catch (err) {
     if (err instanceof axios.AxiosError) {
-      console.log(err?.response?.data.error);
       throw new Error(`${err?.response?.data.error}`);
     }
   }

@@ -24,16 +24,6 @@ const BasicInformationForm = () => {
               error={<>{errors.firstName && errors.firstName?.message}</>}
               {...register("firstName", { required: `This field is required` })}
             />
-            {/* <Input.Wrapper label="First Name" withAsterisk>
-              <Input
-                {...register("firstName", {
-                  required: "This field is required",
-                })}
-              />
-              {errors?.firstName && (
-                <Input.Error>{<>{errors.firstName?.message}</>}</Input.Error>
-              )}
-            </Input.Wrapper> */}
           </Form.Col>
           <Form.Col span={{ base: 12, md: 3, lg: 6 }}>
             <TextInput

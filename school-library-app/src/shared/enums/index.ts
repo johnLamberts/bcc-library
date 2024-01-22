@@ -2,6 +2,7 @@ export enum FIRESTORE_COLLECTION_QUERY_KEY {
   AUTHOR = "author",
   CATEGORY = "category",
   CATEGORY_SECTION = "category-section",
+  CATALOGUE = "books-catalogue",
   BOOK_TYPE = "book-type",
   USER_ROLE = "user-role",
   GENRE = "genres",

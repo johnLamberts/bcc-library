@@ -11,27 +11,12 @@ export interface IBooks {
   publicationDetails: string;
   publisher: string;
   publicationDate: string;
-  publicationDate: string;
+  edition: string;
+
+  timeUnit: string;
+  timeSpecifier?: string;
+  milliseconds: number;
+
+  bookImageCover: string | File | null;
+  bookFile: File | string | null;
 }
-
-authors;
-
-bookDescription;
-
-bookFile;
-bookISBN;
-bookImageCover;
-bookLocation;
-bookSection;
-bookType;
-callNumber;
-edition;
-genres;
-milliseconds;
-numberOfBooksAvailable_QUANTITY;
-publicationDate;
-publicationDetails;
-publisher;
-timeSpecifier;
-timeUnit;
-title;

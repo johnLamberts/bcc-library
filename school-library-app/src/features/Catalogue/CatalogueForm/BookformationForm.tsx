@@ -3,10 +3,19 @@ import useReadAuthor from "@features/SysSettings/BookAuthor/hooks/useReadBookTyp
 import useReadGenre from "@features/SysSettings/BookGenre/hooks/useReadGenre";
 import useReadBookType from "@features/SysSettings/BookType/hooks/useReadBookType";
 import { MultiSelect, Select, TextInput } from "@mantine/core";
-import { useEffect, useState } from "react";
+import { MRT_Row, MRT_RowData, MRT_TableInstance } from "mantine-react-table";
+import { useEffect, useMemo, useState } from "react";
 import { Controller, useFormContext } from "react-hook-form";
 
-const BookInformationForm = () => {
+interface BookInformationProps<TData extends MRT_RowData> {
+  table?: MRT_TableInstance<TData>;
+  row?: MRT_Row<TData>;
+}
+
+const BookInformationForm = <TData extends MRT_RowData>({
+  table,
+  row,
+}: BookInformationProps<TData>) => {
   const {
     register,
     control,
@@ -26,17 +35,32 @@ const BookInformationForm = () => {
 
   const watchBookType = watch("bookType") || "";
 
-  const filteredGenre =
-    genresData
-      ?.filter((genre) => genre.bookType === watchBookType)
-      ?.map((genre) => genre.genres) || [];
+  const isEditing = table?.getState().editingRow?.id === row?.id;
+  const filteredGenre = useMemo(() => {
+    return (
+      genresData
+        ?.filter((genre) => genre.bookType === watchBookType)
+        ?.map((genre) => genre.genres) || []
+    );
+  }, [genresData, watchBookType]);
 
   useEffect(() => {
+    if (isGenresLoading) {
+      return;
+    }
+
+    // If filteredGenre is empty, reset selectedGenres and set the form value
     if (filteredGenre.length === 0) {
       setSelectedGenres([]);
       setValue("genres", []);
     }
-  }, [filteredGenre.length, selectedGenres, setValue]);
+  }, [
+    filteredGenre.length,
+    setValue,
+    isEditing,
+    row?.original.genres,
+    isGenresLoading,
+  ]);
 
   return (
     <>

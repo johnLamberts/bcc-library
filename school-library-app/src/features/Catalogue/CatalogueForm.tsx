@@ -3,7 +3,7 @@ import { Box } from "@mantine/core";
 import { useCallback, useEffect } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { MRT_RowData, MRT_TableInstance, MRT_Row } from "mantine-react-table";
-import { IStudents } from "./models/books.interface";
+import { IBooks, IStudents } from "./models/books.interface";
 import BookImageForm from "./CatalogueForm/BookImageForm";
 import Availability from "./CatalogueForm/Availability";
 import BookLocationAndDetailsForm from "./CatalogueForm/BookLocationAndDetailsForm";
@@ -51,16 +51,14 @@ export default function CatalogueForm<TData extends MRT_RowData>({
 
   const onSubmit = useCallback(
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (values: Partial<any>) => {
+    (values: Partial<IBooks>) => {
+      const milliseconds = convertToMilliseconds(
+        values.timeSpecifier as string,
+        values.timeUnit as string
+      );
+
       if (isCreating) {
-        // onCreate?.(values);
-
-        const milliseconds = convertToMilliseconds(
-          values.timeSpecifier,
-          values.timeUnit
-        );
-
-        console.log({
+        onCreate?.({
           ...values,
           milliseconds,
         });

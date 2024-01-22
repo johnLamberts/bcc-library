@@ -1,0 +1,209 @@
+import {
+  addDoc,
+  collection,
+  doc,
+  getDocs,
+  query,
+  serverTimestamp,
+  updateDoc,
+  where,
+} from "firebase/firestore";
+import { IBooks } from "../models/books.interface";
+import { firestore } from "src/shared/firebase/firebase";
+import { FIRESTORE_COLLECTION_QUERY_KEY } from "src/shared/enums";
+import { uploadFileOrImage, downloadUrl } from "src/shared/services/storage";
+import { isImageCoverUrl } from "src/utils/validators/isString";
+
+const addCatalogue = async (catalogue: Partial<IBooks>) => {
+  try {
+    const bookIsbnSnapshot = await getDocs(
+      query(
+        collection(firestore, FIRESTORE_COLLECTION_QUERY_KEY.CATALOGUE),
+        where("bookISBN", "==", catalogue.bookISBN)
+      )
+    );
+
+    const callNumberSnapshot = await getDocs(
+      query(
+        collection(firestore, FIRESTORE_COLLECTION_QUERY_KEY.CATALOGUE),
+        where("callNumber", "==", catalogue.callNumber)
+      )
+    );
+
+    if (bookIsbnSnapshot.size)
+      throw new Error(
+        "Oops! It seems that the ISBN you entered already exists in our library system."
+      );
+
+    if (callNumberSnapshot.size)
+      throw new Error(
+        "Oops! It seems that the Call Number you entered already exists in our library system."
+      );
+
+    const defaultImageUrl =
+      "https://firebasestorage.googleapis.com/v0/b/zidel-posev.appspot.com/o/user.png?alt=media&token=883b6c53-4b75-4f60-a741-abe99f992fb7";
+
+    // Set default values if bookImageCover or bookFile is null or undefined
+    catalogue.bookImageCover = catalogue.bookImageCover || defaultImageUrl;
+    catalogue.bookFile = catalogue.bookFile || defaultImageUrl;
+
+    // // Upload bookImageCover
+    const uploadResultImage = await uploadFileOrImage(catalogue.bookImageCover);
+    const imagePathUrl = uploadResultImage
+      ? await downloadUrl(uploadResultImage.ref)
+      : defaultImageUrl;
+
+    // Upload bookFile
+    const uploadResultFile = await uploadFileOrImage(catalogue.bookFile);
+    const filePathUrl = uploadResultFile
+      ? await downloadUrl(uploadResultFile.ref)
+      : defaultImageUrl;
+
+    // Add document to Firestore
+    return await addDoc(
+      collection(firestore, FIRESTORE_COLLECTION_QUERY_KEY.CATALOGUE),
+      {
+        ...catalogue,
+        bookFile: filePathUrl,
+        bookImageCover: imagePathUrl,
+        createdAt: serverTimestamp(),
+      }
+    );
+  } catch (error) {
+    if (error instanceof Error) {
+      throw new Error(error.message);
+    }
+  }
+};
+
+const updateCatalogue = async (
+  catalogue: Partial<IBooks>,
+  booksId: string | undefined
+) => {
+  try {
+    if (
+      catalogue.bookImageCover
+        ?.toString()
+        .startsWith("https://firebasestorage.googleapis.com")
+    ) {
+      return await updateDoc(
+        doc(
+          firestore,
+          FIRESTORE_COLLECTION_QUERY_KEY.CATALOGUE,
+          booksId as string
+        ),
+        {
+          ...catalogue,
+        }
+      );
+    } else {
+      const uploadResultImage = await uploadFileOrImage(
+        catalogue.bookImageCover
+      );
+      const imagePathUrl = await downloadUrl(uploadResultImage!.ref);
+      if (
+        catalogue.bookFile
+          ?.toString()
+          .startsWith("https://firebasestorage.googleapis.com")
+      ) {
+        return await updateDoc(
+          doc(
+            firestore,
+            FIRESTORE_COLLECTION_QUERY_KEY.CATALOGUE,
+            booksId as string
+          ),
+          {
+            ...catalogue,
+          }
+        );
+      } else {
+        const uploadResultFile = await uploadFileOrImage(catalogue?.bookFile);
+        const filePathUrl = await downloadUrl(uploadResultFile!.ref);
+
+        console.log(imagePathUrl);
+        return await updateDoc(
+          doc(
+            firestore,
+            FIRESTORE_COLLECTION_QUERY_KEY.CATALOGUE,
+            booksId as string
+          ),
+          {
+            ...catalogue,
+            bookFile: filePathUrl,
+            bookImageCover: imagePathUrl,
+            modifiedAt: serverTimestamp(),
+          }
+        );
+      }
+    }
+
+    // // Check if bookImageCover is a URL
+    // if (isImageCoverUrl(catalogue.bookImageCover as string)) {
+    //   // If it's a URL, update the document
+    //   return await updateDoc(
+    //     doc(
+    //       firestore,
+    //       FIRESTORE_COLLECTION_QUERY_KEY.CATALOGUE,
+    //       booksId as string
+    //     ),
+    //     {
+    //       ...catalogue,
+    //       modifiedAt: serverTimestamp(),
+    //     } as Partial<IBooks> // Explicitly cast to Partial<IBooks> for better type safety
+    //   );
+    // }
+
+    // // Check if bookFile is a URL
+    // if (isImageCoverUrl(catalogue.bookFile as string)) {
+    //   // If it's a URL, update the document
+    //   return await updateDoc(
+    //     doc(
+    //       firestore,
+    //       FIRESTORE_COLLECTION_QUERY_KEY.CATALOGUE,
+    //       booksId as string
+    //     ),
+    //     {
+    //       ...catalogue,
+    //       modifiedAt: serverTimestamp(),
+    //     } as Partial<IBooks>
+    //   );
+    // }
+
+    // console.log(catalogue.bookImageCover);
+    // // const uploadResultImage = await uploadFileOrImage(catalogue.bookImageCover);
+    // // const imagePathUrl = await downloadUrl(uploadResultImage!.ref);
+
+    // // const uploadResultFile = await uploadFileOrImage(catalogue?.bookFile);
+    // // const filePathUrl = await downloadUrl(uploadResultFile!.ref);
+
+    // // return await updateDoc(
+    // //   doc(
+    // //     firestore,
+    // //     FIRESTORE_COLLECTION_QUERY_KEY.CATALOGUE,
+    // //     booksId as string
+    // //   ),
+    // //   {
+    // //     ...catalogue,
+    // //     bookFile: filePathUrl,
+    // //     bookImageCover: imagePathUrl,
+    // //     modifiedAt: serverTimestamp(),
+    // //   } as Partial<IBooks>
+    // // );
+  } catch (err) {
+    if (err instanceof Error) {
+      throw new Error(`${err?.message}`);
+    }
+  }
+};
+const getAllBooksCatalogue = async () => {
+  const booksCatalogueSnapshot = await getDocs(
+    collection(firestore, FIRESTORE_COLLECTION_QUERY_KEY.CATALOGUE)
+  );
+
+  return booksCatalogueSnapshot.docs.map((doc) => ({
+    id: doc.id,
+    ...doc.data(),
+  })) as IBooks[];
+};
+
+export { addCatalogue, getAllBooksCatalogue, updateCatalogue };

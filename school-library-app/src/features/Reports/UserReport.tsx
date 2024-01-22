@@ -47,7 +47,7 @@ const UserReportTable = () => {
     isFetching: isFetchingUsers,
   } = useReadUsers();
 
-  const optimizedUsersData =
+  const optimizedUsersData: IUser[] =
     useMemo(() => {
       const { data } = usersData?.data || [];
 

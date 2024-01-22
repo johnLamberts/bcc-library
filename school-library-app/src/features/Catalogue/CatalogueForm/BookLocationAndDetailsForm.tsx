@@ -1,7 +1,8 @@
 import Form from "@components/Form/Form";
 import useReadCategorySection from "@features/SysSettings/CategorySection/hooks/useReadCategorySection";
-import { Select, TextInput, Textarea } from "@mantine/core";
+import { InputBase, Select, TextInput, Textarea } from "@mantine/core";
 import { Controller, useFormContext } from "react-hook-form";
+import { IMaskInput } from "react-imask";
 
 const BookLocationAndDetailsForm = () => {
   const {
@@ -18,24 +19,44 @@ const BookLocationAndDetailsForm = () => {
       <Form.Title>Book Location and Details</Form.Title>
       <Form.Grid p={"lg"}>
         <Form.Col span={{ base: 12, md: 6, lg: 6 }}>
-          <TextInput
-            label="ISBN"
-            placeholder="Your ISBN..."
-            withAsterisk
-            withErrorStyles={errors.bookISBN?.message ? true : false}
-            {...register("bookISBN", { required: `This field is required` })}
-            error={<>{errors.bookISBN?.message}</>}
+          <Controller
+            name="bookISBN"
+            control={control}
+            render={({ field }) => {
+              return (
+                <InputBase
+                  component={IMaskInput}
+                  withAsterisk
+                  mask="000-0-000-00000-0"
+                  label="ISBN"
+                  placeholder="Your ISBN..."
+                  withErrorStyles={errors.bookISBN?.message ? true : false}
+                  {...field}
+                  error={<>{errors.bookISBN?.message}</>}
+                />
+              );
+            }}
           />
         </Form.Col>
 
         <Form.Col span={{ base: 12, md: 6, lg: 6 }}>
-          <TextInput
-            label="Call Number"
-            placeholder="Your Call Number..."
-            withAsterisk
-            withErrorStyles={errors.callNumber?.message ? true : false}
-            {...register("callNumber", { required: `This field is required` })}
-            error={<>{errors.callNumber?.message}</>}
+          <Controller
+            name="callNumber"
+            control={control}
+            render={({ field }) => {
+              return (
+                <InputBase
+                  component={IMaskInput}
+                  withAsterisk
+                  mask="000.00"
+                  label="Contact Number"
+                  placeholder="Your Call Number..."
+                  withErrorStyles={errors.callNumber?.message ? true : false}
+                  {...field}
+                  error={<>{errors.callNumber?.message}</>}
+                />
+              );
+            }}
           />
         </Form.Col>
 
