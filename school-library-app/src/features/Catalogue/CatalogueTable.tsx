@@ -53,89 +53,85 @@ const CatalogueTable = () => {
   );
 
   const customColumns = useMemo<MRT_ColumnDef<IBooks>[]>(
-		() => [
-			{
-				accessorKey: "id",
-				header: "Id",
-				enableEditing: false,
-				size: 80,
-			},
-			{
-				accessorKey: "bookImageCover",
-				header: "Book Picture",
-				Cell: ({ row }) => {
-					return (
-						<Avatar src={`${row.getValue("bookImageCover")}`} alt="it's me" />
-					);
-				},
-			},
-			{
-				accessorKey: "title",
-				header: "Title",
-			},
-			{
-				accessorKey: "bookType",
-				header: "Book Type",
-			},
-			{
-				accessorKey: "bookSection",
-				header: "Book Section",
-			},
-			{
-				accessorKey: "callNumber",
-				header: "Call Number",
-			},
-			{
-				accessorKey: "bookISBN",
-				header: "Book ISBN",
-			},
+    () => [
+      {
+        accessorKey: "id",
+        header: "Id",
+        enableEditing: false,
+        size: 80,
+      },
+      {
+        accessorKey: "bookImageCover",
+        header: "Book Picture",
+        Cell: ({ row }) => {
+          return (
+            <Avatar src={`${row.getValue("bookImageCover")}`} alt="it's me" />
+          );
+        },
+      },
+      {
+        accessorKey: "title",
+        header: "Title",
+      },
+      {
+        accessorKey: "bookType",
+        header: "Book Type",
+      },
+      {
+        accessorKey: "bookSection",
+        header: "Book Section",
+      },
+      {
+        accessorKey: "callNumber",
+        header: "Call Number",
+      },
+      {
+        accessorKey: "bookISBN",
+        header: "Book ISBN",
+      },
 
-			{
-				accessorKey: "bookSection",
-				header: "Book Section",
-			},
-			// {
-			//   accessorKey: "lastName",
-			//   header: "Last Name",
-			// },
-			// {
-			//   accessorKey: "email",
-			//   header: "Email",
-			// },
-			// {
-			//   accessorKey: "gradeSection",
-			//   header: "Grade Section",
-			// },
-			// {
-			//   accessorKey: "academicCourse",
-			//   header: "Academic Course",
-			// },
-			// {
-			//   accessorKey: "levelOfEducation",
-			//   header: "Level of Education",
-			// },
-			// {
-			//   accessorKey: "gradeLevel",
-			//   header: "Grade Level",
-			// },
+      // {
+      //   accessorKey: "lastName",
+      //   header: "Last Name",
+      // },
+      // {
+      //   accessorKey: "email",
+      //   header: "Email",
+      // },
+      // {
+      //   accessorKey: "gradeSection",
+      //   header: "Grade Section",
+      // },
+      // {
+      //   accessorKey: "academicCourse",
+      //   header: "Academic Course",
+      // },
+      // {
+      //   accessorKey: "levelOfEducation",
+      //   header: "Level of Education",
+      // },
+      // {
+      //   accessorKey: "gradeLevel",
+      //   header: "Grade Level",
+      // },
 
-			// {
-			//   accessorKey: "isEnabled",
-			//   header: "Account Status",
-			//   Cell: ({ cell }) =>
-			//     cell.getValue() ? (
-			//       <Badge color="green.8" size="md">
-			//         Enable
-			//       </Badge>
-			//     ) : (
-			//       <Badge color="red.8" size="md">
-			//         Disabled
-			//       </Badge>
-			//     ),
-			// },
-		],
-		[]
-	);
+      // {
+      //   accessorKey: "isEnabled",
+      //   header: "Account Status",
+      //   Cell: ({ cell }) =>
+      //     cell.getValue() ? (
+      //       <Badge color="green.8" size="md">
+      //         Enable
+      //       </Badge>
+      //     ) : (
+      //       <Badge color="red.8" size="md">
+      //         Disabled
+      //       </Badge>
+      //     ),
+      // },
+    ],
+    []
+  );
 
   // STATUS action
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

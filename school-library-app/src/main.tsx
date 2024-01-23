@@ -7,6 +7,7 @@ import "./styles/index.css";
 import "@mantine/core/styles.css";
 import "@mantine/dates/styles.css";
 import "mantine-react-table/styles.css";
+import "@mantine/spotlight/styles.css";
 
 import { MantineProvider, rem } from "@mantine/core";
 import { BrowserRouter } from "react-router-dom";
