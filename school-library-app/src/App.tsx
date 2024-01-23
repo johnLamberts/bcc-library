@@ -16,6 +16,7 @@ import CategorySection from "@pages/SystemSettings/CategorySection";
 import BookGenre from "@pages/SystemSettings/BookGenres";
 import CatalogueManagement from "@pages/CatalogueManagement";
 import BookAuthor from "@pages/SystemSettings/BookAuthor";
+import CirculationManagement from "@pages/CirculationManagement";
 
 function App() {
   // Will Refactor this after I finish the admin page with fully functionality
@@ -48,7 +49,10 @@ function App() {
               element={<CatalogueManagement />}
             />
 
-            {/* System Settings */}
+            <Route
+              path="/circulation-management"
+              element={<CirculationManagement />}
+            />            {/* System Settings */}
 
             {/* student settings */}
             <Route path="/level-education" element={<LevelEducation />} />

@@ -9,7 +9,6 @@ import {
   Stack,
   ScrollArea,
   Avatar,
-  Badge,
 } from "@mantine/core";
 import { IconEdit, IconEyeMinus, IconPlus } from "@tabler/icons-react";
 import {
@@ -29,7 +28,6 @@ import StudentForm from "./CatalogueForm";
 import { IBooks } from "./models/books.interface";
 import { modals } from "@mantine/modals";
 import useModifyStudentStatus from "./hooks/useModifyStudentStatus";
-import useModifyStudent from "./hooks/useModifyCatalogue";
 import { useCreateCatalogue } from "./hooks/useCreateCatalogue";
 import useReadCatalogue from "./hooks/useReadCatalogue";
 import useModifyCatalogue from "./hooks/useModifyCatalogue";
@@ -55,115 +53,127 @@ const CatalogueTable = () => {
   );
 
   const customColumns = useMemo<MRT_ColumnDef<IBooks>[]>(
-    () => [
-      {
-        accessorKey: "id",
-        header: "Id",
-        enableEditing: false,
-        size: 80,
-      },
-      {
-        accessorKey: "bookImageCover",
-        header: "Book Picture",
-        Cell: ({ row }) => {
-          return (
-            <Avatar src={`${row.getValue("bookImageCover")}`} alt="it's me" />
-          );
-        },
-      },
-      // {
-      //   accessorKey: "studentNumber",
-      //   header: "Student Number",
-      // },
-      // {
-      //   accessorKey: "firstName",
-      //   header: "First Name",
-      // },
-      // {
-      //   accessorKey: "middleName",
-      //   header: "Middle Name",
-      // },
-      // {
-      //   accessorKey: "lastName",
-      //   header: "Last Name",
-      // },
-      // {
-      //   accessorKey: "email",
-      //   header: "Email",
-      // },
-      // {
-      //   accessorKey: "gradeSection",
-      //   header: "Grade Section",
-      // },
-      // {
-      //   accessorKey: "academicCourse",
-      //   header: "Academic Course",
-      // },
-      // {
-      //   accessorKey: "levelOfEducation",
-      //   header: "Level of Education",
-      // },
-      // {
-      //   accessorKey: "gradeLevel",
-      //   header: "Grade Level",
-      // },
+		() => [
+			{
+				accessorKey: "id",
+				header: "Id",
+				enableEditing: false,
+				size: 80,
+			},
+			{
+				accessorKey: "bookImageCover",
+				header: "Book Picture",
+				Cell: ({ row }) => {
+					return (
+						<Avatar src={`${row.getValue("bookImageCover")}`} alt="it's me" />
+					);
+				},
+			},
+			{
+				accessorKey: "title",
+				header: "Title",
+			},
+			{
+				accessorKey: "bookType",
+				header: "Book Type",
+			},
+			{
+				accessorKey: "bookSection",
+				header: "Book Section",
+			},
+			{
+				accessorKey: "callNumber",
+				header: "Call Number",
+			},
+			{
+				accessorKey: "bookISBN",
+				header: "Book ISBN",
+			},
 
-      // {
-      //   accessorKey: "isEnabled",
-      //   header: "Account Status",
-      //   Cell: ({ cell }) =>
-      //     cell.getValue() ? (
-      //       <Badge color="green.8" size="md">
-      //         Enable
-      //       </Badge>
-      //     ) : (
-      //       <Badge color="red.8" size="md">
-      //         Disabled
-      //       </Badge>
-      //     ),
-      // },
-    ],
-    []
-  );
+			{
+				accessorKey: "bookSection",
+				header: "Book Section",
+			},
+			// {
+			//   accessorKey: "lastName",
+			//   header: "Last Name",
+			// },
+			// {
+			//   accessorKey: "email",
+			//   header: "Email",
+			// },
+			// {
+			//   accessorKey: "gradeSection",
+			//   header: "Grade Section",
+			// },
+			// {
+			//   accessorKey: "academicCourse",
+			//   header: "Academic Course",
+			// },
+			// {
+			//   accessorKey: "levelOfEducation",
+			//   header: "Level of Education",
+			// },
+			// {
+			//   accessorKey: "gradeLevel",
+			//   header: "Grade Level",
+			// },
+
+			// {
+			//   accessorKey: "isEnabled",
+			//   header: "Account Status",
+			//   Cell: ({ cell }) =>
+			//     cell.getValue() ? (
+			//       <Badge color="green.8" size="md">
+			//         Enable
+			//       </Badge>
+			//     ) : (
+			//       <Badge color="red.8" size="md">
+			//         Disabled
+			//       </Badge>
+			//     ),
+			// },
+		],
+		[]
+	);
 
   // STATUS action
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const openUpdateStatusConfirmModal = (row: MRT_Row<any>) =>
+  const openUpdateStatusConfirmModal = (row: MRT_Row<IBooks>) =>
     modals.openConfirmModal({
-      title: (
-        <Text>
-          Are you sure you want to{" "}
-          <b>{!row.original.isEnabled ? "enabled" : "disabled"}</b> this
-          student?
-        </Text>
-      ),
-      children: (
-        <Text>
-          Are you sure you want to delete{" "}
-          <b>
-            {row.original.studentNumber}: {row.original.email}
-          </b>
-          ? This action cannot be undone.
-        </Text>
-      ),
-      labels: {
-        confirm: `${!row.original.isEnabled ? "Enabled" : "Disabled"}`,
-        cancel: "Cancel",
-      },
-      confirmProps: { color: "red" },
-      onConfirm: () => {
-        // modifyUserStatus(row.original);
-        modifyStudentStatus(row.original);
-      },
+      // title: (
+      //   <Text>
+      //     Are you sure you want to{" "}
+      //     <b>{!row.original.isEnabled ? "enabled" : "disabled"}</b> this
+      //     student?
+      //   </Text>
+      // ),
+      // children: (
+      //   <Text>
+      //     Are you sure you want to delete{" "}
+      //     <b>
+      //       {row.original.studentNumber}: {row.original.email}
+      //     </b>
+      //     ? This action cannot be undone.
+      //   </Text>
+      // ),
+      // labels: {
+      //   confirm: `${!row.original.isEnabled ? "Enabled" : "Disabled"}`,
+      //   cancel: "Cancel",
+      // },
+      // confirmProps: { color: "red" },
+      // onConfirm: () => {
+      //   // modifyUserStatus(row.original);
+      //   modifyStudentStatus(row.original);
+      // },
     });
 
   // CREATE action
   const handleCreateLevel: MRT_TableOptions<IBooks>["onCreatingRowSave"] =
     async ({ values, table }) => {
-      // console.log(values);
       await createCatalogue(values);
 
-      // table.setCreatingRow(null);
+      table.setCreatingRow(null);
     };
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -172,7 +182,7 @@ const CatalogueTable = () => {
     table,
   }) => {
     await modifyCatalogue(values);
-    // table.setEditingRow(null);
+    table.setEditingRow(null);
   };
 
   const table = useMantineReactTable({

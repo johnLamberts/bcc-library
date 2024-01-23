@@ -4,4 +4,5 @@
   border-radius: var(--mantine-radius-sm);
   background: var(--mantine-color-red-light);
   color: var(--mantine-color-red-light-color);
+  width: fit-content;
 }

@@ -3,7 +3,7 @@ import { Box } from "@mantine/core";
 import { useCallback, useEffect } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { MRT_RowData, MRT_TableInstance, MRT_Row } from "mantine-react-table";
-import { IBooks, IStudents } from "./models/books.interface";
+import { IBooks } from "./models/books.interface";
 import BookImageForm from "./CatalogueForm/BookImageForm";
 import Availability from "./CatalogueForm/Availability";
 import BookLocationAndDetailsForm from "./CatalogueForm/BookLocationAndDetailsForm";
@@ -28,7 +28,7 @@ export default function CatalogueForm<TData extends MRT_RowData>({
   const isCreating = table.getState().creatingRow?.id === row.id;
   const isEditing = table.getState().editingRow?.id === row.id;
 
-  const form = useForm<IStudents>({
+  const form = useForm<IBooks>({
     defaultValues: isEditing ? row.original : {},
   });
 
@@ -69,6 +69,7 @@ export default function CatalogueForm<TData extends MRT_RowData>({
     [onCreate, isCreating, isEditing, onSave]
   );
 
+
   useEffect(() => {
     if (form.formState.errors) {
       const elements = Object.keys(form.formState.errors)
@@ -97,13 +98,13 @@ export default function CatalogueForm<TData extends MRT_RowData>({
   return (
     <FormProvider {...form}>
       <Form onSubmit={form.handleSubmit(onSubmit)}>
-        <BookInformationForm />
+     <BookInformationForm table={table} row={row} />
 
-        <BookLocationAndDetailsForm />
+        <BookLocationAndDetailsForm  />
 
         <BookPublicationForm />
 
-        <Availability />
+        <Availability /> 
 
         <BookImageForm table={table} row={row} />
 
