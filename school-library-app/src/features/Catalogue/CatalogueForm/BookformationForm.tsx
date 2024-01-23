@@ -16,6 +16,7 @@ const BookInformationForm = <TData extends MRT_RowData>({
   table,
   row,
 }: BookInformationProps<TData>) => {
+  const isEditing = table?.getState().editingRow?.id === row?.id;
   const {
     register,
     control,
@@ -23,7 +24,7 @@ const BookInformationForm = <TData extends MRT_RowData>({
     watch,
     setValue,
   } = useFormContext();
-  const [selectedGenres, setSelectedGenres] = useState<string[]>([]);
+  const [selectedGenres, setSelectedGenres] = useState<string[]>(isEditing ? row?.original.genres : []);
 
   const { data: bookTypeData = [], isLoading: isBookTypeLoading } =
     useReadBookType();
@@ -35,7 +36,9 @@ const BookInformationForm = <TData extends MRT_RowData>({
 
   const watchBookType = watch("bookType") || "";
 
-  const isEditing = table?.getState().editingRow?.id === row?.id;
+  console.log(row?.original.genres);
+
+
   const filteredGenre = useMemo(() => {
     return (
       genresData
@@ -54,6 +57,30 @@ const BookInformationForm = <TData extends MRT_RowData>({
       setSelectedGenres([]);
       setValue("genres", []);
     }
+
+
+    
+    // If in editing mode, remove genres that are not present in the filteredGenre
+  if (isEditing) {
+    const updatedSelectedGenres = selectedGenres.filter((genre) =>
+      filteredGenre.includes(genre)
+    );
+    setSelectedGenres(updatedSelectedGenres);
+    setValue("genres", updatedSelectedGenres);
+  } else {
+    const filteredGenresForCreate = genresData
+    ?.filter((genre) => genre.bookType === watchBookType)
+    ?.map((genre) => genre.genres) || [];
+
+  // Update selectedGenres and form value based on the filtered genres
+  const updatedSelectedGenresForCreate = selectedGenres.filter((genre) =>
+    filteredGenresForCreate.includes(genre)
+  );
+  setSelectedGenres(updatedSelectedGenresForCreate);
+  setValue("genres", updatedSelectedGenresForCreate); 
+  }
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     filteredGenre.length,
     setValue,

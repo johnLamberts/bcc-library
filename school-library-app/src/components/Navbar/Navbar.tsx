@@ -33,7 +33,7 @@ const mainFeatures = [
     icon: IconBook,
   },
   {
-    path: "/circulation",
+    path: "/circulation-management",
     label: "Circulation",
     icon: IconAlignBoxBottomLeft,
   },

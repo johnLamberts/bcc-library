@@ -12,7 +12,6 @@ import { IBooks } from "../models/books.interface";
 import { firestore } from "src/shared/firebase/firebase";
 import { FIRESTORE_COLLECTION_QUERY_KEY } from "src/shared/enums";
 import { uploadFileOrImage, downloadUrl } from "src/shared/services/storage";
-import { isImageCoverUrl } from "src/utils/validators/isString";
 
 const addCatalogue = async (catalogue: Partial<IBooks>) => {
   try {
@@ -81,114 +80,26 @@ const updateCatalogue = async (
   booksId: string | undefined
 ) => {
   try {
-    if (
-      catalogue.bookImageCover
-        ?.toString()
-        .startsWith("https://firebasestorage.googleapis.com")
-    ) {
-      return await updateDoc(
-        doc(
-          firestore,
-          FIRESTORE_COLLECTION_QUERY_KEY.CATALOGUE,
-          booksId as string
-        ),
-        {
-          ...catalogue,
-        }
-      );
-    } else {
-      const uploadResultImage = await uploadFileOrImage(
-        catalogue.bookImageCover
-      );
-      const imagePathUrl = await downloadUrl(uploadResultImage!.ref);
-      if (
-        catalogue.bookFile
-          ?.toString()
-          .startsWith("https://firebasestorage.googleapis.com")
-      ) {
-        return await updateDoc(
-          doc(
-            firestore,
-            FIRESTORE_COLLECTION_QUERY_KEY.CATALOGUE,
-            booksId as string
-          ),
-          {
-            ...catalogue,
-          }
-        );
-      } else {
-        const uploadResultFile = await uploadFileOrImage(catalogue?.bookFile);
-        const filePathUrl = await downloadUrl(uploadResultFile!.ref);
+ 
+    const uploadResultImage = await uploadFileOrImage(catalogue.bookImageCover);
+    const imagePathUrl = uploadResultImage ?  await downloadUrl(uploadResultImage!.ref) : catalogue.bookImageCover;
 
-        console.log(imagePathUrl);
-        return await updateDoc(
-          doc(
-            firestore,
-            FIRESTORE_COLLECTION_QUERY_KEY.CATALOGUE,
-            booksId as string
-          ),
-          {
-            ...catalogue,
-            bookFile: filePathUrl,
-            bookImageCover: imagePathUrl,
-            modifiedAt: serverTimestamp(),
-          }
-        );
-      }
-    }
+    const uploadResultFile = await uploadFileOrImage(catalogue?.bookFile);
+    const filePathUrl = uploadResultFile ? await downloadUrl(uploadResultFile!.ref) : catalogue.bookFile;
 
-    // // Check if bookImageCover is a URL
-    // if (isImageCoverUrl(catalogue.bookImageCover as string)) {
-    //   // If it's a URL, update the document
-    //   return await updateDoc(
-    //     doc(
-    //       firestore,
-    //       FIRESTORE_COLLECTION_QUERY_KEY.CATALOGUE,
-    //       booksId as string
-    //     ),
-    //     {
-    //       ...catalogue,
-    //       modifiedAt: serverTimestamp(),
-    //     } as Partial<IBooks> // Explicitly cast to Partial<IBooks> for better type safety
-    //   );
-    // }
-
-    // // Check if bookFile is a URL
-    // if (isImageCoverUrl(catalogue.bookFile as string)) {
-    //   // If it's a URL, update the document
-    //   return await updateDoc(
-    //     doc(
-    //       firestore,
-    //       FIRESTORE_COLLECTION_QUERY_KEY.CATALOGUE,
-    //       booksId as string
-    //     ),
-    //     {
-    //       ...catalogue,
-    //       modifiedAt: serverTimestamp(),
-    //     } as Partial<IBooks>
-    //   );
-    // }
-
-    // console.log(catalogue.bookImageCover);
-    // // const uploadResultImage = await uploadFileOrImage(catalogue.bookImageCover);
-    // // const imagePathUrl = await downloadUrl(uploadResultImage!.ref);
-
-    // // const uploadResultFile = await uploadFileOrImage(catalogue?.bookFile);
-    // // const filePathUrl = await downloadUrl(uploadResultFile!.ref);
-
-    // // return await updateDoc(
-    // //   doc(
-    // //     firestore,
-    // //     FIRESTORE_COLLECTION_QUERY_KEY.CATALOGUE,
-    // //     booksId as string
-    // //   ),
-    // //   {
-    // //     ...catalogue,
-    // //     bookFile: filePathUrl,
-    // //     bookImageCover: imagePathUrl,
-    // //     modifiedAt: serverTimestamp(),
-    // //   } as Partial<IBooks>
-    // // );
+    return await updateDoc(
+      doc(
+        firestore,
+        FIRESTORE_COLLECTION_QUERY_KEY.CATALOGUE,
+        booksId as string
+      ),
+      {
+        ...catalogue,
+        bookFile: filePathUrl,
+        bookImageCover: imagePathUrl,
+        modifiedAt: serverTimestamp(),
+      } as Partial<IBooks>
+    );
   } catch (err) {
     if (err instanceof Error) {
       throw new Error(`${err?.message}`);
