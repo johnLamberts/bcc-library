@@ -9,8 +9,19 @@ import {
   Stack,
   ScrollArea,
   Avatar,
+  Tabs,
+  rem,
 } from "@mantine/core";
-import { IconEdit, IconEyeMinus, IconPlus } from "@tabler/icons-react";
+import {
+  IconArrowBackUpDouble,
+  IconCheckupList,
+  IconClearAll,
+  IconDatabaseExclamation,
+  IconEdit,
+  IconEyeMinus,
+  IconPlus,
+  IconStackPush,
+} from "@tabler/icons-react";
 import {
   MRT_ColumnDef,
   MRT_Row,
@@ -24,15 +35,16 @@ import {
 import { useMemo } from "react";
 
 import classes from "@pages/styles/user.module.css";
-import StudentForm from "./CatalogueForm";
+import StudentForm from "./CirculationForm";
 import { IBooks } from "./models/books.interface";
 import { modals } from "@mantine/modals";
 import useModifyStudentStatus from "./hooks/useModifyStudentStatus";
 import { useCreateCatalogue } from "./hooks/useCreateCatalogue";
 import useReadCatalogue from "./hooks/useReadCatalogue";
 import useModifyCatalogue from "./hooks/useModifyCatalogue";
+import CirculationForm from "./CirculationForm";
 
-const CatalogueTable = () => {
+const CirculationTable = () => {
   const { isCreatingCatalogue, createCatalogue } = useCreateCatalogue();
 
   const {
@@ -199,7 +211,7 @@ const CatalogueTable = () => {
     mantineCreateRowModalProps: {
       centered: true,
       size: "xl",
-      title: "Adding form for Catalogue",
+      title: "Borrowing Form",
       scrollAreaComponent: ScrollArea.Autosize,
     },
     mantineEditRowModalProps: {
@@ -282,7 +294,7 @@ const CatalogueTable = () => {
       return (
         <>
           <Stack>
-            <StudentForm
+            <CirculationForm
               table={table}
               row={row}
               onCreate={(data) =>
@@ -299,25 +311,57 @@ const CatalogueTable = () => {
       );
     },
   });
+  const iconStyle = { width: rem(12), height: rem(12) };
 
   return (
     <>
       <Box maw={"78vw"}>
         <Group justify="space-between">
-          <Box className={classes.highlight}>
-            <Text fz={"xl"} fw={"bold"} c={"red"}>
-              Catalogue Management
-            </Text>
-          </Box>
+          <Stack>
+            <Tabs defaultValue="gallery">
+              <Tabs.List>
+                <Tabs.Tab
+                  value="All"
+                  leftSection={<IconClearAll style={iconStyle} />}
+                >
+                  All
+                </Tabs.Tab>
+                <Tabs.Tab
+                  value="Request"
+                  leftSection={<IconStackPush style={iconStyle} />}
+                >
+                  Request
+                </Tabs.Tab>
+                <Tabs.Tab
+                  value="Checkout"
+                  leftSection={<IconCheckupList style={iconStyle} />}
+                >
+                  Checked out
+                </Tabs.Tab>
+                <Tabs.Tab
+                  value="Overdue"
+                  leftSection={<IconDatabaseExclamation style={iconStyle} />}
+                >
+                  Overdue
+                </Tabs.Tab>
+                <Tabs.Tab
+                  value="settings"
+                  leftSection={<IconArrowBackUpDouble style={iconStyle} />}
+                >
+                  Returned
+                </Tabs.Tab>{" "}
+              </Tabs.List>
+            </Tabs>
+          </Stack>
           <Group>
             <Button
               variant="light"
-              onClick={() => table.setCreatingRow(true)}
               leftSection={<IconPlus size={14} />}
+              onClick={() => table.setCreatingRow(true)}
               bg={" var(--mantine-color-red-light)"}
               color={" var(--mantine-color-red-light-color)"}
             >
-              Add Catalogue
+              Add Borrow
             </Button>
           </Group>
         </Group>
@@ -329,4 +373,4 @@ const CatalogueTable = () => {
     </>
   );
 };
-export default CatalogueTable;
+export default CirculationTable;
