@@ -66,6 +66,7 @@ const createStudent = async (student: TStudents) => {
       ),
       userUID: userRef.uid,
       userDocID: usersDoc.id,
+      userRole: "Student",
       createdAt: admin.firestore.FieldValue.serverTimestamp(),
       isArchived: false,
       isEnabled: true,

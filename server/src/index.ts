@@ -3,7 +3,7 @@ import express, { Application, Request, Response } from "express";
 import { initializeApp } from "firebase-admin/app";
 import * as admin from "firebase-admin";
 import dotenv from "dotenv";
-import serviceAccount from "./config/zidel-posev-firebase-adminsdk-zcfe9-1fb43bb62f.json";
+import serviceAccount from "./config/library-management-syste-fb3e9-firebase-adminsdk-jc43t-ffae87ba8d.json";
 import bodyParser from "body-parser";
 import router from "./route";
 import cors from "cors";
@@ -20,7 +20,8 @@ server.use(
 
 initializeApp({
   credential: admin.credential.cert(serviceAccount as admin.ServiceAccount),
-  databaseURL: "https://zidel-posev.asia-southeast1.firebasedatabase.app",
+  databaseURL:
+    "https://library-management-syste-fb3e9.asia-southeast1.firebasedatabase.app",
 });
 
 server.use(express.json({ limit: "10kb" }));
