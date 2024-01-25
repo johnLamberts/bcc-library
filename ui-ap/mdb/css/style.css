@@ -1,0 +1,128 @@
+@import url("https://fonts.googleapis.com/css2?family=Montserrat&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Syne&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap");
+
+@font-face {
+  font-family: "Algerian";
+  src: url(../fonts/Algerian\ Regular.ttf);
+}
+
+:root {
+  --primary-color: rgb(92, 5, 5);
+  --secondary-color: rgb(255, 169, 3);
+  --tertiary-color: rgb(243, 243, 243);
+  --black: hsl(0, 0%, 0%);
+  --white: hsl(0, 0%, 100%);
+  --font-text: "Montserrat", sans-serif;
+}
+
+.active {
+  background-color: var(--secondary-color);
+  font-weight: 900;
+}
+
+.navbar-toggler i {
+  color: var(--white);
+}
+
+/* NAVIGATION */
+
+.navbar {
+  background-color: var(--primary-color);
+  color: var(--white);
+  border-bottom: 3px solid var(--secondary-color);
+}
+nav .navbar_nav_custom {
+  justify-content: center;
+  width: 100%;
+}
+
+nav .nav_custom a {
+  color: var(--white);
+}
+
+nav .nav_custom {
+  font-family: "Syne";
+  font-weight: 600;
+  width: 100%;
+  text-align: center;
+}
+
+nav .right {
+  margin-left: 100px;
+}
+
+nav .notification i {
+  margin-top: auto;
+}
+
+nav .account span {
+  padding: 0 10px 0 5px;
+}
+
+/* HEADER */
+.school_name {
+  font-family: "Algerian";
+}
+
+.opactxt {
+  font-family: "Bebas Neue";
+  font-size: 90px;
+  font-weight: 600;
+  letter-spacing: 5px;
+}
+
+header .header_tagline {
+  font-family: var(--font-text);
+  font-size: 18px;
+  font-weight: 600;
+}
+
+/* FOOTER */
+footer {
+  background-color: var(--primary-color);
+  border-top: 3px solid var(--secondary-color);
+}
+footer .trademark {
+  color: var(--secondary-color);
+}
+footer .trademark .icon-btn {
+  color: var(--secondary-color);
+  border: 2px solid var(--secondary-color);
+}
+
+footer .Company img {
+  width: auto;
+  height: 100px;
+}
+
+footer .Company .school-footer h1 {
+  font-family: "Algerian";
+  font-size: 20px;
+  margin-top: 20px;
+  padding-left: 5px;
+}
+footer .Company .school-footer p {
+  font-family: var(--font-text);
+  font-weight: 600;
+  font-size: 12px;
+  padding-left: 5px;
+}
+
+/* MOBILE DEVICE COMPATIBILITY */
+@media screen and (max-width: 1023px) {
+  nav .right {
+    top: 0;
+    right: 0;
+    margin: 8px 20px 5px 10px;
+    position: absolute;
+  }
+  .opactxt {
+    font-size: 50px;
+  }
+
+  nav .fa-bars {
+    height: auto;
+    padding: 8px;
+  }
+}

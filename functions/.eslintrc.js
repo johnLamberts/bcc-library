@@ -1,3 +1,4 @@
+/* eslint-disable linebreak-style */
 /* eslint-disable quote-props */
 /* eslint-disable object-curly-spacing */
 module.exports = {
