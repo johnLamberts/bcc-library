@@ -4,8 +4,6 @@ import { useCallback, useEffect } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { MRT_RowData, MRT_TableInstance, MRT_Row } from "mantine-react-table";
 import { IBooks } from "./models/books.interface";
-import BookLocationAndDetailsForm from "./CatalogueForm/BookLocationAndDetailsForm";
-import BookInformationForm from "./CatalogueForm/BookformationForm";
 import BorrowersInformationForm from "./CatalogueForm/BookformationForm";
 import BooksToBeBorrowedDetailsForm from "./CatalogueForm/BookLocationAndDetailsForm";
 
@@ -35,9 +33,11 @@ export default function CirculationForm<TData extends MRT_RowData>({
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (values: Partial<IBooks>) => {
       if (isCreating) {
-        onCreate?.({
-          ...values,
-        });
+        // onCreate?.({
+        //   ...values,
+        // });
+
+        console.log(values);
       } else if (isEditing) {
         onSave?.(values);
       }
@@ -75,7 +75,7 @@ export default function CirculationForm<TData extends MRT_RowData>({
       <Form onSubmit={form.handleSubmit(onSubmit)}>
         <BorrowersInformationForm table={table} row={row} />
 
-        <BooksToBeBorrowedDetailsForm />
+        {/* <BooksToBeBorrowedDetailsForm /> */}
 
         {/* <BookPublicationForm />
 

@@ -36,6 +36,7 @@
     "react-imask": "^7.2.1",
     "react-router-dom": "^6.21.0",
     "react-webcam": "^7.2.0",
+    "recharts": "^2.10.4",
     "sonner": "^1.2.4",
     "vite-tsconfig-paths": "^4.2.2",
     "zod": "^3.22.4"
