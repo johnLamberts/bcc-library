@@ -1,154 +1,213 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
 
     <!-- bootstrap -->
-    <link rel="stylesheet" href="../assets/css/bootstrap.css">
-    <link rel="stylesheet" href="../assets/css/style.css">
-</head>
-<body>
+    <link rel="stylesheet" href="../assets/css/bootstrap.css" />
+    <link rel="stylesheet" href="../assets/css/style.css" />
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-lg navbar_custom">
+      <div class="container navbar_fade">
+        <!-- logo -->
+        <img
+          class="opac"
+          src="../assets/img/logo/opac.png"
+          alt=""
+          width="auto"
+          height="40"
+        />
 
-    <nav class="navbar navbar-expand-lg navbar_custom ">
-        <div class="container navbar_fade">
-          <!-- logo -->
-          <img class="opac" src="../assets/img/logo/opac.png" alt="" width="auto" height="40">
-
-          <!-- search -->
-          <form class="search d-flex" role="search">
-              <input class="form-control form-control-custom me-2" type="search" placeholder="Search" aria-label="Search">
-              <button class="btn" type="submit">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
-                      <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"/>
-                  </svg>
-              </button>
-          </form>
-          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
+        <!-- search -->
+        <form class="search d-flex" role="search">
+          <input
+            class="form-control form-control-custom me-2"
+            type="search"
+            placeholder="Search"
+            aria-label="Search"
+          />
+          <button class="btn" type="submit">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              fill="currentColor"
+              class="bi bi-search"
+              viewBox="0 0 16 16"
+            >
+              <path
+                d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"
+              />
+            </svg>
           </button>
-          
-          <!-- nav -->
-          <div class="collapse navbar-collapse" id="navbarSupportedContent">
-              <ul class=" navbar-nav me-auto mb-2 mb-lg-0">
-                  <li class="nav-item">
-                      <a class="nav-link" href="index.php">Home</a>
-                  </li>
-                  <li class="nav-item">
-                      <a class="nav-link" href="register.php">Library</a>
-                  </li>
-                  <li class="nav-item ">
-                      <a class="nav-link" href="#">News</a>
-                  </li>
-                  <li class="nav-item">
-                      <a class="nav-link" href="#">Contact Us</a>
-                  </li>
-              </ul>  
-              <!-- ACCOUNT -->
-              <div class="dropdown">
-                  <a class="btn_acc_custom dropdown-toggle" href="login.php" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-person-circle" viewBox="0 0 18 18">
-                          <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0"/>
-                          <path fill-rule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8m8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1"/>
-                      </svg>
-                        Login
-                  </a>
-                  <!-- notification -->
-                  <a href="#">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-bell-fill" viewBox="0 0 16 16">
-                      <path d="M8 16a2 2 0 0 0 2-2H6a2 2 0 0 0 2 2m.995-14.901a1 1 0 1 0-1.99 0A5 5 0 0 0 3 6c0 1.098-.5 6-2 7h14c-1.5-1-2-5.902-2-7 0-2.42-1.72-4.44-4.005-4.901"/>
-                      </svg>
-                  </a>            
-                  <!-- settings -->
-                  <ul class="dropdown-menu">
-                    <li><a class="dropdown-item" href="#">Action</a></li>
-                    <li><a class="dropdown-item" href="#">Another action</a></li>
-                    <li><a class="dropdown-item" href="logout.php">Logout</a></li>
-                  </ul>
-              </div>
+        </form>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarSupportedContent"
+          aria-controls="navbarSupportedContent"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <!-- nav -->
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <li class="nav-item">
+              <a class="nav-link" href="index.php">Home</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="register.php">Library</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#">News</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#">Contact Us</a>
+            </li>
+          </ul>
+          <!-- ACCOUNT -->
+          <div class="dropdown">
+            <a
+              class="btn_acc_custom dropdown-toggle"
+              href="login.php"
+              role="button"
+              data-bs-toggle="dropdown"
+              aria-expanded="false"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                fill="currentColor"
+                class="bi bi-person-circle"
+                viewBox="0 0 18 18"
+              >
+                <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0" />
+                <path
+                  fill-rule="evenodd"
+                  d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8m8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1"
+                />
+              </svg>
+              Login
+            </a>
+            <!-- notification -->
+            <a href="#">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                fill="currentColor"
+                class="bi bi-bell-fill"
+                viewBox="0 0 16 16"
+              >
+                <path
+                  d="M8 16a2 2 0 0 0 2-2H6a2 2 0 0 0 2 2m.995-14.901a1 1 0 1 0-1.99 0A5 5 0 0 0 3 6c0 1.098-.5 6-2 7h14c-1.5-1-2-5.902-2-7 0-2.42-1.72-4.44-4.005-4.901"
+                />
+              </svg>
+            </a>
+            <!-- settings -->
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" href="#">Action</a></li>
+              <li><a class="dropdown-item" href="#">Another action</a></li>
+              <li><a class="dropdown-item" href="logout.php">Logout</a></li>
+            </ul>
           </div>
         </div>
+      </div>
     </nav>
 
     <header>
       <div class="headline header">
         <!-- <img src="../assets/img/logo/Headline.png" alt=""> -->
-        <div id="carouselExampleAutoplaying"class="carousel slide" data-bs-ride="carousel">
-          <div class="carousel-indicators">
-            <button type="button" data-bs-target="#carouselExampleAutoplaying" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
-            <button type="button" data-bs-target="#carouselExampleAutoplaying" data-bs-slide-to="1" aria-label="Slide 2"></button>
-            <button type="button" data-bs-target="#carouselExampleAutoplaying" data-bs-slide-to="2" aria-label="Slide 3"></button>
-          </div>
+        <!-- <div
+          id="carouselExampleAutoplaying"
+          class="carousel slide"
+          data-bs-ride="carousel"
+        > -->
+          <!-- <div class="carousel-indicators">
+            <button
+              type="button"
+              data-bs-target="#carouselExampleAutoplaying"
+              data-bs-slide-to="0"
+              class="active"
+              aria-current="true"
+              aria-label="Slide 1"
+            ></button>
+            <button
+              type="button"
+              data-bs-target="#carouselExampleAutoplaying"
+              data-bs-slide-to="1"
+              aria-label="Slide 2"
+            ></button>
+            <button
+              type="button"
+              data-bs-target="#carouselExampleAutoplaying"
+              data-bs-slide-to="2"
+              aria-label="Slide 3"
+            ></button>
+          </div> -->
           <div class="carousel-inner">
             <div class="carousel-item carousel-item-custom active">
-              <img src="../assets/img/carousel/Headline.png" class="d-block" alt="...">
+              <img
+                src="../assets/img/carousel/Headline.png"
+                class="d-block"
+                alt="..."
+              />
             </div>
-            <!-- <div class="carousel-item carousel-item-custom">
-              <img src="../assets/img/carousel/BCC2.jpg" class="d-block" alt="...">
-            </div>
-            <div class="carousel-item carousel-item-custom">
-              <img src="../assets/img/carousel/BCC.jpg" class="d-block" alt="...">
-            </div> -->
           </div>
-          <!-- <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleAutoplaying" data-bs-slide="prev">
-            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-            <span class="visually-hidden">Previous</span>
-          </button>
-          <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleAutoplaying" data-bs-slide="next">
-            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-            <span class="visually-hidden">Next</span>
-          </button> -->
         </div>
         <div class="information">
           <h2>Binangonan Catholic College</h2>
-          <h1 >Online Public Access Catalog</h1 >
-          <p>"Embark on a Journey of Discovery with Our Cutting-Edge E-Library – Your Premier Online Portal for Accessing and Nurturing Boundless Knowledge at Your Fingertips."</p>
-          <button class="btn_explore btn btn-primary" type="submit">Explore Library <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-arrow-right" viewBox="0 0 16 16">
-            <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8"/>
-          </svg></button>
+          <h1>Online Public Access Catalog</h1>
+          <p>
+            "Embark on a Journey of Discovery with Our Cutting-Edge E-Library –
+            Your Premier Online Portal for Accessing and Nurturing Boundless
+            Knowledge at Your Fingertips."
+          </p>
+          <button class="btn_explore btn btn-primary" type="submit">
+            Explore Library
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              fill="currentColor"
+              class="bi bi-arrow-right"
+              viewBox="0 0 16 16"
+            >
+              <path
+                fill-rule="evenodd"
+                d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8"
+              />
+            </svg>
+          </button>
         </div>
       </div>
     </header>
 
 
-    <!-- <header class="carousel-reveal">
-      <div id="carouselExampleAutoplaying"class="carousel slide" data-bs-ride="carousel">
-        <div class="carousel-indicators">
-          <button type="button" data-bs-target="#carouselExampleAutoplaying" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
-          <button type="button" data-bs-target="#carouselExampleAutoplaying" data-bs-slide-to="1" aria-label="Slide 2"></button>
-          <button type="button" data-bs-target="#carouselExampleAutoplaying" data-bs-slide-to="2" aria-label="Slide 3"></button>
-        </div>
-        <div class="carousel-inner">
-          <div class="carousel-item carousel-item-custom active">
-            <img src="../assets/img/carousel/1.jpg" class="d-block" alt="...">
-          </div>
-          <div class="carousel-item carousel-item-custom">
-            <img src="../assets/img/carousel/2.jpg" class="d-block" alt="...">
-          </div>
-          <div class="carousel-item carousel-item-custom">
-            <img src="../assets/img/carousel/3.jpg" class="d-block" alt="...">
-          </div>
-        </div>
-        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleAutoplaying" data-bs-slide="prev">
-          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-          <span class="visually-hidden">Previous</span>
-        </button>
-        <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleAutoplaying" data-bs-slide="next">
-          <span class="carousel-control-next-icon" aria-hidden="true"></span>
-          <span class="visually-hidden">Next</span>
-        </button>
-      </div>
-    </header> -->
-
-    
     <aside>
       <div class="aside-feautures navbar_fade">
         <div class="features container">
-          <div class="title ">
-            <h1 class="slide-r"><span class="Welcome">Welcome</span> to <span class="end">OPAC</span></h1>
+          <div class="title">
+            <h1 class="slide-r">
+              <span class="Welcome">Welcome</span> to
+              <span class="end">OPAC</span>
+            </h1>
             <div class="border slide"></div>
-            <p class="tagline">Empowering Minds, Connecting Communities: Open Public Access Catalog (OPAC) is Your Passport to a World of Knowledge. Discover, Learn, and Grow as You Navigate Our Extensive Resources, Bridging Gaps and Fostering a Culture of Lifelong Learning for Every Individual and Community</p>
+            <p class="tagline">
+              Empowering Minds, Connecting Communities: Open Public Access
+              Catalog (OPAC) is Your Passport to a World of Knowledge. Discover,
+              Learn, and Grow as You Navigate Our Extensive Resources, Bridging
+              Gaps and Fostering a Culture of Lifelong Learning for Every
+              Individual and Community
+            </p>
           </div>
           <div class="card_features">
             <div class="row">
@@ -165,7 +224,10 @@
                     <div class="card__content--container | flow">
                       <h4 class="card__title">Digital Access to Resources</h4>
                       <p class="card__description">
-                        E-libraries offer digital access to a wide range of resources, including e-books, journals, and multimedia content, available 24/7 from any internet-enabled device.
+                        E-libraries offer digital access to a wide range of
+                        resources, including e-books, journals, and multimedia
+                        content, available 24/7 from any internet-enabled
+                        device.
                       </p>
                     </div>
                     <!-- <button class="card__button">Read more</button> -->
@@ -185,7 +247,10 @@
                     <div class="card__content--container | flow">
                       <h4 class="card__title">Digital Access to Resources</h4>
                       <p class="card__description">
-                        E-libraries offer digital access to a wide range of resources, including e-books, journals, and multimedia content, available 24/7 from any internet-enabled device.
+                        E-libraries offer digital access to a wide range of
+                        resources, including e-books, journals, and multimedia
+                        content, available 24/7 from any internet-enabled
+                        device.
                       </p>
                     </div>
                     <!-- <button class="card__button">Read more</button> -->
@@ -205,7 +270,10 @@
                     <div class="card__content--container | flow">
                       <h4 class="card__title">Digital Access to Resources</h4>
                       <p class="card__description">
-                        E-libraries offer digital access to a wide range of resources, including e-books, journals, and multimedia content, available 24/7 from any internet-enabled device.
+                        E-libraries offer digital access to a wide range of
+                        resources, including e-books, journals, and multimedia
+                        content, available 24/7 from any internet-enabled
+                        device.
                       </p>
                     </div>
                     <!-- <button class="card__button">Read more</button> -->
@@ -222,11 +290,9 @@
       
     </div>
 
-
-
     <!-- script -->
     <script src="../assets/js/bootstrap.js"></script>
     <script src="https://unpkg.com/scrollreveal"></script>
     <script src="../assets/js/reveal.js"></script>
-</body>
+  </body>
 </html>

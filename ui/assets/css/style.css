@@ -1,90 +1,89 @@
-@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Cinzel&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Montserrat&display=swap');
-:root{
+@import url("https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Cinzel&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Roboto&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Montserrat&display=swap");
+:root {
   /* colors */
-  --primary-color:rgb(92, 5, 5);
-  --secondary-color:rgb(255, 169, 3);
-  --tertiary-color:rgb(243, 243, 243);
+  --primary-color: rgb(92, 5, 5);
+  --secondary-color: rgb(255, 169, 3);
+  --tertiary-color: rgb(243, 243, 243);
   --black: hsl(0, 0%, 0%);
   --white: hsl(0, 0%, 100%);
   /* Fonts */
-  --font-header:'Bebas Neue';
-  --font-school:'Cinzel';
+  --font-header: "Bebas Neue";
+  --font-school: "Cinzel";
   --font-title: "Poppins", sans-serif;
-  --font-text: 'Montserrat';
+  --font-text: "Montserrat";
 }
 
 @font-face {
-  font-family: 'algerian';
+  font-family: "algerian";
   src: url(../fonts/AlgerianRegular.ttf);
 }
 
-
 /* NAVIGATION */
-nav{
+nav {
   z-index: 1;
 }
 
-.opac{
+.opac {
   margin-right: 30px;
-  background-color: var(--secondary-color) ;
+  background-color: var(--secondary-color);
   padding: 5px 10px;
   border-radius: 0 10px;
 }
 
-.navbar_custom{
+.navbar_custom {
   background-color: var(--primary-color);
   border-bottom: 5px solid var(--secondary-color);
 }
 
-.nav-item{
+.nav-item {
   padding-right: 20px;
 }
 
-.nav-item a{
+.nav-item a {
   color: var(--white);
   font-family: var(--font-text);
 }
 
-.nav-item a:hover{
+.nav-item a:hover {
   color: var(--secondary-color);
 }
 
-  /* searchbar */
+/* searchbar */
 
-.search{
+.search {
   width: 40%;
 }
 
-.form-control-custom{
+.form-control-custom {
   border-radius: 200px;
   width: 80%;
   border: 1px solid var(--secondary-color);
-  box-shadow: 7px 7px 5px 0px rgba(0,0,0,0.19) inset;
--webkit-box-shadow: 7px 7px 5px 0px rgba(0,0,0,0.19) inset;
--moz-box-shadow: 7px 7px 5px 0px rgba(0,0,0,0.19) inset;
+  box-shadow: 7px 7px 5px 0px rgba(0, 0, 0, 0.19) inset;
+  -webkit-box-shadow: 7px 7px 5px 0px rgba(0, 0, 0, 0.19) inset;
+  -moz-box-shadow: 7px 7px 5px 0px rgba(0, 0, 0, 0.19) inset;
 }
 
-.search button{
+.search button {
   border: none;
   color: var(--white);
   height: auto;
   padding: 0;
 }
 
-.search button:hover{
+.search button:hover {
   color: var(--secondary-color);
 }
 
-  /* account */
+/* account */
 
 .btn_acc_custom {
   color: var(--white);
   padding: 10px;
 }
-a{
+a {
   text-decoration: none;
 }
 .btn_acc_custom:hover {
@@ -92,16 +91,16 @@ a{
   border: none;
 }
 
-.navbar_acc_custom{
+.navbar_acc_custom {
   color: var(--secondary-color);
 }
-  /* notif */
-.bi-bell-fill{
+/* notif */
+.bi-bell-fill {
   fill: var(--white);
 }
 
 /* HEADER */
-header{
+header {
   background-color: var(--primary-color);
   color: var(--white);
   height: 90vh;
@@ -109,29 +108,27 @@ header{
   /* mask-image: linear-gradient(180deg, rgba(2,0,36,1) 77%, rgba(0,0,0,0.3841911764705882) 95%, rgba(255,255,255,0) 100%); */
 }
 
-.carousel-item-custom{
+.carousel-item-custom {
   height: 90vh;
   width: 100%;
   /* background-color: red; */
 }
 
-.carousel-item-custom img{
+.carousel-item-custom img {
   height: 100%;
-  width: 100vw;
-  object-fit: fill;
+  width: 100%;
+  object-fit: cover;
   object-position: center;
 }
 
-
-
 /* HEADER */
-header{
+header {
   width: 100%;
   justify-content: center;
   text-align: center;
-} 
+}
 
-header .headline{
+header .headline {
   font-family: var(--font-title);
   position: relative;
 }
@@ -141,33 +138,31 @@ header .headline{
   object-fit: cover;
 } */
 
-header .information{
+header .information {
   color: var(--white);
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-
 }
 
-header .information h1{
+header .information h1 {
   white-space: nowrap;
   font-family: var(--font-header);
   font-weight: 600;
   font-size: 80px;
   padding-bottom: 10px;
   letter-spacing: 4px;
-  
 }
-header .information h2{
+header .information h2 {
   white-space: nowrap;
   font-size: 40px;
   font-weight: 400;
-  font-family: 'Algerian';
+  font-family: "Algerian";
   padding-bottom: 10px;
 }
 
-header .information p{
+header .information p {
   margin: auto;
   word-wrap: break-word;
   /* font-style: italic; */
@@ -177,7 +172,7 @@ header .information p{
   font-weight: 400;
 }
 
-header .btn_explore{
+header .btn_explore {
   margin-top: 30px;
   border-radius: 50px;
   background-color: var(--secondary-color);
@@ -188,26 +183,22 @@ header .btn_explore{
   padding: 10px 40px;
 }
 
+/* ASIDE */
 
-/* aside */
-
-.aside-feautures{
+.aside-feautures {
   object-fit: cover;
   object-position: center;
-  background-image: url('../img/bg/abs1.jpg');
+  background-image: url("../img/bg/abs1.jpg");
   background-color: red;
   height: auto;
-  /* mask-image: linear-gradient(0deg, rgba(2,0,36,1) 99%, rgba(0,0,0,0.3841911764705882) 99%, rgba(255,255,255,0) 100%); */
-
 }
-.features{
+.features {
   width: 100%;
-  justify-content: center ;
+  justify-content: center;
   font-family: var(--font-title);
-
 }
 
-.features h1{
+.features h1 {
   font-family: var(--font-header);
   letter-spacing: 3px;
   font-size: 30px;
@@ -217,21 +208,17 @@ header .btn_explore{
   word-spacing: 5px;
 }
 
-.features .Welcome{
-
+.features .Welcome {
   font-size: 50px;
-  
 }
 
-.features .end{
+.features .end {
   font-size: 50px;
   color: var(--primary-color);
   /* font-family: 'Bebas Neue'; */
-
 }
 
-
-.features .border{
+.features .border {
   height: 10px;
   width: 90px;
   margin: auto;
@@ -240,7 +227,7 @@ header .btn_explore{
   background-color: var(--primary-color);
 }
 
-.features .tagline{
+.features .tagline {
   margin: auto;
   font-family: var(--font-text);
   text-align: center;
@@ -249,8 +236,6 @@ header .btn_explore{
   width: 80%;
   margin-bottom: 10px;
 }
-
-
 
 /* CARD COMPONENT */
 
@@ -263,7 +248,7 @@ header .btn_explore{
 }
 
 .card__description {
-text-align: justify;
+  text-align: justify;
   font-family: var(--font-text);
   font-size: 1rem;
   line-height: 1.5;
@@ -330,7 +315,6 @@ text-align: justify;
   left: -1.25rem;
   background-color: var(--secondary-color);
 }
-
 
 @media (any-hover: hover) and (any-pointer: fine) {
   .card__content {
