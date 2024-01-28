@@ -1,0 +1,110 @@
+/**
+ * Import function triggers from their respective submodules:
+ *
+ * import {onCall} from "firebase-functions/v2/https";
+ * import {onDocumentWritten} from "firebase-functions/v2/firestore";
+ *
+ * See a full list of supported triggers at https://firebase.google.com/docs/functions
+ */
+
+// eslint-disable-next-line max-len
+import serviceAccount from "./mock-app-7f7f4-firebase-adminsdk-vdmfu-8b300c175d.json";
+
+// import { onRequest } from "firebase-functions/v2/https";
+// import * as logger from "firebase-functions/logger";
+import * as admin from "firebase-admin";
+// import { config, runWith, auth } from "firebase-functions";
+// import sgMail from "@sendgrid/mail";
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount as admin.ServiceAccount),
+});
+
+// export const taskRunner = runWith({ memory: "2GB" })
+//   .pubsub.schedule("* * * * *")
+//   .onRun(async () => {
+//     const testData = admin.firestore().collection("availability").get();
+
+//     return await testData.then((data) => {
+//       return data.docs.forEach(async (doc) => {
+//         const expiryTime = doc.data().expiryTime;
+//         const timeNow = admin.firestore.Timestamp.now();
+//         if (expiryTime > timeNow) {
+//           doc.ref
+//             .update({ status: "overdue ni baboy" })
+//             .then((data) => console.log(data));
+//         }
+//       });
+//     });
+//   });
+
+// const API_KEY = config().sendgrid.key;
+// const TEMPLATE_ID = config().sendgrid.template;
+
+// sgMail.setApiKey(API_KEY);
+
+// export const welcomeEmail = auth.user().onCreate(async (user) => {
+//   const msg = {
+//     to: user.email,
+//     from: "librsystem.e@gmail.com",
+//     displayName: user.displayName,
+//     templateId: TEMPLATE_ID,
+//     dynamic_template_data: {
+//       displayName: user.displayName,
+//       email: user.email,
+//       passwordHash: user.passwordHash,
+//     },
+//   };
+
+//   return sgMail.send(msg);
+// });
+
+// export const createuser = firestore
+//   .document("users/${userId}")
+//   .onCreate((snap) => {
+//     const data = snap.data();
+
+//     // access a particular field as you would any JS property
+//     const fullName = `${data.firstName} ${data.middleName} ${data.lastName}`;
+
+//     const email = data.email;
+
+//     const password = data.password;
+
+//     const msg = {
+//       to: email,
+//       from: "librsystem.e@gmail.com",
+//       password: password,
+//       templateId: TEMPLATE_ID,
+//       dynamic_template_data: {
+//         fullName,
+//         email,
+//         password,
+//       },
+//     };
+
+//     return sgMail.send(msg);
+//   });
+
+const testData = admin.firestore().collection("availability").get();
+
+testData.then((data) => {
+  return data.docs.forEach(async (doc) => {
+    const expiryTime = doc.data().expiryTime;
+    const timeNow = admin.firestore.Timestamp.now();
+
+    if (expiryTime > timeNow) {
+      // doc.ref
+      //   .update({ status: "overdue ni baboy" })
+      //   .then((data) => console.log(data));\
+
+      const availability = {
+        id: doc.id,
+        ...doc.data(),
+      };
+
+      console.log(availability);
+
+      console.log(new Date());
+    }
+  });
+});

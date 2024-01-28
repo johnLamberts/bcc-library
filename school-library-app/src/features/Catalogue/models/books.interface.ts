@@ -19,4 +19,6 @@ export interface IBooks {
 
   bookImageCover: string | File | null;
   bookFile: File | string | null;
+
+  numberOfBooksAvailable_QUANTITY?: number;
 }

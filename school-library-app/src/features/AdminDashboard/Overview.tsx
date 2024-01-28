@@ -53,7 +53,6 @@ const data = [
 ];
 
 export function Overview() {
-  const theme = useMantineTheme();
   const computedColorScheme = useComputedColorScheme("light", {
     getInitialValueInEffect: true,
   });

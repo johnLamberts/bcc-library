@@ -1,11 +1,12 @@
 import Form from "@components/Form/Form";
-import { Box } from "@mantine/core";
-import { useCallback, useEffect } from "react";
+import { Box, Divider } from "@mantine/core";
+import { useCallback, useEffect, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { MRT_RowData, MRT_TableInstance, MRT_Row } from "mantine-react-table";
 import { IBooks } from "./models/books.interface";
-import BorrowersInformationForm from "./CatalogueForm/BookformationForm";
-import BooksToBeBorrowedDetailsForm from "./CatalogueForm/BookLocationAndDetailsForm";
+import BooksToBeBorrowedDetailsForm from "./CirculationForm/BooksToBeBorrowedDetailsForm";
+import BorrowersInformationForm from "./CirculationForm/BorrowersInformationForm";
+import { IUser } from "@features/Users/models/user.interface";
 
 interface CirculationFormProps<TData extends MRT_RowData> {
   table: MRT_TableInstance<TData>;
@@ -24,8 +25,9 @@ export default function CirculationForm<TData extends MRT_RowData>({
 }: CirculationFormProps<TData>) {
   const isCreating = table.getState().creatingRow?.id === row.id;
   const isEditing = table.getState().editingRow?.id === row.id;
-
-  const form = useForm<IBooks>({
+  const [seeRole, setSeeRole] = useState<string | null>("");
+  const [seeType, setSeeType] = useState<string | null>("");
+  const form = useForm<Partial<IBooks & IUser & Record<string, string>>>({
     defaultValues: isEditing ? row.original : {},
   });
 
@@ -33,11 +35,9 @@ export default function CirculationForm<TData extends MRT_RowData>({
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (values: Partial<IBooks>) => {
       if (isCreating) {
-        // onCreate?.({
-        //   ...values,
-        // });
-
-        console.log(values);
+        onCreate?.({
+          ...values,
+        });
       } else if (isEditing) {
         onSave?.(values);
       }
@@ -70,19 +70,24 @@ export default function CirculationForm<TData extends MRT_RowData>({
     }
   }, [form.formState.errors]);
 
+  useEffect(() => {
+    if (seeRole !== null || seeRole !== undefined) {
+      form.setValue("bookType", null);
+      setSeeType(null);
+    }
+  }, [seeRole, form]);
+
   return (
     <FormProvider {...form}>
       <Form onSubmit={form.handleSubmit(onSubmit)}>
-        <BorrowersInformationForm table={table} row={row} />
-
-        {/* <BooksToBeBorrowedDetailsForm /> */}
-
-        {/* <BookPublicationForm />
-
-        <Availability />
-
-        <BookImageForm table={table} row={row} /> */}
-
+        <Divider mt={"xs"} mb={"xs"} />
+        <BorrowersInformationForm seeRole={seeRole} setSeeRole={setSeeRole} />
+        <Divider mt={"xs"} mb={"xs"} />
+        <BooksToBeBorrowedDetailsForm
+          setSeeType={setSeeType}
+          seeType={seeType}
+        />
+        <Divider mt={"xs"} mb={"xs"} />
         <Box
           style={{
             display: "flex",
@@ -92,6 +97,7 @@ export default function CirculationForm<TData extends MRT_RowData>({
           <Form.SubmitButton
             loading={table.getState().isSaving}
             color="red.8"
+            disabled={!form.formState.isValid}
           />
         </Box>
       </Form>

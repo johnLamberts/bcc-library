@@ -2,7 +2,6 @@ import {
   Group,
   Box,
   Button,
-  Text,
   Flex,
   ActionIcon,
   Tooltip,
@@ -34,35 +33,15 @@ import {
 } from "mantine-react-table";
 import { useMemo } from "react";
 
-import classes from "@pages/styles/user.module.css";
 import StudentForm from "./CirculationForm";
 import { IBooks } from "./models/books.interface";
 import { modals } from "@mantine/modals";
-import useModifyStudentStatus from "./hooks/useModifyStudentStatus";
-import { useCreateCatalogue } from "./hooks/useCreateCatalogue";
-import useReadCatalogue from "./hooks/useReadCatalogue";
-import useModifyCatalogue from "./hooks/useModifyCatalogue";
 import CirculationForm from "./CirculationForm";
+import { useCreateBorrow } from "./hooks/useCreateBorrow";
 
 const CirculationTable = () => {
-  const { isCreatingCatalogue, createCatalogue } = useCreateCatalogue();
-
-  const {
-    data: booksCatalogueData = [],
-    isLoading: isLoadingStudent,
-    isError: isLoadingStudentError,
-    isFetching: isFetchingStudent,
-  } = useReadCatalogue();
-
-  const { modifyStudentStatus, isPending: isUpdatingStatus } =
-    useModifyStudentStatus();
-
-  const { modifyCatalogue, isPending: isUpdating } = useModifyCatalogue();
-
-  const optimizedCatalogueData = useMemo(
-    () => booksCatalogueData,
-    [booksCatalogueData]
-  );
+  const { isCreatingBorrowingTransaction, createBorrowTransaction } =
+    useCreateBorrow();
 
   const customColumns = useMemo<MRT_ColumnDef<IBooks>[]>(
     () => [
@@ -179,7 +158,7 @@ const CirculationTable = () => {
   // CREATE action
   const handleCreateLevel: MRT_TableOptions<IBooks>["onCreatingRowSave"] =
     async ({ values, table }) => {
-      await createCatalogue(values);
+      await createBorrowTransaction(values);
 
       table.setCreatingRow(null);
     };
@@ -189,12 +168,12 @@ const CirculationTable = () => {
     values,
     table,
   }) => {
-    await modifyCatalogue(values);
-    table.setEditingRow(null);
+    // await modifyCatalogue(values);
+    // table.setEditingRow(null);
   };
 
   const table = useMantineReactTable({
-    data: optimizedCatalogueData,
+    data: [],
     columns: customColumns,
     createDisplayMode: "modal",
     editDisplayMode: "modal",
@@ -221,10 +200,11 @@ const CirculationTable = () => {
       scrollAreaComponent: ScrollArea.Autosize,
     },
     state: {
-      isLoading: isLoadingStudent,
-      isSaving: isCreatingCatalogue || isUpdatingStatus || isUpdating,
-      showAlertBanner: isLoadingStudentError,
-      showProgressBars: isFetchingStudent,
+      // isLoading: isLoadingStudent,
+      // isSaving: isCreatingCatalogue || isUpdatingStatus || isUpdating,
+      isSaving: isCreatingBorrowingTransaction,
+      // showAlertBanner: isLoadingStudentError,
+      // showProgressBars: isFetchingStudent,
     },
 
     initialState: {
@@ -316,59 +296,77 @@ const CirculationTable = () => {
   return (
     <>
       <Box maw={"78vw"}>
-        <Group justify="space-between">
-          <Stack>
-            <Tabs defaultValue="gallery">
+        <Tabs defaultValue="all">
+          <Group justify="space-between">
+            <Stack>
               <Tabs.List>
                 <Tabs.Tab
-                  value="All"
+                  value="all"
                   leftSection={<IconClearAll style={iconStyle} />}
                 >
                   All
                 </Tabs.Tab>
                 <Tabs.Tab
-                  value="Request"
+                  value="request"
                   leftSection={<IconStackPush style={iconStyle} />}
                 >
                   Request
                 </Tabs.Tab>
                 <Tabs.Tab
-                  value="Checkout"
+                  value="checkout"
                   leftSection={<IconCheckupList style={iconStyle} />}
                 >
                   Checked out
                 </Tabs.Tab>
                 <Tabs.Tab
-                  value="Overdue"
+                  value="overdue"
                   leftSection={<IconDatabaseExclamation style={iconStyle} />}
                 >
                   Overdue
                 </Tabs.Tab>
                 <Tabs.Tab
-                  value="settings"
+                  value="returned"
                   leftSection={<IconArrowBackUpDouble style={iconStyle} />}
                 >
                   Returned
                 </Tabs.Tab>{" "}
               </Tabs.List>
-            </Tabs>
-          </Stack>
-          <Group>
-            <Button
-              variant="light"
-              leftSection={<IconPlus size={14} />}
-              onClick={() => table.setCreatingRow(true)}
-              bg={" var(--mantine-color-red-light)"}
-              color={" var(--mantine-color-red-light-color)"}
-            >
-              Add Borrow
-            </Button>
+            </Stack>
+            <Group>
+              <Button
+                variant="light"
+                leftSection={<IconPlus size={14} />}
+                onClick={() => table.setCreatingRow(true)}
+                bg={" var(--mantine-color-red-light)"}
+                color={" var(--mantine-color-red-light-color)"}
+              >
+                Add Borrow
+              </Button>
+            </Group>
           </Group>
-        </Group>
 
-        <Box mt={"lg"}>
-          <MantineReactTable table={table} />
-        </Box>
+          <Tabs.Panel value="all">
+            <Box mt={"lg"}>
+              <MantineReactTable table={table} />
+            </Box>
+          </Tabs.Panel>
+
+          <Tabs.Panel value="request">
+            <Box mt={"lg"}>Request</Box>
+          </Tabs.Panel>
+
+          <Tabs.Panel value="checkout">
+            <Box mt={"lg"}>Checkout</Box>
+          </Tabs.Panel>
+
+          <Tabs.Panel value="overdue">
+            <Box mt={"lg"}>Overdue</Box>
+          </Tabs.Panel>
+
+          <Tabs.Panel value="returned">
+            <Box mt={"lg"}>Returned</Box>
+          </Tabs.Panel>
+        </Tabs>
       </Box>
     </>
   );
