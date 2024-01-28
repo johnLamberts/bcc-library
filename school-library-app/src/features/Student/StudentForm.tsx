@@ -38,8 +38,6 @@ export default function StudentForm<TData extends MRT_RowData>({
     (doc: DocumentData) => doc.studentEntry
   );
 
-  console.log(studentEntryLatest);
-
   const onSubmit = useCallback(
     (values: Partial<IStudents>) => {
       if (isCreating) {

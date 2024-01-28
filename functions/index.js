@@ -62,16 +62,12 @@ exports.taskRunner = functions
     return await testData.then((data) => {
       return data.docs.forEach(async (doc) => {
         const snapshot = doc.data();
-        const { status, expiryTime } = snapshot;
+        const { expiryTime } = snapshot;
 
         const timeNow = admin.firestore.Timestamp.now().toMillis();
         if (expiryTime < timeNow) {
-          doc.ref.update({ status: "overdue na si ma'am" });
-        } else {
-          doc.ref.update({ status: "active" });
-        }
+          doc.ref.update({ borrowStatus: "overdue na si ma'am" });
 
-        if (status === "overdue na si ma'am") {
           await admin
             .firestore()
             .collection("books-overdue")
@@ -81,6 +77,8 @@ exports.taskRunner = functions
             });
 
           await admin.firestore().doc(`availability/${doc.id}`).delete();
+        } else {
+          doc.ref.update({ borrowStatus: "active" });
         }
       });
     });

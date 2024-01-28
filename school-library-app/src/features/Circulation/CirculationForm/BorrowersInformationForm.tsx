@@ -1,41 +1,38 @@
 import Form from "@components/Form/Form";
 import useReadStudents from "@features/Student/hooks/useReadStudents";
-import useReadUserRole from "@features/SysSettings/UserRole/hooks/useReadUserRole";
 import useReadTeachers from "@features/Teachers/hooks/useReadTeacher";
-import { Select, TextInput } from "@mantine/core";
+import { Select, TextInput, rem } from "@mantine/core";
+import { IconEye } from "@tabler/icons-react";
 
 import { MRT_Row, MRT_RowData, MRT_TableInstance } from "mantine-react-table";
-import { useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useEffect } from "react";
 import { Controller, useFormContext } from "react-hook-form";
 
 interface BookInformationProps<TData extends MRT_RowData> {
   table?: MRT_TableInstance<TData>;
   row?: MRT_Row<TData>;
+  seeRole: string | null;
+  setSeeRole: Dispatch<SetStateAction<string | null>>;
 }
 
 const BorrowersInformationForm = <TData extends MRT_RowData>({
-  table,
-  row,
+  seeRole,
+  setSeeRole,
 }: BookInformationProps<TData>) => {
   const {
     control,
     formState: { errors },
     setValue,
     register,
+    getValues,
     watch,
   } = useFormContext();
 
-  const { data: userRoleData = [], isLoading: isUserRoleLoading } =
-    useReadUserRole();
-
   // student or teacher's data
-
   const { data: teacherData = [], isLoading: isTeacherLoading } =
     useReadTeachers();
   const { data: studentData = [], isLoading: isStudentLoading } =
     useReadStudents();
-
-  const [seeRole, setSeeRole] = useState<string | null>("");
 
   const filteredBorrowersName =
     seeRole === "Teacher"
@@ -61,22 +58,60 @@ const BorrowersInformationForm = <TData extends MRT_RowData>({
             watch("borrowersName")
         );
 
-  useEffect(() => {
-    if (
-      !studentData.some((student) => student.userRole === seeRole) ||
-      !teacherData.some((teacher) => teacher.userRole === seeRole)
-    ) {
-      setValue("borrowersName", null);
-    }
+  const filteredNumberInfo =
+    seeRole === "Teacher"
+      ? teacherData
+          .filter(
+            (teacher) =>
+              `${teacher.firstName} ${teacher.middleName} ${teacher.lastName}` ===
+              watch("borrowersName")
+          )
+          .map((user) => user.teacherNumber)[0]
+      : studentData
+          .filter(
+            (student) =>
+              `${student.firstName} ${student.middleName} ${student.lastName}` ===
+              watch("borrowersName")
+          )
+          .map((user) => user.studentNumber)[0];
 
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(() => {
+    // if() {
+
+    // }
+    if (filteredOtherInfo.length > 0) {
+      setValue("borrowersId", filteredOtherInfo[0]?.userUID);
+      setValue("borrowersNumber", filteredNumberInfo);
+      setValue("borrowersEmail", filteredOtherInfo[0]?.email);
+    }
   }, [
-    filteredBorrowersName.length,
+    filteredOtherInfo,
+    getValues,
+    watch,
     setValue,
     seeRole,
     studentData,
     teacherData,
+    filteredNumberInfo,
   ]);
+
+  useEffect(() => {
+    if (
+      teacherData.some((teacher) => teacher.userRole !== seeRole) &&
+      studentData.some((student) => student.userRole !== seeRole) &&
+      seeRole !== null
+    ) {
+      setValue("borrowersName", null);
+      setValue("borrowersId", null);
+      setValue("borrowersNumber", null);
+      setValue("borrowersEmail", null);
+    } else if (seeRole === undefined || seeRole === null) {
+      setValue("borrowersName", null);
+      setValue("borrowersId", null);
+      setValue("borrowersNumber", null);
+      setValue("borrowersEmail", null);
+    }
+  }, [setValue, getValues, teacherData, studentData, seeRole]);
 
   return (
     <>
@@ -102,7 +137,7 @@ const BorrowersInformationForm = <TData extends MRT_RowData>({
                     withErrorStyles={errors.userRole?.message ? true : false}
                     {...field}
                     error={<>{errors.userRole?.message}</>}
-                    disabled={isUserRoleLoading}
+                    disabled={isStudentLoading || isTeacherLoading}
                     onChange={(e) => {
                       onChange(e);
                       setSeeRole(e);
@@ -127,6 +162,7 @@ const BorrowersInformationForm = <TData extends MRT_RowData>({
                     label={`Borrower's name`}
                     placeholder={`Select borrower's name`}
                     data={filteredBorrowersName}
+                    description="Editable"
                     comboboxProps={{
                       transitionProps: { transition: "pop", duration: 200 },
                     }}
@@ -134,7 +170,8 @@ const BorrowersInformationForm = <TData extends MRT_RowData>({
                     {...field}
                     error={<>{errors.userRole?.message}</>}
                     disabled={
-                      isUserRoleLoading ||
+                      isStudentLoading ||
+                      isTeacherLoading ||
                       seeRole === undefined ||
                       seeRole === "" ||
                       seeRole === null
@@ -147,22 +184,19 @@ const BorrowersInformationForm = <TData extends MRT_RowData>({
           </Form.Col>
 
           <Form.Col span={{ base: 12, md: 6, lg: 6 }}>
-            <Controller
-              name="borrowersId"
-              control={control}
-              render={({ field: { value, ...field } }) => {
-                return (
-                  <TextInput
-                    placeholder="Borrower's ID"
-                    label={"Borrower's ID"}
-                    value={
-                      value && filteredOtherInfo.map((user) => user.userUID)[0]
-                    }
-                    {...field}
-                    disabled
-                  />
-                );
-              }}
+            <TextInput
+              placeholder="Borrower's ID"
+              label={"Borrower's ID"}
+              {...register("borrowersId")}
+              disabled={
+                watch("borrowersName") === null ||
+                watch("borrowersName") === undefined
+              }
+              readOnly
+              rightSection={
+                <IconEye style={{ width: rem(16), height: rem(16) }} />
+              }
+              description={"Readonly"}
             />
           </Form.Col>
 
@@ -171,7 +205,15 @@ const BorrowersInformationForm = <TData extends MRT_RowData>({
               placeholder="Borrower's Number"
               label={"Borrower's Number"}
               {...register("borrowersNumber")}
-              disabled
+              disabled={
+                watch("borrowersName") === null ||
+                watch("borrowersName") === undefined
+              }
+              readOnly
+              rightSection={
+                <IconEye style={{ width: rem(16), height: rem(16) }} />
+              }
+              description={"Readonly"}
             />
           </Form.Col>
 
@@ -180,7 +222,15 @@ const BorrowersInformationForm = <TData extends MRT_RowData>({
               placeholder="Borrower's Email"
               label={"Borrower's Email"}
               {...register("borrowersEmail")}
-              disabled
+              disabled={
+                watch("borrowersName") === null ||
+                watch("borrowersName") === undefined
+              }
+              readOnly
+              rightSection={
+                <IconEye style={{ width: rem(16), height: rem(16) }} />
+              }
+              description={"Readonly"}
             />
           </Form.Col>
         </Form.Grid>

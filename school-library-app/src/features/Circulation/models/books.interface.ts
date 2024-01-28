@@ -1,7 +1,7 @@
 export interface IBooks {
   id?: string;
-  bookType: string;
-  title: string;
+  bookType: string | null;
+  title: string | null;
   genres: string[];
   authors: string[];
   bookISBN: string;
@@ -19,4 +19,6 @@ export interface IBooks {
 
   bookImageCover: string | File | null;
   bookFile: File | string | null;
+
+  numberOfBooksAvailable_QUANTITY?: number;
 }
