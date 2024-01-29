@@ -31,13 +31,14 @@ import {
   MantineReactTable,
   useMantineReactTable,
 } from "mantine-react-table";
-import { useMemo } from "react";
+import { Suspense, useMemo } from "react";
 
 import StudentForm from "./CirculationForm";
 import { IBooks } from "./models/books.interface";
 import { modals } from "@mantine/modals";
 import CirculationForm from "./CirculationForm";
 import { useCreateBorrow } from "./hooks/useCreateBorrow";
+import OverdueTable from "./TransactionTable/OverdueTable";
 
 const CirculationTable = () => {
   const { isCreatingBorrowingTransaction, createBorrowTransaction } =
@@ -360,7 +361,11 @@ const CirculationTable = () => {
           </Tabs.Panel>
 
           <Tabs.Panel value="overdue">
-            <Box mt={"lg"}>Overdue</Box>
+            <Box mt={"lg"}>
+              <Suspense fallback="Loading Overdue">
+                <OverdueTable />
+              </Suspense>
+            </Box>
           </Tabs.Panel>
 
           <Tabs.Panel value="returned">
