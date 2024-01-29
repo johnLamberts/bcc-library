@@ -73,6 +73,7 @@ exports.taskRunner = functions
             .collection("books-overdue")
             .add({
               ...doc.data(),
+              borrowStatus: "overdue na si ma'am",
               createdAt: admin.firestore.Timestamp.now(),
             });
 
