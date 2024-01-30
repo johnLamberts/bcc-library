@@ -1,9 +1,14 @@
 import {
   addDoc,
   collection,
+  deleteDoc,
   doc,
+  getDocs,
+  query,
   serverTimestamp,
+  setDoc,
   updateDoc,
+  where,
 } from "firebase/firestore";
 import { ICirculation } from "../models/circulation.interface";
 import { firestore } from "src/shared/firebase/firebase";
@@ -14,7 +19,8 @@ const addBorrowCirculation = async (borrow: ICirculation) => {
     collection(firestore, FIRESTORE_COLLECTION_QUERY_KEY.BORROW_TRANSACTION),
     {
       ...borrow,
-      borrowStatus: "Check out",
+      borrowStatus: "Active",
+      returnStatus: "Due",
       createdAt: serverTimestamp(),
     }
   );
@@ -31,11 +37,13 @@ const addBorrowCirculation = async (borrow: ICirculation) => {
       bookTitle: borrow.bookTitle,
       bookISBN: borrow.bookISBN,
       borrowers: borrow.borrowers,
+      bookType: borrow.bookType,
       borrowersId: borrow.borrowersId,
       borrowersEmail: borrow.borrowersEmail,
       borrowersName: borrow.borrowersName,
       borrowersNumber: borrow.borrowersNumber,
-      borrowStatus: "active",
+      returnStatus: "Due",
+      borrowStatus: "Active",
     }
   );
 
@@ -43,16 +51,18 @@ const addBorrowCirculation = async (borrow: ICirculation) => {
     collection(firestore, FIRESTORE_COLLECTION_QUERY_KEY.ALL_BOOKS_TRANSACTION),
     {
       booksBorrowedId: borrowRef.id,
-      expiryTime: borrow.timeDuration + new Date().getTime(),
+      expiryTime: borrow.timeDuration! + new Date().getTime(),
       booksId: borrow.booksId,
       bookTitle: borrow.bookTitle,
       bookISBN: borrow.bookISBN,
       borrowers: borrow.borrowers,
       borrowersId: borrow.borrowersId,
+      bookType: borrow.bookType,
       borrowersEmail: borrow.borrowersEmail,
       borrowersName: borrow.borrowersName,
       borrowersNumber: borrow.borrowersNumber,
-      borrowStatus: "Check out",
+      returnStatus: "Due",
+      borrowStatus: "Active",
       createdAt: serverTimestamp(),
     }
   );
@@ -66,4 +76,75 @@ const addBorrowCirculation = async (borrow: ICirculation) => {
   );
 };
 
-export { addBorrowCirculation };
+const returnCirculation = async (returnBook: Partial<ICirculation>) => {
+  const transactionRef = await getDocs(
+    query(
+      collection(
+        firestore,
+        FIRESTORE_COLLECTION_QUERY_KEY.ALL_BOOKS_TRANSACTION
+      ),
+      where("booksBorrowedId", "==", returnBook.booksBorrowedId)
+    )
+  );
+
+  console.log("returnBook", returnBook);
+
+  transactionRef.docs.map(
+    async (docId) =>
+      await setDoc(
+        doc(
+          firestore,
+          FIRESTORE_COLLECTION_QUERY_KEY.ALL_BOOKS_TRANSACTION,
+          docId.id
+        ),
+        {
+          ...returnBook,
+          returnStatus: "Returned",
+          createdAt: serverTimestamp(),
+        }
+      )
+  );
+  // await addDoc(
+  //   collection(firestore, FIRESTORE_COLLECTION_QUERY_KEY.ALL_BOOKS_TRANSACTION),
+  //   {
+  //     expiryTime: returnBook.timeDuration! + new Date().getTime(),
+  //     booksId: returnBook.booksId,
+  //     bookTitle: returnBook.bookTitle,
+  //     bookISBN: returnBook.bookISBN,
+  //     borrowers: returnBook.borrowers,
+  //     borrowersId: returnBook.borrowersId,
+  //     bookType: returnBook.bookType,
+  //     borrowersEmail: returnBook.borrowersEmail,
+  //     borrowersName: returnBook.borrowersName,
+  //     borrowersNumber: returnBook.borrowersNumber,
+  //     returnCondition: returnBook.returnCondition,
+  //     returnStatus: "Returned",
+  //     fee: returnBook.fee,
+  //     createdAt: serverTimestamp(),
+  //   }
+  // );
+
+  await deleteDoc(
+    doc(
+      firestore,
+      FIRESTORE_COLLECTION_QUERY_KEY.BORROW_TRANSACTION,
+      returnBook.booksBorrowedId as string
+    )
+  );
+
+  const overdueRef = await getDocs(
+    query(
+      collection(firestore, FIRESTORE_COLLECTION_QUERY_KEY.BOOKS_OVERDUE),
+      where("booksBorrowedId", "==", returnBook.booksBorrowedId)
+    )
+  );
+
+  overdueRef.docs.map(
+    async (docId) =>
+      await deleteDoc(
+        doc(firestore, FIRESTORE_COLLECTION_QUERY_KEY.BOOKS_OVERDUE, docId.id)
+      )
+  );
+};
+
+export { addBorrowCirculation, returnCirculation };

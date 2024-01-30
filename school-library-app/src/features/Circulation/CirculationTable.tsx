@@ -39,12 +39,13 @@ import { modals } from "@mantine/modals";
 import CirculationForm from "./CirculationForm";
 import { useCreateBorrow } from "./hooks/useCreateBorrow";
 import OverdueTable from "./TransactionTable/OverdueTable";
+import { ICirculation } from "./models/circulation.interface";
 
 const CirculationTable = () => {
   const { isCreatingBorrowingTransaction, createBorrowTransaction } =
     useCreateBorrow();
 
-  const customColumns = useMemo<MRT_ColumnDef<IBooks>[]>(
+  const customColumns = useMemo<MRT_ColumnDef<ICirculation>[]>(
     () => [
       {
         accessorKey: "id",
@@ -52,6 +53,7 @@ const CirculationTable = () => {
         enableEditing: false,
         size: 80,
       },
+
       {
         accessorKey: "bookImageCover",
         header: "Book Picture",
@@ -82,10 +84,6 @@ const CirculationTable = () => {
         header: "Book ISBN",
       },
 
-      // {
-      //   accessorKey: "lastName",
-      //   header: "Last Name",
-      // },
       // {
       //   accessorKey: "email",
       //   header: "Email",
@@ -127,7 +125,7 @@ const CirculationTable = () => {
 
   // STATUS action
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const openUpdateStatusConfirmModal = (row: MRT_Row<IBooks>) =>
+  const openUpdateStatusConfirmModal = (row: MRT_Row<ICirculation>) =>
     modals.openConfirmModal({
       // title: (
       //   <Text>
@@ -157,7 +155,7 @@ const CirculationTable = () => {
     });
 
   // CREATE action
-  const handleCreateLevel: MRT_TableOptions<IBooks>["onCreatingRowSave"] =
+  const handleCreateLevel: MRT_TableOptions<ICirculation>["onCreatingRowSave"] =
     async ({ values, table }) => {
       await createBorrowTransaction(values);
 
@@ -165,13 +163,11 @@ const CirculationTable = () => {
     };
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const handleSaveLevel: MRT_TableOptions<IBooks>["onEditingRowSave"] = async ({
-    values,
-    table,
-  }) => {
-    // await modifyCatalogue(values);
-    // table.setEditingRow(null);
-  };
+  const handleSaveLevel: MRT_TableOptions<ICirculation>["onEditingRowSave"] =
+    async ({ values, table }) => {
+      // await modifyCatalogue(values);
+      // table.setEditingRow(null);
+    };
 
   const table = useMantineReactTable({
     data: [],

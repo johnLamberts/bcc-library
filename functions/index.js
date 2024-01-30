@@ -66,20 +66,40 @@ exports.taskRunner = functions
 
         const timeNow = admin.firestore.Timestamp.now().toMillis();
         if (expiryTime < timeNow) {
-          doc.ref.update({ borrowStatus: "overdue na si ma'am" });
+          doc.ref.update({ borrowStatus: "Overdue" });
+
+          const booksTransactionRef = await admin
+            .firestore()
+            .collection("books-transaction")
+            .where("booksBorrowedId", "==", doc.data().booksBorrowedId)
+            .get();
+
+          booksTransactionRef.docs.map(async (doc) =>
+            admin.firestore().doc(`books-transaction/${doc.id}`).update({
+              borrowStatus: "Overdue",
+              modifiedAt: admin.firestore.Timestamp.now(),
+            })
+          );
 
           await admin
             .firestore()
             .collection("books-overdue")
             .add({
               ...doc.data(),
-              borrowStatus: "overdue na si ma'am",
+              borrowStatus: "Overdue",
               createdAt: admin.firestore.Timestamp.now(),
             });
 
+          await admin
+            .firestore()
+            .doc(`books-borrowed/${doc.data().booksBorrowedId}`)
+            .update({
+              borrowStatus: "Overdue",
+              modifiedAt: admin.firestore.Timestamp.now(),
+            });
           await admin.firestore().doc(`availability/${doc.id}`).delete();
         } else {
-          doc.ref.update({ borrowStatus: "active" });
+          doc.ref.update({ borrowStatus: "Active" });
         }
       });
     });

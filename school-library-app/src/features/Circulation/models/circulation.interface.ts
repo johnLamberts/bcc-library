@@ -5,6 +5,7 @@ import { IBooks } from "@features/Catalogue/models/books.interface";
 export type TCirculation = Partial<IBooks & ITeacher & IStudents>;
 
 export interface ICirculation {
+  id?: string;
   bookISBN: string;
 
   bookLocation: string;
@@ -36,4 +37,10 @@ export interface ICirculation {
   expiryTime: number;
 
   createdAt: number;
+
+  borrowStatus?: string;
+
+  totalFee?: number;
+  returnCondition?: string;
+  booksBorrowedId?: string;
 }

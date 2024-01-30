@@ -17,6 +17,7 @@ export enum FIRESTORE_COLLECTION_QUERY_KEY {
   TEACHER_ENTRY = "teachers-entry",
 
   BORROW_TRANSACTION = "books-borrowed",
+  RETURNED_TRANSACTION = "books-returned",
   ALL_BOOKS_TRANSACTION = "books-transaction",
 
   BOOKS_OVERDUE = "books-overdue",

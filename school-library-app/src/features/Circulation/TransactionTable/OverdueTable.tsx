@@ -1,14 +1,15 @@
 import {
   ActionIcon,
-  Avatar,
   Badge,
   Flex,
   ScrollArea,
+  Stack,
+  Text,
   Tooltip,
 } from "@mantine/core";
-import { modals } from "@mantine/modals";
 import {
   MRT_ColumnDef,
+  MRT_Row,
   MRT_ShowHideColumnsButton,
   MRT_TableOptions,
   MRT_ToggleDensePaddingButton,
@@ -20,11 +21,16 @@ import { useMemo } from "react";
 import { IconDoorExit } from "@tabler/icons-react";
 import useReadOverdue from "../hooks/useReadOverdues";
 import { ICirculation } from "../models/circulation.interface";
-import { Cell } from "recharts";
+import { modals } from "@mantine/modals";
+import { toast } from "sonner";
+import BooksReturnForm from "../BooksReturnForm";
+import { useReturnCirculation } from "../hooks/useReturnCirculation";
 
 const OverdueTable = () => {
   const { data: overdues = [], isLoading: isOverdueLoading } = useReadOverdue();
 
+  const { isReturningTransaction, createReturnTransaction } =
+    useReturnCirculation();
   const customColumns = useMemo<MRT_ColumnDef<ICirculation>[]>(
     () => [
       {
@@ -32,6 +38,10 @@ const OverdueTable = () => {
         header: "Id",
         enableEditing: false,
         size: 80,
+      },
+      {
+        accessorKey: "bookType",
+        header: "Book",
       },
       {
         accessorKey: "bookTitle",
@@ -73,43 +83,34 @@ const OverdueTable = () => {
   );
 
   // STATUS action
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  //   const openUpdateStatusConfirmModal = (row: MRT_Row<ICirculation>) =>
-  //     modals.openConfirmModal({
-  //       // title: (
-  //       //   <Text>
-  //       //     Are you sure you want to{" "}
-  //       //     <b>{!row.original.isEnabled ? "enabled" : "disabled"}</b> this
-  //       //     student?
-  //       //   </Text>
-  //       // ),
-  //       // children: (
-  //       //   <Text>
-  //       //     Are you sure you want to delete{" "}
-  //       //     <b>
-  //       //       {row.original.studentNumber}: {row.original.email}
-  //       //     </b>
-  //       //     ? This action cannot be undone.
-  //       //   </Text>
-  //       // ),
-  //       // labels: {
-  //       //   confirm: `${!row.original.isEnabled ? "Enabled" : "Disabled"}`,
-  //       //   cancel: "Cancel",
-  //       // },
-  //       // confirmProps: { color: "red" },
-  //       // onConfirm: () => {
-  //       //   // modifyUserStatus(row.original);
-  //       //   modifyStudentStatus(row.original);
-  //       // },
-  //     });
+  const openUpdateStatusConfirmModal = (row: MRT_Row<ICirculation>) =>
+    modals.openConfirmModal({
+      centered: true,
+      size: "xl",
+
+      title: (
+        <Text>
+          Are you sure <b>{row.original.borrowersName}</b> wants to return{" "}
+          <b>{row.original.bookTitle}</b>
+        </Text>
+      ),
+      children: <>form</>,
+      labels: {
+        confirm: `Confirm`,
+        cancel: "Cancel",
+      },
+      confirmProps: { color: "red" },
+      onConfirm: () => {},
+      onCancel: () => toast.warning("You cancel the dialog form."),
+    });
 
   // CREATE action
-  const handleCreateLevel: MRT_TableOptions<ICirculation>["onCreatingRowSave"] =
+  const handleSaveLevel: MRT_TableOptions<ICirculation>["onEditingRowSave"] =
     async ({ values, table }) => {
-      // await createBorrowTransaction(values);
-      // table.setCreatingRow(null);
+      // await modifyCatalogue(values);
+      await createReturnTransaction(values);
+      table.setEditingRow(null);
     };
-
   const table = useMantineReactTable({
     data: overdues,
     columns: customColumns,
@@ -118,29 +119,23 @@ const OverdueTable = () => {
     enableRowActions: true,
     enableEditing: true,
     positionActionsColumn: "last",
-    onCreatingRowSave: handleCreateLevel,
-    //     onEditingRowSave: handleSaveLevel,
     mantineTableContainerProps: {
       style: {},
-    },
-    mantineCreateRowModalProps: {
-      centered: true,
-      size: "xl",
-      title: "Borrowing Form",
-      scrollAreaComponent: ScrollArea.Autosize,
-    },
-    mantineEditRowModalProps: {
-      centered: true,
-      size: "xl",
-      title: "Editing form for Catalogue",
-      scrollAreaComponent: ScrollArea.Autosize,
     },
     state: {
       isLoading: isOverdueLoading,
       // isSaving: isCreatingCatalogue || isUpdatingStatus || isUpdating,
-      // isSaving: isCreatingBorrowingTransaction,
+      isSaving: isReturningTransaction,
       // showAlertBanner: isLoadingStudentError,
       // showProgressBars: isFetchingStudent,
+    },
+    mantineEditRowModalProps: {
+      centered: true,
+      size: "xl",
+      radius: "md",
+      shadow: "xl",
+      title: "Return Borrowed Books Form",
+      scrollAreaComponent: ScrollArea.Autosize,
     },
 
     initialState: {
@@ -161,21 +156,30 @@ const OverdueTable = () => {
               <IconDoorExit />
             </ActionIcon>
           </Tooltip>
-
-          {/* <Tooltip label="Disabled">
-            <ActionIcon
-              variant="light"
-              //   onClick={() => {
-              //     openUpdateStatusConfirmModal(row);
-              //   }}
-            >
-              <IconEyeMinus />
-            </ActionIcon>
-          </Tooltip> */}
         </Flex>
       </>
     ),
 
+    renderEditRowModalContent: ({ row, table }) => {
+      return (
+        <>
+          <Stack>
+            <BooksReturnForm
+              table={table}
+              row={row}
+              onSave={(data) =>
+                handleSaveLevel({
+                  values: data,
+                  table: table,
+                  row: row,
+                  exitEditingMode: () => null,
+                })
+              }
+            />
+          </Stack>
+        </>
+      );
+    },
     renderToolbarInternalActions: ({ table }) => {
       return (
         <Flex gap="xs" align="center">
