@@ -17,6 +17,7 @@ import BookGenre from "@pages/SystemSettings/BookGenres";
 import CatalogueManagement from "@pages/CatalogueManagement";
 import BookAuthor from "@pages/SystemSettings/BookAuthor";
 import CirculationManagement from "@pages/CirculationManagement";
+import ReturnCondition from "@pages/SystemSettings/ReturnCondition";
 
 function App() {
   // Will Refactor this after I finish the admin page with fully functionality
@@ -48,27 +49,24 @@ function App() {
               path="/catalogue-management"
               element={<CatalogueManagement />}
             />
-
             <Route
               path="/circulation-management"
               element={<CirculationManagement />}
-            />            {/* System Settings */}
-
+            />{" "}
+            {/* System Settings */}
             {/* student settings */}
             <Route path="/level-education" element={<LevelEducation />} />
             <Route path="/academic-course" element={<AcademicCourse />} />
             <Route path="/grade-level" element={<GradeLevel />} />
             <Route path="/grade-section" element={<GradeSection />} />
-
             {/* user settings */}
             <Route path="/user-role" element={<UserRole />} />
-
             {/* Catalogue Settings */}
             <Route path="/book-type" element={<BookType />} />
             <Route path="/category-section" element={<CategorySection />} />
             <Route path="/book-genre" element={<BookGenre />} />
             <Route path="/book-author" element={<BookAuthor />} />
-
+            <Route path="/return-condition" element={<ReturnCondition />} />
             {/* reports */}
             <Route path="/user-report" element={<UserReport />} />
           </Route>

@@ -29,15 +29,6 @@ export type TLevelEducation = {
   levelOfEducation: string;
 };
 
-// function validateLevels(level: TLevelEducation[], userInput: string) {
-//   console.log(!hasDuplicates(level, userInput));
-//   return {
-//     levelOfEducation: !hasDuplicates(level, { levelOfEducation })
-//       ? "Please put another values"
-//       : "",
-//   };
-// }
-
 const LevelEducation = () => {
   const { createLevelOfEducation, isPending: isCreating } =
     useCreateEducation();

@@ -9,6 +9,7 @@ import {
   IconSchool,
   IconUserBolt,
   IconTheater,
+  IconMoneybag,
 } from "@tabler/icons-react";
 import classes from "./Navbar.module.css";
 import { Link, useLocation } from "react-router-dom";
@@ -66,6 +67,11 @@ const systemSettings = [
     path: "/book-type",
     label: "Book Type",
     icon: IconBook,
+  },
+  {
+    path: "/return-condition",
+    label: "Return Condition and Fee",
+    icon: IconMoneybag,
   },
   {
     path: "/user-role",
