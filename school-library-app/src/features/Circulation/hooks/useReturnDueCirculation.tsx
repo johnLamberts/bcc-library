@@ -1,25 +1,25 @@
 import { useQueryClient, useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { FIRESTORE_COLLECTION_QUERY_KEY } from "src/shared/enums";
-import { returnOverdueCirculation } from "../service/circulation.service";
+import { returnDueCirculation } from "../service/circulation.service";
 
-export function useReturnOverdueCirculation() {
+export function useReturnDueCirculation() {
   const queryClient = useQueryClient();
   const {
-    isPending: isReturningTransaction,
-    mutateAsync: createReturnOverdueTransaction,
+    isPending: isReturningDueTransaction,
+    mutateAsync: createReturnDueTransaction,
   } = useMutation({
-    mutationFn: returnOverdueCirculation,
+    mutationFn: returnDueCirculation,
     onSuccess: (_newArr, data) => {
       toast.success(
         `Success! You have successfully returned the books entitled: ${data.bookTitle} that you've borrwed `
       );
       queryClient.invalidateQueries({
-        queryKey: [FIRESTORE_COLLECTION_QUERY_KEY.ALL_BOOKS_TRANSACTION],
+        queryKey: [FIRESTORE_COLLECTION_QUERY_KEY.BORROW_TRANSACTION],
       });
     },
     onError: (err) => toast.error(err.message),
   });
 
-  return { isReturningTransaction, createReturnOverdueTransaction };
+  return { isReturningDueTransaction, createReturnDueTransaction };
 }

@@ -69,7 +69,6 @@ export default function CatalogueForm<TData extends MRT_RowData>({
     [onCreate, isCreating, isEditing, onSave]
   );
 
-
   useEffect(() => {
     if (form.formState.errors) {
       const elements = Object.keys(form.formState.errors)
@@ -98,13 +97,13 @@ export default function CatalogueForm<TData extends MRT_RowData>({
   return (
     <FormProvider {...form}>
       <Form onSubmit={form.handleSubmit(onSubmit)}>
-     <BookInformationForm table={table} row={row} />
+        <BookInformationForm table={table} row={row} />
 
-        <BookLocationAndDetailsForm  />
+        <BookLocationAndDetailsForm />
 
         <BookPublicationForm />
 
-        <Availability /> 
+        <Availability />
 
         <BookImageForm table={table} row={row} />
 

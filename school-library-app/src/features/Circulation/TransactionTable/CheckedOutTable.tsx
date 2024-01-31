@@ -17,16 +17,17 @@ import {
 } from "mantine-react-table";
 import { useMemo } from "react";
 import { IconDoorExit } from "@tabler/icons-react";
-import useReadOverdue from "../hooks/useReadOverdues";
 import { ICirculation } from "../models/circulation.interface";
 import BooksReturnForm from "../BooksReturnForm";
-import { useReturnOverdueCirculation } from "../hooks/useReturnCirculation";
+import useReadActiveDue from "../hooks/useReadActiveDue";
+import { useReturnDueCirculation } from "../hooks/useReturnDueCirculation";
 
-const OverdueTable = () => {
-  const { data: overdues = [], isLoading: isOverdueLoading } = useReadOverdue();
+const CheckedOutTable = () => {
+  const { data: activeDues = [], isLoading: isOActiveDueLoading } =
+    useReadActiveDue();
 
-  const { isReturningTransaction, createReturnOverdueTransaction } =
-    useReturnOverdueCirculation();
+  const { isReturningDueTransaction, createReturnDueTransaction } =
+    useReturnDueCirculation();
   const customColumns = useMemo<MRT_ColumnDef<ICirculation>[]>(
     () => [
       {
@@ -78,15 +79,18 @@ const OverdueTable = () => {
     []
   );
 
+  // STATUS action
+
   // CREATE action
   const handleSaveLevel: MRT_TableOptions<ICirculation>["onEditingRowSave"] =
     async ({ values, table }) => {
       // await modifyCatalogue(values);
-      await createReturnOverdueTransaction(values);
+      // await createReturnTransaction(values);
+      await createReturnDueTransaction(values);
       table.setEditingRow(null);
     };
   const table = useMantineReactTable({
-    data: overdues,
+    data: activeDues,
     columns: customColumns,
     createDisplayMode: "modal",
     editDisplayMode: "modal",
@@ -97,8 +101,11 @@ const OverdueTable = () => {
       style: {},
     },
     state: {
-      isLoading: isOverdueLoading,
-      isSaving: isReturningTransaction,
+      isLoading: isOActiveDueLoading,
+      // isSaving: isCreatingCatalogue || isUpdatingStatus || isUpdating,
+      isSaving: isReturningDueTransaction,
+      // showAlertBanner: isLoadingStudentError,
+      // showProgressBars: isFetchingStudent,
     },
     mantineEditRowModalProps: {
       centered: true,
@@ -164,4 +171,4 @@ const OverdueTable = () => {
 
   return <MantineReactTable table={table} />;
 };
-export default OverdueTable;
+export default CheckedOutTable;

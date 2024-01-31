@@ -18,6 +18,8 @@ import {
 } from "@tabler/icons-react";
 import StudentTable from "@features/Student/StudentTable";
 import { useSearchParams } from "react-router-dom";
+import useReadStudents from "@features/Student/hooks/useReadStudents";
+import { IStudents } from "@features/Student/models/student.interface";
 
 const userData = [
   {
@@ -48,8 +50,10 @@ export default function StudentManagement() {
 
   const [getId, setGetId] = useState("");
 
-  const filterUserData = userData.filter(
-    (user) => user.id === Number(getId)
+  const { data: studentData, isLoading } = useReadStudents();
+
+  const filterUserData = studentData?.filter(
+    (user: IStudents) => user.id === getId
   )[0];
 
   const memoizedCards = useMemo(() => {
@@ -58,10 +62,10 @@ export default function StudentManagement() {
         <Box my={"xl"}>
           {/* gutter={{ base: 12, xs: "md", md: "lg", xl: 5 }} */}
           <Grid>
-            {userData.map((user, index) => (
+            {isLoading && <>Loading...</>}
+            {studentData?.map((user, index) => (
               <UsersBox
                 key={index}
-                index={index}
                 user={user}
                 filterUserData={filterUserData}
                 setGetId={setGetId}
@@ -71,7 +75,7 @@ export default function StudentManagement() {
         </Box>
       )
     );
-  }, [filterUserData, searchParams]);
+  }, [studentData, isLoading, searchParams, filterUserData]);
 
   return (
     <>

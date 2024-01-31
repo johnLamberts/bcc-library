@@ -48,14 +48,13 @@ function ReturnConditionForm<TData extends MRT_RowData>({
         setDisabledBtn(false);
         return;
       }
-
+      const sanitizeData = {
+        ...data,
+        fee: data.fee === undefined || String(data.fee) === "" ? 0 : data.fee,
+      };
       if (isEditing) {
-        onSave?.(data);
+        onSave?.(sanitizeData);
       } else if (isCreating) {
-        const sanitizeData = {
-          ...data,
-          fee: data.fee === undefined || String(data.fee) === "" ? 0 : data.fee,
-        };
         onCreate?.(sanitizeData);
       }
 

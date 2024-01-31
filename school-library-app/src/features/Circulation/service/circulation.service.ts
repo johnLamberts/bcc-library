@@ -20,6 +20,7 @@ const addBorrowCirculation = async (borrow: ICirculation) => {
     {
       ...borrow,
       borrowStatus: "Active",
+      expiryTime: borrow.timeDuration! + new Date().getTime(),
       returnStatus: "Due",
       createdAt: serverTimestamp(),
     }
@@ -76,7 +77,7 @@ const addBorrowCirculation = async (borrow: ICirculation) => {
   );
 };
 
-const returnCirculation = async (returnBook: Partial<ICirculation>) => {
+const returnOverdueCirculation = async (returnBook: Partial<ICirculation>) => {
   const transactionRef = await getDocs(
     query(
       collection(
@@ -86,8 +87,6 @@ const returnCirculation = async (returnBook: Partial<ICirculation>) => {
       where("booksBorrowedId", "==", returnBook.booksBorrowedId)
     )
   );
-
-  console.log("returnBook", returnBook);
 
   transactionRef.docs.map(
     async (docId) =>
@@ -104,26 +103,6 @@ const returnCirculation = async (returnBook: Partial<ICirculation>) => {
         }
       )
   );
-  // await addDoc(
-  //   collection(firestore, FIRESTORE_COLLECTION_QUERY_KEY.ALL_BOOKS_TRANSACTION),
-  //   {
-  //     expiryTime: returnBook.timeDuration! + new Date().getTime(),
-  //     booksId: returnBook.booksId,
-  //     bookTitle: returnBook.bookTitle,
-  //     bookISBN: returnBook.bookISBN,
-  //     borrowers: returnBook.borrowers,
-  //     borrowersId: returnBook.borrowersId,
-  //     bookType: returnBook.bookType,
-  //     borrowersEmail: returnBook.borrowersEmail,
-  //     borrowersName: returnBook.borrowersName,
-  //     borrowersNumber: returnBook.borrowersNumber,
-  //     returnCondition: returnBook.returnCondition,
-  //     returnStatus: "Returned",
-  //     fee: returnBook.fee,
-  //     createdAt: serverTimestamp(),
-  //   }
-  // );
-
   await deleteDoc(
     doc(
       firestore,
@@ -147,4 +126,56 @@ const returnCirculation = async (returnBook: Partial<ICirculation>) => {
   );
 };
 
-export { addBorrowCirculation, returnCirculation };
+const returnDueCirculation = async (returnBook: Partial<ICirculation>) => {
+  await deleteDoc(
+    doc(
+      firestore,
+      FIRESTORE_COLLECTION_QUERY_KEY.BORROW_TRANSACTION,
+      returnBook.id as string
+    )
+  );
+
+  const transactionRef = await getDocs(
+    query(
+      collection(
+        firestore,
+        FIRESTORE_COLLECTION_QUERY_KEY.ALL_BOOKS_TRANSACTION
+      ),
+      where("booksBorrowedId", "==", returnBook.id as string)
+    )
+  );
+
+  transactionRef.docs.map(async (docId) =>
+    setDoc(
+      doc(
+        firestore,
+        FIRESTORE_COLLECTION_QUERY_KEY.ALL_BOOKS_TRANSACTION,
+        docId.id
+      ),
+      { ...returnBook, returnStatus: "Returned", createdAt: serverTimestamp() }
+    )
+  );
+
+  const availabilityRef = await getDocs(
+    query(
+      collection(
+        firestore,
+        FIRESTORE_COLLECTION_QUERY_KEY.AVAILABILITY_TRANSACTION
+      ),
+      where("booksBorrowedId", "==", returnBook.id)
+    )
+  );
+
+  return availabilityRef.docs.map(
+    async (docId) =>
+      await deleteDoc(
+        doc(
+          firestore,
+          FIRESTORE_COLLECTION_QUERY_KEY.AVAILABILITY_TRANSACTION,
+          docId.id
+        )
+      )
+  );
+};
+
+export { addBorrowCirculation, returnOverdueCirculation, returnDueCirculation };

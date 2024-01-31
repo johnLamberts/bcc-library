@@ -61,10 +61,7 @@ const getLatestStudent = async () => {
 const getStudents = async () => {
   try {
     const querySnapshot = await getDocs(
-      query(
-        collection(firestore, FIRESTORE_COLLECTION_QUERY_KEY.STUDENT),
-        orderBy("createdAt", "desc")
-      )
+      query(collection(firestore, FIRESTORE_COLLECTION_QUERY_KEY.STUDENT))
     );
 
     return querySnapshot.docs.map((doc) => {
