@@ -3,6 +3,7 @@ export enum FIRESTORE_COLLECTION_QUERY_KEY {
   CATEGORY = "category",
   CATEGORY_SECTION = "category-section",
   CATALOGUE = "books-catalogue",
+  RETURNED_CONDITION = "return-condition",
 
   BOOK_TYPE = "book-type",
   USER_ROLE = "user-role",
@@ -16,6 +17,7 @@ export enum FIRESTORE_COLLECTION_QUERY_KEY {
   TEACHER_ENTRY = "teachers-entry",
 
   BORROW_TRANSACTION = "books-borrowed",
+  RETURNED_TRANSACTION = "books-returned",
   ALL_BOOKS_TRANSACTION = "books-transaction",
 
   BOOKS_OVERDUE = "books-overdue",
