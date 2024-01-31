@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import UserView from "@features/Teachers/TeacherView";
 import {
   Grid,
   Card,
@@ -20,36 +21,45 @@ import StudentView from "./StudentView";
 
 interface StudentListProps {
   user: Record<string, any>;
-  filterStudentData: Record<string, any>;
+  filterStudentData?: Record<string, any>;
   setGetId: Dispatch<SetStateAction<string>>;
 }
 
-export default function StudentsBox({
+export default function StudentBox({
   user,
   setGetId,
   filterStudentData,
 }: StudentListProps) {
   const [opened, { open, close }] = useDisclosure(false);
+
+  console.log(user);
   return (
     <>
-      <Grid.Col span={{ base: 12, md: 8, lg: 4 }} key={user.id}>
-        <Card withBorder shadow="sm" radius="md" key={user.id}>
+      <Grid.Col span={{ base: 12, md: 8, lg: 4 }}>
+        <Card withBorder shadow="sm" radius="md">
           <Card.Section withBorder inheritPadding py="xs">
             <Group justify="space-between">
-              <Badge
-                radius={"sm"}
-                bg={" var(--mantine-color-red-light)"}
-                // color={""}
-                key={user.id}
-              >
-                <span
-                  style={{
-                    color: "var(--mantine-color-red-light-color)",
-                  }}
-                >
-                  {user.userRole}
-                </span>
-              </Badge>
+              <Flex gap={"sm"}>
+                <Badge radius={"sm"} bg={" var(--mantine-color-red-light)"}>
+                  <span
+                    style={{
+                      color: "var(--mantine-color-red-light-color)",
+                    }}
+                  >
+                    {user.userRole}
+                  </span>
+                </Badge>
+
+                <Badge radius={"sm"} bg={" var(--mantine-color-yellow-light)"}>
+                  <span
+                    style={{
+                      color: "var(--mantine-color-yellow-light-color)",
+                    }}
+                  >
+                    {user.studentNumber}
+                  </span>
+                </Badge>
+              </Flex>
               <Menu withinPortal position="bottom-end" shadow="sm">
                 <Menu.Target>
                   <ActionIcon variant="subtle" color="gray">
@@ -95,13 +105,12 @@ export default function StudentsBox({
                 <Modal.Root
                   opened={opened}
                   onClose={close}
-                  key={user.id}
-                  size={"lg"}
+                  size={"xl"}
                   centered
                 >
                   <Modal.Overlay />
                   <Modal.Content>
-                    <StudentView user={filterStudentData} key={user.id} />
+                    <StudentView user={filterStudentData} key={user.userUID} />
                   </Modal.Content>
                 </Modal.Root>
               </Menu>
@@ -118,7 +127,7 @@ export default function StudentsBox({
             <Image
               m={"auto"}
               mt={"lg"}
-              src={user.avatarImage}
+              src={user.studentImage}
               h={80}
               w={"auto"}
             />

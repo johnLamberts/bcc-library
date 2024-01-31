@@ -20,30 +20,7 @@ import StudentTable from "@features/Student/StudentTable";
 import { useSearchParams } from "react-router-dom";
 import useReadStudents from "@features/Student/hooks/useReadStudents";
 import { IStudents } from "@features/Student/models/student.interface";
-
-const userData = [
-  {
-    id: 1,
-    fullName: "John Lambert",
-    role: "Admin",
-    email: "admin@test.admin",
-    image: "/images/bcc-logo.svg",
-  },
-  {
-    id: 2,
-    fullName: "Damien Liliard",
-    role: "Student",
-    email: "admin@test.admin",
-    image: "/images/bcc-logo.svg",
-  },
-  {
-    id: 3,
-    fullName: "Gl Ocamp",
-    role: "Teacher",
-    email: "admin@test.admin",
-    image: "/images/bcc-logo.svg",
-  },
-];
+import StudentBox from "@features/Student/StudentBox";
 
 export default function StudentManagement() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -52,7 +29,7 @@ export default function StudentManagement() {
 
   const { data: studentData, isLoading } = useReadStudents();
 
-  const filterUserData = studentData?.filter(
+  const filterStudentData = studentData?.filter(
     (user: IStudents) => user.id === getId
   )[0];
 
@@ -64,10 +41,10 @@ export default function StudentManagement() {
           <Grid>
             {isLoading && <>Loading...</>}
             {studentData?.map((user, index) => (
-              <UsersBox
+              <StudentBox
                 key={index}
                 user={user}
-                filterUserData={filterUserData}
+                filterStudentData={filterStudentData}
                 setGetId={setGetId}
               />
             ))}
@@ -75,7 +52,7 @@ export default function StudentManagement() {
         </Box>
       )
     );
-  }, [studentData, isLoading, searchParams, filterUserData]);
+  }, [studentData, isLoading, searchParams, filterStudentData]);
 
   return (
     <>

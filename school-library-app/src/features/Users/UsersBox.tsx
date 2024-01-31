@@ -7,20 +7,20 @@ import {
   Menu,
   ActionIcon,
   rem,
-  Modal,
   Flex,
   Title,
   Image,
   Text,
+  Modal,
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { IconDots, IconFileZip, IconEye, IconTrash } from "@tabler/icons-react";
 import { Dispatch, SetStateAction } from "react";
 import UserView from "./UserView";
 
-interface UsersListProps {
+interface UserListProps {
   user: Record<string, any>;
-  filterUserData?: Record<string, any>;
+  filterUserData: Record<string, any>;
   setGetId: Dispatch<SetStateAction<string>>;
 }
 
@@ -28,37 +28,28 @@ export default function UsersBox({
   user,
   setGetId,
   filterUserData,
-}: UsersListProps) {
+}: UserListProps) {
   const [opened, { open, close }] = useDisclosure(false);
-
-  console.log(user);
   return (
     <>
-      <Grid.Col span={{ base: 12, md: 8, lg: 4 }}>
-        <Card withBorder shadow="sm" radius="md">
+      <Grid.Col span={{ base: 12, md: 8, lg: 4 }} key={user.id}>
+        <Card withBorder shadow="sm" radius="md" key={user.id}>
           <Card.Section withBorder inheritPadding py="xs">
             <Group justify="space-between">
-              <Flex gap={"sm"}>
-                <Badge radius={"sm"} bg={" var(--mantine-color-red-light)"}>
-                  <span
-                    style={{
-                      color: "var(--mantine-color-red-light-color)",
-                    }}
-                  >
-                    {user.userRole}
-                  </span>
-                </Badge>
-
-                <Badge radius={"sm"} bg={" var(--mantine-color-yellow-light)"}>
-                  <span
-                    style={{
-                      color: "var(--mantine-color-yellow-light-color)",
-                    }}
-                  >
-                    {user.studentNumber}
-                  </span>
-                </Badge>
-              </Flex>
+              <Badge
+                radius={"sm"}
+                bg={" var(--mantine-color-red-light)"}
+                // color={""}
+                key={user.id}
+              >
+                <span
+                  style={{
+                    color: "var(--mantine-color-red-light-color)",
+                  }}
+                >
+                  {user.userRole}
+                </span>
+              </Badge>
               <Menu withinPortal position="bottom-end" shadow="sm">
                 <Menu.Target>
                   <ActionIcon variant="subtle" color="gray">
@@ -104,12 +95,13 @@ export default function UsersBox({
                 <Modal.Root
                   opened={opened}
                   onClose={close}
-                  size={"xl"}
+                  key={user.id}
+                  size={"lg"}
                   centered
                 >
                   <Modal.Overlay />
                   <Modal.Content>
-                    <UserView user={filterUserData} key={user.userUID} />
+                    <UserView user={filterUserData} key={user.id} />
                   </Modal.Content>
                 </Modal.Root>
               </Menu>
@@ -126,7 +118,7 @@ export default function UsersBox({
             <Image
               m={"auto"}
               mt={"lg"}
-              src={user.studentImage}
+              src={user.avatarImage}
               h={80}
               w={"auto"}
             />

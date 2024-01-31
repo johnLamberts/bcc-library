@@ -7,8 +7,6 @@ import {
   Title,
   Image,
   Text,
-  Grid,
-  useComputedColorScheme,
 } from "@mantine/core";
 
 interface UserViewProps {
@@ -16,42 +14,16 @@ interface UserViewProps {
   user?: Record<string, any>;
 }
 export default function UserView({ user }: UserViewProps) {
-  const computedColorScheme = useComputedColorScheme("light", {
-    getInitialValueInEffect: true,
-  });
-
-  console.log(computedColorScheme);
   return (
     <>
       <Modal.Header>
-        <Flex gap={"sm"}>
-          <Badge
-            radius={"sm"}
-            bg={" var(--mantine-color-red-light)"}
-            color={" var(--mantine-color-red-light-color)"}
-          >
-            <span
-              style={{
-                color: "var(--mantine-color-red-light-color)",
-              }}
-            >
-              {user?.userRole}
-            </span>
-          </Badge>
-          <Badge
-            radius={"sm"}
-            bg={" var(--mantine-color-yellow-light)"}
-            color={" "}
-          >
-            <span
-              style={{
-                color: "var(--mantine-color-yellow-light-color)",
-              }}
-            >
-              {user?.studentNumber}
-            </span>
-          </Badge>
-        </Flex>
+        <Badge
+          radius={"sm"}
+          bg={" var(--mantine-color-green-light)"}
+          color={" var(--mantine-color-green-light-color)"}
+        >
+          {user?.userRole}
+        </Badge>
         <Modal.CloseButton />
       </Modal.Header>
       <Divider />
@@ -66,7 +38,7 @@ export default function UserView({ user }: UserViewProps) {
           <Image
             m={"auto"}
             mt={"lg"}
-            src={user?.studentImage}
+            src={user?.avatarImage}
             h={80}
             w={"auto"}
           />
@@ -97,70 +69,6 @@ export default function UserView({ user }: UserViewProps) {
         </Flex>
 
         <Divider my={"sm"} />
-        <Badge bg={" var(--mantine-color-gray-light)"}>
-          <span
-            style={{
-              color: `${
-                computedColorScheme === "dark"
-                  ? "var(--mantine-color-white-light-color)"
-                  : "var(--mantine-color-text)"
-              }`,
-            }}
-          >
-            Education
-          </span>
-        </Badge>
-
-        <Grid pl={"md"}>
-          <Grid.Col span={{ base: 12, md: 6, lg: 6 }}>
-            <Title mt="sm" size="h6" fw={400}>
-              {user?.levelOfEducation}
-              <Text inherit c="dimmed">
-                Level of Education
-              </Text>{" "}
-            </Title>
-          </Grid.Col>
-          <Grid.Col span={{ base: 12, md: 6, lg: 6 }}>
-            <Title mt="sm" size="h6" fw={400}>
-              {user?.academicCourse === "" ? "N/A" : user?.academicCourse}
-              <Text inherit c="dimmed">
-                Academic Course
-              </Text>{" "}
-            </Title>
-          </Grid.Col>
-          <Grid.Col span={{ base: 12, md: 6, lg: 6 }}>
-            <Title mt="sm" size="h6" fw={400}>
-              {user?.gradeLevel === "" ? "N/A" : user?.gradeLevel}
-              <Text inherit c="dimmed">
-                Grade Level
-              </Text>{" "}
-            </Title>
-          </Grid.Col>
-          <Grid.Col span={{ base: 12, md: 6, lg: 6 }}>
-            <Title mt="sm" size="h6" fw={400}>
-              {user?.gradeSection === "" ? "N/A" : user?.gradeSection}
-              <Text inherit c="dimmed">
-                Grade Section
-              </Text>{" "}
-            </Title>
-          </Grid.Col>
-        </Grid>
-
-        <Divider my={"sm"} />
-
-        <Badge bg={" var(--mantine-color-gray-light)"}>
-          <span
-            style={{
-              color: `${
-                computedColorScheme === "dark"
-                  ? "var(--mantine-color-white-light-color)"
-                  : "var(--mantine-color-text)"
-              }`,
-            }}
-          >
-            Transaction History
-          </span>
-        </Badge>
       </Modal.Body>
     </>
   );

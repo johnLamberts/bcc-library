@@ -56,7 +56,7 @@ export default function UserManagement() {
         </Box>
       )
     );
-  }, [filterUserData, searchParams, optimizedUsersData]);
+  }, [searchParams, isLoading, optimizedUsersData, filterUserData]);
 
   return (
     <>
