@@ -1,14 +1,4 @@
-import {
-  useMantineTheme,
-  Tabs,
-  Group,
-  Menu,
-  UnstyledButton,
-  Avatar,
-  rem,
-  Text,
-} from "@mantine/core";
-import { useDisclosure } from "@mantine/hooks";
+import { Group, Menu, UnstyledButton, Avatar, rem, Text } from "@mantine/core";
 import {
   IconChevronDown,
   IconSettings,
@@ -19,6 +9,7 @@ import { useState } from "react";
 import classes from "./user-menu.module.css";
 
 import cn from "clsx";
+import { useNavigate } from "react-router-dom";
 const user = {
   name: "John Lambert P. Asis",
   email: "janspoon@fighter.dev",
@@ -26,20 +17,10 @@ const user = {
     "https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/avatars/avatar-5.png",
 };
 
-const tabs = [
-  "Home",
-  "Orders",
-  "Education",
-  "Community",
-  "Forums",
-  "Support",
-  "Account",
-  "Helpdesk",
-];
-
 export default function UserMenu() {
   const [userMenuOpened, setUserMenuOpened] = useState(false);
 
+  const navigate = useNavigate();
   return (
     <Menu
       width={260}
@@ -128,6 +109,7 @@ export default function UserMenu() {
               stroke={1.5}
             />
           }
+          onClick={() => navigate("/home")}
         >
           Logout
         </Menu.Item>

@@ -1,5 +1,4 @@
 import { useMemo, useState } from "react";
-import UsersBox from "@features/Users/UsersBox";
 import {
   ActionIcon,
   Box,
