@@ -1,5 +1,4 @@
 import { useMemo, useState } from "react";
-import UsersBox from "@features/Users/UsersBox";
 import {
   ActionIcon,
   Box,
@@ -18,38 +17,19 @@ import {
 } from "@tabler/icons-react";
 import StudentTable from "@features/Student/StudentTable";
 import { useSearchParams } from "react-router-dom";
-
-const userData = [
-  {
-    id: 1,
-    fullName: "John Lambert",
-    role: "Admin",
-    email: "admin@test.admin",
-    image: "/images/bcc-logo.svg",
-  },
-  {
-    id: 2,
-    fullName: "Damien Liliard",
-    role: "Student",
-    email: "admin@test.admin",
-    image: "/images/bcc-logo.svg",
-  },
-  {
-    id: 3,
-    fullName: "Gl Ocamp",
-    role: "Teacher",
-    email: "admin@test.admin",
-    image: "/images/bcc-logo.svg",
-  },
-];
+import useReadStudents from "@features/Student/hooks/useReadStudents";
+import { IStudents } from "@features/Student/models/student.interface";
+import StudentBox from "@features/Student/StudentBox";
 
 export default function StudentManagement() {
   const [searchParams, setSearchParams] = useSearchParams();
 
   const [getId, setGetId] = useState("");
 
-  const filterUserData = userData.filter(
-    (user) => user.id === Number(getId)
+  const { data: studentData, isLoading } = useReadStudents();
+
+  const filterStudentData = studentData?.filter(
+    (user: IStudents) => user.id === getId
   )[0];
 
   const memoizedCards = useMemo(() => {
@@ -58,12 +38,12 @@ export default function StudentManagement() {
         <Box my={"xl"}>
           {/* gutter={{ base: 12, xs: "md", md: "lg", xl: 5 }} */}
           <Grid>
-            {userData.map((user, index) => (
-              <UsersBox
+            {isLoading && <>Loading...</>}
+            {studentData?.map((user, index) => (
+              <StudentBox
                 key={index}
-                index={index}
                 user={user}
-                filterUserData={filterUserData}
+                filterStudentData={filterStudentData}
                 setGetId={setGetId}
               />
             ))}
@@ -71,7 +51,7 @@ export default function StudentManagement() {
         </Box>
       )
     );
-  }, [filterUserData, searchParams]);
+  }, [studentData, isLoading, searchParams, filterStudentData]);
 
   return (
     <>

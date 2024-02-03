@@ -18,50 +18,35 @@ import {
 } from "@tabler/icons-react";
 import { useSearchParams } from "react-router-dom";
 import UserTable from "@features/Users/UserTable";
-
-const userData = [
-  {
-    id: 1,
-    fullName: "John Lambert",
-    role: "Admin",
-    email: "admin@test.admin",
-    image: "/images/bcc-logo.svg",
-  },
-  {
-    id: 2,
-    fullName: "Damien Liliard",
-    role: "Student",
-    email: "admin@test.admin",
-    image: "/images/bcc-logo.svg",
-  },
-  {
-    id: 3,
-    fullName: "Gl Ocamp",
-    role: "Teacher",
-    email: "admin@test.admin",
-    image: "/images/bcc-logo.svg",
-  },
-];
+import useReadUsers from "@features/Users/hooks/useReadUsers";
+import { IUser } from "@features/Users/models/user.interface";
 
 export default function UserManagement() {
   const [searchParams, setSearchParams] = useSearchParams();
 
   const [getId, setGetId] = useState("");
 
-  const filterUserData = userData.filter(
-    (user) => user.id === Number(getId)
+  const { data: users, isLoading } = useReadUsers();
+
+  const optimizedUsersData = useMemo(() => {
+    const { data } = users?.data || [];
+
+    return data;
+  }, [users?.data]);
+
+  const filterUserData = optimizedUsersData?.filter(
+    (user: IUser) => user.id === getId
   )[0];
 
   const memoizedCards = useMemo(() => {
     return (
       searchParams.get("view") === "by-cards" && (
         <Box my={"xl"}>
-          {/* gutter={{ base: 12, xs: "md", md: "lg", xl: 5 }} */}
           <Grid>
-            {userData.map((user, index) => (
+            {isLoading && <>Loading...</>}
+            {optimizedUsersData?.map((user: IUser, index: number) => (
               <UsersBox
                 key={index}
-                index={index}
                 user={user}
                 filterUserData={filterUserData}
                 setGetId={setGetId}
@@ -71,7 +56,7 @@ export default function UserManagement() {
         </Box>
       )
     );
-  }, [filterUserData, searchParams]);
+  }, [searchParams, isLoading, optimizedUsersData, filterUserData]);
 
   return (
     <>

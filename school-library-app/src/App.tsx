@@ -18,6 +18,8 @@ import CatalogueManagement from "@pages/CatalogueManagement";
 import BookAuthor from "@pages/SystemSettings/BookAuthor";
 import CirculationManagement from "@pages/CirculationManagement";
 import ReturnCondition from "@pages/SystemSettings/ReturnCondition";
+import AppPageLayout from "@layouts/PagesLayout";
+import Home from "@pages/Homepage/Home";
 
 function App() {
   // Will Refactor this after I finish the admin page with fully functionality
@@ -39,6 +41,10 @@ function App() {
         }
       >
         <Routes>
+          <Route element={<AppPageLayout />}>
+            <Route index element={<Home />} />
+            <Route path="home" element={<Home />} />
+          </Route>
           <Route element={<AdminLayout />}>
             <Route index element={<AdminDashboard />} />
             <Route path="/dashboard" element={<AdminDashboard />} />

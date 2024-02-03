@@ -45,7 +45,6 @@ function BooksReturnForm<TData extends MRT_RowData>({
         (cond: IReturnCondition) => cond.returnCondition !== condition
       )
     ) {
-      form.setValue("fee", filteredFee);
       form.setValue("totalFee", filteredFee);
     }
   }, [condition, filteredFee, form, returnCondition]);
@@ -89,7 +88,7 @@ function BooksReturnForm<TData extends MRT_RowData>({
           <Form.Col span={{ base: 12, md: 12, lg: 12 }}>
             <Controller
               control={form.control}
-              name="fee"
+              name="totalFee"
               rules={{
                 required: true,
               }}

@@ -12,18 +12,15 @@ import {
   rem,
 } from "@mantine/core";
 import {
-  IconArrowBackUpDouble,
   IconCheckupList,
   IconClearAll,
   IconDatabaseExclamation,
   IconEdit,
-  IconEyeMinus,
   IconPlus,
   IconStackPush,
 } from "@tabler/icons-react";
 import {
   MRT_ColumnDef,
-  MRT_Row,
   MRT_ShowHideColumnsButton,
   MRT_TableOptions,
   MRT_ToggleDensePaddingButton,
@@ -33,13 +30,11 @@ import {
 } from "mantine-react-table";
 import { Suspense, useMemo } from "react";
 
-import StudentForm from "./CirculationForm";
-import { IBooks } from "./models/books.interface";
-import { modals } from "@mantine/modals";
 import CirculationForm from "./CirculationForm";
 import { useCreateBorrow } from "./hooks/useCreateBorrow";
 import OverdueTable from "./TransactionTable/OverdueTable";
 import { ICirculation } from "./models/circulation.interface";
+import CheckedOutTable from "./TransactionTable/CheckedOutTable";
 
 const CirculationTable = () => {
   const { isCreatingBorrowingTransaction, createBorrowTransaction } =
@@ -83,76 +78,9 @@ const CirculationTable = () => {
         accessorKey: "bookISBN",
         header: "Book ISBN",
       },
-
-      // {
-      //   accessorKey: "email",
-      //   header: "Email",
-      // },
-      // {
-      //   accessorKey: "gradeSection",
-      //   header: "Grade Section",
-      // },
-      // {
-      //   accessorKey: "academicCourse",
-      //   header: "Academic Course",
-      // },
-      // {
-      //   accessorKey: "levelOfEducation",
-      //   header: "Level of Education",
-      // },
-      // {
-      //   accessorKey: "gradeLevel",
-      //   header: "Grade Level",
-      // },
-
-      // {
-      //   accessorKey: "isEnabled",
-      //   header: "Account Status",
-      //   Cell: ({ cell }) =>
-      //     cell.getValue() ? (
-      //       <Badge color="green.8" size="md">
-      //         Enable
-      //       </Badge>
-      //     ) : (
-      //       <Badge color="red.8" size="md">
-      //         Disabled
-      //       </Badge>
-      //     ),
-      // },
     ],
     []
   );
-
-  // STATUS action
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const openUpdateStatusConfirmModal = (row: MRT_Row<ICirculation>) =>
-    modals.openConfirmModal({
-      // title: (
-      //   <Text>
-      //     Are you sure you want to{" "}
-      //     <b>{!row.original.isEnabled ? "enabled" : "disabled"}</b> this
-      //     student?
-      //   </Text>
-      // ),
-      // children: (
-      //   <Text>
-      //     Are you sure you want to delete{" "}
-      //     <b>
-      //       {row.original.studentNumber}: {row.original.email}
-      //     </b>
-      //     ? This action cannot be undone.
-      //   </Text>
-      // ),
-      // labels: {
-      //   confirm: `${!row.original.isEnabled ? "Enabled" : "Disabled"}`,
-      //   cancel: "Cancel",
-      // },
-      // confirmProps: { color: "red" },
-      // onConfirm: () => {
-      //   // modifyUserStatus(row.original);
-      //   modifyStudentStatus(row.original);
-      // },
-    });
 
   // CREATE action
   const handleCreateLevel: MRT_TableOptions<ICirculation>["onCreatingRowSave"] =
@@ -160,13 +88,6 @@ const CirculationTable = () => {
       await createBorrowTransaction(values);
 
       table.setCreatingRow(null);
-    };
-
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const handleSaveLevel: MRT_TableOptions<ICirculation>["onEditingRowSave"] =
-    async ({ values, table }) => {
-      // await modifyCatalogue(values);
-      // table.setEditingRow(null);
     };
 
   const table = useMantineReactTable({
@@ -178,7 +99,6 @@ const CirculationTable = () => {
     enableEditing: true,
     positionActionsColumn: "last",
     onCreatingRowSave: handleCreateLevel,
-    onEditingRowSave: handleSaveLevel,
     mantineTableContainerProps: {
       style: {
         height: "100%",
@@ -197,11 +117,7 @@ const CirculationTable = () => {
       scrollAreaComponent: ScrollArea.Autosize,
     },
     state: {
-      // isLoading: isLoadingStudent,
-      // isSaving: isCreatingCatalogue || isUpdatingStatus || isUpdating,
       isSaving: isCreatingBorrowingTransaction,
-      // showAlertBanner: isLoadingStudentError,
-      // showProgressBars: isFetchingStudent,
     },
 
     initialState: {
@@ -222,17 +138,6 @@ const CirculationTable = () => {
               <IconEdit />
             </ActionIcon>
           </Tooltip>
-
-          <Tooltip label="Disabled">
-            <ActionIcon
-              variant="light"
-              onClick={() => {
-                openUpdateStatusConfirmModal(row);
-              }}
-            >
-              <IconEyeMinus />
-            </ActionIcon>
-          </Tooltip>
         </Flex>
       </>
     ),
@@ -244,27 +149,6 @@ const CirculationTable = () => {
           <MRT_ToggleDensePaddingButton table={table} />
           <MRT_ShowHideColumnsButton table={table} />
         </Flex>
-      );
-    },
-
-    renderEditRowModalContent: ({ row, table }) => {
-      return (
-        <>
-          <Stack>
-            <StudentForm
-              table={table}
-              row={row}
-              onSave={(data) =>
-                handleSaveLevel({
-                  values: data,
-                  table: table,
-                  row: row,
-                  exitEditingMode: () => null,
-                })
-              }
-            />
-          </Stack>
-        </>
       );
     },
     renderCreateRowModalContent: ({ table, row }) => {
@@ -321,12 +205,6 @@ const CirculationTable = () => {
                 >
                   Overdue
                 </Tabs.Tab>
-                <Tabs.Tab
-                  value="returned"
-                  leftSection={<IconArrowBackUpDouble style={iconStyle} />}
-                >
-                  Returned
-                </Tabs.Tab>{" "}
               </Tabs.List>
             </Stack>
             <Group>
@@ -353,7 +231,9 @@ const CirculationTable = () => {
           </Tabs.Panel>
 
           <Tabs.Panel value="checkout">
-            <Box mt={"lg"}>Checkout</Box>
+            <Box mt={"lg"}>
+              <CheckedOutTable />
+            </Box>
           </Tabs.Panel>
 
           <Tabs.Panel value="overdue">
@@ -362,10 +242,6 @@ const CirculationTable = () => {
                 <OverdueTable />
               </Suspense>
             </Box>
-          </Tabs.Panel>
-
-          <Tabs.Panel value="returned">
-            <Box mt={"lg"}>Returned</Box>
           </Tabs.Panel>
         </Tabs>
       </Box>
