@@ -5,7 +5,6 @@ import { ITeacher } from "../models/teacher.interface";
 import axios from "axios";
 import { uploadFileOrImage, downloadUrl } from "src/shared/services/storage";
 import generateRandomPassword from "src/utils/helpers/generateRandomPassword";
-import { generateStudentNumber } from "src/utils/helpers/generateStudentNumber";
 
 const addTeacher = async (teacher: Partial<ITeacher>) => {
   try {
@@ -18,7 +17,6 @@ const addTeacher = async (teacher: Partial<ITeacher>) => {
           teacherImage:
             "https://firebasestorage.googleapis.com/v0/b/zidel-posev.appspot.com/o/user.png?alt=media&token=883b6c53-4b75-4f60-a741-abe99f992fb7",
 
-          teacherNumber: generateStudentNumber(teacher.teacherEntry!, "TC"),
           password: generateRandomPassword(8),
         },
       });
@@ -31,7 +29,6 @@ const addTeacher = async (teacher: Partial<ITeacher>) => {
         data: {
           ...teacher,
           teacherImage: pathUrl,
-          teacherNumber: generateStudentNumber(teacher.teacherEntry!, "TC"),
           password: generateRandomPassword(8),
         },
       });

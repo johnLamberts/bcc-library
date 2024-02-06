@@ -3,6 +3,7 @@ import classes from "./header.module.css";
 import { IconUser } from "@tabler/icons-react";
 
 import CollegeLogo from "@components/Logo/CollegeLogo";
+import { useNavigate } from "react-router-dom";
 
 const links = [
   { link: "/home", label: "Home" },
@@ -13,6 +14,8 @@ const links = [
 ];
 
 const Header = () => {
+  const navigate = useNavigate();
+
   const items = links.map((link) => (
     <a
       key={link.label}
@@ -45,6 +48,7 @@ const Header = () => {
                 variant="filled"
                 color="#ffa903"
                 size="xs"
+                onClick={() => navigate("dashboard")}
               >
                 <Text
                   pt={"0.2em"}

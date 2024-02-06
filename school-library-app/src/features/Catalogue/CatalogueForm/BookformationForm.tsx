@@ -24,7 +24,9 @@ const BookInformationForm = <TData extends MRT_RowData>({
     watch,
     setValue,
   } = useFormContext();
-  const [selectedGenres, setSelectedGenres] = useState<string[]>(isEditing ? row?.original.genres : []);
+  const [selectedGenres, setSelectedGenres] = useState<string[]>(
+    isEditing ? row?.original.genres : []
+  );
 
   const { data: bookTypeData = [], isLoading: isBookTypeLoading } =
     useReadBookType();
@@ -35,9 +37,6 @@ const BookInformationForm = <TData extends MRT_RowData>({
     useReadAuthor();
 
   const watchBookType = watch("bookType") || "";
-
-  console.log(row?.original.genres);
-
 
   const filteredGenre = useMemo(() => {
     return (
@@ -58,29 +57,28 @@ const BookInformationForm = <TData extends MRT_RowData>({
       setValue("genres", []);
     }
 
-
-    
     // If in editing mode, remove genres that are not present in the filteredGenre
-  if (isEditing) {
-    const updatedSelectedGenres = selectedGenres.filter((genre) =>
-      filteredGenre.includes(genre)
-    );
-    setSelectedGenres(updatedSelectedGenres);
-    setValue("genres", updatedSelectedGenres);
-  } else {
-    const filteredGenresForCreate = genresData
-    ?.filter((genre) => genre.bookType === watchBookType)
-    ?.map((genre) => genre.genres) || [];
+    if (isEditing) {
+      const updatedSelectedGenres = selectedGenres.filter((genre) =>
+        filteredGenre.includes(genre)
+      );
+      setSelectedGenres(updatedSelectedGenres);
+      setValue("genres", updatedSelectedGenres);
+    } else {
+      const filteredGenresForCreate =
+        genresData
+          ?.filter((genre) => genre.bookType === watchBookType)
+          ?.map((genre) => genre.genres) || [];
 
-  // Update selectedGenres and form value based on the filtered genres
-  const updatedSelectedGenresForCreate = selectedGenres.filter((genre) =>
-    filteredGenresForCreate.includes(genre)
-  );
-  setSelectedGenres(updatedSelectedGenresForCreate);
-  setValue("genres", updatedSelectedGenresForCreate); 
-  }
+      // Update selectedGenres and form value based on the filtered genres
+      const updatedSelectedGenresForCreate = selectedGenres.filter((genre) =>
+        filteredGenresForCreate.includes(genre)
+      );
+      setSelectedGenres(updatedSelectedGenresForCreate);
+      setValue("genres", updatedSelectedGenresForCreate);
+    }
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     filteredGenre.length,
     setValue,

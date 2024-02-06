@@ -1,3 +1,4 @@
+/* eslint-disable require-jsdoc */
 /* eslint-disable linebreak-style */
 /* eslint-disable padded-blocks */
 /* eslint-disable linebreak-style */
@@ -29,6 +30,8 @@ admin.initializeApp();
 
 const API_KEY = functions.config().sendgrid.key;
 const TEMPLATE_ID = functions.config().sendgrid.template;
+
+const OVERDUE_TEMPLATE_ID = functions.config().sendgrid.overdue_template;
 
 sgMail.setApiKey(API_KEY);
 
@@ -63,10 +66,22 @@ exports.taskRunner = functions
       return data.docs.forEach(async (doc) => {
         const snapshot = doc.data();
         const { expiryTime } = snapshot;
-
         const timeNow = admin.firestore.Timestamp.now().toMillis();
         if (expiryTime < timeNow) {
           doc.ref.update({ borrowStatus: "Overdue" });
+
+          const msg = {
+            to: snapshot.borrowersEmail,
+            from: "librsystem.e@gmail.com",
+            fullName: snapshot.borrowersName,
+            templateId: OVERDUE_TEMPLATE_ID,
+            dynamic_template_data: {
+              fullName: snapshot.borrowersName,
+              bookType: snapshot.bookType,
+              bookTitle: snapshot.bookTitle,
+              bookISBN: snapshot.bookISBN,
+            },
+          };
 
           const booksTransactionRef = await admin
             .firestore()
@@ -98,6 +113,7 @@ exports.taskRunner = functions
               modifiedAt: admin.firestore.Timestamp.now(),
             });
           await admin.firestore().doc(`availability/${doc.id}`).delete();
+          return sgMail.send(msg);
         } else {
           doc.ref.update({ borrowStatus: "Active" });
         }

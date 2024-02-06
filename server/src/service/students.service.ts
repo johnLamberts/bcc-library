@@ -18,6 +18,16 @@ const getAllStudents = async () => {
 };
 
 const createStudent = async (student: TStudents) => {
+  const studentNumberSnapshot = await admin
+    .firestore()
+    .collection("students")
+    .where("studentNumber", "==", student.studentNumber)
+    .get();
+
+  if (studentNumberSnapshot.size) {
+    throw new Error("Student Number were already existed.");
+  }
+
   const userRef = await admin.auth().createUser({
     email: student.email,
     emailVerified: false,
@@ -28,7 +38,6 @@ const createStudent = async (student: TStudents) => {
     photoURL: student.studentImage,
     disabled: false,
   });
-
   const usersDoc = await admin
     .firestore()
     .collection("users")
@@ -36,13 +45,11 @@ const createStudent = async (student: TStudents) => {
       firstName: student.firstName,
       lastName: student.lastName,
       middleName: student.middleName,
-
       email: student.email,
       password: student.password,
       displayName: randomizeString(
         `${student.firstName} ${student.middleName} ${student.lastName}`
       ),
-
       avatarImage: student.studentImage,
       userRole: "Student",
       userUID: userRef.uid,
@@ -50,7 +57,6 @@ const createStudent = async (student: TStudents) => {
       isArchived: false,
       isEnabled: true,
     });
-
   return await admin
     .firestore()
     .collection("students")
@@ -59,7 +65,6 @@ const createStudent = async (student: TStudents) => {
       gradeSection: student.gradeSection || "",
       gradeLevel: student.gradeLevel || "",
       academicCourse: student.academicCourse || "",
-
       studentImage: student.studentImage,
       displayName: randomizeString(
         `${student.firstName} ${student.middleName} ${student.lastName}`
@@ -88,16 +93,6 @@ const importStudents = async (students: TStudents[]) => {
 
     if (studentNumberSnapshot.size) {
       throw new Error("Student Number were already existed.");
-    }
-
-    const studentEntrySnapshot = await admin
-      .firestore()
-      .collection("students")
-      .where("studentEntry", "==", student.studentEntry)
-      .get();
-
-    if (studentEntrySnapshot.size) {
-      throw new Error("Student Entry were already existed.");
     }
 
     const userRef = await admin.auth().createUser({
@@ -134,7 +129,7 @@ const importStudents = async (students: TStudents[]) => {
       .collection("students")
       .add({
         ...student,
-        studentEntry: Number(student.studentEntry),
+        // studentEntry: Number(student.studentEntry),
         studentImage: student.studentImage,
         userUID: userRef.uid,
         userDocID: usersDoc.id,

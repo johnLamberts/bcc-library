@@ -49,7 +49,7 @@ const BookLocationAndDetailsForm = () => {
                   component={IMaskInput}
                   withAsterisk
                   mask="000.00"
-                  label="Contact Number"
+                  label="Call Number"
                   placeholder="Your Call Number..."
                   withErrorStyles={errors.callNumber?.message ? true : false}
                   {...field}

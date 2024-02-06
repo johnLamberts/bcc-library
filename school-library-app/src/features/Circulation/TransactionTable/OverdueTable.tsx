@@ -23,7 +23,11 @@ import BooksReturnForm from "../BooksReturnForm";
 import { useReturnOverdueCirculation } from "../hooks/useReturnCirculation";
 
 const OverdueTable = () => {
-  const { data: overdues = [], isLoading: isOverdueLoading } = useReadOverdue();
+  const {
+    data: overdues = [],
+    isLoading: isOverdueLoading,
+    refetch,
+  } = useReadOverdue();
 
   const { isReturningTransaction, createReturnOverdueTransaction } =
     useReturnOverdueCirculation();
@@ -84,6 +88,8 @@ const OverdueTable = () => {
       // await modifyCatalogue(values);
       await createReturnOverdueTransaction(values);
       table.setEditingRow(null);
+
+      refetch();
     };
   const table = useMantineReactTable({
     data: overdues,

@@ -10,8 +10,15 @@ import {
   ScrollArea,
   Avatar,
   Badge,
+  Modal,
+  Divider,
 } from "@mantine/core";
-import { IconEdit, IconEyeMinus, IconPlus } from "@tabler/icons-react";
+import {
+  IconEdit,
+  IconEyeMinus,
+  IconFileImport,
+  IconPlus,
+} from "@tabler/icons-react";
 import {
   MRT_ColumnDef,
   MRT_Row,
@@ -32,8 +39,11 @@ import { IStudents } from "./models/student.interface";
 import { modals } from "@mantine/modals";
 import useModifyStudentStatus from "./hooks/useModifyStudentStatus";
 import useModifyStudent from "./hooks/useModifyStudent";
+import StudentImportForm from "./StudentImportForm/StudentImportForm";
+import { useDisclosure } from "@mantine/hooks";
 
 const StudentTable = () => {
+  const [opened, { open, close }] = useDisclosure(false);
   const { isCreatingUser, createUsers } = useCreateStudent();
 
   const {
@@ -152,6 +162,25 @@ const StudentTable = () => {
       },
     });
 
+  // const openImportForm = () => {
+  //   modals.openConfirmModal({
+  //     title: <Text>Are you sure you want to student?</Text>,
+  //     children: (
+  //       <Text>
+  //         <StudentImportForm onSave={handleImportLevel} />
+  //       </Text>
+  //     ),
+  //     labels: {
+  //       confirm: ``,
+  //       cancel: "Cancel",
+  //     },
+  //     confirmProps: { color: "red" },
+  //     onConfirm: () => {
+  //       handleImportLevel();
+  //     },
+  //   });
+  // };
+
   // CREATE action
   const handleCreateLevel: MRT_TableOptions<IStudents>["onCreatingRowSave"] =
     async ({ values, table }) => {
@@ -164,7 +193,15 @@ const StudentTable = () => {
     async ({ values, table }) => {
       await modifyStudent(values);
       table.setEditingRow(null);
+      // console.log(values);
     };
+
+  // IMPORT action
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const handleImportLevel = async (values: any) => {
+    console.log(values);
+  };
 
   const table = useMantineReactTable({
     data: optimizedStudentsData,
@@ -304,6 +341,16 @@ const StudentTable = () => {
             >
               Add Student
             </Button>
+
+            <Button
+              variant="light"
+              onClick={() => open()}
+              leftSection={<IconFileImport size={14} />}
+              bg={" var(--mantine-color-yellow-light)"}
+              color={" var(--mantine-color-yellow-light-color)"}
+            >
+              Import Students
+            </Button>
           </Group>
         </Group>
 
@@ -311,6 +358,20 @@ const StudentTable = () => {
           <MantineReactTable table={table} />
         </Box>
       </Box>
+
+      <Modal.Root opened={opened} onClose={close} centered>
+        <Modal.Overlay />
+        <Modal.Content>
+          <Modal.Header>
+            <Modal.Title>Import Student</Modal.Title>
+            <Modal.CloseButton />
+          </Modal.Header>
+          <Divider />
+          <Modal.Body my={"md"} p={"md"}>
+            <StudentImportForm onSave={handleImportLevel} />
+          </Modal.Body>
+        </Modal.Content>
+      </Modal.Root>
     </>
   );
 };

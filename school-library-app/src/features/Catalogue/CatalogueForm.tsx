@@ -63,7 +63,10 @@ export default function CatalogueForm<TData extends MRT_RowData>({
           milliseconds,
         });
       } else if (isEditing) {
-        onSave?.(values);
+        onSave?.({
+          ...values,
+          milliseconds,
+        });
       }
     },
     [onCreate, isCreating, isEditing, onSave]
@@ -103,7 +106,7 @@ export default function CatalogueForm<TData extends MRT_RowData>({
 
         <BookPublicationForm />
 
-        <Availability />
+        <Availability table={table} row={row} />
 
         <BookImageForm table={table} row={row} />
 

@@ -1,6 +1,4 @@
 import {
-  useMantineTheme,
-  Card,
   rem,
   Container,
   Group,
@@ -8,6 +6,7 @@ import {
   SimpleGrid,
   Text,
   Box,
+  Card,
 } from "@mantine/core";
 import { IconGauge, IconUser, IconCookie } from "@tabler/icons-react";
 
