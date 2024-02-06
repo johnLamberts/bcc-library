@@ -5,7 +5,6 @@ import { IStudents } from "../models/student.interface";
 import axios from "axios";
 import { uploadFileOrImage, downloadUrl } from "src/shared/services/storage";
 import generateRandomPassword from "src/utils/helpers/generateRandomPassword";
-import { generateStudentNumber } from "src/utils/helpers/generateStudentNumber";
 
 const addStudent = async (student: Partial<IStudents>) => {
   try {
@@ -18,7 +17,7 @@ const addStudent = async (student: Partial<IStudents>) => {
           studentImage:
             "https://firebasestorage.googleapis.com/v0/b/zidel-posev.appspot.com/o/user.png?alt=media&token=883b6c53-4b75-4f60-a741-abe99f992fb7",
 
-          studentNumber: generateStudentNumber(student.studentEntry!, "B"),
+          // studentNumber: generateStudentNumber(student.studentEntry!, "B"),
           password: generateRandomPassword(8),
         },
       });
@@ -31,7 +30,7 @@ const addStudent = async (student: Partial<IStudents>) => {
         data: {
           ...student,
           studentImage: pathUrl,
-          studentNumber: generateStudentNumber(student.studentEntry!, "B"),
+          // studentNumber: generateStudentNumber(student.studentEntry!, "B"),
           password: generateRandomPassword(8),
         },
       });

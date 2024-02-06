@@ -1,7 +1,7 @@
 import { Box, ScrollArea } from "@mantine/core";
-import Hero from "./Hero";
-import About from "./About";
 import Footer from "./Footer";
+import About from "./About";
+import Hero from "./Hero";
 
 const Home = () => {
   return (
@@ -15,9 +15,9 @@ const Home = () => {
         }}
       >
         <Box bg={"white"}>
-          {/* <Hero /> */}
+          <Hero />
 
-          {/* <About /> */}
+          <About />
 
           <Footer />
         </Box>

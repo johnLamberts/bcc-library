@@ -179,6 +179,7 @@ const CatalogueTable = () => {
   }) => {
     await modifyCatalogue(values);
     table.setEditingRow(null);
+    console.log(values);
   };
 
   const table = useMantineReactTable({
@@ -234,7 +235,7 @@ const CatalogueTable = () => {
             </ActionIcon>
           </Tooltip>
 
-          <Tooltip label="Disabled">
+          <Tooltip label="Book Disabled">
             <ActionIcon
               variant="light"
               onClick={() => {

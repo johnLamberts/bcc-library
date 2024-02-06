@@ -13,6 +13,7 @@ import {
 import { ICirculation } from "../models/circulation.interface";
 import { firestore } from "src/shared/firebase/firebase";
 import { FIRESTORE_COLLECTION_QUERY_KEY } from "src/shared/enums";
+import axios from "axios";
 
 const addBorrowCirculation = async (borrow: ICirculation) => {
   const borrowRef = await addDoc(
@@ -124,6 +125,14 @@ const returnOverdueCirculation = async (returnBook: Partial<ICirculation>) => {
         doc(firestore, FIRESTORE_COLLECTION_QUERY_KEY.BOOKS_OVERDUE, docId.id)
       )
   );
+
+  return axios({
+    method: "POST",
+    url: `${import.meta.env.VITE_SERVER_URL}api/v1/email/return-overdue-email`,
+    data: {
+      ...returnBook,
+    },
+  });
 };
 
 const returnDueCirculation = async (returnBook: Partial<ICirculation>) => {
@@ -165,8 +174,7 @@ const returnDueCirculation = async (returnBook: Partial<ICirculation>) => {
       where("booksBorrowedId", "==", returnBook.id)
     )
   );
-
-  return availabilityRef.docs.map(
+  availabilityRef.docs.map(
     async (docId) =>
       await deleteDoc(
         doc(
@@ -176,6 +184,13 @@ const returnDueCirculation = async (returnBook: Partial<ICirculation>) => {
         )
       )
   );
+  return axios({
+    method: "POST",
+    url: `${import.meta.env.VITE_SERVER_URL}api/v1/email/return-email`,
+    data: {
+      ...returnBook,
+    },
+  });
 };
 
 export { addBorrowCirculation, returnOverdueCirculation, returnDueCirculation };

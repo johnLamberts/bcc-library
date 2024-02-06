@@ -7,6 +7,7 @@ import {
   ButtonProps,
   Button,
   BoxProps,
+  Flex,
 } from "@mantine/core";
 import React from "react";
 
@@ -46,13 +47,19 @@ Form.Col = function FormCol({
 Form.SubmitButton = function SubmitButton({
   alias,
   ...props
-}: { alias?: React.ReactNode } & ButtonProps &
+}: {
+  alias?: React.ReactNode;
+} & ButtonProps &
   React.HTMLAttributes<HTMLButtonElement>) {
   return (
-    <Button {...props} type="submit">
-      {!alias && "Submit"}
-      {alias && alias}
-    </Button>
+    <>
+      <Flex gap={"md"}>
+        <Button {...props} type="submit">
+          {!alias && "Submit"}
+          {alias && alias}
+        </Button>
+      </Flex>
+    </>
   );
 };
 

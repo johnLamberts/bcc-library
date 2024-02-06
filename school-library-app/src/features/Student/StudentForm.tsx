@@ -1,12 +1,10 @@
 import Form from "@components/Form/Form";
-import { Box, TextInput } from "@mantine/core";
-import { useCallback, useEffect } from "react";
+import { Box, Checkbox, TextInput, Tooltip } from "@mantine/core";
+import { useCallback, useEffect, useState } from "react";
 import BasicInformationForm from "./StudentForm/BasicInformationForm";
 import { FormProvider, useForm } from "react-hook-form";
 import EducationForm from "./StudentForm/EducationForm";
 import StudentImageForm from "./StudentForm/StudentImageForm";
-import useReadStudentEntry from "./hooks/useReadLatestEntry";
-import { DocumentData } from "firebase/firestore";
 import { MRT_RowData, MRT_TableInstance, MRT_Row } from "mantine-react-table";
 import { IStudents } from "./models/student.interface";
 
@@ -32,11 +30,7 @@ export default function StudentForm<TData extends MRT_RowData>({
     defaultValues: isEditing ? row.original : {},
   });
 
-  const { data: studentEntryData = [], isLoading } = useReadStudentEntry();
-
-  const studentEntryLatest = studentEntryData.map(
-    (doc: DocumentData) => doc.studentEntry
-  );
+  const [edit, setEdit] = useState<boolean>(true);
 
   const onSubmit = useCallback(
     (values: Partial<IStudents>) => {
@@ -49,25 +43,25 @@ export default function StudentForm<TData extends MRT_RowData>({
     [onCreate, isCreating, isEditing, onSave]
   );
 
-  useEffect(() => {
-    if (studentEntryLatest.every((value) => value === undefined)) {
-      form.setValue("studentEntry", Number(1));
-    } else {
-      const filterValues = studentEntryLatest.filter(
-        (entry) => entry !== undefined
-      ) as number[];
+  // useEffect(() => {
+  //   if (studentEntryLatest.every((value) => value === undefined)) {
+  //     form.setValue("studentEntry", Number(1));
+  //   } else {
+  //     const filterValues = studentEntryLatest.filter(
+  //       (entry) => entry !== undefined
+  //     ) as number[];
 
-      if (filterValues.length > 0) {
-        form.setValue("studentEntry", Math.max(...studentEntryLatest) + 1);
-      } else {
-        form.setValue("studentEntry", Number(1));
-      }
-    }
+  //     if (filterValues.length > 0) {
+  //       form.setValue("studentEntry", Math.max(...studentEntryLatest) + 1);
+  //     } else {
+  //       form.setValue("studentEntry", Number(1));
+  //     }
+  //   }
 
-    if (isEditing) {
-      form.setValue("studentEntry", row.original.studentEntry);
-    }
-  }, [studentEntryLatest, form, isEditing, row.original.studentEntry]);
+  //   if (isEditing) {
+  //     form.setValue("studentEntry", row.original.studentEntry);
+  //   }
+  // }, [studentEntryLatest, form, isEditing, row.original.studentEntry]);
 
   useEffect(() => {
     if (form.formState.errors) {
@@ -88,38 +82,46 @@ export default function StudentForm<TData extends MRT_RowData>({
 
         errorElem.scrollIntoView({ behavior: "smooth", block: "center" });
 
-        // errorElem.focus({ preventScroll: true });
         errorElem.focus();
       }
     }
   }, [form.formState.errors]);
 
+  console.log(edit);
   return (
     <FormProvider {...form}>
       <Form onSubmit={form.handleSubmit(onSubmit)}>
         <Form.Grid p={"lg"}>
           <Form.Col span={{ base: 12, md: 3, lg: 6 }}>
             <TextInput
-              label="Student Entry"
+              label="Student Number"
               withAsterisk
-              disabled
-              // withErrorStyles={errors.firstName?.message ? true : false}
-              // error={<>{errors.firstName && errors.firstName?.message}</>}
-              {...form.register("studentEntry")}
+              placeholder="Place your student number here"
+              disabled={isEditing && edit}
+              {...form.register("studentNumber", {
+                required: "This field is required!",
+              })}
+              rightSection={
+                <>
+                  {isEditing && (
+                    <Tooltip
+                      label={`To
+                        ${
+                          edit ? " turn on " : "turn off "
+                        }this field,  you may ${
+                        edit ? " enable" : "disabled"
+                      } this by toggling the checkbox.`}
+                    >
+                      <Checkbox
+                        checked={edit}
+                        onChange={(e) => setEdit(e.currentTarget.checked)}
+                      />
+                    </Tooltip>
+                  )}
+                </>
+              }
             />
           </Form.Col>
-          {isEditing && (
-            <Form.Col span={{ base: 12, md: 3, lg: 6 }}>
-              <TextInput
-                label="Student Number"
-                withAsterisk
-                disabled
-                value={isEditing ? row.original.studentNumber : ""}
-                // withErrorStyles={errors.firstName?.message ? true : false}
-                // error={<>{errors.firstName && errors.firstName?.message}</>}
-              />
-            </Form.Col>
-          )}
         </Form.Grid>
         <BasicInformationForm />
 
@@ -135,7 +137,6 @@ export default function StudentForm<TData extends MRT_RowData>({
         >
           <Form.SubmitButton
             loading={table.getState().isSaving}
-            disabled={isLoading}
             color="red.8"
           />
         </Box>

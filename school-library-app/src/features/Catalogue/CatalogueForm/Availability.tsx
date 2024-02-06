@@ -1,6 +1,7 @@
 import Form from "@components/Form/Form";
 import { NumberInput, Select } from "@mantine/core";
-import { useState } from "react";
+import { MRT_TableInstance, MRT_Row, MRT_RowData } from "mantine-react-table";
+import { useEffect, useState } from "react";
 import { Controller, useFormContext } from "react-hook-form";
 
 const timeUnitData = [
@@ -21,14 +22,41 @@ const timeUnitData = [
     value: "day",
   },
 ];
-const Availability = () => {
+
+interface AvailabilityProps<TData extends MRT_RowData> {
+  table?: MRT_TableInstance<TData>;
+  row?: MRT_Row<TData>;
+}
+
+const Availability = <TData extends MRT_RowData>({
+  table,
+  row,
+}: AvailabilityProps<TData>) => {
+  const isEditing = table?.getState().editingRow?.id === row?.id;
   const {
     control,
     watch,
     formState: { errors },
+    setValue,
   } = useFormContext();
-  const [unit, setUnit] = useState<string | null>(""); // Dropdown for unit
+  const [unit, setUnit] = useState<string | null>(
+    isEditing
+      ? timeUnitData
+          .filter((unit) => unit.value === row?.original.timeUnit)
+          .map((unit) => unit.label)[0]
+      : ""
+  ); // Dropdown for unit
 
+  useEffect(() => {
+    if (isEditing) {
+      const selectedLabel =
+        timeUnitData.find((unit) => unit.value === row?.original.timeUnit)
+          ?.label || "";
+      setValue("timeUnit", selectedLabel);
+    } else {
+      setValue("timeUnit", "");
+    }
+  }, [isEditing, row?.original.timeUnit, setValue]);
   return (
     <Form.Box mt={"md"}>
       <Form.Title>Book Availability</Form.Title>
@@ -50,7 +78,7 @@ const Availability = () => {
                     setUnit(e);
                     onChange(e);
                   }}
-                  value={value && unit}
+                  value={value || unit}
                   {...field}
                   error={<>{errors.timeUnit?.message}</>}
                   withErrorStyles={errors.timeUnit?.message ? true : false}

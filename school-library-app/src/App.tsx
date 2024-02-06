@@ -20,6 +20,7 @@ import CirculationManagement from "@pages/CirculationManagement";
 import ReturnCondition from "@pages/SystemSettings/ReturnCondition";
 import AppPageLayout from "@layouts/PagesLayout";
 import Home from "@pages/Homepage/Home";
+import StudentReportTable from "@features/Reports/StudentReport";
 
 function App() {
   // Will Refactor this after I finish the admin page with fully functionality
@@ -75,6 +76,7 @@ function App() {
             <Route path="/return-condition" element={<ReturnCondition />} />
             {/* reports */}
             <Route path="/user-report" element={<UserReport />} />
+            <Route path="/student-report" element={<StudentReportTable />} />
           </Route>
         </Routes>
       </Suspense>

@@ -55,37 +55,6 @@ export default function StudentManagement() {
 
   return (
     <>
-      {/* <Container> */}
-      {/* Title of the components */}
-      {/* <Group justify="space-between">
-        <Code p={"xs"}>
-          <Text fz={"xl"} fw={"bold"} c={"red"}>
-            Student Management
-          </Text>
-        </Code>
-
-        <Group>
-          <Button
-            variant="light"
-            leftSection={<IconFileImport size={14} />}
-            bg={" var(--mantine-color-red-light)"}
-            color={" var(--mantine-color-red-light-color)"}
-          >
-            Import Student
-          </Button>
-          <Button
-            onClick={open}
-            variant="light"
-            leftSection={<IconPlus size={14} />}
-            bg={" var(--mantine-color-red-light)"}
-            color={" var(--mantine-color-red-light-color)"}
-          >
-            Add Student
-          </Button>
-        </Group>
-      </Group> */}
-
-      {/* Data Filtering  */}
       <Group justify="space-between">
         <Box>
           <Tooltip label="View the students by Table">
@@ -130,27 +99,15 @@ export default function StudentManagement() {
         {searchParams.get("view") === "by-cards" && (
           <TextInput
             radius="md"
+            w={"18rem"}
             size="md"
-            placeholder="Search users"
+            placeholder="Search by email or student number"
             rightSectionWidth={42}
             leftSection={
               <IconSearch
                 style={{ width: rem(18), height: rem(18) }}
                 stroke={1.5}
               />
-            }
-            rightSection={
-              <ActionIcon
-                size={32}
-                radius="xl"
-                color={" var(--mantine-color-red-light-color)"}
-                variant="filled"
-              >
-                <IconArrowRight
-                  style={{ width: rem(18), height: rem(18) }}
-                  stroke={1.5}
-                />
-              </ActionIcon>
             }
           />
         )}
@@ -176,36 +133,6 @@ export default function StudentManagement() {
           </Box>
         </>
       )}
-      {/* 
-      <Drawer.Root
-        opened={opened}
-        onClose={close}
-        scrollAreaComponent={ScrollArea.Autosize}
-        size={"xl"}
-      >
-        <Drawer.Overlay />
-        <Drawer.Content>
-          <Drawer.Header>
-            <Drawer.Title
-              style={{
-                fontSize: "1.2rem",
-                color: " var(--mantine-color-red-light-color)",
-              }}
-            >
-              Adding Student Form
-            </Drawer.Title>
-            <Drawer.CloseButton color="" />
-          </Drawer.Header>
-          <Divider />
-
-          <Drawer.Body>
-            <Box p={"xs"}>
-              <StudentForm key={formid} closeForm={close} />
-            </Box>
-          </Drawer.Body>
-        </Drawer.Content>
-      </Drawer.Root> */}
-      {/* </Container> */}
     </>
   );
 }

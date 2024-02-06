@@ -1,15 +1,13 @@
-import { Box, TextInput } from "@mantine/core";
+import { Box, Checkbox, TextInput, Tooltip } from "@mantine/core";
 import { FormProvider, useForm } from "react-hook-form";
 import Form from "@components/Form/Form";
-import { useCallback, useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { ITeacher } from "./models/teacher.interface";
 
 import { MRT_RowData, MRT_TableInstance, MRT_Row } from "mantine-react-table";
 import BasicInformationForm from "./TeacherForm/BasicInformationForm";
 import EducationForm from "./TeacherForm/EducationForm";
 import TeacherImageForm from "./TeacherForm/TeacherImageForm";
-import useReadTeacherEntry from "./hooks/useReadLatestEntry";
-import { DocumentData } from "firebase/firestore";
 
 interface TeacherFormProps<TData extends MRT_RowData> {
   table: MRT_TableInstance<TData>;
@@ -29,15 +27,10 @@ export default function TeacherForm<TData extends MRT_RowData>({
   const isCreating = table.getState().creatingRow?.id === row.id;
   const isEditing = table.getState().editingRow?.id === row.id;
 
-  const { data: teacherEntryData = [], isLoading } = useReadTeacherEntry();
-
-  const teacherEntryLatest = teacherEntryData.map(
-    (doc: DocumentData) => doc.teacherEntry
-  );
-
   const form = useForm<ITeacher>({
     defaultValues: isEditing ? row.original : {},
   });
+  const [edit, setEdit] = useState<boolean>(true);
 
   const onSubmit = useCallback(
     (values: Partial<ITeacher>) => {
@@ -51,22 +44,6 @@ export default function TeacherForm<TData extends MRT_RowData>({
     },
     [onCreate, isCreating, isEditing, onSave]
   );
-
-  useEffect(() => {
-    if (teacherEntryLatest.every((value) => value === undefined)) {
-      form.setValue("teacherEntry", Number(1));
-    } else {
-      const filterValues = teacherEntryLatest.filter(
-        (entry) => entry !== undefined
-      ) as number[];
-
-      if (filterValues.length > 0) {
-        form.setValue("teacherEntry", Math.max(...teacherEntryLatest) + 1);
-      } else {
-        form.setValue("teacherEntry", Number(1));
-      }
-    }
-  }, [teacherEntryLatest, form, isEditing, row.original.teacherEntry]);
 
   useEffect(() => {
     if (form.formState.errors) {
@@ -98,26 +75,34 @@ export default function TeacherForm<TData extends MRT_RowData>({
           <Form.Grid p={"lg"}>
             <Form.Col span={{ base: 12, md: 3, lg: 6 }}>
               <TextInput
-                label="Teacher Entry"
+                label="Student Number"
                 withAsterisk
-                disabled
-                // withErrorStyles={errors.firstName?.message ? true : false}
-                // error={<>{errors.firstName && errors.firstName?.message}</>}
-                {...form.register("teacherEntry")}
+                placeholder="Place your student number here"
+                disabled={isEditing && edit}
+                {...form.register("teacherNumber", {
+                  required: "This field is required!",
+                })}
+                rightSection={
+                  <>
+                    {isEditing && (
+                      <Tooltip
+                        label={`To
+                        ${
+                          edit ? " turn on " : "turn off "
+                        }this field,  you may ${
+                          edit ? " enable" : "disabled"
+                        } this by toggling the checkbox.`}
+                      >
+                        <Checkbox
+                          checked={edit}
+                          onChange={(e) => setEdit(e.currentTarget.checked)}
+                        />
+                      </Tooltip>
+                    )}
+                  </>
+                }
               />
             </Form.Col>
-            {isEditing && (
-              <Form.Col span={{ base: 12, md: 3, lg: 6 }}>
-                <TextInput
-                  label="Teacher Number"
-                  withAsterisk
-                  disabled
-                  value={isEditing ? row.original.teacherNumber : ""}
-                  // withErrorStyles={errors.firstName?.message ? true : false}
-                  // error={<>{errors.firstName && errors.firstName?.message}</>}
-                />
-              </Form.Col>
-            )}
           </Form.Grid>
           <BasicInformationForm />
 
@@ -132,7 +117,6 @@ export default function TeacherForm<TData extends MRT_RowData>({
             }}
           >
             <Form.SubmitButton
-              disabled={isLoading}
               loading={table.getState().isSaving}
               color="red.8"
             />

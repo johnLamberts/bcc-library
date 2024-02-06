@@ -25,4 +25,9 @@ export interface IStudents {
   userDocID?: string;
 
   isEnabled?: boolean;
+
+  createdAt: {
+    seconds: number;
+    nanoseconds: number;
+  };
 }
