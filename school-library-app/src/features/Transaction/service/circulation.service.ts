@@ -78,6 +78,59 @@ const addBorrowCirculation = async (borrow: ICirculation) => {
   );
 };
 
+const addBorrowTransaction = async (borrow: ICirculation) => {
+  const borrowTransactionRef = await addDoc(
+    collection(firestore, FIRESTORE_COLLECTION_QUERY_KEY.BORROW_TRANSACTION),
+    {
+      ...borrow,
+      status: "Active",
+      expiryTime: borrow.timeDuration + new Date().getTime(),
+      dateBorrowed: serverTimestamp(),
+    }
+  );
+
+  await addDoc(
+    collection(
+      firestore,
+      FIRESTORE_COLLECTION_QUERY_KEY.AVAILABILITY_TRANSACTION
+    ),
+    {
+      ...borrow,
+      expiryTime: borrow.timeDuration + new Date().getTime(),
+      booksBorrowedId: borrowTransactionRef.id,
+      status: "Active",
+    }
+  );
+
+  await addDoc(
+    collection(firestore, FIRESTORE_COLLECTION_QUERY_KEY.ALL_BOOKS_TRANSACTION),
+    {
+      booksBorrowedId: borrowTransactionRef.id,
+      expiryTime: borrow.timeDuration! + new Date().getTime(),
+      booksId: borrow.booksId,
+      bookTitle: borrow.bookTitle,
+      bookISBN: borrow.bookISBN,
+      borrowers: borrow.borrowers,
+      borrowersId: borrow.borrowersId,
+      bookType: borrow.bookType,
+      borrowersEmail: borrow.borrowersEmail,
+      borrowersName: borrow.borrowersName,
+      borrowersNumber: borrow.borrowersNumber,
+      booksPrice: borrow.bookPrice,
+      status: "Active",
+      createdAt: serverTimestamp(),
+    }
+  );
+
+  await updateDoc(
+    doc(firestore, FIRESTORE_COLLECTION_QUERY_KEY.CATALOGUE, borrow.booksId),
+    {
+      numberOfBooksAvailable_QUANTITY:
+        borrow.numberOfBooksAvailable_QUANTITY - 1,
+    }
+  );
+};
+
 const returnOverdueCirculation = async (returnBook: Partial<ICirculation>) => {
   const transactionRef = await getDocs(
     query(
@@ -193,4 +246,48 @@ const returnDueCirculation = async (returnBook: Partial<ICirculation>) => {
   });
 };
 
-export { addBorrowCirculation, returnOverdueCirculation, returnDueCirculation };
+const getBooksTransaction = async () => {
+  const booksTransactionRef = await getDocs(
+    query(
+      collection(
+        firestore,
+        FIRESTORE_COLLECTION_QUERY_KEY.ALL_BOOKS_TRANSACTION
+      )
+    )
+  );
+
+  return booksTransactionRef.docs.map((doc) => ({
+    id: doc.id,
+    ...doc.data(),
+  })) as ICirculation[];
+};
+
+const getBooksBorrowed = async () => {
+  const booksTransactionRef = await getDocs(
+    query(
+      collection(firestore, FIRESTORE_COLLECTION_QUERY_KEY.BORROW_TRANSACTION)
+    )
+  );
+
+  return booksTransactionRef.docs.map((doc) => ({
+    id: doc.id,
+    ...doc.data(),
+  })) as ICirculation[];
+};
+
+export {
+  addBorrowCirculation,
+  //* NOTE: New implementation of Borrow Transaction. Simplified.
+  addBorrowTransaction,
+  returnOverdueCirculation,
+  returnDueCirculation,
+
+  /**
+   **  NOTE: Read all books Transaction
+   **  whereas STATUS can be `returned`,
+   **  `active`, `overdue`, and `request`
+   *
+   */
+  getBooksTransaction,
+  getBooksBorrowed,
+};

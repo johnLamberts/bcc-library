@@ -51,7 +51,6 @@ const addCategorySection = async (payload: Partial<ICategorySection>) => {
   }
 };
 
-//
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const updateCategorySection = async (
   payload: Partial<ICategorySection>,

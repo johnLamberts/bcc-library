@@ -4,13 +4,7 @@ import useReadCatalogue from "@features/Catalogue/hooks/useReadCatalogue";
 import useReadBookType from "@features/SysSettings/BookType/hooks/useReadBookType";
 import { Select, Text, TextInput, rem } from "@mantine/core";
 import { IconEye } from "@tabler/icons-react";
-import {
-  Dispatch,
-  SetStateAction,
-  useCallback,
-  useEffect,
-  useMemo,
-} from "react";
+import { Dispatch, SetStateAction, useCallback, useEffect } from "react";
 import { Controller, useFormContext } from "react-hook-form";
 import { IBooks } from "../models/books.interface";
 
@@ -49,6 +43,9 @@ const BooksToBeBorrowedDetailsForm = ({ seeType, setSeeType }: FormProps) => {
         "numberOfBooksAvailable_QUANTITY",
         filterInfo?.numberOfBooksAvailable_QUANTITY
       );
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      setValue("booksPrice", (filterInfo as any)?.booksPrice);
       setValue("booksId", filterInfo?.id);
     },
     [setValue]

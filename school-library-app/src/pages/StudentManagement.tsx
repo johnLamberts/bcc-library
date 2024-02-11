@@ -9,12 +9,7 @@ import {
   Tooltip,
   rem,
 } from "@mantine/core";
-import {
-  IconArrowRight,
-  IconBoxMultiple1,
-  IconSearch,
-  IconTable,
-} from "@tabler/icons-react";
+import { IconBoxMultiple1, IconSearch, IconTable } from "@tabler/icons-react";
 import StudentTable from "@features/Student/StudentTable";
 import { useSearchParams } from "react-router-dom";
 import useReadStudents from "@features/Student/hooks/useReadStudents";

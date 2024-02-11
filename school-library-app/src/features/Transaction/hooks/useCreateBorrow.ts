@@ -1,7 +1,7 @@
 import { useQueryClient, useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { FIRESTORE_COLLECTION_QUERY_KEY } from "src/shared/enums";
-import { addBorrowCirculation } from "../service/circulation.service";
+import { addBorrowTransaction } from "../service/circulation.service";
 
 export function useCreateBorrow() {
   const queryClient = useQueryClient();
@@ -9,7 +9,7 @@ export function useCreateBorrow() {
     isPending: isCreatingBorrowingTransaction,
     mutateAsync: createBorrowTransaction,
   } = useMutation({
-    mutationFn: addBorrowCirculation,
+    mutationFn: addBorrowTransaction,
     onSuccess: (_newArr, data) => {
       toast.success(
         `Success! You have successfully completed the borrowing transaction.

@@ -1,11 +1,14 @@
-import { useMemo, useState } from "react";
+import React, { useMemo, useState } from "react";
 import UsersBox from "@features/Users/UsersBox";
 import {
   ActionIcon,
   Box,
   Divider,
+  Flex,
   Grid,
   Group,
+  Select,
+  Text,
   TextInput,
   Tooltip,
   rem,
@@ -58,49 +61,96 @@ export default function UserManagement() {
     );
   }, [searchParams, isLoading, optimizedUsersData, filterUserData]);
 
+  const handleChange = (params: string | null) => {
+    searchParams.set("viewBy", params as string);
+
+    return setSearchParams(searchParams);
+  };
   return (
     <>
       <Group justify="space-between">
         <Box>
-          <Tooltip label="View the students by Table">
-            <ActionIcon
-              m={1.2}
-              variant={
-                searchParams.get("view") === "by-table" ||
-                searchParams.get("view") === null
-                  ? "outline"
-                  : "default"
-              }
-              color="red"
-              size="lg"
-              aria-label="Settings"
-              onClick={() => {
-                searchParams.set("view", "by-table");
-                setSearchParams(searchParams);
-              }}
-            >
-              <IconTable style={{ width: rem(20) }} stroke={1.5} />
-            </ActionIcon>
-          </Tooltip>
-          <Tooltip label="View the students by Card">
-            <ActionIcon
-              m={1.2}
-              variant={
-                searchParams.get("view") === "by-cards" ? "outline" : "default"
-              }
-              color="red"
-              size="lg"
-              aria-label="Gallery"
-              onClick={() => {
-                searchParams.set("view", "by-cards");
-                setSearchParams(searchParams);
-              }}
-            >
-              <IconBoxMultiple1 style={{ width: rem(20) }} stroke={1.5} />
-            </ActionIcon>
-          </Tooltip>
-        </Box>
+          {/* <Flex align={"center"} gap={"0.2rem"}>
+            <Flex align={"center"}>
+              <Text span c={"dimmed"} size="xs">
+                Table
+              </Text>{" "}
+              <Tooltip label="Table">
+                <ActionIcon
+                  m={1.2}
+                  variant={
+                    searchParams.get("view") === "by-table" ||
+                    searchParams.get("view") === null
+                      ? "outline"
+                      : "default"
+                  }
+                  color="red"
+                  size="lg"
+                  aria-label="Settings"
+                  onClick={() => {
+                    searchParams.set("view", "by-table");
+                    setSearchParams(searchParams);
+                  }}
+                >
+                  <IconTable style={{ width: rem(20) }} stroke={1.5} />
+                </ActionIcon>
+              </Tooltip>
+            </Flex>
+            <Flex align={"center"}>
+              <Tooltip label="Card">
+                <ActionIcon
+                  m={1.2}
+                  variant={
+                    searchParams.get("view") === "by-cards"
+                      ? "outline"
+                      : "default"
+                  }
+                  color="red"
+                  size="lg"
+                  aria-label="Gallery"
+                  onClick={() => {
+                    searchParams.set("view", "by-cards");
+                    setSearchParams(searchParams);
+                  }}
+                >
+                  <IconBoxMultiple1 style={{ width: rem(20) }} stroke={1.5} />
+                </ActionIcon>
+              </Tooltip>
+              <Text span c={"dimmed"} size="xs">
+                Cards
+              </Text>
+            </Flex>
+          </Flex> */}
 
+          <Flex align={"center"} gap={"xs"}>
+            <Text span c={"dimmed"} size="md">
+              View
+            </Text>
+            {/* <ActionIcon
+                m={1.2}
+                variant={
+                  searchParams.get("view") === "by-cards"
+                    ? "outline"
+                    : "default"
+                }
+                color="red"
+                size="lg"
+                aria-label="Gallery"
+                onClick={() => {
+                  searchParams.set("view", "by-cards");
+                  setSearchParams(searchParams);
+                }}
+              >
+                <IconBoxMultiple1 style={{ width: rem(20) }} stroke={1.5} />
+              </ActionIcon> */}
+            <Select
+              size="xs"
+              data={["All", "Archive"]}
+              defaultValue={"All"}
+              onChange={handleChange}
+            />
+          </Flex>
+        </Box>
         {searchParams.get("view") === "by-cards" && (
           <TextInput
             radius="md"

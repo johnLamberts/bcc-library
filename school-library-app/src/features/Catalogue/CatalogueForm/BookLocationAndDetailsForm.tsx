@@ -1,6 +1,12 @@
 import Form from "@components/Form/Form";
 import useReadCategorySection from "@features/SysSettings/CategorySection/hooks/useReadCategorySection";
-import { InputBase, Select, TextInput, Textarea } from "@mantine/core";
+import {
+  InputBase,
+  NumberInput,
+  Select,
+  TextInput,
+  Textarea,
+} from "@mantine/core";
 import { Controller, useFormContext } from "react-hook-form";
 import { IMaskInput } from "react-imask";
 
@@ -54,6 +60,26 @@ const BookLocationAndDetailsForm = () => {
                   withErrorStyles={errors.callNumber?.message ? true : false}
                   {...field}
                   error={<>{errors.callNumber?.message}</>}
+                />
+              );
+            }}
+          />
+        </Form.Col>
+
+        <Form.Col span={{ base: 12, md: 6, lg: 6 }}>
+          <Controller
+            name="bookPrice"
+            control={control}
+            render={({ field }) => {
+              return (
+                <NumberInput
+                  label="Book Price"
+                  placeholder="Price"
+                  decimalScale={2}
+                  {...field}
+                  allowNegative={false}
+                  leftSection={<>₱</>}
+                  defaultValue={0}
                 />
               );
             }}

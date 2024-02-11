@@ -41,6 +41,7 @@ export interface ICirculation {
   borrowStatus?: string;
 
   totalFee?: number;
+  bookPrice?: number;
   returnCondition?: string;
   booksBorrowedId?: string;
 }

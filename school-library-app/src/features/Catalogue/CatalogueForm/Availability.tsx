@@ -1,5 +1,10 @@
 import Form from "@components/Form/Form";
 import { NumberInput, Select } from "@mantine/core";
+import {
+  IconClockOff,
+  IconStackBack,
+  IconTimeDuration5,
+} from "@tabler/icons-react";
 import { MRT_TableInstance, MRT_Row, MRT_RowData } from "mantine-react-table";
 import { useEffect, useState } from "react";
 import { Controller, useFormContext } from "react-hook-form";
@@ -44,15 +49,15 @@ const Availability = <TData extends MRT_RowData>({
       ? timeUnitData
           .filter((unit) => unit.value === row?.original.timeUnit)
           .map((unit) => unit.label)[0]
-      : ""
+      : null
   ); // Dropdown for unit
 
   useEffect(() => {
     if (isEditing) {
-      const selectedLabel =
-        timeUnitData.find((unit) => unit.value === row?.original.timeUnit)
-          ?.label || "";
-      setValue("timeUnit", selectedLabel);
+      const selectedLabel = timeUnitData.find(
+        (unit) => unit.value === row?.original.timeUnit
+      );
+      setValue("timeUnit", selectedLabel?.value);
     } else {
       setValue("timeUnit", "");
     }
@@ -82,6 +87,7 @@ const Availability = <TData extends MRT_RowData>({
                   {...field}
                   error={<>{errors.timeUnit?.message}</>}
                   withErrorStyles={errors.timeUnit?.message ? true : false}
+                  leftSection={<IconClockOff size={14} />}
                 />
               );
             }}
@@ -110,6 +116,11 @@ const Availability = <TData extends MRT_RowData>({
                   }
                   error={<>{errors.timeSpecifier?.message}</>}
                   withErrorStyles={errors.timeSpecifier?.message ? true : false}
+                  leftSection={
+                    <>
+                      <IconTimeDuration5 size={14} />
+                    </>
+                  }
                 />
               );
             }}
@@ -137,6 +148,7 @@ const Availability = <TData extends MRT_RowData>({
                       ? true
                       : false
                   }
+                  leftSection={<IconStackBack size={14} />}
                 />
               );
             }}

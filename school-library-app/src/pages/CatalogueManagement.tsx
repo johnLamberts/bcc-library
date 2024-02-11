@@ -61,7 +61,7 @@ export default function CatalogueManagement() {
             {userData.map((user, index) => (
               <UsersBox
                 key={index}
-                index={index}
+                // index={index}
                 user={user}
                 filterUserData={filterUserData}
                 setGetId={setGetId}

@@ -1,14 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import {
-  Group,
-  Box,
-  Button,
-  Text,
-  Flex,
-  ScrollArea,
-  Avatar,
-  Badge,
-} from "@mantine/core";
+import { Group, Box, Button, Text, Flex, Avatar, Badge } from "@mantine/core";
 import {
   IconFileTypeCsv,
   IconFileTypePdf,
@@ -76,6 +67,11 @@ const UserReportTable = () => {
       {
         accessorKey: "userRole",
         header: "Role",
+        filterVariant: "select",
+        mantineFilterMultiSelectProps: {
+          data: ["Student", "Librarian", "Admin", "Teacher", "Staff"],
+        },
+
         Cell: ({ row }) => {
           return <Badge size="md">{row.getValue("userRole")}</Badge>;
         },
@@ -180,30 +176,24 @@ const UserReportTable = () => {
     );
   };
 
+  console.log(customColumns);
+
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
 
   const table = useMantineReactTable({
     data: optimizedUsersData,
     columns: customColumns,
-    enableRowNumbers: true,
     mantineTableContainerProps: {
       style: {
         height: "100%",
       },
     },
+    mantineTableProps: {
+      withColumnBorders: true,
+      withRowBorders: true,
+      withTableBorder: true,
+    },
 
-    mantineCreateRowModalProps: {
-      centered: true,
-      size: "xl",
-      title: "Adding form for User",
-      scrollAreaComponent: ScrollArea.Autosize,
-    },
-    mantineEditRowModalProps: {
-      centered: true,
-      size: "xl",
-      title: "Editing form for User",
-      scrollAreaComponent: ScrollArea.Autosize,
-    },
     state: {
       isLoading: isLoadingUsers,
       // isSaving: isCreatingUser || isUpdating || isUpdatingStatus,
@@ -215,6 +205,11 @@ const UserReportTable = () => {
       pagination: { pageIndex: 0, pageSize: 5 },
       columnVisibility: {
         id: false,
+        avatarImage: false,
+        middleName: false,
+      },
+      columnPinning: {
+        left: ["Date Created"],
       },
       showColumnFilters: true,
     },
@@ -260,8 +255,6 @@ const UserReportTable = () => {
       </>
     ),
   });
-
-  console.log();
 
   const exportToPDF = async (data: Row<IUser>[]) => {
     const headerNamesMapping: Record<string, string> = {
@@ -489,21 +482,9 @@ const UserReportTable = () => {
         <Group justify="space-between">
           <Box className={classes.highlight}>
             <Text fz={"xl"} fw={"bold"} c={"red"}>
-              User Report
+              User Account Report
             </Text>
           </Box>
-          <Group>
-            <Button
-              disabled={true}
-              variant="light"
-              onClick={() => table.setCreatingRow(true)}
-              leftSection={<IconPlus size={14} />}
-              bg={" var(--mantine-color-red-light)"}
-              color={" var(--mantine-color-red-light-color)"}
-            >
-              Add User
-            </Button>
-          </Group>
         </Group>
 
         <Box mt={"lg"}>

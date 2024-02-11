@@ -1,10 +1,15 @@
-import { Group, Image, Text } from "@mantine/core";
+import { Box, Group, Image, Text } from "@mantine/core";
 
 export default function Logo() {
   return (
-    <Group visibleFrom="sm">
+    <Group>
       <Image src={"/images/bcc-logo.svg"} h={35} w="auto" fit="contain" />
-      <Text>Binangonan Catholic College</Text>
+      <Box>
+        <Text>Binangonan Catholic College</Text>
+        <Text c={"dimmed"} fz={"xs"}>
+          Open Public Access Catalog
+        </Text>
+      </Box>
     </Group>
   );
 }

@@ -1,205 +1,80 @@
+import ReturnConditionTable from "@features/SysSettings/ReturnCondition/ReturnConditionTable";
+import { Box, Divider, Group, Tabs, rem } from "@mantine/core";
 import {
-  Group,
-  Box,
-  Button,
-  Text,
-  Flex,
-  ActionIcon,
-  Tooltip,
-  Stack,
-  ScrollArea,
-} from "@mantine/core";
-import { IconEdit, IconPlus } from "@tabler/icons-react";
-import {
-  MRT_ColumnDef,
-  MRT_ShowHideColumnsButton,
-  MRT_TableOptions,
-  MRT_ToggleDensePaddingButton,
-  MRT_ToggleGlobalFilterButton,
-  MantineReactTable,
-  useMantineReactTable,
-} from "mantine-react-table";
-import { useMemo } from "react";
-import classes from "../styles/user.module.css";
+  IconSettings,
+  IconMessageCircle,
+  IconPhoto,
+} from "@tabler/icons-react";
 
-import ReturnConditionForm from "@features/SysSettings/ReturnCondition/ReturnConditionForm";
-import useCreateReturnCondition from "@features/SysSettings/ReturnCondition/useCreateReturnedCondition";
-import IReturnCondition from "@features/SysSettings/ReturnCondition/model/return-condition.interface";
-import useReadReturnCondition from "@features/SysSettings/ReturnCondition/useReadReturnCondition";
-import useModifyReturnCondition from "@features/SysSettings/ReturnCondition/useModifyReturnCondition";
+import tabClasses from "../styles/return-condition.module.css";
+import { Suspense } from "react";
+import DamagedCategoryTable from "@features/SysSettings/ReturnCondition/ReturnCategory/DamageCategoryTable";
+import MissingCategoryTable from "@features/SysSettings/ReturnCondition/ReturnCategory/MissingCategoryTable";
 
 const ReturnCondition = () => {
-  const { createReturnCondition, isPending: isCreating } =
-    useCreateReturnCondition();
-
-  const {
-    data: returnCondition = [],
-    isLoading: isLoadingReturnCondition,
-    isError: isLoadingReturnConditionError,
-    isFetching: isFetchingReturnCondition,
-  } = useReadReturnCondition();
-
-  const { modifyReturnCondition, isPending: isUpdating } =
-    useModifyReturnCondition();
-
-  const customColumns = useMemo<MRT_ColumnDef<IReturnCondition>[]>(
-    () => [
-      {
-        accessorKey: "id",
-        header: "Id",
-        enableEditing: false,
-        size: 80,
-      },
-      {
-        accessorKey: "returnCondition",
-        header: "Condition",
-      },
-      {
-        accessorKey: "fee",
-        header: "Fee",
-      },
-    ],
-    []
-  );
-
-  // CREATE action
-  const handleCreateLevel: MRT_TableOptions<IReturnCondition>["onCreatingRowSave"] =
-    async ({ values, table }) => {
-      await createReturnCondition(values);
-
-      table.setCreatingRow(null);
-    };
-
-  const handleSaveLevel: MRT_TableOptions<IReturnCondition>["onEditingRowSave"] =
-    async ({ values, table }) => {
-      await modifyReturnCondition(values);
-      table.setEditingRow(null);
-    };
-
-  const table = useMantineReactTable({
-    data: returnCondition,
-    columns: customColumns,
-    createDisplayMode: "modal",
-    editDisplayMode: "modal",
-    enableRowActions: true,
-    enableEditing: true,
-    positionActionsColumn: "last",
-    getRowId: (row) => String(row.id),
-    onCreatingRowSave: handleCreateLevel,
-    //     onEditingRowSave: handleSaveLevel,
-    mantineTableContainerProps: {
-      style: {
-        height: "100%",
-      },
-    },
-    state: {
-      isLoading: isLoadingReturnCondition,
-      isSaving: isCreating || isUpdating,
-      showAlertBanner: isLoadingReturnConditionError,
-      showProgressBars: isFetchingReturnCondition,
-    },
-
-    mantineCreateRowModalProps: {
-      centered: true,
-      size: "xl",
-      scrollAreaComponent: ScrollArea.Autosize,
-    },
-
-    initialState: {
-      pagination: { pageIndex: 0, pageSize: 5 },
-    },
-
-    renderRowActions: ({ row }) => (
-      <>
-        <Flex gap="md">
-          <Tooltip label="Edit">
-            <ActionIcon
-              variant="light"
-              onClick={() => table.setEditingRow(row)}
-            >
-              <IconEdit />
-            </ActionIcon>
-          </Tooltip>
-        </Flex>
-      </>
-    ),
-
-    renderToolbarInternalActions: ({ table }) => {
-      return (
-        <Flex gap="xs" align="center">
-          <MRT_ToggleGlobalFilterButton table={table} />{" "}
-          <MRT_ToggleDensePaddingButton table={table} />
-          <MRT_ShowHideColumnsButton table={table} />
-        </Flex>
-      );
-    },
-
-    renderEditRowModalContent: ({ row, table }) => {
-      return (
-        <>
-          <Stack>
-            <ReturnConditionForm
-              table={table}
-              row={row}
-              onSave={(data) =>
-                handleSaveLevel({
-                  values: data,
-                  table: table,
-                  row: row,
-                  exitEditingMode: () => null,
-                })
-              }
-            />
-          </Stack>
-        </>
-      );
-    },
-    renderCreateRowModalContent: ({ table, row }) => {
-      return (
-        <>
-          <Stack>
-            <ReturnConditionForm
-              table={table}
-              row={row}
-              onCreate={(data) =>
-                handleCreateLevel({
-                  values: data,
-                  table: table,
-                  row: row,
-                  exitCreatingMode: () => null,
-                })
-              }
-            />
-          </Stack>
-        </>
-      );
-    },
-  });
-
   return (
     <>
-      <Group justify="space-between">
-        <Box className={classes.highlight}>
-          <Text fz={"xl"} fw={"bold"} c={"red"}>
-            Returned Condition and Fee
-          </Text>
-        </Box>
-        <Group>
-          <Button
-            variant="light"
-            onClick={() => table.setCreatingRow(true)}
-            leftSection={<IconPlus size={14} />}
-            bg={" var(--mantine-color-red-light)"}
-            color={" var(--mantine-color-red-light-color)"}
-          >
-            Add Returned Condition and Fee
-          </Button>
-        </Group>
-      </Group>
+      <Group>
+        <Tabs
+          variant="unstyled"
+          defaultValue="bookCondition"
+          classNames={tabClasses}
+        >
+          <Tabs.List>
+            <Tabs.Tab
+              value="bookCondition"
+              leftSection={
+                <IconSettings style={{ width: rem(16), height: rem(16) }} />
+              }
+            >
+              Book condition
+            </Tabs.Tab>
+            <Tabs.Tab
+              value="damages"
+              leftSection={
+                <IconMessageCircle
+                  style={{ width: rem(16), height: rem(16) }}
+                />
+              }
+            >
+              Damaged Category
+            </Tabs.Tab>
+            <Tabs.Tab
+              value="missing"
+              leftSection={
+                <IconPhoto style={{ width: rem(16), height: rem(16) }} />
+              }
+            >
+              Missing Category
+            </Tabs.Tab>
+          </Tabs.List>
+          <Divider my="lg" c={"dimmed"} />
 
-      <Box mt={"lg"}>
-        <MantineReactTable table={table} />
-      </Box>
+          <Tabs.Panel value="bookCondition">
+            <Suspense fallback={<>Loading Table...</>}>
+              <Box my={"xl"}>
+                <ReturnConditionTable />
+              </Box>
+            </Suspense>
+          </Tabs.Panel>
+
+          <Tabs.Panel value="damages">
+            <Suspense fallback={<>Loading Table...</>}>
+              <Box my={"xl"}>
+                <DamagedCategoryTable />
+              </Box>
+            </Suspense>
+          </Tabs.Panel>
+
+          <Tabs.Panel value="missing">
+            <Suspense fallback={<>Loading Table...</>}>
+              <Box my={"xl"}>
+                <MissingCategoryTable />
+              </Box>
+            </Suspense>
+          </Tabs.Panel>
+        </Tabs>
+      </Group>
     </>
   );
 };

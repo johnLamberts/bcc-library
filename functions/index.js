@@ -57,7 +57,7 @@ exports.welcomeEmailv2 = functions.firestore
   });
 
 exports.taskRunner = functions
-  .runWith({ memory: "2GB" })
+  .runWith({ memory: "4GB" })
   .pubsub.schedule("* * * * *")
   .onRun(async () => {
     const testData = admin.firestore().collection("availability").get();
@@ -68,7 +68,7 @@ exports.taskRunner = functions
         const { expiryTime } = snapshot;
         const timeNow = admin.firestore.Timestamp.now().toMillis();
         if (expiryTime < timeNow) {
-          doc.ref.update({ borrowStatus: "Overdue" });
+          doc.ref.update({ status: "Overdue" });
 
           const msg = {
             to: snapshot.borrowersEmail,
@@ -91,31 +91,22 @@ exports.taskRunner = functions
 
           booksTransactionRef.docs.map(async (doc) =>
             admin.firestore().doc(`books-transaction/${doc.id}`).update({
-              borrowStatus: "Overdue",
+              status: "Overdue",
               modifiedAt: admin.firestore.Timestamp.now(),
             })
           );
 
           await admin
             .firestore()
-            .collection("books-overdue")
-            .add({
-              ...doc.data(),
-              borrowStatus: "Overdue",
-              createdAt: admin.firestore.Timestamp.now(),
-            });
-
-          await admin
-            .firestore()
             .doc(`books-borrowed/${doc.data().booksBorrowedId}`)
             .update({
-              borrowStatus: "Overdue",
+              status: "Overdue",
               modifiedAt: admin.firestore.Timestamp.now(),
             });
           await admin.firestore().doc(`availability/${doc.id}`).delete();
           return sgMail.send(msg);
         } else {
-          doc.ref.update({ borrowStatus: "Active" });
+          doc.ref.update({ status: "Active" });
         }
       });
     });

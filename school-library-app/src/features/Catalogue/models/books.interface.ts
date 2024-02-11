@@ -4,6 +4,7 @@ export interface IBooks {
   title: string;
   genres: string[];
   authors: string[];
+  bookPrice?: number;
   bookISBN: string;
   callNumber: string;
   bookSection: string;

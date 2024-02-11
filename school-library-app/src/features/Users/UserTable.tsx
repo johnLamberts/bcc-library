@@ -4,14 +4,25 @@ import {
   Button,
   Text,
   Flex,
-  ActionIcon,
-  Tooltip,
   Stack,
   ScrollArea,
   Avatar,
   Badge,
+  Menu,
+  rem,
+  ActionIcon,
+  Tooltip,
 } from "@mantine/core";
-import { IconEdit, IconEyeMinus, IconPlus } from "@tabler/icons-react";
+import {
+  IconArchive,
+  IconDots,
+  IconEdit,
+  IconEyeMinus,
+  IconLockOff,
+  IconLockOpen,
+  IconPlus,
+  IconTriangleSquareCircle,
+} from "@tabler/icons-react";
 import {
   MRT_ColumnDef,
   MRT_Row,
@@ -117,10 +128,11 @@ const UserTable = () => {
   // STATUS action
   const openUpdateStatusConfirmModal = (row: MRT_Row<IUser>) =>
     modals.openConfirmModal({
+      centered: true,
       title: (
         <Text>
           Are you sure you want to{" "}
-          <b>{!row.original.isEnabled ? "enabled" : "disabled"}</b> this user?
+          <b>{!row.original.isEnabled ? "enable" : "disable"}</b> this user?
         </Text>
       ),
       children: (
@@ -130,7 +142,7 @@ const UserTable = () => {
         </Text>
       ),
       labels: {
-        confirm: `${!row.original.isEnabled ? "Enabled" : "Disabled"}`,
+        confirm: `${!row.original.isEnabled ? "Enable" : "Disable"}`,
         cancel: "Cancel",
       },
       confirmProps: { color: "red" },
@@ -165,12 +177,18 @@ const UserTable = () => {
     getRowId: (row) => String(row.id),
     onCreatingRowSave: handleCreateLevel,
     onEditingRowSave: handleSaveLevel,
+
     mantineTableContainerProps: {
       style: {
         height: "100%",
+        width: "100%",
       },
     },
-
+    mantineTableProps: {
+      withColumnBorders: true,
+      withRowBorders: true,
+      withTableBorder: true,
+    },
     mantineCreateRowModalProps: {
       centered: true,
       size: "xl",
@@ -185,9 +203,11 @@ const UserTable = () => {
     },
     state: {
       isLoading: isLoadingUsers,
-      isSaving: isCreatingUser || isUpdating || isUpdatingStatus,
+      isSaving: isCreatingUser || isUpdating,
       showAlertBanner: isLoadingUsersError,
       showProgressBars: isFetchingUsers,
+      // showSkeletons: isUpdatingStatus,
+      showLoadingOverlay: isUpdatingStatus,
     },
 
     columnFilterDisplayMode: "popover",
@@ -200,49 +220,139 @@ const UserTable = () => {
       showColumnFilters: true,
     },
 
-    renderRowActions: ({ row }) => (
-      <>
-        <Flex gap="md">
-          <Tooltip
-            label={`${
-              row.original.userRole === "Student" ||
-              row.original.userRole === "student" ||
-              row.original.userRole === "STUDENT" ||
-              row.original.userRole === "Teacher" ||
-              row.original.userRole === "teacher" ||
-              row.original.userRole === "TEACHER"
-                ? "You can't perform this action directly at the moment.\nPlease navigate to the dedicated Management section to make the necessary changes."
-                : "Edit"
-            }`}
-          >
-            <ActionIcon
-              disabled={
-                row.original.userRole === "Student" ||
-                row.original.userRole === "student" ||
-                row.original.userRole === "STUDENT" ||
-                row.original.userRole === "Teacher" ||
-                row.original.userRole === "teacher" ||
-                row.original.userRole === "TEACHER"
-              }
-              variant="light"
-              onClick={() => table.setEditingRow(row)}
-            >
-              <IconEdit />
-            </ActionIcon>
-          </Tooltip>
-          <Tooltip label="Disabled">
-            <ActionIcon
-              variant="light"
-              onClick={() => {
-                openUpdateStatusConfirmModal(row);
-              }}
-            >
-              <IconEyeMinus />
-            </ActionIcon>
-          </Tooltip>
-        </Flex>
-      </>
-    ),
+    renderRowActions: ({ row }) => {
+      return (
+        <>
+          <Menu shadow="md">
+            <Menu.Target>
+              <IconDots size={24} />
+            </Menu.Target>
+
+            <Menu.Dropdown>
+              <Menu.Item
+                disabled={
+                  row.original.userRole === "Student" ||
+                  row.original.userRole === "student" ||
+                  row.original.userRole === "STUDENT" ||
+                  row.original.userRole === "Teacher" ||
+                  row.original.userRole === "teacher" ||
+                  row.original.userRole === "TEACHER"
+                }
+                leftSection={
+                  <IconEdit style={{ width: rem(18), height: rem(18) }} />
+                }
+                onClick={() => table.setEditingRow(row)}
+              >
+                Edit
+              </Menu.Item>
+
+              <Menu.Item
+                disabled={
+                  row.original.userRole === "Student" ||
+                  row.original.userRole === "student" ||
+                  row.original.userRole === "STUDENT" ||
+                  row.original.userRole === "Teacher" ||
+                  row.original.userRole === "teacher" ||
+                  row.original.userRole === "TEACHER"
+                }
+                leftSection={
+                  <IconArchive style={{ width: rem(18), height: rem(18) }} />
+                }
+                onClick={() => table.setEditingRow(row)}
+              >
+                Archive
+              </Menu.Item>
+              <Menu.Item
+                onClick={() => {
+                  openUpdateStatusConfirmModal(row);
+                }}
+                leftSection={
+                  row.original.isEnabled ? (
+                    <IconLockOff style={{ width: rem(18), height: rem(18) }} />
+                  ) : (
+                    <IconLockOpen style={{ width: rem(18), height: rem(18) }} />
+                  )
+                }
+              >
+                {row.original.isEnabled ? "Disabled" : "Enable"}
+              </Menu.Item>
+            </Menu.Dropdown>
+          </Menu>
+        </>
+      );
+    },
+
+    // renderRowActions: ({ row }) => (
+    //   <>
+    //     <Flex gap="md">
+    //       <Tooltip
+    //         label={`${
+    //           row.original.userRole === "Student" ||
+    //           row.original.userRole === "student" ||
+    //           row.original.userRole === "STUDENT" ||
+    //           row.original.userRole === "Teacher" ||
+    //           row.original.userRole === "teacher" ||
+    //           row.original.userRole === "TEACHER"
+    //             ? "You can't perform this action directly at the moment.\nPlease navigate to the dedicated Management section to make the necessary changes."
+    //             : "Edit"
+    //         }`}
+    //       >
+    //         <ActionIcon
+    //           disabled={
+    //             row.original.userRole === "Student" ||
+    //             row.original.userRole === "student" ||
+    //             row.original.userRole === "STUDENT" ||
+    //             row.original.userRole === "Teacher" ||
+    //             row.original.userRole === "teacher" ||
+    //             row.original.userRole === "TEACHER"
+    //           }
+    //           variant="light"
+    //           onClick={() => table.setEditingRow(row)}
+    //         >
+    //           <IconEdit />
+    //         </ActionIcon>
+    //       </Tooltip>
+    //       <Tooltip label="Disabled">
+    //         <ActionIcon
+    //           variant="light"
+    //           onClick={() => {
+    //             openUpdateStatusConfirmModal(row);
+    //           }}
+    //         >
+    //           <IconEyeMinus />
+    //         </ActionIcon>
+    //       </Tooltip>
+
+    //       <Tooltip
+    //         label={`${
+    //           row.original.userRole === "Student" ||
+    //           row.original.userRole === "student" ||
+    //           row.original.userRole === "STUDENT" ||
+    //           row.original.userRole === "Teacher" ||
+    //           row.original.userRole === "teacher" ||
+    //           row.original.userRole === "TEACHER"
+    //             ? "You can't perform this action directly at the moment.\nPlease navigate to the dedicated Management section to make the necessary changes."
+    //             : "Archive"
+    //         }`}
+    //       >
+    //         <ActionIcon
+    //           disabled={
+    //             row.original.userRole === "Student" ||
+    //             row.original.userRole === "student" ||
+    //             row.original.userRole === "STUDENT" ||
+    //             row.original.userRole === "Teacher" ||
+    //             row.original.userRole === "teacher" ||
+    //             row.original.userRole === "TEACHER"
+    //           }
+    //           variant="light"
+    //           onClick={() => table.setEditingRow(row)}
+    //         >
+    //           <IconArchive />
+    //         </ActionIcon>
+    //       </Tooltip>
+    //     </Flex>
+    //   </>
+    // ),
 
     renderToolbarInternalActions: ({ table }) => {
       return (
