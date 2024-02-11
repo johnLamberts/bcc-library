@@ -4,6 +4,8 @@ export enum FIRESTORE_COLLECTION_QUERY_KEY {
   CATEGORY_SECTION = "category-section",
   CATALOGUE = "books-catalogue",
   RETURNED_CONDITION = "return-condition",
+  DAMAGE_CATEGORY = "damaged-category",
+  MISSING_CATEGORY = "missing-category",
 
   BOOK_TYPE = "book-type",
   USER_ROLE = "user-role",

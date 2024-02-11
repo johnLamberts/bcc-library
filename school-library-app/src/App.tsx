@@ -16,11 +16,13 @@ import CategorySection from "@pages/SystemSettings/CategorySection";
 import BookGenre from "@pages/SystemSettings/BookGenres";
 import CatalogueManagement from "@pages/CatalogueManagement";
 import BookAuthor from "@pages/SystemSettings/BookAuthor";
-import CirculationManagement from "@pages/CirculationManagement";
 import ReturnCondition from "@pages/SystemSettings/ReturnCondition";
 import AppPageLayout from "@layouts/PagesLayout";
 import Home from "@pages/Homepage/Home";
 import StudentReportTable from "@features/Reports/StudentReport";
+import ReturnTransaction from "@pages/Transaction/ReturnTransaction";
+import TransactionManagement from "@pages/TransactionManagement";
+import BorrowTransactionPage from "@pages/Transaction/BorrowTransactionPage";
 
 function App() {
   // Will Refactor this after I finish the admin page with fully functionality
@@ -56,10 +58,22 @@ function App() {
               path="/catalogue-management"
               element={<CatalogueManagement />}
             />
+
+            {/* TRANSACTION */}
             <Route
-              path="/circulation-management"
-              element={<CirculationManagement />}
-            />{" "}
+              path="/transaction-management"
+              element={<TransactionManagement />}
+            />
+
+            <Route
+              path="/borrow-transaction"
+              element={<BorrowTransactionPage />}
+            />
+
+            <Route path="/return-transaction" element={<ReturnTransaction />} />
+
+            {/* END OF TRANSACTION */}
+
             {/* System Settings */}
             {/* student settings */}
             <Route path="/level-education" element={<LevelEducation />} />

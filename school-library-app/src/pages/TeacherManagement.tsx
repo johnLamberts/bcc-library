@@ -61,7 +61,6 @@ export default function TeacherManagement() {
             {userData.map((user, index) => (
               <UsersBox
                 key={index}
-                index={index}
                 user={user}
                 filterUserData={filterUserData}
                 setGetId={setGetId}

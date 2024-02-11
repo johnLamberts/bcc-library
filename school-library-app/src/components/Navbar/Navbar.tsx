@@ -1,4 +1,4 @@
-import { Group, Code } from "@mantine/core";
+import { ScrollArea, Button, Box, Burger } from "@mantine/core";
 import {
   IconUser,
   IconNote,
@@ -10,148 +10,172 @@ import {
   IconUserBolt,
   IconTheater,
   IconMoneybag,
+  IconReport,
+  IconSettingsAutomation,
 } from "@tabler/icons-react";
-import classes from "./Navbar.module.css";
-import { Link, useLocation } from "react-router-dom";
-import NavbarItem from "./NavbarItem";
 import { IconCategory2 } from "@tabler/icons-react";
+import LinkGroups from "./LinkGroups";
+import classes from "./Navbar.module.css";
+import Logo from "@components/Logo/Logo";
 
+interface NavbarProps {
+  opened: boolean;
+  toggle: () => void;
+}
 const mainFeatures = [
-  { path: "/user-management", label: "User Management", icon: IconUser },
+  { link: "/dashboard", label: "Admin Dashboard", icon: IconChartInfographic },
+  { link: "/user-management", label: "User Management", icon: IconUser },
   {
-    path: "/teacher-management",
+    link: "/teacher-management",
     label: "Teacher Management",
     icon: IconSchool,
   },
   {
-    path: "/student-management",
+    link: "/student-management",
     label: "Student Management",
     icon: IconUserBolt,
   },
   {
-    path: "/catalogue-management",
+    link: "/catalogue-management",
     label: "Catalogue Management",
     icon: IconBook,
   },
   {
-    path: "/circulation-management",
-    label: "Circulation",
+    link: "/transaction-management",
+    label: "Transaction",
     icon: IconAlignBoxBottomLeft,
+    links: [
+      {
+        link: "/borrow-transaction",
+        label: "Borrow Transaction",
+      },
+      {
+        link: "/return-transaction",
+        label: "Return Transaction",
+      },
+      {
+        link: "/transaction-management",
+        label: "Transaction List",
+      },
+    ],
+  },
+  {
+    label: "Report",
+    icon: IconReport,
+    links: [
+      { link: "/user-report", label: "User Report", icon: IconUser },
+      { link: "/teacher-report", label: "Teacher Report", icon: IconUser },
+      {
+        link: "/student-report",
+        label: "Student Report",
+        icon: IconNote,
+      },
+      {
+        link: "/catalogue-report",
+        label: "Catalogue Report",
+        icon: IconUsersGroup,
+      },
+    ],
+  },
+  {
+    label: "System Settings",
+    icon: IconSettingsAutomation,
+    links: [
+      { link: "/book-genre", label: "Book Genre", icon: IconTheater },
+      { link: "/book-author", label: "Book Author", icon: IconUser },
+      {
+        link: "/category-section",
+        label: "Category Section",
+        icon: IconCategory2,
+      },
+      {
+        link: "/book-type",
+        label: "Book Type",
+        icon: IconBook,
+      },
+      {
+        link: "/return-condition",
+        label: "Return Condition and Fee",
+        icon: IconMoneybag,
+        links: [
+          {
+            link: "/borrow-transaction",
+            label: "Borrow Transaction",
+          },
+          {
+            link: "/return-transaction",
+            label: "Return Transaction",
+          },
+          {
+            link: "/transaction-management",
+            label: "Transaction List",
+          },
+        ],
+      },
+      {
+        link: "/user-role",
+        label: "User Role",
+        icon: IconUsersGroup,
+      },
+      {
+        link: "/level-education",
+        label: "Level of Education",
+        icon: IconUsersGroup,
+      },
+      {
+        link: "/level-education-copy",
+        label: "Level of Education -copy",
+        icon: IconUsersGroup,
+      },
+      {
+        link: "/grade-level",
+        label: "Grade Level",
+        icon: IconUsersGroup,
+      },
+      {
+        link: "/grade-section",
+        label: "Grade Section",
+        icon: IconUsersGroup,
+      },
+      {
+        link: "/academic-course",
+        label: "Academic Course",
+        icon: IconUsersGroup,
+      },
+      {
+        link: "/customize-ui",
+        label: "Customize UI",
+        icon: IconUsersGroup,
+      },
+    ],
   },
 ];
 
-const allReports = [
-  { path: "/user-report", label: "User Report", icon: IconUser },
-  { path: "/teacher-report", label: "Teacher Report", icon: IconUser },
-  {
-    path: "/student-report",
-    label: "Student Report",
-    icon: IconNote,
-  },
-  {
-    path: "/catalogue-report",
-    label: "Catalogue Report",
-    icon: IconUsersGroup,
-  },
-];
-
-const systemSettings = [
-  { path: "/book-genre", label: "Book Genre", icon: IconTheater },
-  { path: "/book-author", label: "Book Author", icon: IconUser },
-  {
-    path: "/category-section",
-    label: "Category Section",
-    icon: IconCategory2,
-  },
-  {
-    path: "/book-type",
-    label: "Book Type",
-    icon: IconBook,
-  },
-  {
-    path: "/return-condition",
-    label: "Return Condition and Fee",
-    icon: IconMoneybag,
-  },
-  {
-    path: "/user-role",
-    label: "User Role",
-    icon: IconUsersGroup,
-  },
-  {
-    path: "/level-education",
-    label: "Level of Education",
-    icon: IconUsersGroup,
-  },
-  {
-    path: "/level-education-copy",
-    label: "Level of Education -copy",
-    icon: IconUsersGroup,
-  },
-  {
-    path: "/grade-level",
-    label: "Grade Level",
-    icon: IconUsersGroup,
-  },
-  {
-    path: "/grade-section",
-    label: "Grade Section",
-    icon: IconUsersGroup,
-  },
-  {
-    path: "/academic-course",
-    label: "Academic Course",
-    icon: IconUsersGroup,
-  },
-  {
-    path: "/customize-ui",
-    label: "Customize UI",
-    icon: IconUsersGroup,
-  },
-];
-
-export default function Navbar() {
-  const { pathname } = useLocation();
-
+export default function Navbar({ opened, toggle }: NavbarProps) {
   return (
     <nav className={classes.navbar}>
-      <div className={classes.navbarMain}>
-        <Group className={classes.header} justify="space-between">
-          <Code fw={700}>Admin Dashboard</Code>
-        </Group>
-        <Link
-          to={"/dashboard"}
-          data-active={pathname === "/dashboard" || pathname === "/" || null}
-          className={classes.link}
-          key={"jaskxja8s123CV12"}
+      <Box className={classes.header}>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "flex-end",
+            alignItems: "end",
+          }}
         >
-          <IconChartInfographic className={classes.linkIcon} stroke={1.5} />
-          <span>{"Dashboard"}</span>
-        </Link>
-      </div>
+          <Burger opened={opened} onClick={toggle} hiddenFrom="sm" size="sm" />
+        </div>
+        <Logo />
+      </Box>
 
-      <div className={classes.navbarMain}>
-        <Group pt={"lg"} className={classes.header} justify="space-between">
-          <Code fw={700}>Main Features</Code>
-        </Group>
-        <NavbarItem items={mainFeatures} />
-      </div>
+      <ScrollArea className={classes.links}>
+        <div className={classes.linksInner}>
+          <LinkGroups items={mainFeatures} />
+        </div>
+      </ScrollArea>
 
-      <div className={classes.navbarMain}>
-        <Group pt={"lg"} className={classes.header} justify="space-between">
-          <Code fw={700}>All Reports</Code>
-        </Group>
-        <NavbarItem items={allReports} />
+      <div className={classes.footer}>
+        <Button />
       </div>
-
-      <div className={classes.navbarMain}>
-        <Group pt={"lg"} className={classes.header} justify="space-between">
-          <Code fw={700}>System Settings</Code>
-        </Group>
-        <NavbarItem items={systemSettings} />
-      </div>
-
-      {/* <div className={classes.footer}></div> */}
     </nav>
   );
 }

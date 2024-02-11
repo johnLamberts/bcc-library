@@ -179,7 +179,6 @@ const CatalogueTable = () => {
   }) => {
     await modifyCatalogue(values);
     table.setEditingRow(null);
-    console.log(values);
   };
 
   const table = useMantineReactTable({
@@ -303,7 +302,7 @@ const CatalogueTable = () => {
 
   return (
     <>
-      <Box maw={"78vw"}>
+      <Box maw={"75.2vw"}>
         <Group justify="space-between">
           <Box className={classes.highlight}>
             <Text fz={"xl"} fw={"bold"} c={"red"}>

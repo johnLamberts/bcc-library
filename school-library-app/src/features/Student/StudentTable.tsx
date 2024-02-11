@@ -162,25 +162,6 @@ const StudentTable = () => {
       },
     });
 
-  // const openImportForm = () => {
-  //   modals.openConfirmModal({
-  //     title: <Text>Are you sure you want to student?</Text>,
-  //     children: (
-  //       <Text>
-  //         <StudentImportForm onSave={handleImportLevel} />
-  //       </Text>
-  //     ),
-  //     labels: {
-  //       confirm: ``,
-  //       cancel: "Cancel",
-  //     },
-  //     confirmProps: { color: "red" },
-  //     onConfirm: () => {
-  //       handleImportLevel();
-  //     },
-  //   });
-  // };
-
   // CREATE action
   const handleCreateLevel: MRT_TableOptions<IStudents>["onCreatingRowSave"] =
     async ({ values, table }) => {
@@ -324,7 +305,7 @@ const StudentTable = () => {
 
   return (
     <>
-      <Box maw={"78vw"}>
+      <Box maw={"60.8rem"}>
         <Group justify="space-between">
           <Box className={classes.highlight}>
             <Text fz={"xl"} fw={"bold"} c={"red"}>
