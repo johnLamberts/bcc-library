@@ -1,15 +1,16 @@
 import { useMemo, useState } from "react";
 import {
-  ActionIcon,
   Box,
   Divider,
+  Flex,
   Grid,
   Group,
+  Select,
+  Text,
   TextInput,
-  Tooltip,
   rem,
 } from "@mantine/core";
-import { IconBoxMultiple1, IconSearch, IconTable } from "@tabler/icons-react";
+import { IconSearch } from "@tabler/icons-react";
 import StudentTable from "@features/Student/StudentTable";
 import { useSearchParams } from "react-router-dom";
 import useReadStudents from "@features/Student/hooks/useReadStudents";
@@ -47,12 +48,16 @@ export default function StudentManagement() {
       )
     );
   }, [studentData, isLoading, searchParams, filterStudentData]);
+  const handleChange = (params: string | null) => {
+    searchParams.set("viewBy", params as string);
 
+    return setSearchParams(searchParams);
+  };
   return (
     <>
       <Group justify="space-between">
         <Box>
-          <Tooltip label="View the students by Table">
+          {/* <Tooltip label="View the students by Table">
             <ActionIcon
               m={1.2}
               variant={
@@ -88,7 +93,21 @@ export default function StudentManagement() {
             >
               <IconBoxMultiple1 style={{ width: rem(20) }} stroke={1.5} />
             </ActionIcon>
-          </Tooltip>
+          </Tooltip> */}
+
+          <Flex align={"center"} gap={"xs"}>
+            <Text span c={"dimmed"} size="md">
+              View
+            </Text>
+
+            <Select
+              size="xs"
+              allowDeselect={false}
+              data={["All", "Archive"]}
+              defaultValue={"All"}
+              onChange={handleChange}
+            />
+          </Flex>
         </Box>
 
         {searchParams.get("view") === "by-cards" && (

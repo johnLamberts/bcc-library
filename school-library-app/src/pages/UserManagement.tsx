@@ -13,12 +13,7 @@ import {
   Tooltip,
   rem,
 } from "@mantine/core";
-import {
-  IconArrowRight,
-  IconBoxMultiple1,
-  IconSearch,
-  IconTable,
-} from "@tabler/icons-react";
+import { IconArrowRight, IconSearch } from "@tabler/icons-react";
 import { useSearchParams } from "react-router-dom";
 import UserTable from "@features/Users/UserTable";
 import useReadUsers from "@features/Users/hooks/useReadUsers";
@@ -144,6 +139,7 @@ export default function UserManagement() {
                 <IconBoxMultiple1 style={{ width: rem(20) }} stroke={1.5} />
               </ActionIcon> */}
             <Select
+              allowDeselect={false}
               size="xs"
               data={["All", "Archive"]}
               defaultValue={"All"}

@@ -1,10 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Group, Box, Button, Text, Flex, Avatar, Badge } from "@mantine/core";
-import {
-  IconFileTypeCsv,
-  IconFileTypePdf,
-  IconPlus,
-} from "@tabler/icons-react";
+import { IconFileTypeCsv, IconFileTypePdf } from "@tabler/icons-react";
 import {
   MRT_ColumnDef,
   MRT_ShowHideColumnsButton,
@@ -283,8 +279,6 @@ const UserReportTable = () => {
         );
       })
       .map((col) => headerNamesMapping[col.id]);
-
-    console.log(headerNames);
 
     const formatData = data?.map((user: any) => {
       const { firstName, lastName, middleName, email, createdAt, userRole } =

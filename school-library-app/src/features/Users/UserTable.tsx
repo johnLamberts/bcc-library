@@ -10,18 +10,14 @@ import {
   Badge,
   Menu,
   rem,
-  ActionIcon,
-  Tooltip,
 } from "@mantine/core";
 import {
   IconArchive,
   IconDots,
   IconEdit,
-  IconEyeMinus,
   IconLockOff,
   IconLockOpen,
   IconPlus,
-  IconTriangleSquareCircle,
 } from "@tabler/icons-react";
 import {
   MRT_ColumnDef,
@@ -137,8 +133,10 @@ const UserTable = () => {
       ),
       children: (
         <Text>
-          Are you sure you want to delete {row.original.firstName}{" "}
-          {row.original.lastName}? This action cannot be undone.
+          Are you sure you want to{" "}
+          {!row.original.isEnabled ? "enable" : "disable"}{" "}
+          {row.original.firstName} {row.original.lastName}? This action cannot
+          be undone.
         </Text>
       ),
       labels: {

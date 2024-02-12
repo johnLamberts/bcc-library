@@ -1,4 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
+import { FIRESTORE_COLLECTION_QUERY_KEY } from "src/shared/enums";
 
 const levelData = [
   { id: "1", levelOfEducation: "Kindergarten", academicCourse: "" },
@@ -25,7 +26,7 @@ const useReadAcademicCourse = () => {
 
       return Promise.resolve(levelData);
     },
-    queryKey: ["academic-course"],
+    queryKey: [FIRESTORE_COLLECTION_QUERY_KEY.ACADEMIC_KEY],
 
     refetchOnWindowFocus: false,
   });
