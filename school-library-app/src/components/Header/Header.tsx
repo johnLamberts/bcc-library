@@ -3,11 +3,12 @@ import classes from "./header.module.css";
 import { IconUser } from "@tabler/icons-react";
 
 import CollegeLogo from "@components/Logo/CollegeLogo";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import ModeToggle from "@components/ModeToggle/ModeToggle";
 
 const links = [
   { link: "/home", label: "Home" },
-  { link: "/library", label: "Library" },
+  { link: "library", label: "Library" },
   { link: "/services", label: "Services" },
   { link: "/announcement", label: "Announcement" },
   { link: "/contact-us", label: "Contact Us" },
@@ -17,11 +18,11 @@ const Header = () => {
   const navigate = useNavigate();
 
   const items = links.map((link) => (
-    <a
-      key={link.label}
-      href={link.link}
+    <Link
+      key={link.link}
+      to={link.link}
       className={classes.link}
-      onClick={(event) => event.preventDefault()}
+      // onClick={(event) => event.preventDefault()}
       style={{
         fontFamily: "Montserrat",
         color: "white",
@@ -29,7 +30,7 @@ const Header = () => {
       }}
     >
       {link.label}
-    </a>
+    </Link>
   ));
 
   return (
@@ -61,6 +62,8 @@ const Header = () => {
                   Login
                 </Text>
               </Button>
+
+              <ModeToggle />
             </Group>
             <Burger hiddenFrom="sm" />
           </Group>

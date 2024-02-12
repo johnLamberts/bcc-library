@@ -25,4 +25,6 @@ export enum FIRESTORE_COLLECTION_QUERY_KEY {
   BOOKS_OVERDUE = "books-overdue",
 
   AVAILABILITY_TRANSACTION = "availability",
+
+  ACADEMIC_KEY = "academic-key",
 }

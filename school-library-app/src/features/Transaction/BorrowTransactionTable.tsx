@@ -58,7 +58,7 @@ const BorrowTransactionTable = () => {
 
   // EDIT action
   const handleSaveLevel: MRT_TableOptions<ICirculation>["onEditingRowSave"] =
-    async ({ values, table }) => {
+    async ({ values }) => {
       // await createBorrowTransaction(values);
       console.log(values);
       // table.setCreatingRow(null);

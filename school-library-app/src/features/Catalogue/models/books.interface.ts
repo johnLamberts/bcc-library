@@ -14,6 +14,8 @@ export interface IBooks {
   publicationDate: string;
   edition: string;
 
+  bookDescription?: string;
+
   timeUnit: string;
   timeSpecifier?: string;
   milliseconds: number;

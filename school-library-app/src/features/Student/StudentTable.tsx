@@ -12,6 +12,7 @@ import {
   Badge,
   Modal,
   Divider,
+  Select,
 } from "@mantine/core";
 import {
   IconEdit,
@@ -21,6 +22,7 @@ import {
 } from "@tabler/icons-react";
 import {
   MRT_ColumnDef,
+  MRT_FilterTextInput,
   MRT_Row,
   MRT_ShowHideColumnsButton,
   MRT_TableOptions,
@@ -41,6 +43,7 @@ import useModifyStudentStatus from "./hooks/useModifyStudentStatus";
 import useModifyStudent from "./hooks/useModifyStudent";
 import StudentImportForm from "./StudentImportForm/StudentImportForm";
 import { useDisclosure } from "@mantine/hooks";
+import StudentToolbar from "./StudentToolbar";
 
 const StudentTable = () => {
   const [opened, { open, close }] = useDisclosure(false);
@@ -119,11 +122,11 @@ const StudentTable = () => {
         header: "Account Status",
         Cell: ({ cell }) =>
           cell.getValue() ? (
-            <Badge color="green.8" size="md">
+            <Badge color="#0CAF49" tt={"inherit"} variant="dot" fw={"normal"}>
               Enable
             </Badge>
           ) : (
-            <Badge color="red.8" size="md">
+            <Badge color="#e74c3c" tt={"inherit"} variant="dot" fw={"normal"}>
               Disabled
             </Badge>
           ),
@@ -138,21 +141,21 @@ const StudentTable = () => {
       title: (
         <Text>
           Are you sure you want to{" "}
-          <b>{!row.original.isEnabled ? "enabled" : "disabled"}</b> this
-          student?
+          <b>{!row.original.isEnabled ? "enable" : "disable"}</b> this student?
         </Text>
       ),
       children: (
         <Text>
-          Are you sure you want to delete{" "}
+          Are you sure you want to{" "}
+          {!row.original.isEnabled ? "enable" : "disable"}{" "}
           <b>
-            {row.original.studentNumber}: {row.original.email}
+            {row.original.firstName} {row.original.lastName}?{" "}
           </b>
-          ? This action cannot be undone.
+          This action cannot be undone.
         </Text>
       ),
       labels: {
-        confirm: `${!row.original.isEnabled ? "Enabled" : "Disabled"}`,
+        confirm: `${!row.original.isEnabled ? "Enable" : "Disable"}`,
         cancel: "Cancel",
       },
       confirmProps: { color: "red" },
@@ -199,6 +202,11 @@ const StudentTable = () => {
         height: "100%",
       },
     },
+    mantineTableProps: {
+      withColumnBorders: true,
+      withRowBorders: true,
+      withTableBorder: true,
+    },
     mantineCreateRowModalProps: {
       centered: true,
       size: "xl",
@@ -222,6 +230,9 @@ const StudentTable = () => {
       pagination: { pageIndex: 0, pageSize: 5 },
       columnVisibility: {
         id: false,
+      },
+      columnPinning: {
+        right: ["mrt-row-actions"],
       },
     },
 
@@ -254,6 +265,14 @@ const StudentTable = () => {
     renderToolbarInternalActions: ({ table }) => {
       return (
         <Flex gap="xs" align="center">
+          {/* <Select data={["Table"]} placeholder="Filter by Grade Level" /> */}
+          <StudentToolbar table={table} />
+          {/*           
+          <Select
+            data={["Table"]}
+            placeholder="Filter by  Level of Education"
+          />
+          <Select data={["Table"]} placeholder="Filter by Academic Course" /> */}
           <MRT_ToggleGlobalFilterButton table={table} />{" "}
           <MRT_ToggleDensePaddingButton table={table} />
           <MRT_ShowHideColumnsButton table={table} />
@@ -323,7 +342,7 @@ const StudentTable = () => {
               Add Student
             </Button>
 
-            <Button
+            {/* <Button
               variant="light"
               onClick={() => open()}
               leftSection={<IconFileImport size={14} />}
@@ -331,7 +350,7 @@ const StudentTable = () => {
               color={" var(--mantine-color-yellow-light-color)"}
             >
               Import Students
-            </Button>
+            </Button> */}
           </Group>
         </Group>
 

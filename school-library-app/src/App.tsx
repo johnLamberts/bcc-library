@@ -23,6 +23,7 @@ import StudentReportTable from "@features/Reports/StudentReport";
 import ReturnTransaction from "@pages/Transaction/ReturnTransaction";
 import TransactionManagement from "@pages/TransactionManagement";
 import BorrowTransactionPage from "@pages/Transaction/BorrowTransactionPage";
+import LibraryPage from "@pages/Homepage/LibraryPage";
 
 function App() {
   // Will Refactor this after I finish the admin page with fully functionality
@@ -47,6 +48,7 @@ function App() {
           <Route element={<AppPageLayout />}>
             <Route index element={<Home />} />
             <Route path="home" element={<Home />} />
+            <Route path="library" element={<LibraryPage />} />
           </Route>
           <Route element={<AdminLayout />}>
             <Route index element={<AdminDashboard />} />
