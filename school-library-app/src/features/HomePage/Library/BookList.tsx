@@ -97,15 +97,10 @@ const BookList = () => {
             </ActionIcon>
           </Tooltip>
         </Flex>
-
-        <Text size="sm" c={"#5C0505"}>
-          Show All 20 results
-        </Text>
       </Group>
 
       <Divider my={"sm"} />
       <BookPagination count={count} />
-      <Divider my={"sm"} />
       {isBookLoading ? (
         "Loading..."
       ) : (

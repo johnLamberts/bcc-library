@@ -36,13 +36,56 @@ const getBook = async (
 };
 
 const getAllBooks = async (page: number) => {
+  // const booksCollectionRef = collection(
+  //   firestore,
+  //   FIRESTORE_COLLECTION_QUERY_KEY.CATALOGUE
+  // );
+
+  // const booksRef = await getDocs(
+  //   query(booksCollectionRef, orderBy("createdAt", "asc"))
+  // );
+
+  // let queryBooks = query(
+  //   collection(firestore, FIRESTORE_COLLECTION_QUERY_KEY.CATALOGUE),
+  //   orderBy("createdAt", "desc"),
+  //   limit(PAGE_SIZE)
+  // );
+
+  // if (page > 1) {
+  //   const fetchBooks = await getDocs(queryBooks);
+
+  //   // Check if there are any documents to paginate
+  //   if (!fetchBooks.empty) {
+  //     const lastVisible = fetchBooks.docs[fetchBooks.docs.length - 1];
+
+  //     console.log(lastVisible.data().title);
+  //     queryBooks = query(
+  //       collection(firestore, FIRESTORE_COLLECTION_QUERY_KEY.CATALOGUE),
+  //       orderBy("createdAt", "desc"),
+  //       startAfter(lastVisible),
+  //       limit(PAGE_SIZE)
+  //     );
+  //   }
+  // }
+
+  // const booksSnapshot = await getDocs(queryBooks);
+
+  // const booksData = booksSnapshot.docs.map(
+  //   (doc) =>
+  //     ({
+  //       id: doc.id,
+  //       ...doc.data(),
+  //     } as IBooks)
+  // );
+
+  // return {
+  //   booksData,
+  //   count: booksRef.docs.length,
+  // };
+
   const booksCollectionRef = collection(
     firestore,
     FIRESTORE_COLLECTION_QUERY_KEY.CATALOGUE
-  );
-
-  const booksRef = await getDocs(
-    query(booksCollectionRef, orderBy("createdAt", "asc"))
   );
 
   let queryBooks = query(
@@ -52,15 +95,21 @@ const getAllBooks = async (page: number) => {
   );
 
   if (page > 1) {
-    const lastVisible = (await getDocs(queryBooks)).docs[PAGE_SIZE - 1].data()
-      .createdAt;
-    console.log("Last visible document:", lastVisible);
-    queryBooks = query(
-      booksCollectionRef,
-      orderBy("createdAt", "desc"),
-      startAfter(lastVisible),
-      limit(PAGE_SIZE)
-    );
+    for (let i = 0; i < page - 1; i++) {
+      const booksSnapshot = await getDocs(queryBooks);
+
+      if (booksSnapshot.empty) {
+        return { booksData: [], count: 0, hasMore: false }; // No more documents
+      }
+
+      const lastVisible = booksSnapshot.docs[booksSnapshot.docs.length - 1];
+      queryBooks = query(
+        booksCollectionRef,
+        orderBy("createdAt", "desc"),
+        startAfter(lastVisible),
+        limit(PAGE_SIZE)
+      );
+    }
   }
 
   const booksSnapshot = await getDocs(queryBooks);
@@ -68,7 +117,13 @@ const getAllBooks = async (page: number) => {
     (doc) => ({ id: doc.id, ...doc.data() } as IBooks)
   );
 
-  return { booksData, count: booksRef.size }; // Use booksSnapshot.size for accurate count
+  // Calculate accurate count from the initial query without limit
+  const countSnapshot = await getDocs(
+    query(booksCollectionRef, orderBy("createdAt", "desc"))
+  );
+  const count = countSnapshot.size;
+
+  return { booksData, count, hasMore: !booksSnapshot.empty };
 };
 
 export { getBook, getAllBooks };

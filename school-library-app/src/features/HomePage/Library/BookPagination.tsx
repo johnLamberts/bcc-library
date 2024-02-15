@@ -1,4 +1,4 @@
-import { Button, Pagination } from "@mantine/core";
+import { Box, Button, Group, Pagination, Text } from "@mantine/core";
 import { IconChevronLeft, IconChevronRight } from "@tabler/icons-react";
 import { useSearchParams } from "react-router-dom";
 import { PAGE_SIZE } from "src/shared/constant";
@@ -34,23 +34,31 @@ const BookPagination = ({ count }: BookPaginationProps) => {
   //   if (pageCount <= 1) return null;
   return (
     <div>
-      Showing <span>{(currentPage - 1) * PAGE_SIZE + 1}</span> to{" "}
-      <span>{currentPage === pageCount ? count : currentPage * PAGE_SIZE}</span>{" "}
-      of <span>{count}</span> results
-      <Button
-        leftSection={<IconChevronLeft />}
-        onClick={prevPage}
-        disabled={currentPage === 1}
-      >
-        <span>Previous</span>
-      </Button>
-      <Button
-        leftSection={<IconChevronRight />}
-        onClick={nextPage}
-        disabled={currentPage === pageCount}
-      >
-        <span>Next</span>
-      </Button>
+      <Group justify="space-between">
+        <Text>
+          Showing <span>{(currentPage - 1) * PAGE_SIZE + 1}</span> to{" "}
+          <span>
+            {currentPage === pageCount ? count : currentPage * PAGE_SIZE}
+          </span>{" "}
+          of <span>{count}</span> results
+        </Text>
+        <Box>
+          <Button
+            leftSection={<IconChevronLeft />}
+            onClick={prevPage}
+            disabled={currentPage === 1}
+          >
+            <span>Previous</span>
+          </Button>
+          <Button
+            leftSection={<IconChevronRight />}
+            onClick={nextPage}
+            disabled={currentPage === pageCount}
+          >
+            <span>Next</span>
+          </Button>
+        </Box>
+      </Group>
     </div>
   );
 };
