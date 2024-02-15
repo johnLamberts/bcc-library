@@ -9,7 +9,7 @@ export interface IStudents {
   displayName: string;
   studentImage?: string | File;
 
-  studentNumber: string;
+  studentNumber?: string;
 
   studentEntry: number;
   currentYear: number;
@@ -18,7 +18,7 @@ export interface IStudents {
   sex: string;
   academicCourse: string;
   gradeLevel: string;
-  section: string;
+  gradeSection: string;
   levelOfEducation: string;
 
   userUID?: string;

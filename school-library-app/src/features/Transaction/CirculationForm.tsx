@@ -35,6 +35,7 @@ export default function CirculationForm<TData extends MRT_RowData>({
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (values: Partial<IBooks>) => {
       if (isCreating) {
+        console.log(values);
         onCreate?.({
           ...values,
         });

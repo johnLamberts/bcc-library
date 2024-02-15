@@ -56,7 +56,7 @@ const LibraryFilter = () => {
                   label: book.bookType,
                   value: book.bookType,
                 }))}
-                paramsName="academicBy"
+                paramsName="fqx"
               />
             </Accordion.Panel>
           </Accordion.Item>
@@ -69,7 +69,7 @@ const LibraryFilter = () => {
                   label: book.genres,
                   value: book.genres,
                 }))}
-                paramsName="genresBy"
+                paramsName="fqx"
               />
             </Accordion.Panel>
           </Accordion.Item>
