@@ -32,6 +32,8 @@ const BooksToBeBorrowedDetailsForm = ({ seeType, setSeeType }: FormProps) => {
     (book) => book.title === watch("bookTitle")
   );
 
+  console.log(filteredOtherBookInfo);
+
   const setBookValues = useCallback(
     (filterInfo: IBooks | null) => {
       setValue("bookISBN", filterInfo?.bookISBN);
@@ -45,7 +47,7 @@ const BooksToBeBorrowedDetailsForm = ({ seeType, setSeeType }: FormProps) => {
       );
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      setValue("booksPrice", (filterInfo as any)?.booksPrice);
+      setValue("bookPrice", (filterInfo as any)?.bookPrice);
       setValue("booksId", filterInfo?.id);
     },
     [setValue]

@@ -23,7 +23,10 @@ import StudentReportTable from "@features/Reports/StudentReport";
 import ReturnTransaction from "@pages/Transaction/ReturnTransaction";
 import TransactionManagement from "@pages/TransactionManagement";
 import BorrowTransactionPage from "@pages/Transaction/BorrowTransactionPage";
+import BookDetail from "@pages/Homepage/BookDetail";
 import LibraryPage from "@pages/Homepage/LibraryPage";
+import Login from "@pages/Authentication/Login";
+import ProfilePage from "@pages/ProfilePage/ProfilePage";
 
 function App() {
   // Will Refactor this after I finish the admin page with fully functionality
@@ -45,10 +48,14 @@ function App() {
         }
       >
         <Routes>
+          <Route path="login" element={<Login />} />
+
           <Route element={<AppPageLayout />}>
             <Route index element={<Home />} />
             <Route path="home" element={<Home />} />
             <Route path="library" element={<LibraryPage />} />
+            <Route path="library/:bookId" element={<BookDetail />} />
+            <Route path="profile/:manageProfileId" element={<ProfilePage />} />
           </Route>
           <Route element={<AdminLayout />}>
             <Route index element={<AdminDashboard />} />

@@ -1,0 +1,8 @@
+.cardList {
+  text-decoration: none;
+  color: inherit;
+  transition: 0.3s all ease-in;
+  &:hover {
+    transform: scale(1.05);
+  }
+}

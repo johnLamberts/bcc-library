@@ -1,6 +1,6 @@
 import { Checkbox, Text } from "@mantine/core";
-import { ChangeEvent, useEffect, useState } from "react";
-import { useLocation, useParams, useSearchParams } from "react-router-dom";
+import { ChangeEvent } from "react";
+import { useSearchParams } from "react-router-dom";
 
 interface BookFilterProps {
   paramsName: string;

@@ -18,7 +18,7 @@ export interface ITeacher {
   sex: string;
   academicCourse: string;
   gradeLevel: string;
-  section: string;
+  gradeSection: string;
   levelOfEducation: string;
 
   userUID?: string;

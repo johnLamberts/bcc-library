@@ -102,7 +102,7 @@ const BorrowTransactionTable = () => {
             <>
               <Badge variant="light" color="#FFA903" tt={"inherit"}>
                 {isAfter(time, new Date())
-                  ? format(time, "h:mm a")
+                  ? `Today, ${format(time, "h:mm a")}`
                   : formatDistance(time, new Date(), {
                       addSuffix: true,
                       includeSeconds: true,
