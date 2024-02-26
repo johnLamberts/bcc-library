@@ -39,7 +39,47 @@ const createReturnOVerdueEmail = async (req: Request, res: Response) => {
   }
 };
 
+const createRequestedEmail = async (req: Request, res: Response) => {
+  try {
+    const newUsers = await EmailReturnedService.sendRequestedEmail({
+      ...req.body,
+    });
+
+    return res.json({
+      data: newUsers,
+      status: "You have send an email already!",
+    });
+  } catch (err) {
+    if (err instanceof Error) {
+      res.status(500).json({
+        error: err.message,
+      });
+    }
+  }
+};
+
+const createRequestedBook = async (req: Request, res: Response) => {
+  try {
+    const newUsers = await EmailReturnedService.sendRequestedBook({
+      ...req.body,
+    });
+
+    return res.json({
+      data: newUsers,
+      status: "You have send an email already!",
+    });
+  } catch (err) {
+    if (err instanceof Error) {
+      res.status(500).json({
+        error: err.message,
+      });
+    }
+  }
+};
+
 export const EmailReturnedController = {
   createReturnEmail,
   createReturnOVerdueEmail,
+  createRequestedEmail,
+  createRequestedBook,
 };

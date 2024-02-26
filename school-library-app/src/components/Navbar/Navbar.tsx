@@ -41,7 +41,6 @@ const mainFeatures = [
     icon: IconBook,
   },
   {
-    link: "/transaction-management",
     label: "Transaction",
     icon: IconAlignBoxBottomLeft,
     links: [

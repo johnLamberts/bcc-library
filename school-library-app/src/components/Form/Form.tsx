@@ -10,6 +10,7 @@ import {
   Flex,
 } from "@mantine/core";
 import React from "react";
+///home/johnlambert/Desktop/mini-js/index.js
 
 export default function Form({
   children,
@@ -54,7 +55,7 @@ Form.SubmitButton = function SubmitButton({
   return (
     <>
       <Flex gap={"md"}>
-        <Button {...props} type="submit">
+        <Button {...props} type="submit" variant="light">
           {!alias && "Submit"}
           {alias && alias}
         </Button>

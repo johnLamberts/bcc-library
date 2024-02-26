@@ -7,8 +7,6 @@ import {
   ScrollArea,
   Text,
   Badge,
-  Tooltip,
-  Select,
 } from "@mantine/core";
 import { IconPlus } from "@tabler/icons-react";
 import {
@@ -20,49 +18,30 @@ import {
   MantineReactTable,
   useMantineReactTable,
 } from "mantine-react-table";
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 
+import CirculationForm from "./CirculationForm";
 import { useCreateBorrow } from "./hooks/useCreateBorrow";
 import { ICirculation } from "./models/circulation.interface";
 import classes from "@pages/styles/user.module.css";
+import useReadTransactionList from "./hooks/useReadTransactionList";
 import { format, formatDistance, isAfter, isToday } from "date-fns";
 import { formatDistanceFromNow } from "src/utils/helpers/formatDistanceFromNow";
-import BooksReturnForm from "./BooksReturnForm";
-import useReadBooksBorrowed from "./hooks/useReadBorrowed";
-import CirculationForm from "./CirculationForm";
-import useReadReturnCondition from "@features/SysSettings/ReturnCondition/useReadReturnCondition";
+import { useCreateRequestTransaction } from "./hooks/useRequestTransaction";
 
 const BorrowTransactionTable = () => {
   const { isCreatingBorrowingTransaction, createBorrowTransaction } =
     useCreateBorrow();
 
-  const [bookCondition, setBookCondition] = useState<string | null>("");
-  const [selectedRow, setSelectedRow] = useState<{ [key: string]: number }>({});
+  const { isRequestingBook, createRequestTransaction } =
+    useCreateRequestTransaction();
 
   const {
-    data: booksBorrowed = [],
+    data: transactionList = [],
     isLoading: isTransactionLoading,
     isFetching: isTransactionFetching,
-  } = useReadBooksBorrowed();
+  } = useReadTransactionList();
 
-  const { data: returnCondition = [], isLoading: isLoadingReturnCondition } =
-    useReadReturnCondition();
-
-  // CREATE action
-  const handleCreateLevel: MRT_TableOptions<ICirculation>["onCreatingRowSave"] =
-    async ({ values, table }) => {
-      await createBorrowTransaction(values);
-
-      table.setCreatingRow(null);
-    };
-
-  // EDIT action
-  const handleSaveLevel: MRT_TableOptions<ICirculation>["onEditingRowSave"] =
-    async ({ values }) => {
-      // await createBorrowTransaction(values);
-      console.log(values);
-      // table.setCreatingRow(null);
-    };
   const customColumns = useMemo<MRT_ColumnDef<ICirculation>[]>(
     () => [
       {
@@ -88,6 +67,7 @@ const BorrowTransactionTable = () => {
         accessorKey: "borrowersName",
         header: "Borrower Name",
       },
+
       {
         accessorKey: "borrowersEmail",
         header: "Borrower Email",
@@ -97,12 +77,15 @@ const BorrowTransactionTable = () => {
         header: "Due Date",
         enableColumnFilter: false,
         Cell: ({ row }) => {
+          console.log(row.getValue("expiryTime"));
+          if (row.getValue("expiryTime") === undefined) return <>-</>;
           const time = new Date(row.getValue("expiryTime"));
+
           return isToday(time) ? (
             <>
               <Badge variant="light" color="#FFA903" tt={"inherit"}>
                 {isAfter(time, new Date())
-                  ? `Today, ${format(time, "h:mm a")}`
+                  ? format(time, "h:mm a")
                   : formatDistance(time, new Date(), {
                       addSuffix: true,
                       includeSeconds: true,
@@ -129,61 +112,98 @@ const BorrowTransactionTable = () => {
           switch (status) {
             case "Active":
               return (
-                <Badge color="#0CAF49" tt={"inherit"} variant="dot">
+                <Badge
+                  color="#0CAF49"
+                  tt={"inherit"}
+                  variant="dot"
+                  fw={"normal"}
+                >
                   {status}
                 </Badge>
               );
             case "Overdue":
               return (
-                <Badge color="#e74c3c" tt={"inherit"} variant="dot">
+                <Badge
+                  color="#e74c3c"
+                  tt={"inherit"}
+                  variant="dot"
+                  fw={"normal"}
+                >
                   {status}
                 </Badge>
               );
             case "Returned":
               return (
-                <Badge color="#3498db" tt={"inherit"} variant="dot">
+                <Badge
+                  color="#3498db"
+                  tt={"inherit"}
+                  variant="dot"
+                  fw={"normal"}
+                >
                   {status}
                 </Badge>
               );
             case "Request":
               return (
-                <Badge color="#95a5a6" tt={"inherit"} variant="dot">
+                <Badge
+                  color="#95a5a6"
+                  tt={"inherit"}
+                  variant="dot"
+                  fw={"normal"}
+                >
+                  {status}
+                </Badge>
+              );
+
+            case "Reserved":
+              return (
+                <Badge
+                  color="#1c8289"
+                  tt={"inherit"}
+                  variant="dot"
+                  fw={"normal"}
+                >
+                  {status}
+                </Badge>
+              );
+
+            case "Cancelled":
+              return (
+                <Badge
+                  color="#95a5a6"
+                  tt={"inherit"}
+                  variant="dot"
+                  fw={"normal"}
+                >
                   {status}
                 </Badge>
               );
           }
         },
       },
-      {
-        header: "Book Condition",
-        Cell: ({ row }) => {
-          return (
-            <Select
-              onChange={(e) => {
-                setSelectedRow({
-                  [row.index]: row.index,
-                });
-                setBookCondition(e);
-              }}
-              placeholder="Select a condition"
-              data={returnCondition.map((cond) => cond.returnCondition)}
-            />
-          );
-        },
-      },
     ],
-    [returnCondition]
+    []
   );
 
+  // CREATE action
+  const handleCreateLevel: MRT_TableOptions<ICirculation>["onCreatingRowSave"] =
+    async ({ values, table }) => {
+      if (values.isRequesting) {
+        await createRequestTransaction(values);
+      } else {
+        await createBorrowTransaction(values);
+      }
+
+      table.setCreatingRow(null);
+    };
+
   const table = useMantineReactTable({
-    data: booksBorrowed,
+    data: transactionList,
     columns: customColumns,
     createDisplayMode: "modal",
     editDisplayMode: "modal",
-    enableRowActions: true,
-    positionActionsColumn: "last",
+    // positionActionsColumn: "last",
     onCreatingRowSave: handleCreateLevel,
-    onEditingRowSave: handleSaveLevel,
     mantineTableContainerProps: {
       style: {
         height: "100%",
@@ -192,65 +212,35 @@ const BorrowTransactionTable = () => {
     mantineCreateRowModalProps: {
       centered: true,
       size: "xl",
-      title: "Return Form",
+      title: "Borrowing Form",
       scrollAreaComponent: ScrollArea.Autosize,
     },
-
     mantineEditRowModalProps: {
       centered: true,
       size: "xl",
-      title: "Return Form",
+      title: "Editing form for Catalogue",
       scrollAreaComponent: ScrollArea.Autosize,
     },
-
     mantineTableProps: {
       withColumnBorders: true,
       withRowBorders: true,
       withTableBorder: true,
     },
     state: {
-      isSaving: isCreatingBorrowingTransaction,
-      isLoading: isTransactionLoading || isLoadingReturnCondition,
+      isSaving: isCreatingBorrowingTransaction || isRequestingBook,
+      isLoading: isTransactionLoading,
       showProgressBars: isTransactionFetching,
     },
 
     initialState: {
       pagination: { pageIndex: 0, pageSize: 5 },
       showColumnFilters: true,
-      columnPinning: {
-        right: ["mrt-row-actions"],
-      },
       columnVisibility: {
         id: false,
         bookType: false,
         borrowersName: false,
         borrowers: false,
       },
-    },
-
-    renderRowActions: ({ row }) => {
-      return (
-        <>
-          <Flex gap="md">
-            <Tooltip label="Edit">
-              <Button
-                variant="light"
-                color="blue"
-                size="sm"
-                onClick={() => table.setEditingRow(row)}
-                key={row.index}
-                disabled={
-                  bookCondition === "" ||
-                  bookCondition === null ||
-                  selectedRow[row.index] !== row.index
-                }
-              >
-                Hand in
-              </Button>
-            </Tooltip>
-          </Flex>
-        </>
-      );
     },
 
     renderToolbarInternalActions: ({ table }) => {
@@ -262,7 +252,7 @@ const BorrowTransactionTable = () => {
         </Flex>
       );
     },
-    renderCreateRowModalContent: ({ row }) => {
+    renderCreateRowModalContent: ({ table, row }) => {
       return (
         <>
           <Stack>
@@ -278,24 +268,6 @@ const BorrowTransactionTable = () => {
                 })
               }
             />
-          </Stack>
-        </>
-      );
-    },
-
-    renderEditRowModalContent: ({ row }) => {
-      const rowData = returnCondition
-        ?.filter((cond) => cond.returnCondition === bookCondition)
-        ?.map((cond) => ({
-          ...row.original,
-          bookCondition: cond.returnCondition,
-          fee: cond.fee,
-        }))
-        .at(0);
-      return (
-        <>
-          <Stack>
-            <BooksReturnForm rowData={rowData} />
           </Stack>
         </>
       );

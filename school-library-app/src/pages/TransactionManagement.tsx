@@ -1,11 +1,11 @@
-import TransactionTable from "@features/Transaction/TransactionTable";
+import BorrowTransactionTable from "@features/Transaction/BorrowTransactionTable";
 import { Box } from "@mantine/core";
 
 const CirculationManagement = () => {
   return (
     <>
       <Box>
-        <TransactionTable />
+        <BorrowTransactionTable />
       </Box>
     </>
   );

@@ -1,20 +1,18 @@
 import { useQueryClient, useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { FIRESTORE_COLLECTION_QUERY_KEY } from "src/shared/enums";
-import { addBorrowTransaction } from "../service/circulation.service";
+import { addReturnedBook } from "../service/circulation.service";
 
-export function useCreateBorrow() {
+export function useReturnBookTransaction() {
   const queryClient = useQueryClient();
   const {
-    isPending: isCreatingBorrowingTransaction,
-    mutateAsync: createBorrowTransaction,
+    isPending: isReturningTransaction,
+    mutateAsync: createReturnTransaction,
   } = useMutation({
-    mutationFn: addBorrowTransaction,
+    mutationFn: addReturnedBook,
     onSuccess: (_newArr, data) => {
       toast.success(
-        `Success! You have successfully completed the borrowing transaction.
-        Happy ${data.bookTitle} time
-        `
+        `Success! You have successfully returned the books entitled: ${data.bookTitle} that you've borrwed `
       );
       queryClient.invalidateQueries({
         queryKey: [FIRESTORE_COLLECTION_QUERY_KEY.ALL_BOOKS_TRANSACTION],
@@ -23,5 +21,5 @@ export function useCreateBorrow() {
     onError: (err) => toast.error(err.message),
   });
 
-  return { isCreatingBorrowingTransaction, createBorrowTransaction };
+  return { isReturningTransaction, createReturnTransaction };
 }

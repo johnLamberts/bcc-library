@@ -1,5 +1,5 @@
 import Form from "@components/Form/Form";
-import { Controller, useForm } from "react-hook-form";
+import { Controller, set, useForm } from "react-hook-form";
 import {
   Box,
   Checkbox,
@@ -19,21 +19,34 @@ import {
 } from "@tabler/icons-react";
 import useReadMissingCategory from "@features/SysSettings/ReturnCondition/useReadMissingCategory";
 import useReadDamagedCategory from "@features/SysSettings/ReturnCondition/useReadDamagedCategory";
+import {
+  MRT_RowData,
+  MRT_RowData,
+  MRT_TableInstance,
+} from "mantine-react-table";
 // interface CirculationFormProps<TData extends MRT_RowData> {
-//   table: MRT_TableInstance<TData>;
+//
 //   row: MRT_Row<TData>;
 //   // eslint-disable-next-line @typescript-eslint/no-explicit-any
 //   onCreate?: (props: Record<string, any>) => void;
 //   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-//   onSave?: (props: Record<string, any>) => void;
 // }
 
-interface BooksReturnFormProps {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+interface BooksReturnFormProps<TData extends MRT_RowData> {
+  table: MRT_TableInstance<TData>; // eslint-disable-next-line @typescript-eslint/no-explicit-any
   rowData?: Record<string, any>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  onSave?: (props: Record<string, any>) => void;
 }
-function BooksReturnForm({ rowData }: BooksReturnFormProps) {
+function BooksReturnForm<TData extends MRT_RowData>({
+  rowData,
+  table,
+  onSave,
+}: BooksReturnFormProps<TData>) {
+  const [isSave, setIsSave] = useState(false);
+
   const [bookPrice, setBookPrice] = useState(false);
+
   const form = useForm({
     defaultValues: {
       bookCondition: rowData?.bookCondition,
@@ -63,8 +76,11 @@ function BooksReturnForm({ rowData }: BooksReturnFormProps) {
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const onSubmit = (data: Record<string, any>) => {
-    console.log(rowData);
-    console.log(data);
+    onSave?.({
+      ...data,
+      ...rowData,
+      isSave,
+    });
   };
 
   useEffect(() => {
@@ -258,12 +274,24 @@ function BooksReturnForm({ rowData }: BooksReturnFormProps) {
         style={{
           display: "flex",
           justifyContent: "end",
+          gap: "0.5rem",
         }}
       >
         <Form.SubmitButton
           alias="Save"
+          loading={table.getState().isSaving}
           disabled={isLoadingDamageCategory || isLoadingMissingCategory}
+          onClick={() => setIsSave(true)}
         />
+
+        {!rowData?.bookCondition.toLowerCase().includes("returned") && (
+          <Form.SubmitButton
+            color="yellow"
+            alias="Partial Save"
+            onClick={() => setIsSave(false)}
+            disabled={isLoadingDamageCategory || isLoadingMissingCategory}
+          />
+        )}
       </Box>
     </Form>
   );

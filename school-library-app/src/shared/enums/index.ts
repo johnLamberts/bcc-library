@@ -13,12 +13,18 @@ export enum FIRESTORE_COLLECTION_QUERY_KEY {
   GENRE = "genres",
   USERS = "users",
 
+  // reports
+  BOOKS_RETURN_STATUS = "books-return-status",
+  BORROWERS_HISTORY_TRANSACTION = "borrowers-history",
+
   STUDENT = "students",
   STUDENT_ENTRY = "students-entry",
 
   TEACHER = "teachers",
   TEACHER_ENTRY = "teachers-entry",
 
+  REQUEST_BOOK = "books-requested",
+  RESERVED_BOOK = "books-reserved",
   BORROW_TRANSACTION = "books-borrowed",
   RETURNED_TRANSACTION = "books-returned",
   ALL_BOOKS_TRANSACTION = "books-transaction",

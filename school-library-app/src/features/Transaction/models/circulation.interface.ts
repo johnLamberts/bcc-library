@@ -44,4 +44,8 @@ export interface ICirculation {
   bookPrice?: number;
   returnCondition?: string;
   booksBorrowedId?: string;
+
+  bookCondition?: string;
+
+  status?: string;
 }
