@@ -7,6 +7,8 @@ import {
   ScrollArea,
   Text,
   Badge,
+  Tooltip,
+  Select,
 } from "@mantine/core";
 import { IconPlus } from "@tabler/icons-react";
 import {
@@ -18,26 +20,53 @@ import {
   MantineReactTable,
   useMantineReactTable,
 } from "mantine-react-table";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 
-import CirculationForm from "./CirculationForm";
-import { useCreateBorrow } from "./hooks/useCreateBorrow";
 import { ICirculation } from "./models/circulation.interface";
 import classes from "@pages/styles/user.module.css";
-import useReadTransactionList from "./hooks/useReadTransactionList";
 import { format, formatDistance, isAfter, isToday } from "date-fns";
 import { formatDistanceFromNow } from "src/utils/helpers/formatDistanceFromNow";
+import BooksReturnForm from "./BooksReturnForm";
+import useReadBooksBorrowed from "./hooks/useReadBorrowed";
+import CirculationForm from "./CirculationForm";
+import useReadReturnCondition from "@features/SysSettings/ReturnCondition/useReadReturnCondition";
+import { useReturnBookTransaction } from "./hooks/useReturnBook";
 
-const TransactionTable = () => {
-  const { isCreatingBorrowingTransaction, createBorrowTransaction } =
-    useCreateBorrow();
+const ReturnTransactionTable = () => {
+  const { isReturningTransaction, createReturnTransaction } =
+    useReturnBookTransaction();
+
+  const [bookCondition, setBookCondition] = useState<string | null>("");
+  const [selectedRow, setSelectedRow] = useState<{ [key: string]: number }>({});
 
   const {
-    data: transactionList = [],
+    data: booksBorrowed = [],
     isLoading: isTransactionLoading,
     isFetching: isTransactionFetching,
-  } = useReadTransactionList();
+  } = useReadBooksBorrowed();
 
+  console.log(booksBorrowed);
+
+  const { data: returnCondition = [], isLoading: isLoadingReturnCondition } =
+    useReadReturnCondition();
+
+  // CREATE action
+  const handleCreateLevel: MRT_TableOptions<ICirculation>["onCreatingRowSave"] =
+    async ({ values, table }) => {
+      // await createBorrowTransaction(values);
+      // table.setCreatingRow(null);
+    };
+
+  // EDIT action
+  const handleSaveLevel: MRT_TableOptions<ICirculation>["onEditingRowSave"] =
+    async ({ values }) => {
+      const { isSave, ...otherValues } = values;
+
+      console.log(otherValues);
+      if (isSave) {
+        await createReturnTransaction(otherValues);
+      }
+    };
   const customColumns = useMemo<MRT_ColumnDef<ICirculation>[]>(
     () => [
       {
@@ -63,7 +92,6 @@ const TransactionTable = () => {
         accessorKey: "borrowersName",
         header: "Borrower Name",
       },
-
       {
         accessorKey: "borrowersEmail",
         header: "Borrower Email",
@@ -78,7 +106,7 @@ const TransactionTable = () => {
             <>
               <Badge variant="light" color="#FFA903" tt={"inherit"}>
                 {isAfter(time, new Date())
-                  ? format(time, "h:mm a")
+                  ? `Today, ${format(time, "h:mm a")}`
                   : formatDistance(time, new Date(), {
                       addSuffix: true,
                       includeSeconds: true,
@@ -105,70 +133,61 @@ const TransactionTable = () => {
           switch (status) {
             case "Active":
               return (
-                <Badge
-                  color="#0CAF49"
-                  tt={"inherit"}
-                  variant="dot"
-                  fw={"normal"}
-                >
+                <Badge color="#0CAF49" tt={"inherit"} variant="dot">
                   {status}
                 </Badge>
               );
             case "Overdue":
               return (
-                <Badge
-                  color="#e74c3c"
-                  tt={"inherit"}
-                  variant="dot"
-                  fw={"normal"}
-                >
+                <Badge color="#e74c3c" tt={"inherit"} variant="dot">
                   {status}
                 </Badge>
               );
             case "Returned":
               return (
-                <Badge
-                  color="#3498db"
-                  tt={"inherit"}
-                  variant="dot"
-                  fw={"normal"}
-                >
+                <Badge color="#3498db" tt={"inherit"} variant="dot">
                   {status}
                 </Badge>
               );
             case "Request":
               return (
-                <Badge
-                  color="#95a5a6"
-                  tt={"inherit"}
-                  variant="dot"
-                  fw={"normal"}
-                >
+                <Badge color="#95a5a6" tt={"inherit"} variant="dot">
                   {status}
                 </Badge>
               );
           }
         },
       },
+      {
+        header: "Book Condition",
+        Cell: ({ row }) => {
+          return (
+            <Select
+              onChange={(e) => {
+                setSelectedRow({
+                  [row.index]: row.index,
+                });
+                setBookCondition(e);
+              }}
+              placeholder="Select a condition"
+              data={returnCondition.map((cond) => cond.returnCondition)}
+            />
+          );
+        },
+      },
     ],
-    []
+    [returnCondition]
   );
 
-  // CREATE action
-  const handleCreateLevel: MRT_TableOptions<ICirculation>["onCreatingRowSave"] =
-    async ({ values, table }) => {
-      await createBorrowTransaction(values);
-
-      table.setCreatingRow(null);
-    };
-
   const table = useMantineReactTable({
-    data: transactionList,
+    data: booksBorrowed,
     columns: customColumns,
     createDisplayMode: "modal",
     editDisplayMode: "modal",
-    // positionActionsColumn: "last",
+    enableRowActions: true,
+    positionActionsColumn: "last",
     onCreatingRowSave: handleCreateLevel,
+    onEditingRowSave: handleSaveLevel,
     mantineTableContainerProps: {
       style: {
         height: "100%",
@@ -177,29 +196,34 @@ const TransactionTable = () => {
     mantineCreateRowModalProps: {
       centered: true,
       size: "xl",
-      title: "Borrowing Form",
+      title: "Return Form",
       scrollAreaComponent: ScrollArea.Autosize,
     },
+
     mantineEditRowModalProps: {
       centered: true,
       size: "xl",
-      title: "Editing form for Catalogue",
+      title: "Return Form",
       scrollAreaComponent: ScrollArea.Autosize,
     },
+
     mantineTableProps: {
       withColumnBorders: true,
       withRowBorders: true,
       withTableBorder: true,
     },
     state: {
-      isSaving: isCreatingBorrowingTransaction,
-      isLoading: isTransactionLoading,
+      isSaving: isReturningTransaction,
+      isLoading: isTransactionLoading || isLoadingReturnCondition,
       showProgressBars: isTransactionFetching,
     },
 
     initialState: {
       pagination: { pageIndex: 0, pageSize: 5 },
       showColumnFilters: true,
+      columnPinning: {
+        right: ["mrt-row-actions"],
+      },
       columnVisibility: {
         id: false,
         bookType: false,
@@ -208,20 +232,30 @@ const TransactionTable = () => {
       },
     },
 
-    // renderRowActions: ({ row }) => (
-    //   <>
-    //     <Flex gap="md">
-    //       <Tooltip label="Edit">
-    //         <ActionIcon
-    //           variant="light"
-    //           onClick={() => table.setEditingRow(row)}
-    //         >
-    //           <IconEdit />
-    //         </ActionIcon>
-    //       </Tooltip>
-    //     </Flex>
-    //   </>
-    // ),
+    renderRowActions: ({ row }) => {
+      return (
+        <>
+          <Flex gap="md">
+            <Tooltip label="Edit">
+              <Button
+                variant="light"
+                color="blue"
+                size="sm"
+                onClick={() => table.setEditingRow(row)}
+                key={row.index}
+                disabled={
+                  bookCondition === "" ||
+                  bookCondition === null ||
+                  selectedRow[row.index] !== row.index
+                }
+              >
+                Hand in
+              </Button>
+            </Tooltip>
+          </Flex>
+        </>
+      );
+    },
 
     renderToolbarInternalActions: ({ table }) => {
       return (
@@ -232,7 +266,7 @@ const TransactionTable = () => {
         </Flex>
       );
     },
-    renderCreateRowModalContent: ({ table, row }) => {
+    renderCreateRowModalContent: ({ row }) => {
       return (
         <>
           <Stack>
@@ -252,6 +286,35 @@ const TransactionTable = () => {
         </>
       );
     },
+
+    renderEditRowModalContent: ({ row }) => {
+      const rowData = returnCondition
+        ?.filter((cond) => cond.returnCondition === bookCondition)
+        ?.map((cond) => ({
+          ...row.original,
+          bookCondition: cond.returnCondition,
+          fee: cond.fee,
+        }))
+        .at(0);
+      return (
+        <>
+          <Stack>
+            <BooksReturnForm
+              table={table}
+              rowData={rowData}
+              onSave={(data) =>
+                handleSaveLevel({
+                  values: data,
+                  table: table,
+                  row: row,
+                  exitEditingMode: () => null,
+                })
+              }
+            />
+          </Stack>
+        </>
+      );
+    },
   });
 
   return (
@@ -260,18 +323,9 @@ const TransactionTable = () => {
         <Group align="end" justify="space-between">
           <Box className={classes.highlight}>
             <Text fz={"xl"} fw={"bold"} c={"red"}>
-              Transactions List
+              Return Transaction
             </Text>
           </Box>
-          <Button
-            variant="light"
-            leftSection={<IconPlus size={14} />}
-            onClick={() => table.setCreatingRow(true)}
-            bg={" var(--mantine-color-red-light)"}
-            color={" var(--mantine-color-red-light-color)"}
-          >
-            Add Borrow
-          </Button>
         </Group>
 
         <Box mt={"lg"}>
@@ -281,4 +335,4 @@ const TransactionTable = () => {
     </>
   );
 };
-export default TransactionTable;
+export default ReturnTransactionTable;

@@ -34,7 +34,35 @@ const sendOverdueEmailReturned = async (snapshot: Record<string, any>) => {
     },
   };
 
-  console.log(msg);
+  return await sgMail.send(msg as any);
+};
+
+const sendRequestedEmail = async (snapshot: Record<string, any>) => {
+  const msg = {
+    to: snapshot.borrowersEmail,
+    subject: "",
+    from: "librsystem.e@gmail.com",
+    templateId: process.env.VITE_REQUESTED_BOOK,
+    dynamic_template_data: {
+      fullName: snapshot.borrowersName,
+      bookTitle: snapshot.bookTitle,
+    },
+  };
+
+  return await sgMail.send(msg as any);
+};
+
+const sendRequestedBook = async (snapshot: Record<string, any>) => {
+  const msg = {
+    to: snapshot.borrowersEmail,
+    subject: "",
+    from: "librsystem.e@gmail.com",
+    templateId: process.env.VITE_REQUEST_BOOK,
+    dynamic_template_data: {
+      fullName: snapshot.borrowersName,
+      bookTitle: snapshot.bookTitle,
+    },
+  };
 
   return await sgMail.send(msg as any);
 };
@@ -42,4 +70,5 @@ const sendOverdueEmailReturned = async (snapshot: Record<string, any>) => {
 export const EmailReturnedService = {
   sendEmailReturned,
   sendOverdueEmailReturned,
+  sendRequestedEmail, sendRequestedBook
 };

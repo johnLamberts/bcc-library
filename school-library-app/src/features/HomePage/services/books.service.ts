@@ -2,15 +2,12 @@ import { IBooks } from "@features/Catalogue/models/books.interface";
 import {
   collection,
   doc,
-  endBefore,
   getDoc,
   getDocs,
   limit,
   orderBy,
   query,
   startAfter,
-  startAt,
-  where,
 } from "firebase/firestore";
 import { PAGE_SIZE } from "src/shared/constant";
 import { FIRESTORE_COLLECTION_QUERY_KEY } from "src/shared/enums";

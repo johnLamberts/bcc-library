@@ -1,14 +1,14 @@
 import { useQuery } from "@tanstack/react-query";
 import { FIRESTORE_COLLECTION_QUERY_KEY } from "src/shared/enums";
-import { getBooksBorrowed } from "../service/circulation.service";
+import { getBooksReturned } from "../service/circulation.service";
 
-const useReadBooksBorrowed = () => {
+const useReadBooksReturned = () => {
   return useQuery({
-    queryFn: getBooksBorrowed,
-    queryKey: [FIRESTORE_COLLECTION_QUERY_KEY.BORROW_TRANSACTION],
+    queryFn: getBooksReturned,
+    queryKey: [FIRESTORE_COLLECTION_QUERY_KEY.ALL_BOOKS_TRANSACTION],
 
     refetchOnWindowFocus: false,
   });
 };
 
-export default useReadBooksBorrowed;
+export default useReadBooksReturned;

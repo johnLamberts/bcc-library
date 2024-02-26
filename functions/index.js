@@ -1,37 +1,41 @@
-/* eslint-disable require-jsdoc */
-/* eslint-disable linebreak-style */
-/* eslint-disable padded-blocks */
-/* eslint-disable linebreak-style */
-/* eslint-disable object-curly-spacing */
 /* eslint-disable comma-dangle */
+/* eslint-disable object-curly-spacing */
 /* eslint-disable indent */
-/**
- * Import function triggers from their respective submodules:
- *
- * const {onCall} = require("firebase-functions/v2/https");
- * const {onDocumentWritten} = require("firebase-functions/v2/firestore");
- *
- * See a full list of supported triggers at https://firebase.google.com/docs/functions
- */
+// /* eslint-disable require-jsdoc */
+// /* eslint-disable linebreak-style */
+// /* eslint-disable padded-blocks */
+// /* eslint-disable linebreak-style */
+// /* eslint-disable object-curly-spacing */
+// /* eslint-disable comma-dangle */
+// /* eslint-disable indent */
+// /**
+//  * Import function triggers from their respective submodules:
+//  *
+//  * const {onCall} = require("firebase-functions/v2/https");
+//  * const {onDocumentWritten} = require("firebase-functions/v2/firestore");
+//  *
+//  * See a full list of supported triggers at https://firebase.google.com/docs/functions
+//  */
 
-// Create and deploy your first functions
-// https://firebase.google.com/docs/functions/get-started
+// // Create and deploy your first functions
+// // https://firebase.google.com/docs/functions/get-started
 
-// exports.helloWorld = onRequest((request, response) => {
-//   logger.info("Hello logs!", {structuredData: true});
-//   response.send("Hello from Firebase!");
-// });
+// // exports.helloWorld = onRequest((request, response) => {
+// //   logger.info("Hello logs!", {structuredData: true});
+// //   response.send("Hello from Firebase!");
+// // });
 
 const functions = require("firebase-functions");
 const admin = require("firebase-admin");
 const sgMail = require("@sendgrid/mail");
 
 admin.initializeApp();
-
 const API_KEY = functions.config().sendgrid.key;
 const TEMPLATE_ID = functions.config().sendgrid.template;
 
 const OVERDUE_TEMPLATE_ID = functions.config().sendgrid.overdue_template;
+const AUTOMATE_CANCELLED_RESERVE =
+  functions.config().sendgrid.automate_cancelled_reserved;
 
 sgMail.setApiKey(API_KEY);
 
@@ -112,8 +116,54 @@ exports.taskRunner = functions
     });
   });
 
-// const testData = admin.firestore().collection("availability").get();
+exports.documentReservedChecker = functions
+  .runWith({ memory: "4GB" })
+  .pubsub.schedule("* * * * *")
+  .onRun(async () => {
+    admin
+      .firestore()
+      .collection("books-reserved")
+      .get()
+      .then((docs) => {
+        return docs.docs.map(async (doc) => {
+          const snapshot = doc.data();
 
-// testData.then((response) => {
-//   return response.docs.map(async (doc) => {});
-// });
+          const msg = {
+            to: snapshot.borrowersEmail,
+            from: "librsystem.e@gmail.com",
+            fullName: snapshot.borrowersName,
+            templateId: AUTOMATE_CANCELLED_RESERVE,
+            dynamic_template_data: {
+              fullName: snapshot.borrowersName,
+              bookTitle: snapshot.bookTitle,
+            },
+          };
+
+          const dateCreated =
+            doc.data().dateCreated._seconds * 1000 +
+            Math.floor(doc.data().dateCreated._nanoseconds / 1000000);
+
+          const past = new Date(new Date().getTime() - 24 * 60 * 60 * 1000);
+
+          if (dateCreated < past) {
+            const booksTransactionRef = await admin
+              .firestore()
+              .collection("books-transaction")
+              .where("booksBorrowedId", "==", doc.data().id)
+              .get();
+
+            booksTransactionRef.docs.map(async (doc) =>
+              admin.firestore().doc(`books-transaction/${doc.id}`).update({
+                status: "Cancelled",
+                modifiedAt: admin.firestore.Timestamp.now(),
+              })
+            );
+            await admin.firestore().doc(`books-reserved/${doc.id}`).delete();
+
+            return sgMail.send(msg);
+          } else {
+            doc.ref.update({ status: "Reserved" });
+          }
+        });
+      });
+  });
