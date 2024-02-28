@@ -6,7 +6,7 @@ export type TCirculation = Partial<IBooks & ITeacher & IStudents>;
 
 export interface ICirculation {
   id?: string;
-  bookISBN: string;
+  bookISBN?: string;
 
   bookLocation: string;
 
@@ -48,4 +48,10 @@ export interface ICirculation {
   bookCondition?: string;
 
   status?: string;
+
+  booksPrice?: number;
+
+  fee?: number;
+  categoryFee?: number | string;
+  conditionFee?: number | string;
 }

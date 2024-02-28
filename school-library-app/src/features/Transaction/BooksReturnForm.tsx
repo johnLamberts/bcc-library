@@ -19,11 +19,7 @@ import {
 } from "@tabler/icons-react";
 import useReadMissingCategory from "@features/SysSettings/ReturnCondition/useReadMissingCategory";
 import useReadDamagedCategory from "@features/SysSettings/ReturnCondition/useReadDamagedCategory";
-import {
-  MRT_RowData,
-  MRT_RowData,
-  MRT_TableInstance,
-} from "mantine-react-table";
+import { MRT_RowData, MRT_TableInstance } from "mantine-react-table";
 // interface CirculationFormProps<TData extends MRT_RowData> {
 //
 //   row: MRT_Row<TData>;
@@ -99,7 +95,7 @@ function BooksReturnForm<TData extends MRT_RowData>({
   const handleCheckboxChange = () => {
     setBookPrice((prevValue) => !prevValue); // Toggle checkbox state
 
-    const price = rowData?.bookPrice || 0; // Get book price from rowData
+    const price = rowData?.booksPrice || 0; // Get book price from rowData
     form.setValue("categoryFee", bookPrice ? 0 : price); // Set categoryFee based on checkbox state
   };
 

@@ -28,6 +28,7 @@ import useReadTransactionList from "./hooks/useReadTransactionList";
 import { format, formatDistance, isAfter, isToday } from "date-fns";
 import { formatDistanceFromNow } from "src/utils/helpers/formatDistanceFromNow";
 import { useCreateRequestTransaction } from "./hooks/useRequestTransaction";
+import { useCreateWalkinReservedBook } from "./hooks/useCreateWalkinReservedBook";
 
 const BorrowTransactionTable = () => {
   const { isCreatingBorrowingTransaction, createBorrowTransaction } =
@@ -35,6 +36,9 @@ const BorrowTransactionTable = () => {
 
   const { isRequestingBook, createRequestTransaction } =
     useCreateRequestTransaction();
+
+  const { isCreatingWalkingReserved, createWalkinReserved } =
+    useCreateWalkinReservedBook();
 
   const {
     data: transactionList = [],
@@ -188,10 +192,12 @@ const BorrowTransactionTable = () => {
   // CREATE action
   const handleCreateLevel: MRT_TableOptions<ICirculation>["onCreatingRowSave"] =
     async ({ values, table }) => {
-      if (values.isRequesting) {
+      if (values.requesting === "Request") {
         await createRequestTransaction(values);
-      } else {
+      } else if (values.requesting === "Borrow") {
         await createBorrowTransaction(values);
+      } else if (values.requesting === "Reserved") {
+        await createWalkinReserved(values);
       }
 
       table.setCreatingRow(null);
@@ -227,7 +233,10 @@ const BorrowTransactionTable = () => {
       withTableBorder: true,
     },
     state: {
-      isSaving: isCreatingBorrowingTransaction || isRequestingBook,
+      isSaving:
+        isCreatingBorrowingTransaction ||
+        isRequestingBook ||
+        isCreatingWalkingReserved,
       isLoading: isTransactionLoading,
       showProgressBars: isTransactionFetching,
     },

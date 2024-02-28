@@ -140,23 +140,28 @@ exports.documentReservedChecker = functions
           };
 
           const dateCreated =
-            doc.data().dateCreated._seconds * 1000 +
-            Math.floor(doc.data().dateCreated._nanoseconds / 1000000);
+            doc.data().createdAt._seconds * 1000 +
+            Math.floor(doc.data().createdAt._nanoseconds / 1000000);
 
-          const past = new Date(new Date().getTime() - 24 * 60 * 60 * 1000);
+          const past = new Date(
+            admin.firestore.Timestamp.now().toMillis() - 24 * 60 * 60 * 1000
+          );
 
           if (dateCreated < past) {
             const booksTransactionRef = await admin
               .firestore()
               .collection("books-transaction")
-              .where("booksBorrowedId", "==", doc.data().id)
+              .where("reservedId", "==", doc.id)
               .get();
 
-            booksTransactionRef.docs.map(async (doc) =>
-              admin.firestore().doc(`books-transaction/${doc.id}`).update({
-                status: "Cancelled",
-                modifiedAt: admin.firestore.Timestamp.now(),
-              })
+            booksTransactionRef.docs.map(async (transactDoc) =>
+              admin
+                .firestore()
+                .doc(`books-transaction/${transactDoc.id}`)
+                .update({
+                  status: "Cancelled",
+                  modifiedAt: admin.firestore.Timestamp.now(),
+                })
             );
             await admin.firestore().doc(`books-reserved/${doc.id}`).delete();
 
@@ -167,3 +172,26 @@ exports.documentReservedChecker = functions
         });
       });
   });
+
+// admin
+//   .firestore()
+//   .collection("books-reserved")
+//   .get()
+//   .then((docs) => {
+//     return docs.docs.map(async (doc) => {
+//       // const snapshot = doc.data();
+
+//       // const msg = {
+//       //   to: snapshot.borrowersEmail,
+//       //   from: "librsystem.e@gmail.com",
+//       //   fullName: snapshot.borrowersName,
+//       //   templateId: AUTOMATE_CANCELLED_RESERVE,
+//       //   dynamic_template_data: {
+//       //     fullName: snapshot.borrowersName,
+//       //     bookTitle: snapshot.bookTitle,
+//       //   },
+//       // };
+
+//       console.log(dateCreated < past);
+//     });
+//   });

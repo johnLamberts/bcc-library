@@ -86,14 +86,6 @@ const BookRequestedTable = () => {
     []
   );
 
-  // CREATE action
-  // const handleCreateLevel: MRT_TableOptions<ICirculation>["onCreatingRowSave"] =
-  //   async ({ values, table }) => {
-  //     await createBorrowTransaction(values);
-
-  //     table.setCreatingRow(null);
-  //   };
-
   // Modal `APPROVE` action
   const openApproveConfirmModal = (row: MRT_Row<ICirculation>) =>
     modals.openConfirmModal({
@@ -191,26 +183,6 @@ const BookRequestedTable = () => {
         </Flex>
       );
     },
-    // renderCreateRowModalContent: ({ table, row }) => {
-    //   return (
-    //     <>
-    //       <Stack>
-    //         <CirculationForm
-    //           table={table}
-    //           row={row}
-    //           onCreate={(data) =>
-    //             handleCreateLevel({
-    //               values: data,
-    //               table: table,
-    //               row: row,
-    //               exitCreatingMode: () => null,
-    //             })
-    //           }
-    //         />
-    //       </Stack>
-    //     </>
-    //   );
-    // },
   });
 
   return (

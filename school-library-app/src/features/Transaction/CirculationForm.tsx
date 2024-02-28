@@ -31,7 +31,7 @@ export default function CirculationForm<TData extends MRT_RowData>({
     defaultValues: isEditing ? row.original : {},
   });
 
-  const [isRequesting, setIsRequesting] = useState(false);
+  const [requesting, setRequesting] = useState("");
 
   const onSubmit = useCallback(
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -47,13 +47,13 @@ export default function CirculationForm<TData extends MRT_RowData>({
 
         onCreate?.({
           ...values,
-          isRequesting,
+          requesting,
         });
       } else if (isEditing) {
         onSave?.(values);
       }
     },
-    [onCreate, isCreating, isEditing, onSave, isRequesting]
+    [onCreate, isCreating, isEditing, onSave, requesting]
   );
 
   useEffect(() => {
@@ -110,15 +110,23 @@ export default function CirculationForm<TData extends MRT_RowData>({
             color="red.8"
             disabled={!form.formState.isValid}
             alias="Borrow"
-            onClick={() => setIsRequesting(false)}
+            onClick={() => setRequesting("Borrow")}
           />
 
           <Form.SubmitButton
             loading={table.getState().isSaving}
-            color="red.8"
+            color="yellow.8"
+            disabled={!form.formState.isValid}
+            alias="Reserved"
+            onClick={() => setRequesting("Reserved")}
+          />
+
+          <Form.SubmitButton
+            loading={table.getState().isSaving}
+            color="green.8"
             disabled={!form.formState.isValid}
             alias="Request"
-            onClick={() => setIsRequesting(true)}
+            onClick={() => setRequesting("Request")}
           />
         </Box>
       </Form>

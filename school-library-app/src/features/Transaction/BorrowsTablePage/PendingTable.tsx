@@ -21,16 +21,16 @@ import { useMemo } from "react";
 
 import classes from "@pages/styles/user.module.css";
 import { ICirculation } from "../models/circulation.interface";
-import useReadRequest from "../hooks/useReadRequest";
 import { modals } from "@mantine/modals";
 import { useCreateApproveRequest } from "../hooks/useApproveRequest";
+import useReadReturnList from "../hooks/useReadReturnTransaction";
 
 const PendingTable = () => {
   const {
     data: transactionList = [],
     isLoading: isRequestLoading,
     isFetching: isRequestFetching,
-  } = useReadRequest();
+  } = useReadReturnList();
 
   const {
     isCreatingApproveRequestTransaction,
