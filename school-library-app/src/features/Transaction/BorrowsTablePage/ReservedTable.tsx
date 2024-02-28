@@ -64,10 +64,7 @@ const BookRequestedTable = () => {
         accessorKey: "borrowersEmail",
         header: "Borrower Email",
       },
-      {
-        accessorKey: "numberOfBooksAvailable_QUANTITY",
-        header: "Available Copies",
-      },
+
       {
         accessorKey: "status",
         header: "Status",
@@ -188,26 +185,6 @@ const BookRequestedTable = () => {
         </Flex>
       );
     },
-    // renderCreateRowModalContent: ({ table, row }) => {
-    //   return (
-    //     <>
-    //       <Stack>
-    //         <CirculationForm
-    //           table={table}
-    //           row={row}
-    //           onCreate={(data) =>
-    //             handleCreateLevel({
-    //               values: data,
-    //               table: table,
-    //               row: row,
-    //               exitCreatingMode: () => null,
-    //             })
-    //           }
-    //         />
-    //       </Stack>
-    //     </>
-    //   );
-    // },
   });
 
   return (

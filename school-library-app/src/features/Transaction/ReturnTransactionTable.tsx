@@ -9,10 +9,12 @@ import {
   Badge,
   Tooltip,
   Select,
+  Divider,
 } from "@mantine/core";
 import { IconPlus } from "@tabler/icons-react";
 import {
   MRT_ColumnDef,
+  MRT_Row,
   MRT_ShowHideColumnsButton,
   MRT_TableOptions,
   MRT_ToggleDensePaddingButton,
@@ -27,44 +29,120 @@ import classes from "@pages/styles/user.module.css";
 import { format, formatDistance, isAfter, isToday } from "date-fns";
 import { formatDistanceFromNow } from "src/utils/helpers/formatDistanceFromNow";
 import BooksReturnForm from "./BooksReturnForm";
-import useReadBooksBorrowed from "./hooks/useReadBorrowed";
 import CirculationForm from "./CirculationForm";
 import useReadReturnCondition from "@features/SysSettings/ReturnCondition/useReadReturnCondition";
 import { useReturnBookTransaction } from "./hooks/useReturnBook";
+import useReadReturnList from "./hooks/useReadReturnTransaction";
+import { modals } from "@mantine/modals";
 
 const ReturnTransactionTable = () => {
-  const { isReturningTransaction, createReturnTransaction } =
-    useReturnBookTransaction();
-
   const [bookCondition, setBookCondition] = useState<string | null>("");
   const [selectedRow, setSelectedRow] = useState<{ [key: string]: number }>({});
 
   const {
-    data: booksBorrowed = [],
+    data: returnsTransaction = [],
     isLoading: isTransactionLoading,
     isFetching: isTransactionFetching,
-  } = useReadBooksBorrowed();
-
-  console.log(booksBorrowed);
+  } = useReadReturnList();
 
   const { data: returnCondition = [], isLoading: isLoadingReturnCondition } =
     useReadReturnCondition();
 
+  const { isReturningTransaction, createReturnTransaction } =
+    useReturnBookTransaction();
   // CREATE action
-  const handleCreateLevel: MRT_TableOptions<ICirculation>["onCreatingRowSave"] =
-    async ({ values, table }) => {
-      // await createBorrowTransaction(values);
-      // table.setCreatingRow(null);
-    };
+  const confirmSaveReturnModal = (row: Partial<ICirculation>) =>
+    modals.openConfirmModal({
+      centered: true,
+      title: (
+        <>
+          Return Notification
+          <Divider />
+        </>
+      ),
+      children: (
+        <>
+          <Text>Are you sure you want to return the selected book(s)?</Text>
+          <br />
+          <Text>
+            This action is
+            <b> irreversible</b> once saved. Please ensure you have completed
+            your reading or any necessary notes before proceeding.
+          </Text>
+        </>
+      ),
+      labels: {
+        confirm: "Yes",
+        cancel: "Cancel",
+      },
+      confirmProps: {
+        color: "#ffa903",
+        variant: "light",
+        loading: isReturningTransaction,
+      },
+      onConfirm: async () => {
+        if (bookCondition?.toLowerCase().includes("return")) {
+          //..
+        } else {
+          //..
+        }
+
+        await createReturnTransaction(row);
+
+        // table.setEditingRow(null);
+      },
+    });
 
   // EDIT action
   const handleSaveLevel: MRT_TableOptions<ICirculation>["onEditingRowSave"] =
     async ({ values }) => {
-      const { isSave, ...otherValues } = values;
-
-      console.log(otherValues);
+      const {
+        bookCondition,
+        isSave,
+        bookISBN,
+        bookTitle,
+        booksId,
+        booksPrice,
+        borrowers,
+        borrowersEmail,
+        borrowersName,
+        borrowersNumber,
+        borrowersId,
+        status,
+        id,
+        fee,
+        categoryFee,
+        conditionFee,
+        totalFee,
+        booksBorrowedId,
+        bookType,
+        expiryTime,
+        ...otherValues
+      } = values;
       if (isSave) {
-        await createReturnTransaction(otherValues);
+        confirmSaveReturnModal({
+          bookCondition,
+          bookISBN,
+          bookTitle,
+          booksId,
+          booksPrice,
+          borrowers,
+          borrowersEmail,
+          borrowersName,
+          borrowersNumber,
+          borrowersId,
+          status,
+          id,
+          fee,
+          categoryFee,
+          conditionFee,
+          totalFee,
+          booksBorrowedId,
+          bookType,
+          expiryTime,
+        });
+      } else {
+        console.log("Parital save");
       }
     };
   const customColumns = useMemo<MRT_ColumnDef<ICirculation>[]>(
@@ -180,13 +258,12 @@ const ReturnTransactionTable = () => {
   );
 
   const table = useMantineReactTable({
-    data: booksBorrowed,
+    data: returnsTransaction,
     columns: customColumns,
     createDisplayMode: "modal",
     editDisplayMode: "modal",
     enableRowActions: true,
     positionActionsColumn: "last",
-    onCreatingRowSave: handleCreateLevel,
     onEditingRowSave: handleSaveLevel,
     mantineTableContainerProps: {
       style: {
@@ -213,8 +290,8 @@ const ReturnTransactionTable = () => {
       withTableBorder: true,
     },
     state: {
-      isSaving: isReturningTransaction,
       isLoading: isTransactionLoading || isLoadingReturnCondition,
+      isSaving: isReturningTransaction,
       showProgressBars: isTransactionFetching,
     },
 
@@ -264,26 +341,6 @@ const ReturnTransactionTable = () => {
           <MRT_ToggleDensePaddingButton table={table} />
           <MRT_ShowHideColumnsButton table={table} />
         </Flex>
-      );
-    },
-    renderCreateRowModalContent: ({ row }) => {
-      return (
-        <>
-          <Stack>
-            <CirculationForm
-              table={table}
-              row={row}
-              onCreate={(data) =>
-                handleCreateLevel({
-                  values: data,
-                  table: table,
-                  row: row,
-                  exitCreatingMode: () => null,
-                })
-              }
-            />
-          </Stack>
-        </>
       );
     },
 

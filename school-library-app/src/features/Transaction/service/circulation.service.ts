@@ -6,6 +6,7 @@ import {
   doc,
   getDocs,
   or,
+  orderBy,
   query,
   serverTimestamp,
   setDoc,
@@ -171,7 +172,7 @@ const addRequestTransaction = async (request: ICirculation) => {
 
 const addApproveRequestedBook = async (approve: ICirculation) => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  delete (approve as any).isRequesting;
+  delete (approve as any).requesting;
 
   const { id, numberOfBooksAvailable_QUANTITY, ...otherValues } = approve;
 
@@ -180,7 +181,7 @@ const addApproveRequestedBook = async (approve: ICirculation) => {
     {
       ...otherValues,
       status: "Reserved",
-      dateCreated: serverTimestamp(),
+      createdAt: serverTimestamp(),
     }
   );
 
@@ -218,7 +219,7 @@ const addApproveRequestedBook = async (approve: ICirculation) => {
       ...otherValues,
       status: "Reserved",
       reservedId: reservedRef.id,
-      dateCreated: serverTimestamp(),
+      createdAt: serverTimestamp(),
     }
   );
 
@@ -233,25 +234,6 @@ const addApproveRequestedBook = async (approve: ICirculation) => {
 
 const addClaimedReservedBook = async (reserved: ICirculation) => {
   const { id: reservedId, ...otherValues } = reserved;
-  const bookdsRef = await getDocs(
-    query(
-      collection(
-        firestore,
-        FIRESTORE_COLLECTION_QUERY_KEY.ALL_BOOKS_TRANSACTION
-      ),
-      where("reservedId", "==", reservedId)
-    )
-  );
-
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  bookdsRef.docs.forEach(async (bookDoc) => {
-    const docRef = doc(
-      firestore,
-      FIRESTORE_COLLECTION_QUERY_KEY.ALL_BOOKS_TRANSACTION,
-      bookDoc.id
-    );
-    await deleteDoc(docRef);
-  });
 
   const borrowTransactionRef = await addDoc(
     collection(firestore, FIRESTORE_COLLECTION_QUERY_KEY.BORROW_TRANSACTION),
@@ -311,11 +293,75 @@ const addClaimedReservedBook = async (reserved: ICirculation) => {
       reservedId as string
     )
   );
+
+  const bookdsRef = await getDocs(
+    query(
+      collection(
+        firestore,
+        FIRESTORE_COLLECTION_QUERY_KEY.ALL_BOOKS_TRANSACTION
+      ),
+      where("reservedId", "==", reservedId)
+    )
+  );
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  bookdsRef.docs.forEach(async (bookDoc) => {
+    const docRef = doc(
+      firestore,
+      FIRESTORE_COLLECTION_QUERY_KEY.ALL_BOOKS_TRANSACTION,
+      bookDoc.id
+    );
+    await deleteDoc(docRef);
+  });
+};
+
+const addWalkinReservedBook = async (reserved: ICirculation) => {
+  const reservedRef = await addDoc(
+    collection(firestore, FIRESTORE_COLLECTION_QUERY_KEY.RESERVED_BOOK),
+    {
+      ...reserved,
+      status: "Reserved",
+      createdAt: serverTimestamp(),
+    }
+  );
+
+  await addDoc(
+    collection(firestore, FIRESTORE_COLLECTION_QUERY_KEY.ALL_BOOKS_TRANSACTION),
+    {
+      ...reserved,
+      status: "Reserved",
+      reservedId: reservedRef.id,
+      createdAt: serverTimestamp(),
+    }
+  );
+
+  return axios({
+    method: "POST",
+    url: `${import.meta.env.VITE_SERVER_URL}api/v1/email/requested-email`,
+    data: {
+      ...reserved,
+    },
+  });
 };
 
 // Returned
 
 const addReturnedBook = async (returns: Partial<ICirculation>) => {
+  const {
+    bookCondition,
+    bookISBN,
+    bookTitle,
+    booksId,
+    borrowers,
+    borrowersEmail,
+    borrowersName,
+    borrowersNumber,
+    status,
+    booksBorrowedId,
+    bookType,
+  } = returns;
+
+  console.log(returns, bookCondition);
   if (returns.status === "Active") {
     const availabilityRef = await getDocs(
       query(
@@ -323,9 +369,10 @@ const addReturnedBook = async (returns: Partial<ICirculation>) => {
           firestore,
           FIRESTORE_COLLECTION_QUERY_KEY.AVAILABILITY_TRANSACTION
         ),
-        where("booksBorrowedId", "==", returns.booksBorrowedId)
+        where("booksBorrowedId", "==", booksBorrowedId)
       )
     );
+
     availabilityRef.docs.map(
       async (docId) =>
         await deleteDoc(
@@ -343,7 +390,7 @@ const addReturnedBook = async (returns: Partial<ICirculation>) => {
     doc(
       firestore,
       FIRESTORE_COLLECTION_QUERY_KEY.BORROW_TRANSACTION,
-      returns.booksBorrowedId as string
+      booksBorrowedId as string
     )
   );
 
@@ -355,8 +402,7 @@ const addReturnedBook = async (returns: Partial<ICirculation>) => {
       returns.booksId as string
     ),
     {
-      numberOfBooksAvailable_QUANTITY:
-        returns.numberOfBooksAvailable_QUANTITY! + 1,
+      numberOfBooksAvailable_QUANTITY: 1,
     }
   );
 
@@ -379,23 +425,36 @@ const addReturnedBook = async (returns: Partial<ICirculation>) => {
         docId.id
       ),
       {
-        ...returns,
+        bookCondition,
+        bookISBN,
+        bookTitle,
+        booksId,
+        borrowers,
+        borrowersEmail,
+        borrowersName,
+        borrowersNumber,
+        booksBorrowedId,
+        bookType,
         status: "Returned",
         modifiedAt: serverTimestamp(),
       }
     );
   });
 
-  // * ADD book item status in `books-transaction`
+  // * ADD book item condition after return transaction
   await addDoc(
-    collection(firestore, FIRESTORE_COLLECTION_QUERY_KEY.BOOKS_RETURN_STATUS),
+    collection(
+      firestore,
+      FIRESTORE_COLLECTION_QUERY_KEY.BOOKS_RETURN_CONDITION
+    ),
     {
-      bookTitle: returns.bookTitle,
-      bookType: returns.bookType,
-      bookCondition: returns.bookCondition,
-      booksId: returns.booksId,
-      booksBorrowedId: returns.booksBorrowedId,
-      createdAt: serverTimestamp(),
+      bookTitle,
+      bookType,
+      bookISBN,
+      bookCondition,
+      booksId,
+      booksBorrowedId,
+      dateReturned: serverTimestamp(),
     }
   );
 
@@ -406,24 +465,23 @@ const addReturnedBook = async (returns: Partial<ICirculation>) => {
       FIRESTORE_COLLECTION_QUERY_KEY.BORROWERS_HISTORY_TRANSACTION
     ),
     {
-      bookTitle: returns.bookTitle,
-      bookType: returns.bookType,
-      bookCondition: returns.bookCondition,
-      booksId: returns.booksId,
-      booksBorrowedId: returns.booksBorrowedId,
+      bookTitle,
+      bookType,
+      bookCondition,
+      booksId,
+      booksBorrowedId,
 
-      borrowersEmail: returns.borrowersEmail,
-      borrowers: returns.borrowers,
-      borrowersName: returns.borrowersName,
-      borrowersNumber: returns.borrowersNumber,
+      borrowersEmail,
+      borrowers,
+      borrowersName,
+      borrowersNumber,
 
-      status:
-        returns.status === "Active"
-          ? "Return with Good Condition"
-          : returns.status,
+      status,
       createdAt: serverTimestamp(),
     }
   );
+
+  // * ADD borrower history in `transaction`
 
   return axios({
     method: "POST",
@@ -432,6 +490,16 @@ const addReturnedBook = async (returns: Partial<ICirculation>) => {
       ...returns,
     },
   });
+};
+
+const addCompletePaymentTransaction = async (
+  payment: Partial<ICirculation>
+) => {
+  console.log(payment);
+};
+
+const addPatrialPaymentTransaction = async (partial: Partial<ICirculation>) => {
+  console.log(partial);
 };
 
 // const returnOverdueCirculation = async (returnBook: Partial<ICirculation>) => {
@@ -571,6 +639,22 @@ const getBooksTransaction = async () => {
   })) as ICirculation[];
 };
 
+const getReturnsTransaction = async () => {
+  const booksTransactionRef = await getDocs(
+    query(
+      collection(
+        firestore,
+        FIRESTORE_COLLECTION_QUERY_KEY.ALL_BOOKS_TRANSACTION
+      ),
+      or(where("status", "==", "Active"), where("status", "==", "Overdue"))
+    )
+  );
+
+  return booksTransactionRef.docs.map((doc) => ({
+    id: doc.id,
+    ...doc.data(),
+  })) as ICirculation[];
+};
 const getBooksReturned = async () => {
   const booksTransactionRef = await getDocs(
     query(
@@ -601,10 +685,27 @@ const getBooksRequested = async () => {
 
 const getBooksReserved = async () => {
   const bookRequestedRef = await getDocs(
-    query(collection(firestore, FIRESTORE_COLLECTION_QUERY_KEY.RESERVED_BOOK))
+    query(
+      collection(firestore, FIRESTORE_COLLECTION_QUERY_KEY.RESERVED_BOOK),
+      orderBy("createdAt", "asc")
+    )
   );
 
   return bookRequestedRef.docs.map((doc) => ({
+    id: doc.id,
+    ...doc.data(),
+  })) as ICirculation[];
+};
+
+const getPartialPayment = async (paymentStatus: string) => {
+  const booksTransactionRef = await getDocs(
+    query(
+      collection(firestore, FIRESTORE_COLLECTION_QUERY_KEY.COMPLETE_PAYMENT),
+      where("paymentStatus", "==", paymentStatus)
+    )
+  );
+
+  return booksTransactionRef.docs.map((doc) => ({
     id: doc.id,
     ...doc.data(),
   })) as ICirculation[];
@@ -618,6 +719,9 @@ export {
   addApproveRequestedBook,
   addClaimedReservedBook,
   addReturnedBook,
+  addWalkinReservedBook,
+  addCompletePaymentTransaction,
+  addPatrialPaymentTransaction,
   /**
    **  NOTE: Read all books Transaction
    **  whereas STATUS can be `returned`,
@@ -628,4 +732,6 @@ export {
   getBooksReturned,
   getBooksRequested,
   getBooksReserved,
+  getReturnsTransaction,
+  getPartialPayment,
 };

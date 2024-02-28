@@ -14,7 +14,7 @@ export enum FIRESTORE_COLLECTION_QUERY_KEY {
   USERS = "users",
 
   // reports
-  BOOKS_RETURN_STATUS = "books-return-status",
+  BOOKS_RETURN_CONDITION = "books-return-condition",
   BORROWERS_HISTORY_TRANSACTION = "borrowers-history",
 
   STUDENT = "students",
@@ -39,4 +39,8 @@ export enum FIRESTORE_COLLECTION_QUERY_KEY {
 
   CURRENT_USER = "current-user",
   CURRENT_USER_PROFILE = "current-user-profile",
+
+  PARTIAL_PAYMENT = "partial-payment-transaction",
+  COMPLETE_PAYMENT = "complete-payment",
+  PAYMENT_TRANSACTION = "payment-transaction",
 }
