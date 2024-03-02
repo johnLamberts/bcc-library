@@ -19,7 +19,6 @@ import BookAuthor from "@pages/SystemSettings/BookAuthor";
 import ReturnCondition from "@pages/SystemSettings/ReturnCondition";
 import AppPageLayout from "@layouts/PagesLayout";
 import Home from "@pages/Homepage/Home";
-import StudentReportTable from "@features/Reports/StudentReport";
 import ReturnTransaction from "@pages/Transaction/ReturnTransaction";
 import TransactionManagement from "@pages/TransactionManagement";
 import BorrowTransactionPage from "@pages/Transaction/BorrowTransactionPage";
@@ -27,6 +26,13 @@ import BookDetail from "@pages/Homepage/BookDetail";
 import LibraryPage from "@pages/Homepage/LibraryPage";
 import Login from "@pages/Authentication/Login";
 import ProfilePage from "@pages/ProfilePage/ProfilePage";
+import TransactionReport from "@pages/Reports/TransactionReport";
+import StudentReportTable from "@features/Reports/StudentReport";
+import BookConditionReport from "@pages/Reports/BookConditionReport";
+import InventoryReport from "@pages/Reports/InventoryReport";
+import FeeReport from "@pages/Reports/FeeReport";
+import TeacherReport from "@pages/Reports/TeacherReport";
+import StudentReportTable from "@features/Reports/StudentReport";
 
 function App() {
   // Will Refactor this after I finish the admin page with fully functionality
@@ -100,6 +106,14 @@ function App() {
             {/* reports */}
             <Route path="/user-report" element={<UserReport />} />
             <Route path="/student-report" element={<StudentReportTable />} />
+            <Route path="/teacher-report" element={<TeacherReport />} />
+            <Route path="/transaction-report" element={<TransactionReport />} />
+            <Route
+              path="/book-condition-report"
+              element={<BookConditionReport />}
+            />
+            <Route path="/inventory-report" element={<InventoryReport />} />
+            <Route path="/fee-report" element={<FeeReport />} />
           </Route>
         </Routes>
       </Suspense>

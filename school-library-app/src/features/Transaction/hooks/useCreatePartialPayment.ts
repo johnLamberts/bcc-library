@@ -7,7 +7,7 @@ export function useCreatePartialPayment() {
   const queryClient = useQueryClient();
   const {
     isPending: isPaymentPartialPending,
-    mutateAsync: createWalkinReserved,
+    mutateAsync: createPartialPayment,
   } = useMutation({
     mutationFn: addPatrialPaymentTransaction,
     onSuccess: (_newArr, data) => {
@@ -17,11 +17,11 @@ export function useCreatePartialPayment() {
         `
       );
       queryClient.invalidateQueries({
-        queryKey: [FIRESTORE_COLLECTION_QUERY_KEY.PARTIAL_PAYMENT],
+        queryKey: [FIRESTORE_COLLECTION_QUERY_KEY.COMPLETE_PAYMENT],
       });
     },
     onError: (err) => toast.error(err.message),
   });
 
-  return { isPaymentPartialPending, createWalkinReserved };
+  return { isPaymentPartialPending, createPartialPayment };
 }

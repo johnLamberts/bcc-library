@@ -6,7 +6,6 @@ import {
   Text,
   Flex,
   ScrollArea,
-  Avatar,
   Badge,
 } from "@mantine/core";
 import { IconFileTypeCsv, IconFileTypePdf } from "@tabler/icons-react";
@@ -31,19 +30,19 @@ import depedLogo from "src/assets/deped.png";
 import bccLogo from "src/assets/logo 1.svg";
 import bccLogoPng from "src/assets/bccLogo3.png";
 import { Row } from "@tanstack/react-table";
-import useReadStudents from "@features/Student/hooks/useReadStudents";
-import { IStudents } from "@features/Student/models/student.interface";
 import StudentToolbar from "@features/Student/StudentToolbar";
+import useReadTeachers from "@features/Teachers/hooks/useReadTeacher";
+import { ITeacher } from "@features/Teachers/models/teacher.interface";
 
-const StudentReportTable = () => {
+const TeacherReportTable = () => {
   const {
-    data: studentsData = [],
+    data: teachersData = [],
     isLoading: isLoadingUsers,
     isError: isLoadingUsersError,
     isFetching: isFetchingUsers,
-  } = useReadStudents();
+  } = useReadTeachers();
 
-  const customColumns = useMemo<MRT_ColumnDef<IStudents>[]>(
+  const customColumns = useMemo<MRT_ColumnDef<ITeacher>[]>(
     () => [
       {
         accessorKey: "id",
@@ -51,19 +50,10 @@ const StudentReportTable = () => {
         enableEditing: false,
         size: 80,
       },
+
       {
-        accessorKey: "studentImage",
-        header: "Student Picture",
-        enableColumnFilter: false,
-        Cell: ({ row }) => {
-          return (
-            <Avatar src={`${row.getValue("studentImage")}`} alt="it's me" />
-          );
-        },
-      },
-      {
-        accessorKey: "studentNumber",
-        header: "Student Number",
+        accessorKey: "teacherNumber",
+        header: "Teacher Number",
         Cell: ({ row }) => {
           return (
             <Badge radius={"sm"} bg={" var(--mantine-color-yellow-light)"}>
@@ -172,7 +162,7 @@ const StudentReportTable = () => {
     []
   );
 
-  const exportCSVFile = (csvData: Row<IStudents>[]) => {
+  const exportCSVFile = (csvData: Row<ITeacher>[]) => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const formatData = csvData?.map((user: any) => {
       const { firstName, lastName, middleName, email, createdAt, userRole } =
@@ -219,7 +209,7 @@ const StudentReportTable = () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
 
   const table = useMantineReactTable({
-    data: studentsData,
+    data: teachersData,
     columns: customColumns,
     enableRowNumbers: true,
     mantineTableContainerProps: {
@@ -300,7 +290,7 @@ const StudentReportTable = () => {
     ),
   });
 
-  const exportToPDF = async (data: Row<IStudents>[]) => {
+  const exportToPDF = async (data: Row<ITeacher>[]) => {
     const headerNamesMapping: Record<string, string> = {
       studentNumber: "Student Number",
       firstName: "First Name",
@@ -506,7 +496,7 @@ const StudentReportTable = () => {
         <Group justify="space-between">
           <Box className={classes.highlight}>
             <Text fz={"xl"} fw={"bold"} c={"red"}>
-              User Report
+              Teacher Report
             </Text>
           </Box>
         </Group>
@@ -518,4 +508,4 @@ const StudentReportTable = () => {
     </>
   );
 };
-export default StudentReportTable;
+export default TeacherReportTable;

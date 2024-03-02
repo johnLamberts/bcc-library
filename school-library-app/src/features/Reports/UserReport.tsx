@@ -3,7 +3,6 @@ import { Group, Box, Button, Text, Flex, Avatar, Badge } from "@mantine/core";
 import { IconFileTypeCsv, IconFileTypePdf } from "@tabler/icons-react";
 import {
   MRT_ColumnDef,
-  MRT_ShowHideColumnsButton,
   MRT_ToggleDensePaddingButton,
   MRT_ToggleGlobalFilterButton,
   MantineReactTable,
@@ -25,6 +24,7 @@ import depedLogo from "src/assets/deped.png";
 import bccLogo from "src/assets/logo 1.svg";
 import bccLogoPng from "src/assets/bccLogo3.png";
 import { Row } from "@tanstack/react-table";
+import UserToolbar from "./ReportsToolbar/UserToolbar";
 
 const UserReportTable = () => {
   const {
@@ -213,9 +213,9 @@ const UserReportTable = () => {
     renderToolbarInternalActions: ({ table }) => {
       return (
         <Flex gap="xs" align="center">
+          <UserToolbar table={table} />{" "}
           <MRT_ToggleGlobalFilterButton table={table} />{" "}
           <MRT_ToggleDensePaddingButton table={table} />
-          <MRT_ShowHideColumnsButton table={table} />
         </Flex>
       );
     },

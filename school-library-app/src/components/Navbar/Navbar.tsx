@@ -1,7 +1,6 @@
 import { ScrollArea, Button, Box, Burger } from "@mantine/core";
 import {
   IconUser,
-  IconNote,
   IconUsersGroup,
   IconChartInfographic,
   IconBook,
@@ -67,12 +66,22 @@ const mainFeatures = [
       {
         link: "/student-report",
         label: "Student Report",
-        icon: IconNote,
       },
       {
-        link: "/catalogue-report",
-        label: "Catalogue Report",
-        icon: IconUsersGroup,
+        link: "/transaction-report",
+        label: "Transaction Report",
+      },
+      {
+        link: "/book-condition-report",
+        label: "Book Condition Report",
+      },
+      {
+        link: "/inventory-report",
+        label: "Inventory Report",
+      },
+      {
+        link: "/fee-report",
+        label: "Fee Report",
       },
     ],
   },
