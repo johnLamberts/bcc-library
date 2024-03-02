@@ -1,14 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import {
-  Group,
-  Box,
-  Button,
-  Text,
-  Flex,
-  ScrollArea,
-  Avatar,
-  Badge,
-} from "@mantine/core";
+import { Group, Box, Button, Text, Flex, Badge } from "@mantine/core";
 import { IconFileTypeCsv, IconFileTypePdf } from "@tabler/icons-react";
 import {
   MRT_ColumnDef,
@@ -31,19 +22,19 @@ import depedLogo from "src/assets/deped.png";
 import bccLogo from "src/assets/logo 1.svg";
 import bccLogoPng from "src/assets/bccLogo3.png";
 import { Row } from "@tanstack/react-table";
-import useReadStudents from "@features/Student/hooks/useReadStudents";
-import { IStudents } from "@features/Student/models/student.interface";
-import StudentToolbar from "@features/Student/StudentToolbar";
+import { ICirculation } from "@features/Transaction/models/circulation.interface";
+import useReadTransactionReport from "./hooks/useTransactionReport";
+import TransactionToolbar from "./ReportsToolbar/TransactionToolbar";
 
-const StudentReportTable = () => {
+const TransactionReportTable = () => {
   const {
-    data: studentsData = [],
+    data: transactionList = [],
     isLoading: isLoadingUsers,
     isError: isLoadingUsersError,
     isFetching: isFetchingUsers,
-  } = useReadStudents();
+  } = useReadTransactionReport();
 
-  const customColumns = useMemo<MRT_ColumnDef<IStudents>[]>(
+  const customColumns = useMemo<MRT_ColumnDef<ICirculation>[]>(
     () => [
       {
         accessorKey: "id",
@@ -52,86 +43,106 @@ const StudentReportTable = () => {
         size: 80,
       },
       {
-        accessorKey: "studentImage",
-        header: "Student Picture",
+        accessorKey: "borrowersName",
+        header: "Borrower Name",
+      },
+      {
+        accessorKey: "borrowers",
+        header: "Borrower",
         enableColumnFilter: false,
-        Cell: ({ row }) => {
-          return (
-            <Avatar src={`${row.getValue("studentImage")}`} alt="it's me" />
-          );
-        },
       },
       {
-        accessorKey: "studentNumber",
-        header: "Student Number",
-        Cell: ({ row }) => {
-          return (
-            <Badge radius={"sm"} bg={" var(--mantine-color-yellow-light)"}>
-              <span
-                style={{
-                  color: "var(--mantine-color-yellow-light-color)",
-                }}
-              >
-                {row.getValue("studentNumber")}
-              </span>
-            </Badge>
-          );
-        },
+        accessorKey: "borrowersNumber",
+        header: "Borrower Number",
       },
       {
-        accessorKey: "firstName",
-        header: "First Name",
-      },
-      {
-        accessorKey: "middleName",
-        header: "Middle Name",
-      },
-      {
-        accessorKey: "lastName",
-        header: "Last Name",
-      },
-      {
-        accessorKey: "email",
+        accessorKey: "borrowersEmail",
         header: "Email",
       },
       {
-        accessorKey: "levelOfEducation",
-        header: "Level of Education",
-        Cell: ({ row }) => {
-          return row.getValue("levelOfEducation")
-            ? row.getValue("levelOfEducation")
-            : "N/A";
-        },
-      },
-      {
-        accessorKey: "academicCourse",
-        header: "Academic Course",
-        Cell: ({ row }) => {
-          return row.getValue("academicCourse")
-            ? row.getValue("academicCourse")
-            : "N/A";
-        },
-      },
+        accessorKey: "status",
+        header: "Status",
+        enableColumnFilter: false,
 
-      {
-        accessorKey: "gradeLevel",
-        header: "Grade Level",
         Cell: ({ row }) => {
-          return row.getValue("gradeLevel")
-            ? row.getValue("gradeLevel")
-            : "N/A";
-        },
-      },
-      {
-        accessorKey: "gradeSection",
-        header: "Grade Section",
-        Cell: ({ row }) => {
-          return row.getValue("gradeSection")
-            ? row.getValue("gradeSection")
-            : "N/A";
-        },
-      },
+          const status = row.getValue("status");
 
+          switch (status) {
+            case "Active":
+              return (
+                <Badge
+                  color="#0CAF49"
+                  tt={"inherit"}
+                  variant="dot"
+                  fw={"normal"}
+                >
+                  {status}
+                </Badge>
+              );
+            case "Overdue":
+              return (
+                <Badge
+                  color="#e74c3c"
+                  tt={"inherit"}
+                  variant="dot"
+                  fw={"normal"}
+                >
+                  {status}
+                </Badge>
+              );
+            case "Returned":
+              return (
+                <Badge
+                  color="#3498db"
+                  tt={"inherit"}
+                  variant="dot"
+                  fw={"normal"}
+                >
+                  {status}
+                </Badge>
+              );
+            case "Request":
+              return (
+                <Badge
+                  color="#95a5a6"
+                  tt={"inherit"}
+                  variant="dot"
+                  fw={"normal"}
+                >
+                  {status}
+                </Badge>
+              );
+
+            case "Reserved":
+              return (
+                <Badge
+                  color="#1c8289"
+                  tt={"inherit"}
+                  variant="dot"
+                  fw={"normal"}
+                >
+                  {status}
+                </Badge>
+              );
+
+            case "Cancelled":
+              return (
+                <Badge
+                  color="#95a5a6"
+                  tt={"inherit"}
+                  variant="dot"
+                  fw={"normal"}
+                >
+                  {status}
+                </Badge>
+              );
+          }
+        },
+      },
+      {
+        accessorKey: "bookTitle",
+        header: "Title",
+      },
       {
         accessorFn: (originalRow) =>
           new Date(
@@ -143,8 +154,8 @@ const StudentReportTable = () => {
         Cell: ({ row }) => {
           const date = format(
             new Date(
-              row.original.createdAt.seconds * 1000 +
-                row.original.createdAt.nanoseconds / 1000
+              row.original.createdAt?.seconds * 1000 +
+                row.original.createdAt?.nanoseconds / 1000
             ),
             "MMMM dd yyyy"
           );
@@ -152,27 +163,11 @@ const StudentReportTable = () => {
           return <Text>{date}</Text>;
         },
       },
-
-      {
-        accessorFn: (originalRow) => (originalRow.isEnabled ? "true" : "false"),
-        filterVariant: "checkbox",
-        header: "Account Status",
-        Cell: ({ cell }) =>
-          cell.getValue() === "true" ? (
-            <Badge color="green.8" size="md">
-              Enable
-            </Badge>
-          ) : (
-            <Badge color="red.8" size="md">
-              Disable
-            </Badge>
-          ),
-      },
     ],
     []
   );
 
-  const exportCSVFile = (csvData: Row<IStudents>[]) => {
+  const exportCSVFile = (csvData: Row<ICirculation>[]) => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const formatData = csvData?.map((user: any) => {
       const { firstName, lastName, middleName, email, createdAt, userRole } =
@@ -219,27 +214,14 @@ const StudentReportTable = () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
 
   const table = useMantineReactTable({
-    data: studentsData,
+    data: transactionList,
     columns: customColumns,
-    enableRowNumbers: true,
     mantineTableContainerProps: {
       style: {
         height: "100%",
       },
     },
 
-    mantineCreateRowModalProps: {
-      centered: true,
-      size: "xl",
-      title: "Adding form for User",
-      scrollAreaComponent: ScrollArea.Autosize,
-    },
-    mantineEditRowModalProps: {
-      centered: true,
-      size: "xl",
-      title: "Editing form for User",
-      scrollAreaComponent: ScrollArea.Autosize,
-    },
     state: {
       isLoading: isLoadingUsers,
       // isSaving: isCreatingUser || isUpdating || isUpdatingStatus,
@@ -253,12 +235,15 @@ const StudentReportTable = () => {
         id: false,
       },
       showColumnFilters: true,
+      columnPinning: {
+        left: ["Date Created"],
+      },
     },
 
     renderToolbarInternalActions: ({ table }) => {
       return (
         <Flex gap="xs" align="center">
-          <StudentToolbar table={table} />
+          <TransactionToolbar table={table} />{" "}
           <MRT_ToggleGlobalFilterButton table={table} />{" "}
           <MRT_ToggleDensePaddingButton table={table} />
         </Flex>
@@ -270,7 +255,7 @@ const StudentReportTable = () => {
           style={{
             display: "flex",
             gap: "16px",
-
+            padding: "8px",
             flexWrap: "wrap",
           }}
         >
@@ -300,18 +285,15 @@ const StudentReportTable = () => {
     ),
   });
 
-  const exportToPDF = async (data: Row<IStudents>[]) => {
+  const exportToPDF = async (data: Row<ICirculation>[]) => {
     const headerNamesMapping: Record<string, string> = {
-      studentNumber: "Student Number",
-      firstName: "First Name",
-      middleName: "Middle Name",
-      lastName: "Last Name",
-      email: "Email",
-      levelOfEducation: "Level of Education",
-      academicCourse: "Academic Course",
-      gradeLevel: "Grade Level",
-      gradeSection: "Grade Section",
-      createdAt: "Created At",
+      borrowersName: "Name",
+      borrowers: "Borrower",
+      borrowersNumber: "Borrowers Number",
+      borrowersEmail: "Email",
+      status: "Status",
+      bookTitle: "Title",
+      createdAt: "Date created",
     };
 
     const headerNames = table
@@ -320,17 +302,15 @@ const StudentReportTable = () => {
         (col) => col.id !== "select" && col.id !== "actions" && col.id !== "id"
       )
       .filter((col) => {
+        console.log(col);
         return (
-          col.id === "studentNumber" ||
-          col.id === "firstName" ||
+          col.id === "borrowersName" ||
+          col.id === "borrowers" ||
           col.id === "middleName" ||
-          col.id === "lastName" ||
-          col.id === "email" ||
-          col.id === "firstName" ||
-          col.id === "levelOfEducation" ||
-          col.id === "academicCourse" ||
-          col.id === "gradeLevel" ||
-          col.id === "gradeSection" ||
+          col.id === "borrowersNumber" ||
+          col.id === "borrowersEmail" ||
+          col.id === "status" ||
+          col.id === "bookTitle" ||
           col.id === "createdAt"
         );
       })
@@ -338,15 +318,12 @@ const StudentReportTable = () => {
 
     const formatData = data?.map((user: any) => {
       const {
-        studentNumber,
-        firstName,
-        lastName,
-        middleName,
-        email,
-        levelOfEducation,
-        academicCourse,
-        gradeLevel,
-        gradeSection,
+        borrowersName,
+        borrowers,
+        borrowersNumber,
+        borrowersEmail,
+        status,
+        bookTitle,
         createdAt,
       } = user.original;
 
@@ -357,15 +334,12 @@ const StudentReportTable = () => {
 
       // const createdAt = format();
       return {
-        studentNumber,
-        firstName,
-        middleName,
-        lastName,
-        email,
-        levelOfEducation,
-        academicCourse,
-        gradeLevel,
-        gradeSection,
+        borrowersName,
+        borrowers,
+        borrowersNumber,
+        borrowersEmail,
+        status,
+        bookTitle,
         createdAt: date,
       };
     });
@@ -395,25 +369,14 @@ const StudentReportTable = () => {
       head: [headerNames],
       body: extractingValues as RowInput[],
       margin: { top: 50 },
-      // bodyStyles: {
-      //   textColor: "#333333",
-      //   cellPadding: 1,
-      //   minCellHeight: 9,
-      //   halign: "left",
-      //   valign: "middle",
-      //   fontSize: 11,
-      // },
     });
 
     doc.internal.scaleFactor = 3.75;
     const docWidth = doc.internal.pageSize.width;
-    // const docHeight = doc.internal.pageSize.height;
 
     const colorBlack = "#000000";
     const colorGray = "#1c1c1d";
-    //starting at 15mm
     let currentHeight = 15;
-    //var startPointRectPanel1 = currentHeight + 6;
 
     const pdfConfig = {
       headerTextSize: 8,
@@ -438,29 +401,12 @@ const StudentReportTable = () => {
 
     doc.setFont("", "", "bold");
     // doc.text(
-    //   `${(contentSettings as any)[0].libraryName.toUpperCase()}`,
-    //   docWidth / 2,
-    //   currentHeight - 5,
-    //   {
-    //     align: "center",
-    //   }
-    // );
 
     doc.text(`Binangonan Catholic College`, docWidth / 2, currentHeight - 5, {
       align: "center",
     });
 
     currentHeight += pdfConfig.subLineHeight;
-
-    // doc.setFont("", "", "normal");
-    // doc.text(
-    //   `${(contentSettings as any)[0].libraryLocation}`,
-    //   docWidth / 2,
-    //   currentHeight - 5,
-    //   {
-    //     align: "center",
-    //   }
-    // );
 
     doc.text(`Binangonan, Rizal`, docWidth / 2, currentHeight - 5, {
       align: "center",
@@ -473,7 +419,7 @@ const StudentReportTable = () => {
     doc.setFont("", "", "bold");
     doc.setFontSize(16);
     doc.text(
-      `Binangonan Catholic College Student Report `,
+      `Binangonan Catholic College Transaction Report`,
       docWidth / 2,
       currentHeight - 5,
       {
@@ -493,7 +439,7 @@ const StudentReportTable = () => {
       }
     );
     doc.save(
-      `Binangonan Catholic College Student Report - ${new Date().toLocaleDateString(
+      `Binangonan Catholic College Transaction Report - ${new Date().toLocaleDateString(
         "en-us",
         { year: "numeric", month: "long", day: "numeric" }
       )}.pdf`
@@ -506,7 +452,7 @@ const StudentReportTable = () => {
         <Group justify="space-between">
           <Box className={classes.highlight}>
             <Text fz={"xl"} fw={"bold"} c={"red"}>
-              User Report
+              Transaction Report
             </Text>
           </Box>
         </Group>
@@ -518,4 +464,4 @@ const StudentReportTable = () => {
     </>
   );
 };
-export default StudentReportTable;
+export default TransactionReportTable;

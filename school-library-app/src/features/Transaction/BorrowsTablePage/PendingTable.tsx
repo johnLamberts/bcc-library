@@ -22,20 +22,18 @@ import { useMemo } from "react";
 import classes from "@pages/styles/user.module.css";
 import { ICirculation } from "../models/circulation.interface";
 import { modals } from "@mantine/modals";
-import { useCreateApproveRequest } from "../hooks/useApproveRequest";
-import useReadReturnList from "../hooks/useReadReturnTransaction";
+import useReadPartialPayment from "../hooks/useReadPendingPayment";
+import { useCreateCompletePartialPayment } from "../hooks/useCompleteTransaction";
 
 const PendingTable = () => {
   const {
     data: transactionList = [],
     isLoading: isRequestLoading,
     isFetching: isRequestFetching,
-  } = useReadReturnList();
+  } = useReadPartialPayment();
 
-  const {
-    isCreatingApproveRequestTransaction,
-    createApproveRequestTransaction,
-  } = useCreateApproveRequest();
+  const { isPaymentCompletePending, createCompletePendingPayment } =
+    useCreateCompletePartialPayment();
 
   const customColumns = useMemo<MRT_ColumnDef<ICirculation>[]>(
     () => [
@@ -67,6 +65,7 @@ const PendingTable = () => {
         accessorKey: "borrowersEmail",
         header: "Borrower Email",
       },
+
       {
         accessorKey: "totalFee",
         header: "Total Fee",
@@ -89,7 +88,35 @@ const PendingTable = () => {
           );
         },
       },
+      {
+        accessorKey: "conditionCategory",
+        header: "Other",
+        Cell: ({ row }) => {
+          const otherBadge = row.getValue("conditionCategory") as string;
+
+          if (otherBadge?.toLowerCase()?.includes("damage")) {
+            return (
+              <Badge color="#C31209" tt={"inherit"} variant="dot" fw={"normal"}>
+                {otherBadge}
+              </Badge>
+            );
+          } else {
+            return (
+              <Badge color="#E39500" tt={"inherit"} variant="dot" fw={"normal"}>
+                {otherBadge}
+              </Badge>
+            );
+          }
+
+          // return (
+          //   <Badge color="#C31209" tt={"inherit"} variant="dot" fw={"normal"}>
+
+          //   </Badge>
+          // );
+        },
+      },
     ],
+
     []
   );
 
@@ -105,15 +132,23 @@ const PendingTable = () => {
   const openApproveConfirmModal = (row: MRT_Row<ICirculation>) =>
     modals.openConfirmModal({
       centered: true,
-      title: <>Approval Message</>,
-      children: <Text>Are you sure this borrow can borrow a book?</Text>,
+      title: <>Complete Transaction Notification</>,
+      children: (
+        <Text>
+          Are you sure this borrower wants to proceed with the completion of
+          transaction
+          <br />
+          <br />
+          <b>Note: </b> This action is irreversible.
+        </Text>
+      ),
       labels: {
         confirm: "Yes",
         cancel: "Cancel",
       },
       confirmProps: { color: "#ffa903", variant: "light" },
-      onConfirm: () => {
-        createApproveRequestTransaction(row.original);
+      onConfirm: async () => {
+        await createCompletePendingPayment(row.original);
       },
     });
 
@@ -148,9 +183,10 @@ const PendingTable = () => {
       withTableBorder: true,
     },
     state: {
-      isSaving: isCreatingApproveRequestTransaction,
       isLoading: isRequestLoading,
       showProgressBars: isRequestFetching,
+      isSaving: isPaymentCompletePending,
+      showLoadingOverlay: isPaymentCompletePending,
     },
 
     initialState: {
@@ -177,12 +213,12 @@ const PendingTable = () => {
               size="sm"
               onClick={() => openApproveConfirmModal(row)}
             >
-              Approve
+              Proceed
             </Button>
           </Tooltip>
           <Tooltip label="Edit">
-            <Button variant="light" size="sm">
-              Decline
+            <Button variant="light" size="sm" color="#D6530C">
+              View Details
             </Button>
           </Tooltip>
         </Flex>

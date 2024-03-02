@@ -6,7 +6,7 @@ const useReadReturnList = () => {
   return useQuery({
     queryFn: getReturnsTransaction,
     queryKey: [FIRESTORE_COLLECTION_QUERY_KEY.RETURNED_TRANSACTION],
-
+    refetchOnMount: "always",
     refetchOnWindowFocus: false,
   });
 };

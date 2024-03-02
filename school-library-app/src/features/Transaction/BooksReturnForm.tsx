@@ -1,5 +1,5 @@
 import Form from "@components/Form/Form";
-import { Controller, set, useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import {
   Box,
   Checkbox,
@@ -283,6 +283,7 @@ function BooksReturnForm<TData extends MRT_RowData>({
         {!rowData?.bookCondition.toLowerCase().includes("returned") && (
           <Form.SubmitButton
             color="yellow"
+            loading={table.getState().isSaving}
             alias="Partial Save"
             onClick={() => setIsSave(false)}
             disabled={isLoadingDamageCategory || isLoadingMissingCategory}

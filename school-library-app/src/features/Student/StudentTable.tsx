@@ -12,17 +12,10 @@ import {
   Badge,
   Modal,
   Divider,
-  Select,
 } from "@mantine/core";
-import {
-  IconEdit,
-  IconEyeMinus,
-  IconFileImport,
-  IconPlus,
-} from "@tabler/icons-react";
+import { IconEdit, IconEyeMinus, IconPlus } from "@tabler/icons-react";
 import {
   MRT_ColumnDef,
-  MRT_FilterTextInput,
   MRT_Row,
   MRT_ShowHideColumnsButton,
   MRT_TableOptions,
@@ -46,7 +39,7 @@ import { useDisclosure } from "@mantine/hooks";
 import StudentToolbar from "./StudentToolbar";
 
 const StudentTable = () => {
-  const [opened, { open, close }] = useDisclosure(false);
+  const [opened, { close }] = useDisclosure(false);
   const { isCreatingUser, createUsers } = useCreateStudent();
 
   const {

@@ -24,4 +24,9 @@ export interface IBooks {
   bookFile: File | string | null;
 
   numberOfBooksAvailable_QUANTITY?: number;
+
+  createdAt: {
+    nanoseconds: number;
+    seconds: number;
+  };
 }

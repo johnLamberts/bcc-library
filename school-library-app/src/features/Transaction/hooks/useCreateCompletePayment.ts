@@ -7,7 +7,7 @@ export function useCreateCompletePayment() {
   const queryClient = useQueryClient();
   const {
     isPending: isPaymentCompletePending,
-    mutateAsync: createWalkinReserved,
+    mutateAsync: createCompletePayment,
   } = useMutation({
     mutationFn: addCompletePaymentTransaction,
     onSuccess: (_newArr, data) => {
@@ -17,11 +17,11 @@ export function useCreateCompletePayment() {
         `
       );
       queryClient.invalidateQueries({
-        queryKey: [FIRESTORE_COLLECTION_QUERY_KEY.COMPLETE_PAYMENT],
+        queryKey: [FIRESTORE_COLLECTION_QUERY_KEY.RETURNED_TRANSACTION],
       });
     },
     onError: (err) => toast.error(err.message),
   });
 
-  return { isPaymentCompletePending, createWalkinReserved };
+  return { isPaymentCompletePending, createCompletePayment };
 }

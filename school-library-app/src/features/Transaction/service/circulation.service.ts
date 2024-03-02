@@ -4,6 +4,7 @@ import {
   collection,
   deleteDoc,
   doc,
+  getDoc,
   getDocs,
   or,
   orderBy,
@@ -361,7 +362,6 @@ const addReturnedBook = async (returns: Partial<ICirculation>) => {
     bookType,
   } = returns;
 
-  console.log(returns, bookCondition);
   if (returns.status === "Active") {
     const availabilityRef = await getDocs(
       query(
@@ -495,11 +495,134 @@ const addReturnedBook = async (returns: Partial<ICirculation>) => {
 const addCompletePaymentTransaction = async (
   payment: Partial<ICirculation>
 ) => {
-  console.log(payment);
+  const {
+    fee,
+    categoryFee,
+    conditionFee,
+    totalFee,
+    booksBorrowedId,
+    bookType,
+    expiryTime,
+    bookCondition,
+    bookTitle,
+    borrowersEmail,
+    borrowersName,
+    borrowersId,
+  } = payment;
+
+  await addDoc(
+    collection(firestore, FIRESTORE_COLLECTION_QUERY_KEY.COMPLETE_PAYMENT),
+    {
+      fee,
+      categoryFee,
+      conditionFee,
+      totalFee,
+      booksBorrowedId,
+      bookType,
+      expiryTime,
+      bookCondition,
+      bookTitle,
+      borrowersEmail,
+      borrowersName,
+      borrowersId,
+      createdAt: serverTimestamp(),
+      paymentStatus: "Paid",
+    }
+  );
 };
 
 const addPatrialPaymentTransaction = async (partial: Partial<ICirculation>) => {
-  console.log(partial);
+  const {
+    fee,
+    categoryFee,
+    conditionFee,
+    totalFee,
+    booksBorrowedId,
+    bookType,
+    expiryTime,
+    bookCondition,
+    bookTitle,
+    borrowersEmail,
+    borrowersName,
+    borrowersId,
+    descriptionOrNotes,
+    conditionCategory,
+  } = partial;
+
+  const partialRef = await addDoc(
+    collection(firestore, FIRESTORE_COLLECTION_QUERY_KEY.PARTIAL_PAYMENT),
+    {
+      fee,
+      categoryFee,
+      conditionFee,
+      totalFee,
+      booksBorrowedId,
+      bookType,
+      expiryTime,
+      bookCondition,
+      bookTitle,
+      borrowersEmail,
+      borrowersName,
+      borrowersId,
+      descriptionOrNotes,
+      conditionCategory,
+      createdAt: serverTimestamp(),
+      paymentStatus: "With Balance",
+    }
+  );
+
+  await addDoc(
+    collection(firestore, FIRESTORE_COLLECTION_QUERY_KEY.COMPLETE_PAYMENT),
+    {
+      pendingId: partialRef.id,
+      fee,
+      categoryFee,
+      conditionFee,
+      totalFee,
+      booksBorrowedId,
+      bookType,
+      expiryTime,
+      bookCondition,
+      bookTitle,
+      borrowersEmail,
+      borrowersName,
+      borrowersId,
+      descriptionOrNotes,
+      conditionCategory,
+      createdAt: serverTimestamp(),
+      paymentStatus: "With Balance",
+    }
+  );
+};
+
+const addUpdatePaymentTransaction = async (payment: Partial<ICirculation>) => {
+  const { id } = payment;
+
+  const transactionRef = await getDocs(
+    query(
+      collection(firestore, FIRESTORE_COLLECTION_QUERY_KEY.COMPLETE_PAYMENT),
+      where("pendingId", "==", id)
+    )
+  );
+
+  transactionRef.docs.map(
+    async (docId) =>
+      await updateDoc(
+        doc(
+          firestore,
+          FIRESTORE_COLLECTION_QUERY_KEY.COMPLETE_PAYMENT,
+          docId.id as string
+        ),
+        {
+          paymentStatus: "Paid",
+          modifiedAt: serverTimestamp(),
+        }
+      )
+  );
+
+  await deleteDoc(
+    doc(firestore, FIRESTORE_COLLECTION_QUERY_KEY.PARTIAL_PAYMENT, id as string)
+  );
 };
 
 // const returnOverdueCirculation = async (returnBook: Partial<ICirculation>) => {
@@ -697,11 +820,11 @@ const getBooksReserved = async () => {
   })) as ICirculation[];
 };
 
-const getPartialPayment = async (paymentStatus: string) => {
+const getPartialPayment = async () => {
   const booksTransactionRef = await getDocs(
     query(
-      collection(firestore, FIRESTORE_COLLECTION_QUERY_KEY.COMPLETE_PAYMENT),
-      where("paymentStatus", "==", paymentStatus)
+      collection(firestore, FIRESTORE_COLLECTION_QUERY_KEY.PARTIAL_PAYMENT),
+      where("paymentStatus", "==", "With Balance")
     )
   );
 
@@ -722,6 +845,7 @@ export {
   addWalkinReservedBook,
   addCompletePaymentTransaction,
   addPatrialPaymentTransaction,
+  addUpdatePaymentTransaction,
   /**
    **  NOTE: Read all books Transaction
    **  whereas STATUS can be `returned`,

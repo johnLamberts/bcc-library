@@ -89,46 +89,6 @@ const CatalogueTable = () => {
         accessorKey: "bookISBN",
         header: "Book ISBN",
       },
-
-      // {
-      //   accessorKey: "lastName",
-      //   header: "Last Name",
-      // },
-      // {
-      //   accessorKey: "email",
-      //   header: "Email",
-      // },
-      // {
-      //   accessorKey: "gradeSection",
-      //   header: "Grade Section",
-      // },
-      // {
-      //   accessorKey: "academicCourse",
-      //   header: "Academic Course",
-      // },
-      // {
-      //   accessorKey: "levelOfEducation",
-      //   header: "Level of Education",
-      // },
-      // {
-      //   accessorKey: "gradeLevel",
-      //   header: "Grade Level",
-      // },
-
-      // {
-      //   accessorKey: "isEnabled",
-      //   header: "Account Status",
-      //   Cell: ({ cell }) =>
-      //     cell.getValue() ? (
-      //       <Badge color="green.8" size="md">
-      //         Enable
-      //       </Badge>
-      //     ) : (
-      //       <Badge color="red.8" size="md">
-      //         Disabled
-      //       </Badge>
-      //     ),
-      // },
     ],
     []
   );

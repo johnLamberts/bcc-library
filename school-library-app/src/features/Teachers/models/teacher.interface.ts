@@ -25,4 +25,9 @@ export interface ITeacher {
   userDocID?: string;
 
   isEnabled?: boolean;
+
+  createdAt: {
+    nanoseconds: number;
+    seconds: number;
+  };
 }

@@ -15,7 +15,7 @@ export function useReturnBookTransaction() {
         `Success! You have successfully returned the books entitled: ${data.bookTitle} that you've borrwed `
       );
       queryClient.invalidateQueries({
-        queryKey: [FIRESTORE_COLLECTION_QUERY_KEY.ALL_BOOKS_TRANSACTION],
+        queryKey: [FIRESTORE_COLLECTION_QUERY_KEY.RETURNED_TRANSACTION],
       });
     },
     onError: (err) => toast.error(err.message),

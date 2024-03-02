@@ -36,7 +36,15 @@ export interface ICirculation {
 
   expiryTime: number;
 
-  createdAt: number;
+  createdAt: {
+    seconds: number;
+    nanoseconds: number;
+  };
+
+  dateReturned: {
+    seconds: number;
+    nanoseconds: number;
+  };
 
   borrowStatus?: string;
 
@@ -54,4 +62,8 @@ export interface ICirculation {
   fee?: number;
   categoryFee?: number | string;
   conditionFee?: number | string;
+
+  descriptionOrNotes?: string;
+  conditionCategory?: string;
+  damageCategory?: string;
 }
