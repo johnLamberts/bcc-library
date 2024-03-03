@@ -21,12 +21,11 @@ import {
 import { useMemo } from "react";
 import classes from "../styles/user.module.css";
 
-import useReadGradeSection, {
-  TGradeSection,
-} from "@features/SysSettings/GradeSection/useReadGradeSection";
+import useReadGradeSection from "@features/SysSettings/GradeSection/useReadGradeSection";
 import GradeSectionForm from "@features/SysSettings/GradeSection/GradeSectionForm";
 import useCreateGradeSection from "@features/SysSettings/GradeSection/useCreateGradeSection";
-import useModifyGradeSection from "@features/SysSettings/GradeSection/useModifyGradeLevel";
+import useModifyGradeSection from "@features/SysSettings/GradeSection/useModifyGradeSection";
+import IGradeSection from "@features/SysSettings/GradeSection/grade-level.interface";
 
 const GradeLevel = () => {
   const { createGradeSection, isPending: isCreating } = useCreateGradeSection();
@@ -38,10 +37,9 @@ const GradeLevel = () => {
     isFetching: isFetchingGradeSection,
   } = useReadGradeSection();
 
-  const { modifyLevelOfGradeSection, isPending: isUpdating } =
-    useModifyGradeSection();
+  const { modifyGradeSection, isPending: isUpdating } = useModifyGradeSection();
 
-  const customColumns = useMemo<MRT_ColumnDef<TGradeSection>[]>(
+  const customColumns = useMemo<MRT_ColumnDef<IGradeSection>[]>(
     () => [
       {
         accessorKey: "id",
@@ -62,16 +60,16 @@ const GradeLevel = () => {
   );
 
   // CREATE action
-  const handleCreateLevel: MRT_TableOptions<TGradeSection>["onCreatingRowSave"] =
+  const handleCreateLevel: MRT_TableOptions<IGradeSection>["onCreatingRowSave"] =
     async ({ values, table }) => {
       await createGradeSection(values);
 
       table.setCreatingRow(null);
     };
 
-  const handleSaveLevel: MRT_TableOptions<TGradeSection>["onEditingRowSave"] =
+  const handleSaveLevel: MRT_TableOptions<IGradeSection>["onEditingRowSave"] =
     async ({ values, table }) => {
-      await modifyLevelOfGradeSection(values);
+      await modifyGradeSection(values);
 
       table.setEditingRow(null);
     };
@@ -92,6 +90,12 @@ const GradeLevel = () => {
         height: "100%",
       },
     },
+    mantineCreateRowModalProps: {
+      centered: true,
+    },
+    mantineEditRowModalProps: {
+      centered: true,
+    },
     state: {
       isLoading: isLoadingGradeSection,
       isSaving: isCreating || isUpdating,
@@ -101,6 +105,9 @@ const GradeLevel = () => {
 
     initialState: {
       pagination: { pageIndex: 0, pageSize: 5 },
+      columnVisibility: {
+        id: false,
+      },
     },
 
     renderRowActions: ({ row }) => (

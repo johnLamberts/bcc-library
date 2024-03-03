@@ -3,6 +3,7 @@ import {
   collection,
   doc,
   getDocs,
+  orderBy,
   query,
   serverTimestamp,
   updateDoc,
@@ -10,11 +11,14 @@ import {
 } from "firebase/firestore";
 import { firestore } from "src/shared/firebase/firebase";
 import { FIRESTORE_COLLECTION_QUERY_KEY } from "src/shared/enums";
-import IGradeSection from "./grade-level.interface";
+import IGradeSection from "./grade-section.interface";
 
-const getAllLevelOfEducation = async (): Promise<IGradeSection[]> => {
+const getAllGradeSection = async (): Promise<IGradeSection[]> => {
   const bookTypeDocs = await getDocs(
-    collection(firestore, FIRESTORE_COLLECTION_QUERY_KEY.GRADE_SECTION)
+    query(
+      collection(firestore, FIRESTORE_COLLECTION_QUERY_KEY.GRADE_SECTION),
+      orderBy("createdAt", "asc")
+    )
   );
 
   return bookTypeDocs.docs.map((doc) => ({
@@ -23,7 +27,7 @@ const getAllLevelOfEducation = async (): Promise<IGradeSection[]> => {
   })) as IGradeSection[];
 };
 
-const addLevelOfEducation = async (payload: Partial<IGradeSection>) => {
+const addGradeSection = async (payload: Partial<IGradeSection>) => {
   try {
     const querySnapshot = await getDocs(
       query(
@@ -53,7 +57,7 @@ const addLevelOfEducation = async (payload: Partial<IGradeSection>) => {
 
 //
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const updateLevelOfducation = async (
+const updateGradeSection = async (
   payload: Partial<IGradeSection>,
   docId?: string | undefined
 ) => {
@@ -74,4 +78,4 @@ const updateLevelOfducation = async (
   }
 };
 
-export { getAllLevelOfEducation, addLevelOfEducation, updateLevelOfducation };
+export { getAllGradeSection, addGradeSection, updateGradeSection };

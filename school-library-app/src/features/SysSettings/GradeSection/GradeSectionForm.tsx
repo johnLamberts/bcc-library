@@ -8,12 +8,13 @@ import {
   Box,
   Divider,
   TextInput,
+  LoadingOverlay,
 } from "@mantine/core";
 import { Controller, useForm } from "react-hook-form";
 import { MRT_Row, MRT_RowData, MRT_TableInstance } from "mantine-react-table";
 import useReadGradeLevel from "../GradeLevel/useReadGradeLevel";
-import { TGradeSection } from "./useReadGradeSection";
 import { toast } from "sonner";
+import IGradeSection from "./grade-section.interface";
 
 interface GradeSectionFormProps<TData extends MRT_RowData> {
   table: MRT_TableInstance<TData>;
@@ -36,14 +37,14 @@ function GradeSectionForm<TData extends MRT_RowData>({
 
   const isEditing = table.getState().editingRow?.id === row.id;
 
-  const { control, handleSubmit, register } = useForm<TGradeSection>({
+  const { control, handleSubmit, register } = useForm<IGradeSection>({
     defaultValues: isEditing ? row.original : {},
   });
 
   const isCreating = table.getState().creatingRow?.id === row.id;
 
   const onSubmit = useCallback(
-    (data: TGradeSection) => {
+    (data: IGradeSection) => {
       if (!data.gradeLevel) {
         setDisabledBtn(false);
         toast.error(
@@ -66,6 +67,12 @@ function GradeSectionForm<TData extends MRT_RowData>({
   return (
     <>
       <Box p={"md"}>
+        <LoadingOverlay
+          visible={table.getState().isSaving}
+          zIndex={1000}
+          overlayProps={{ radius: "sm", blur: 2 }}
+          loaderProps={{ color: "yellow", type: "oval" }}
+        />{" "}
         <form onSubmit={handleSubmit(onSubmit)}>
           <Title order={5}>
             {`${isEditing ? "Editing" : "Adding"}`} form for Grade Section
@@ -83,9 +90,10 @@ function GradeSectionForm<TData extends MRT_RowData>({
                       label="Level of Education"
                       placeholder="Level of Education..."
                       data={gradeLevelData.map((gradeLevel) => ({
-                        label: gradeLevel.gradeLevel,
-                        value: gradeLevel.gradeLevel,
+                        label: gradeLevel.gradeLevel || "",
+                        value: gradeLevel.gradeLevel || "",
                       }))}
+                      searchable
                       withAsterisk
                       {...field}
                     />
