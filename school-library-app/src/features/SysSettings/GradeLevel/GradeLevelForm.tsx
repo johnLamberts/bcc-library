@@ -8,12 +8,13 @@ import {
   Box,
   Divider,
   TextInput,
+  LoadingOverlay,
 } from "@mantine/core";
 import { Controller, useForm } from "react-hook-form";
 import { MRT_Row, MRT_RowData, MRT_TableInstance } from "mantine-react-table";
 import useReadEducation from "../LevelEducation/useReadEducation";
-import { TGradeLevel } from "./useReadGradeLevel";
 import { toast } from "sonner";
+import IGradeLevel from "./grade-level.interface";
 
 interface GradeLevelFormProps<TData extends MRT_RowData> {
   table: MRT_TableInstance<TData>;
@@ -30,21 +31,26 @@ function GradeLevelForm<TData extends MRT_RowData>({
   onCreate,
   onSave,
 }: GradeLevelFormProps<TData>) {
-  const [disableBtn, setDisabledBtn] = useState(false);
-
   const { data: educationData = [] } = useReadEducation();
 
   const isEditing = table.getState().editingRow?.id === row.id;
 
-  const { control, handleSubmit, register } = useForm<TGradeLevel>({
+  const { control, handleSubmit, register } = useForm<IGradeLevel>({
     defaultValues: isEditing ? row.original : {},
   });
 
   const isCreating = table.getState().creatingRow?.id === row.id;
 
   const onSubmit = useCallback(
-    (data: TGradeLevel) => {
+    (data: IGradeLevel) => {
       if (!data.levelOfEducation) {
+        toast.error(
+          "Uh-oh! It seems like you forgot to fill in some required information. Please make sure all fields are filled out before submitting."
+        );
+        return;
+      }
+
+      if (!data.gradeLevel) {
         toast.error(
           "Uh-oh! It seems like you forgot to fill in some required information. Please make sure all fields are filled out before submitting."
         );
@@ -56,8 +62,6 @@ function GradeLevelForm<TData extends MRT_RowData>({
       } else if (isCreating) {
         onCreate?.(data);
       }
-
-      setDisabledBtn(true);
     },
     [onCreate, onSave, isEditing, isCreating]
   );
@@ -65,6 +69,12 @@ function GradeLevelForm<TData extends MRT_RowData>({
   return (
     <>
       <Box p={"md"}>
+        <LoadingOverlay
+          visible={table.getState().isSaving}
+          zIndex={1000}
+          overlayProps={{ radius: "sm", blur: 2 }}
+          loaderProps={{ color: "yellow", type: "oval" }}
+        />{" "}
         <form onSubmit={handleSubmit(onSubmit)}>
           <Title order={5}>
             {`${isEditing ? "Editing" : "Adding"}`} form for Grade Level
@@ -82,8 +92,8 @@ function GradeLevelForm<TData extends MRT_RowData>({
                       label="Level of Education"
                       placeholder="Level of Education..."
                       data={educationData.map((course) => ({
-                        label: course.levelOfEducation,
-                        value: course.levelOfEducation,
+                        label: course.levelOfEducation || "",
+                        value: course.levelOfEducation || "",
                       }))}
                       onChange={(_e) => {
                         onChange(_e);
@@ -105,11 +115,7 @@ function GradeLevelForm<TData extends MRT_RowData>({
           </Grid>
 
           <Flex justify="flex-end" gap={"xs"} mt={"sm"}>
-            <Button
-              disabled={disableBtn}
-              loading={table.getState().isSaving}
-              type="submit"
-            >
+            <Button loading={table.getState().isSaving} type="submit">
               Save
             </Button>
           </Flex>

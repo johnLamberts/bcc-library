@@ -20,17 +20,11 @@ import {
 } from "mantine-react-table";
 import { useMemo } from "react";
 import classes from "../styles/user.module.css";
-import useReadAcademicCourse, {
-  TLevel,
-} from "@features/SysSettings/AcademicCourse/useReadAcademic";
+import useReadAcademicCourse from "@features/SysSettings/AcademicCourse/useReadAcademic";
 import AcademicCourseForm from "@features/SysSettings/AcademicCourse/AcademicCourseForm";
 import useCreateAcademicCourse from "@features/SysSettings/AcademicCourse/useCreateAcademic";
 import useModifyAcademicCourse from "@features/SysSettings/AcademicCourse/useModifyAcademic";
-
-export type TLevelEducation = {
-  id?: string | number;
-  levelOfEducation: string;
-};
+import IAcademicCourse from "@features/SysSettings/AcademicCourse/academic-course.interface";
 
 const AcademicCourse = () => {
   const { createAcademicCourse, isPending: isCreating } =
@@ -43,11 +37,11 @@ const AcademicCourse = () => {
     isFetching: isFetchingCourse,
   } = useReadAcademicCourse();
 
-  const { modifyLevelOfAcademicCourse, isPending: isUpdating } =
+  const { modifyAcademicCourse, isPending: isUpdating } =
     useModifyAcademicCourse();
 
   console.log(courseData);
-  const customColumns = useMemo<MRT_ColumnDef<TLevel>[]>(
+  const customColumns = useMemo<MRT_ColumnDef<IAcademicCourse>[]>(
     () => [
       {
         accessorKey: "id",
@@ -68,21 +62,19 @@ const AcademicCourse = () => {
   );
 
   // CREATE action
-  const handleCreateLevel: MRT_TableOptions<TLevel>["onCreatingRowSave"] =
+  const handleCreateLevel: MRT_TableOptions<IAcademicCourse>["onCreatingRowSave"] =
     async ({ values }) => {
       await createAcademicCourse(values);
 
       table.setCreatingRow(null);
     };
 
-  const handleSaveLevel: MRT_TableOptions<TLevel>["onEditingRowSave"] = async ({
-    values,
-    table,
-  }) => {
-    await modifyLevelOfAcademicCourse(values);
-    // console.log(values);
-    table.setEditingRow(null);
-  };
+  const handleSaveLevel: MRT_TableOptions<IAcademicCourse>["onEditingRowSave"] =
+    async ({ values, table }) => {
+      await modifyAcademicCourse(values);
+      // console.log(values);
+      table.setEditingRow(null);
+    };
 
   const table = useMantineReactTable({
     data: courseData,
@@ -98,6 +90,12 @@ const AcademicCourse = () => {
         height: "100%",
       },
     },
+    mantineCreateRowModalProps: {
+      centered: true,
+    },
+    mantineEditRowModalProps: {
+      centered: true,
+    },
     state: {
       isLoading: isLoadingCourse,
       isSaving: isCreating || isUpdating,
@@ -107,6 +105,9 @@ const AcademicCourse = () => {
 
     initialState: {
       pagination: { pageIndex: 0, pageSize: 5 },
+      columnVisibility: {
+        id: false,
+      },
     },
 
     renderRowActions: ({ row }) => (

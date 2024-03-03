@@ -1,21 +1,11 @@
 import { useQuery } from "@tanstack/react-query";
-
-const levelData = [
-  { id: "1", levelOfEducation: "Kindergarten" },
-  { id: "2", levelOfEducation: "Elementary" },
-  { id: "3", levelOfEducation: "Junior High School" },
-  { id: "4", levelOfEducation: "Senior High School" },
-  { id: "5", levelOfEducation: "College" },
-];
+import { getAllLevelOfEducation } from "./level-of-education.service";
+import { FIRESTORE_COLLECTION_QUERY_KEY } from "src/shared/enums";
 
 const useReadEducation = () => {
   return useQuery({
-    queryFn: async () => {
-      await new Promise((resolve) => setTimeout(resolve, 3000));
-
-      return Promise.resolve(levelData);
-    },
-    queryKey: ["level"],
+    queryFn: getAllLevelOfEducation,
+    queryKey: [FIRESTORE_COLLECTION_QUERY_KEY.LEVEL_OF_EDUCATION],
 
     refetchOnWindowFocus: false,
   });

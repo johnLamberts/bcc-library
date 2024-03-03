@@ -1,45 +1,29 @@
-import { TLevelEducation } from "@pages/LevelEducation";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
+import { updateLevelOfducation } from "./level-of-education.service";
+import ILevelOfEducation from "./level-of-education.interface";
+import { FIRESTORE_COLLECTION_QUERY_KEY } from "src/shared/enums";
 
 const useModifyEducation = () => {
   const queryClient = useQueryClient();
 
   const { mutateAsync: modifyLevelOfEducation, isPending } = useMutation({
-    mutationFn: async (level: TLevelEducation) => {
-      await new Promise((resolve) => setTimeout(resolve, 2000));
+    mutationFn: async (level: ILevelOfEducation) =>
+      await updateLevelOfducation(level, level.id),
 
-      return Promise.resolve();
+    onError: (err) => {
+      toast.error(err.message);
     },
-    onMutate: async (newLevels: TLevelEducation) => {
-      await queryClient.cancelQueries({ queryKey: ["level"] });
 
-      const prevLevel = queryClient.getQueryData(["level"]);
-
-      queryClient.setQueryData(["level"], (prevLevels: TLevelEducation[]) =>
-        //     [
-        //       ...prevUsers,
-        //       {
-        //         ...newLevel,
-        //         id: (Math.random() + 1).toString(36).substring(7),
-        //       },
-        //     ] as TLevelEducation[]
-
-        prevLevels?.map((level: TLevelEducation) =>
-          level.id === newLevels.id ? newLevels : level
-        )
+    onSuccess: (_newArr, data) => {
+      toast.success(
+        `Update successful! ${data.levelOfEducation} Changes to ${data.levelOfEducation} have been applied.`
       );
 
-      return { prevLevel };
+      queryClient.invalidateQueries({
+        queryKey: [FIRESTORE_COLLECTION_QUERY_KEY.GRADE_LEVEL],
+      });
     },
-
-    onError: (err, newLevel, context) => {
-      alert(JSON.stringify(newLevel, null, 4));
-      toast.error(err.message);
-      return queryClient.setQueryData(["level"], context?.prevLevel);
-    },
-
-    // onSettled: () => queryClient.invalidateQueries({ queryKey: ["level"] }),
   });
 
   return { modifyLevelOfEducation, isPending };

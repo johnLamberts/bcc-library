@@ -5,15 +5,16 @@ import {
   Flex,
   Button,
   Grid,
-  Box,
   Divider,
   TextInput,
+  LoadingOverlay,
+  Box,
 } from "@mantine/core";
 import { Controller, useForm } from "react-hook-form";
 import { MRT_Row, MRT_RowData, MRT_TableInstance } from "mantine-react-table";
 import useReadEducation from "../LevelEducation/useReadEducation";
-import { TLevel } from "./useReadAcademic";
 import { toast } from "sonner";
+import IAcademicCourse from "./academic-course.interface";
 
 interface AcademicCourseFormProps<TData extends MRT_RowData> {
   table: MRT_TableInstance<TData>;
@@ -34,7 +35,7 @@ function AcademicCourseForm<TData extends MRT_RowData>({
 
   const isEditing = table.getState().editingRow?.id === row.id;
 
-  const { control, handleSubmit, register } = useForm<TLevel>({
+  const { control, handleSubmit, register } = useForm<IAcademicCourse>({
     defaultValues: isEditing ? row.original : {},
   });
 
@@ -56,7 +57,7 @@ function AcademicCourseForm<TData extends MRT_RowData>({
   const isCreating = table.getState().creatingRow?.id === row.id;
 
   const onSubmit = useCallback(
-    (data: TLevel) => {
+    (data: IAcademicCourse) => {
       if (!data.levelOfEducation) {
         toast.error(
           "Uh-oh! It seems like you forgot to fill in some required information. Please make sure all fields are filled out before submitting."
@@ -75,6 +76,12 @@ function AcademicCourseForm<TData extends MRT_RowData>({
   return (
     <>
       <Box p={"md"}>
+        <LoadingOverlay
+          visible={table.getState().isSaving}
+          zIndex={1000}
+          overlayProps={{ radius: "sm", blur: 2 }}
+          loaderProps={{ color: "yellow", type: "oval" }}
+        />
         <form onSubmit={handleSubmit(onSubmit)}>
           <Title order={5}>
             {`${isEditing ? "Editing" : "Adding"}`} form for Academic Course
@@ -92,8 +99,8 @@ function AcademicCourseForm<TData extends MRT_RowData>({
                       label="Level of Education"
                       placeholder="Pick value"
                       data={educationData.map((course) => ({
-                        label: course.levelOfEducation,
-                        value: course.levelOfEducation,
+                        label: course.levelOfEducation || "",
+                        value: course.levelOfEducation || "",
                       }))}
                       onChange={(_e) => {
                         onChange(_e);
@@ -107,22 +114,6 @@ function AcademicCourseForm<TData extends MRT_RowData>({
               />
             </Grid.Col>
             <Grid.Col span={{ base: 12, md: 12, lg: 12 }}>
-              {/* <Controller
-                control={control}
-                name="academiCourse"
-                render={({ field: { value, ...field } }) => {
-                  return (
-                    <Select
-                      disabled={!selectedLevel}
-                      data={filteredCourses}
-                      label="Your Academic Course"
-                      placeholder="Pick value"
-                      value={filteredCourses[0] === "" ? "" : value}
-                      {...field}
-                    />
-                  );
-                }}
-              /> */}
               <TextInput
                 label="Your Academic Course"
                 placeholder="Academic Course"

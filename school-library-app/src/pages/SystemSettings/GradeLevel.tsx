@@ -20,12 +20,11 @@ import {
 } from "mantine-react-table";
 import { useMemo } from "react";
 import classes from "../styles/user.module.css";
-import useReadGradeLevel, {
-  TGradeLevel,
-} from "@features/SysSettings/GradeLevel/useReadGradeLevel";
+import useReadGradeLevel from "@features/SysSettings/GradeLevel/useReadGradeLevel";
 import GradeLevelForm from "@features/SysSettings/GradeLevel/GradeLevelForm";
 import useCreateGradeLevel from "@features/SysSettings/GradeLevel/useCreateGradeLevel";
 import useModifyGradeLevel from "@features/SysSettings/GradeLevel/useModifyGradeLevel";
+import IGradeLevel from "@features/SysSettings/GradeLevel/grade-level.interface";
 
 const GradeLevel = () => {
   const { createGradeLevel, isPending: isCreating } = useCreateGradeLevel();
@@ -40,7 +39,7 @@ const GradeLevel = () => {
   const { modifyLevelOfGradeLevel, isPending: isUpdating } =
     useModifyGradeLevel();
 
-  const customColumns = useMemo<MRT_ColumnDef<TGradeLevel>[]>(
+  const customColumns = useMemo<MRT_ColumnDef<IGradeLevel>[]>(
     () => [
       {
         accessorKey: "id",
@@ -61,14 +60,14 @@ const GradeLevel = () => {
   );
 
   // CREATE action
-  const handleCreateLevel: MRT_TableOptions<TGradeLevel>["onCreatingRowSave"] =
+  const handleCreateLevel: MRT_TableOptions<IGradeLevel>["onCreatingRowSave"] =
     async ({ values, table }) => {
       await createGradeLevel(values);
 
       table.setCreatingRow(null);
     };
 
-  const handleSaveLevel: MRT_TableOptions<TGradeLevel>["onEditingRowSave"] =
+  const handleSaveLevel: MRT_TableOptions<IGradeLevel>["onEditingRowSave"] =
     async ({ values, table }) => {
       await modifyLevelOfGradeLevel(values);
 
@@ -90,6 +89,12 @@ const GradeLevel = () => {
       style: {
         height: "100%",
       },
+    },
+    mantineCreateRowModalProps: {
+      centered: true,
+    },
+    mantineEditRowModalProps: {
+      centered: true,
     },
     state: {
       isLoading: isLoadingGradeLevel,
