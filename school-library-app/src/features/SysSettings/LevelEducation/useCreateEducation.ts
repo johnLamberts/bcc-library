@@ -1,44 +1,25 @@
-import { TLevelEducation } from "@pages/SystemSettings/LevelEducation";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
+import { addLevelOfEducation } from "./level-of-education.service";
+import { FIRESTORE_COLLECTION_QUERY_KEY } from "src/shared/enums";
 
 const useCreateEducation = () => {
   const queryClient = useQueryClient();
 
   const { mutateAsync: createLevelOfEducation, isPending } = useMutation({
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    mutationFn: async (_level: TLevelEducation) => {
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-
-      return Promise.resolve();
-    },
-    onMutate: async (newLevel: TLevelEducation) => {
-      await queryClient.cancelQueries({ queryKey: ["level"] });
-
-      const prevLevel = queryClient.getQueryData(["level"]);
-
-      queryClient.setQueryData(
-        ["level"],
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        (prevUsers: any) =>
-          [
-            ...prevUsers,
-            {
-              ...newLevel,
-              id: (Math.random() + 1).toString(36).substring(7),
-            },
-          ] as TLevelEducation[]
-      );
-
-      return { prevLevel };
-    },
-
-    onError: (err, newLevel, context) => {
+    mutationFn: addLevelOfEducation,
+    onError: (err) => {
       toast.error(err.message);
-      return queryClient.setQueryData(["level"], context?.prevLevel);
     },
-
-    // onSettled: () => queryClient.invalidateQueries({ queryKey: ["level"] }),
+    onSuccess: (_newArr, data) => {
+      toast.success(
+        `Success! The ${data.levelOfEducation} has been created successfully. `
+      ),
+        queryClient.invalidateQueries({
+          queryKey: [FIRESTORE_COLLECTION_QUERY_KEY.LEVEL_OF_EDUCATION],
+        });
+    },
   });
 
   return { createLevelOfEducation, isPending };

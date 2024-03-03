@@ -3,7 +3,6 @@ import { Group, Box, Button, Text, Flex, Badge } from "@mantine/core";
 import { IconFileTypeCsv, IconFileTypePdf } from "@tabler/icons-react";
 import {
   MRT_ColumnDef,
-  MRT_ShowHideColumnsButton,
   MRT_ToggleDensePaddingButton,
   MRT_ToggleGlobalFilterButton,
   MantineReactTable,

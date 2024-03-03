@@ -23,11 +23,7 @@ import useReadEducation from "@features/SysSettings/LevelEducation/useReadEducat
 import useCreateEducation from "@features/SysSettings/LevelEducation/useCreateEducation";
 import useModifyEducation from "@features/SysSettings/LevelEducation/useModifyEducation";
 import { toast } from "sonner";
-
-export type TLevelEducation = {
-  id?: string | number;
-  levelOfEducation: string;
-};
+import ILevelOfEducation from "@features/SysSettings/LevelEducation/level-of-education.interface";
 
 const LevelEducation = () => {
   const { createLevelOfEducation, isPending: isCreating } =
@@ -43,7 +39,7 @@ const LevelEducation = () => {
   const { modifyLevelOfEducation, isPending: isUpdating } =
     useModifyEducation();
 
-  const customColumns = useMemo<MRT_ColumnDef<TLevelEducation>[]>(
+  const customColumns = useMemo<MRT_ColumnDef<ILevelOfEducation>[]>(
     () => [
       {
         accessorKey: "id",
@@ -60,7 +56,7 @@ const LevelEducation = () => {
   );
 
   // CREATE action
-  const handleCreateLevel: MRT_TableOptions<TLevelEducation>["onCreatingRowSave"] =
+  const handleCreateLevel: MRT_TableOptions<ILevelOfEducation>["onCreatingRowSave"] =
     async ({ values, exitCreatingMode }) => {
       const isDuplicate = eduData.some(
         (level) => level.levelOfEducation === values.levelOfEducation
@@ -85,7 +81,7 @@ const LevelEducation = () => {
       exitCreatingMode();
     };
 
-  const handleSaveLevel: MRT_TableOptions<TLevelEducation>["onEditingRowSave"] =
+  const handleSaveLevel: MRT_TableOptions<ILevelOfEducation>["onEditingRowSave"] =
     async ({ values, table }) => {
       await modifyLevelOfEducation(values);
 

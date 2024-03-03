@@ -23,6 +23,13 @@ export enum FIRESTORE_COLLECTION_QUERY_KEY {
   TEACHER = "teachers",
   TEACHER_ENTRY = "teachers-entry",
 
+  GRADE_LEVEL = "grade-level",
+  GRADE_SECTION = "grade-section",
+  LEVEL_OF_EDUCATION = "level-of-education",
+  ACADEMIC_COURSE = "academic-course",
+
+  //
+
   REQUEST_BOOK = "books-requested",
   RESERVED_BOOK = "books-reserved",
   BORROW_TRANSACTION = "books-borrowed",
