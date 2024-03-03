@@ -32,7 +32,7 @@ const addAcademicCourse = async (payload: Partial<IAcademicCourse>) => {
     const querySnapshot = await getDocs(
       query(
         collection(firestore, FIRESTORE_COLLECTION_QUERY_KEY.ACADEMIC_COURSE),
-        where("AcademicCourse", "==", payload.academicCourse)
+        where("academicCourse", "==", payload.academicCourse)
       )
     );
 
