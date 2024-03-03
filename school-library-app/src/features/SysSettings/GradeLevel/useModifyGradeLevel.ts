@@ -1,16 +1,15 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { updateGradeLevel } from "./services/grade-level.service";
 import { FIRESTORE_COLLECTION_QUERY_KEY } from "src/shared/enums";
+import { updateGradeLevel } from "./services/grade-level.service";
 import IGradeLevel from "./grade-level.interface";
 
 const useModifyGradeLevel = () => {
   const queryClient = useQueryClient();
 
-  const { mutateAsync: modifyLevelOfGradeLevel, isPending } = useMutation({
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    mutationFn: async (_level: IGradeLevel) =>
-      updateGradeLevel(_level, _level.id),
+  const { mutateAsync: modifyGradeLevel, isPending } = useMutation({
+    mutationFn: async (level: IGradeLevel) =>
+      await updateGradeLevel(level, level.id),
 
     onError: (err) => {
       toast.error(err.message);
@@ -27,6 +26,6 @@ const useModifyGradeLevel = () => {
     },
   });
 
-  return { modifyLevelOfGradeLevel, isPending };
+  return { modifyGradeLevel, isPending };
 };
 export default useModifyGradeLevel;

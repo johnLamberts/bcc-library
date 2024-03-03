@@ -1,51 +1,25 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { TGradeSection } from "../GradeSection/useReadGradeSection";
+import { FIRESTORE_COLLECTION_QUERY_KEY } from "src/shared/enums";
+import { addGradeSection } from "./grade-section.service";
 
 const useCreateGradeSection = () => {
   const queryClient = useQueryClient();
 
   const { mutateAsync: createGradeSection, isPending } = useMutation({
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    mutationFn: async (_level: TGradeSection) => {
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-
-      return Promise.resolve();
-    },
-    onMutate: async (newAcademic: TGradeSection) => {
-      await queryClient.cancelQueries({ queryKey: ["grade-section"] });
-
-      const prevAcademics = queryClient.getQueryData(["grade-section"]);
-
-      queryClient.setQueryData(
-        ["grade-section"],
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        (prevAcademic: any) =>
-          [
-            ...prevAcademic,
-            {
-              ...newAcademic,
-              id: (Math.random() + 1).toString(36).substring(7),
-            },
-          ] as TGradeSection[]
-      );
-
-      return { prevAcademics };
-    },
-
-    onError: (err, _newLevel, context) => {
+    mutationFn: addGradeSection,
+    onError: (err) => {
       toast.error(err.message);
-      return queryClient.setQueryData(
-        ["grade-section"],
-        context?.prevAcademics
-      );
     },
-
-    onSuccess: (_newArr, data) =>
+    onSuccess: (_newArr, data) => {
       toast.success(
         `Success! The ${data.gradeSection} has been created successfully. `
       ),
-    // queryClient.invalidateQueries({ queryKey: ["academic-course"] }),
+        queryClient.invalidateQueries({
+          queryKey: [FIRESTORE_COLLECTION_QUERY_KEY.GRADE_SECTION],
+        });
+    },
   });
 
   return { createGradeSection, isPending };

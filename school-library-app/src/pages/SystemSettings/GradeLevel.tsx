@@ -36,8 +36,7 @@ const GradeLevel = () => {
     isFetching: isFetchingGradeLevel,
   } = useReadGradeLevel();
 
-  const { modifyLevelOfGradeLevel, isPending: isUpdating } =
-    useModifyGradeLevel();
+  const { modifyGradeLevel, isPending: isUpdating } = useModifyGradeLevel();
 
   const customColumns = useMemo<MRT_ColumnDef<IGradeLevel>[]>(
     () => [
@@ -69,7 +68,7 @@ const GradeLevel = () => {
 
   const handleSaveLevel: MRT_TableOptions<IGradeLevel>["onEditingRowSave"] =
     async ({ values, table }) => {
-      await modifyLevelOfGradeLevel(values);
+      await modifyGradeLevel(values);
 
       table.setEditingRow(null);
     };
