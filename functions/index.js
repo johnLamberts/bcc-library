@@ -173,25 +173,27 @@ exports.documentReservedChecker = functions
       });
   });
 
+// const userUids = [];
 // admin
 //   .firestore()
-//   .collection("books-reserved")
+//   .collection("users")
+//   .where("userRole", "==", "Student")
 //   .get()
-//   .then((docs) => {
-//     return docs.docs.map(async (doc) => {
-//       // const snapshot = doc.data();
+//   .then((users) =>
+//     users.docs.map(async (doc) => {
+//       const studentsRef = await admin
+//         .firestore()
+//         .collection("students")
+//         .where("userDocID", "==", doc.id)
+//         .get();
 
-//       // const msg = {
-//       //   to: snapshot.borrowersEmail,
-//       //   from: "librsystem.e@gmail.com",
-//       //   fullName: snapshot.borrowersName,
-//       //   templateId: AUTOMATE_CANCELLED_RESERVE,
-//       //   dynamic_template_data: {
-//       //     fullName: snapshot.borrowersName,
-//       //     bookTitle: snapshot.bookTitle,
-//       //   },
-//       // };
+//       studentsRef.docs.map(
+//         async (studDoc) =>
+//           await admin.firestore().doc(`students/${studDoc.id}`).delete()
+//       );
 
-//       console.log(dateCreated < past);
-//     });
-//   });
+//       userUids.push(doc.data().userUID);
+//       doc.ref.delete();
+//     })
+//   );
+// admin.auth().deleteUsers(userUids);

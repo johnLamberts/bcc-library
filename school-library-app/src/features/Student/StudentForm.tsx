@@ -27,7 +27,15 @@ export default function StudentForm<TData extends MRT_RowData>({
   const isEditing = table.getState().editingRow?.id === row.id;
 
   const form = useForm<IStudents>({
-    defaultValues: isEditing ? row.original : {},
+    defaultValues: isEditing
+      ? row.original
+      : {
+          academicCourse: null,
+          gradeLevel: null,
+          gradeSection: null,
+          levelOfEducation: null,
+          sex: null,
+        },
   });
 
   const [edit, setEdit] = useState<boolean>(true);
@@ -35,12 +43,17 @@ export default function StudentForm<TData extends MRT_RowData>({
   const onSubmit = useCallback(
     (values: Partial<IStudents>) => {
       if (isCreating) {
-        onCreate?.(values);
+        onCreate?.({
+          ...values,
+          edit,
+        });
+
+        form.reset();
       } else if (isEditing) {
         onSave?.(values);
       }
     },
-    [onCreate, isCreating, isEditing, onSave]
+    [isCreating, isEditing, onCreate, edit, form, onSave]
   );
 
   // useEffect(() => {
@@ -87,7 +100,6 @@ export default function StudentForm<TData extends MRT_RowData>({
     }
   }, [form.formState.errors]);
 
-  console.log(edit);
   return (
     <FormProvider {...form}>
       <Form onSubmit={form.handleSubmit(onSubmit)}>
@@ -133,11 +145,23 @@ export default function StudentForm<TData extends MRT_RowData>({
           style={{
             display: "flex",
             justifyContent: "end",
+            gap: "0.5rem",
           }}
         >
+          {isCreating && (
+            <Form.SubmitButton
+              loading={table.getState().isSaving}
+              onClick={() => setEdit(false)}
+              color="red"
+              alias={`Save Student`}
+            />
+          )}
+
           <Form.SubmitButton
             loading={table.getState().isSaving}
-            color="red.8"
+            onClick={() => setEdit(true)}
+            color="yellow"
+            alias={`${isCreating ? "Save" : "Update"} Student`}
           />
         </Box>
       </Form>

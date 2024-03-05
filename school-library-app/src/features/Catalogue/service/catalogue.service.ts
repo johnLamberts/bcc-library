@@ -89,6 +89,22 @@ const updateCatalogue = async (
   booksId: string | undefined
 ) => {
   try {
+    const availabilityRef = await getDocs(
+      query(
+        collection(
+          firestore,
+          FIRESTORE_COLLECTION_QUERY_KEY.AVAILABILITY_TRANSACTION
+        ),
+        where("bookid", "==", booksId as string)
+      )
+    );
+
+    if (availabilityRef.size) {
+      throw new Error(
+        "This books cannot be modified, there are still active books in borrowed transaction."
+      );
+    }
+
     const uploadResultImage = await uploadFileOrImage(catalogue.bookImageCover);
     const imagePathUrl = uploadResultImage
       ? await downloadUrl(uploadResultImage!.ref)

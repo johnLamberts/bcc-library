@@ -3,6 +3,7 @@ import useReadAcademicCourse from "@features/SysSettings/AcademicCourse/useReadA
 import useReadGradeLevel from "@features/SysSettings/GradeLevel/useReadGradeLevel";
 import useReadEducation from "@features/SysSettings/LevelEducation/useReadEducation";
 import { MRT_RowData, MRT_TableInstance } from "mantine-react-table";
+import { useSearchParams } from "react-router-dom";
 
 interface StudentToolbarProps<TData extends MRT_RowData> {
   table: MRT_TableInstance<TData>;
@@ -22,8 +23,8 @@ const StudentToolbar = <TData extends MRT_RowData>({
           column={table.getColumn("levelOfEducation")}
           title="Level of Education"
           options={levelOfEducation.map((course) => ({
-            label: course.levelOfEducation,
-            value: course.levelOfEducation,
+            label: course.levelOfEducation || "",
+            value: course.levelOfEducation || "",
           }))}
         />
       )}
@@ -32,8 +33,8 @@ const StudentToolbar = <TData extends MRT_RowData>({
           column={table.getColumn("academicCourse")}
           title="Academic Course"
           options={academicCourse.map((course) => ({
-            label: course.academicCourse,
-            value: course.academicCourse,
+            label: course.academicCourse || "",
+            value: course.academicCourse || "",
           }))}
         />
       )}
@@ -43,8 +44,8 @@ const StudentToolbar = <TData extends MRT_RowData>({
           column={table.getColumn("gradeLevel")}
           title="Grade Level"
           options={gradeLevel.map((course) => ({
-            label: course.gradeLevel,
-            value: course.gradeLevel,
+            label: course.gradeLevel || "",
+            value: course.gradeLevel || "",
           }))}
         />
       )}

@@ -2,13 +2,17 @@ import Form from "@components/Form/Form";
 import useReadAcademicCourse from "@features/SysSettings/AcademicCourse/useReadAcademic";
 import useReadGradeLevel from "@features/SysSettings/GradeLevel/useReadGradeLevel";
 import useReadGradeSection from "@features/SysSettings/GradeSection/useReadGradeSection";
+import useReadEducation from "@features/SysSettings/LevelEducation/useReadEducation";
 import { Select } from "@mantine/core";
-import { useEffect } from "react";
 import { Controller, useFormContext } from "react-hook-form";
-import { removeDuplicatesWithSet } from "src/utils/validators/hasDuplicates";
 
 const EducationForm = () => {
   const { control, watch, setValue } = useFormContext();
+
+  const {
+    data: levelOfEducationData = [],
+    isFetching: isFetchingLevelOfEducation,
+  } = useReadEducation();
 
   const { data: courseData = [], isFetching: isFetchingCourse } =
     useReadAcademicCourse();
@@ -20,48 +24,33 @@ const EducationForm = () => {
     useReadGradeSection();
 
   const selectedLevelOfEducation = watch("levelOfEducation");
-  const selectedGrade = watch("gradeLevel");
-
-  const optimizedCourseData = removeDuplicatesWithSet(
-    courseData,
-    "levelOfEducation"
-  );
-
   const filteredCourses = courseData
-    .filter((item) => item.levelOfEducation === selectedLevelOfEducation)
-    .map((item) => item.academicCourse);
+    .filter((item) => item?.levelOfEducation === selectedLevelOfEducation)
+    .map((item) => item?.academicCourse || "");
 
   const filterGrade = gradeLevelData
     .filter(
       (gradeLevel) => gradeLevel.levelOfEducation === selectedLevelOfEducation
     )
-    .map((level) => level.gradeLevel);
+    .map((level) => level.gradeLevel || "");
 
   const filterGradeSection = gradeSectionData
-    .filter((gradeLevel) => gradeLevel.gradeLevel === selectedGrade)
-    .map((level) => level.gradeSection);
+    .filter((gradeLevel) => gradeLevel.gradeLevel === watch("gradeLevel"))
+    .map((level) => level.gradeSection || "");
 
-  useEffect(() => {
-    if (filteredCourses[0] === "") {
-      setValue("academicCourse", null);
-    }
+  const handleChangeLevel = (e: string | null) => {
+    setValue("levelOfEducation", e);
 
-    if (filterGrade.length === 0 && selectedGrade) {
-      setValue("gradeLevel", null);
-    }
+    setValue("academicCourse", null);
+    setValue("gradeLevel", null);
+    setValue("gradeSection", null);
+  };
 
-    if (filterGradeSection.length === 0) {
-      setValue("gradeSection", null);
-    }
-  }, [
-    filteredCourses,
-    filterGrade.length,
-    setValue,
-    selectedGrade,
-    gradeLevelData,
-    selectedLevelOfEducation,
-    filterGradeSection,
-  ]);
+  const handleChangeGradeLevel = (e: string | null) => {
+    setValue("gradeLevel", e);
+
+    setValue("gradeSection", null);
+  };
 
   return (
     <Form.Box mt={"md"}>
@@ -71,19 +60,25 @@ const EducationForm = () => {
           <Controller
             name="levelOfEducation"
             control={control}
-            render={({ field }) => {
+            render={({ field: { onChange, ...field } }) => {
               return (
                 <Select
                   label="Level of Education"
                   placeholder="Select level"
-                  data={optimizedCourseData.map((course) => ({
-                    label: course.levelOfEducation,
-                    value: course.levelOfEducation,
+                  data={levelOfEducationData.map((course) => ({
+                    label: course.levelOfEducation || "",
+                    value: course.levelOfEducation || "",
                   }))}
+                  onChange={(e) => {
+                    onChange(e);
+                    handleChangeLevel(e);
+                  }}
                   comboboxProps={{
                     transitionProps: { transition: "pop", duration: 200 },
                   }}
+                  disabled={isFetchingLevelOfEducation}
                   {...field}
+                  allowDeselect={false}
                 />
               );
             }}
@@ -94,12 +89,12 @@ const EducationForm = () => {
           <Controller
             name="academicCourse"
             control={control}
-            render={({ field }) => {
+            render={({ field: { onChange, ...field } }) => {
               return (
                 <Select
                   label="Academic Course"
                   placeholder={`${
-                    filteredCourses[0] === ""
+                    !filteredCourses.length
                       ? "No available course"
                       : "Select academic course"
                   } `}
@@ -107,8 +102,12 @@ const EducationForm = () => {
                   comboboxProps={{
                     transitionProps: { transition: "pop", duration: 200 },
                   }}
+                  onChange={(e) => {
+                    onChange(e);
+                  }}
                   {...field}
-                  readOnly={filteredCourses[0] === ""}
+                  disabled={!filteredCourses.length}
+                  searchable={true}
                 />
               );
             }}
@@ -118,7 +117,7 @@ const EducationForm = () => {
           <Controller
             name="gradeLevel"
             control={control}
-            render={({ field }) => {
+            render={({ field: { onChange, ...field } }) => {
               return (
                 <Select
                   label="Grade Level"
@@ -131,8 +130,14 @@ const EducationForm = () => {
                   comboboxProps={{
                     transitionProps: { transition: "pop", duration: 200 },
                   }}
+                  onChange={(e) => {
+                    onChange(e);
+                    handleChangeGradeLevel(e);
+                  }}
                   {...field}
                   readOnly={isFetchingGradelevel || !filterGrade.length}
+                  disabled={isFetchingGradelevel || !filterGrade.length}
+                  searchable={true}
                 />
               );
             }}
@@ -157,6 +162,8 @@ const EducationForm = () => {
                   }}
                   {...field}
                   readOnly={isFetchingSectionevel || !filterGradeSection.length}
+                  disabled={isFetchingSectionevel || !filterGradeSection.length}
+                  searchable={true}
                 />
               );
             }}

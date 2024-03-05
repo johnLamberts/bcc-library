@@ -12,8 +12,18 @@ import {
   Badge,
   Modal,
   Divider,
+  Menu,
+  rem,
 } from "@mantine/core";
-import { IconEdit, IconEyeMinus, IconPlus } from "@tabler/icons-react";
+import {
+  IconArchive,
+  IconDots,
+  IconEdit,
+  IconEyeMinus,
+  IconLockOff,
+  IconLockOpen,
+  IconPlus,
+} from "@tabler/icons-react";
 import {
   MRT_ColumnDef,
   MRT_Row,
@@ -131,6 +141,7 @@ const StudentTable = () => {
   // STATUS action
   const openUpdateStatusConfirmModal = (row: MRT_Row<IStudents>) =>
     modals.openConfirmModal({
+      centered: true,
       title: (
         <Text>
           Are you sure you want to{" "}
@@ -161,9 +172,13 @@ const StudentTable = () => {
   // CREATE action
   const handleCreateLevel: MRT_TableOptions<IStudents>["onCreatingRowSave"] =
     async ({ values, table }) => {
-      await createUsers(values);
+      const { edit, ...otherValues } = values;
 
-      table.setCreatingRow(null);
+      await createUsers(otherValues);
+
+      if (edit) {
+        table.setCreatingRow(null);
+      }
     };
 
   const handleSaveLevel: MRT_TableOptions<IStudents>["onEditingRowSave"] =
@@ -224,34 +239,49 @@ const StudentTable = () => {
       columnVisibility: {
         id: false,
       },
-      columnPinning: {
-        right: ["mrt-row-actions"],
-      },
     },
 
     renderRowActions: ({ row }) => (
       <>
-        <Flex gap="md">
-          <Tooltip label="Edit">
-            <ActionIcon
-              variant="light"
+        <Menu shadow="md">
+          <Menu.Target>
+            <IconDots size={24} />
+          </Menu.Target>
+
+          <Menu.Dropdown>
+            <Menu.Item
+              leftSection={
+                <IconEdit style={{ width: rem(18), height: rem(18) }} />
+              }
               onClick={() => table.setEditingRow(row)}
             >
-              <IconEdit />
-            </ActionIcon>
-          </Tooltip>
+              Edit
+            </Menu.Item>
 
-          <Tooltip label="Disabled">
-            <ActionIcon
-              variant="light"
+            <Menu.Item
+              leftSection={
+                <IconArchive style={{ width: rem(18), height: rem(18) }} />
+              }
+              onClick={() => table.setEditingRow(row)}
+            >
+              Archive
+            </Menu.Item>
+            <Menu.Item
               onClick={() => {
                 openUpdateStatusConfirmModal(row);
               }}
+              leftSection={
+                row.original.isEnabled ? (
+                  <IconLockOff style={{ width: rem(18), height: rem(18) }} />
+                ) : (
+                  <IconLockOpen style={{ width: rem(18), height: rem(18) }} />
+                )
+              }
             >
-              <IconEyeMinus />
-            </ActionIcon>
-          </Tooltip>
-        </Flex>
+              {row.original.isEnabled ? "Disabled" : "Enable"}
+            </Menu.Item>
+          </Menu.Dropdown>
+        </Menu>
       </>
     ),
 
@@ -317,7 +347,7 @@ const StudentTable = () => {
 
   return (
     <>
-      <Box maw={"60.8rem"}>
+      <Box maw={"78vw"}>
         <Group justify="space-between">
           <Box className={classes.highlight}>
             <Text fz={"xl"} fw={"bold"} c={"red"}>
