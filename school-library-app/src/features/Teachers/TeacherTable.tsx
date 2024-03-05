@@ -60,7 +60,7 @@ const TeacherTable = () => {
       },
       {
         accessorKey: "teacherImage",
-        header: "Student Picture",
+        header: "Teacher Picture",
         Cell: ({ row }) => {
           return (
             <Avatar src={`${row.getValue("teacherImage")}`} alt="it's me" />
@@ -69,7 +69,7 @@ const TeacherTable = () => {
       },
       {
         accessorKey: "teacherNumber",
-        header: "Student Number",
+        header: "Teacher Number",
       },
       {
         accessorKey: "firstName",

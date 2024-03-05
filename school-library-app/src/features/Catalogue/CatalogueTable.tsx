@@ -27,7 +27,6 @@ import classes from "@pages/styles/user.module.css";
 import StudentForm from "./CatalogueForm";
 import { IBooks } from "./models/books.interface";
 import { modals } from "@mantine/modals";
-import useModifyStudentStatus from "./hooks/useModifyStudentStatus";
 import { useCreateCatalogue } from "./hooks/useCreateCatalogue";
 import useReadCatalogue from "./hooks/useReadCatalogue";
 import useModifyCatalogue from "./hooks/useModifyCatalogue";
@@ -41,9 +40,6 @@ const CatalogueTable = () => {
     isError: isLoadingStudentError,
     isFetching: isFetchingStudent,
   } = useReadCatalogue();
-
-  const { modifyStudentStatus, isPending: isUpdatingStatus } =
-    useModifyStudentStatus();
 
   const { modifyCatalogue, isPending: isUpdating } = useModifyCatalogue();
 
@@ -170,7 +166,7 @@ const CatalogueTable = () => {
     },
     state: {
       isLoading: isLoadingStudent,
-      isSaving: isCreatingCatalogue || isUpdatingStatus || isUpdating,
+      isSaving: isCreatingCatalogue || isUpdating,
       showAlertBanner: isLoadingStudentError,
       showProgressBars: isFetchingStudent,
     },

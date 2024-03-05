@@ -15,11 +15,11 @@ export interface IStudents {
   currentYear: number;
   userRole: string;
 
-  sex: string;
-  academicCourse: string;
-  gradeLevel: string;
-  gradeSection: string;
-  levelOfEducation: string;
+  sex: string | null;
+  academicCourse: string | null;
+  gradeLevel: string | null;
+  gradeSection: string | null;
+  levelOfEducation: string | null;
 
   userUID?: string;
   userDocID?: string;
