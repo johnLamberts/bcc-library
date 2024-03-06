@@ -32,8 +32,6 @@ const BooksToBeBorrowedDetailsForm = ({ seeType, setSeeType }: FormProps) => {
     (book) => book.title === watch("bookTitle")
   );
 
-  console.log(filteredOtherBookInfo);
-
   const setBookValues = useCallback(
     (filterInfo: IBooks | null) => {
       setValue("bookISBN", filterInfo?.bookISBN);
@@ -74,9 +72,22 @@ const BooksToBeBorrowedDetailsForm = ({ seeType, setSeeType }: FormProps) => {
     }
   }, [setValue, seeType, bookData]);
 
+  const handleChangeTitle = () => {
+    setValue("bookISBN", "");
+    setValue("callNumber", "");
+    setValue("bookSection", "");
+    setValue("bookLocation", "");
+    setValue("timeDuration", "");
+    setValue("numberOfBooksAvailable_QUANTITY", "");
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    setValue("bookPrice", "");
+    setValue("booksId", "");
+  };
+
   return (
     <Form.Box mt={"md"}>
-      <Form.Title>Books to be Borrowed Details</Form.Title>
+      <Form.Title>Books Details</Form.Title>
       <Form.Grid px={"lg"} pt={"lg"}>
         <Form.Col span={{ base: 12, md: 6, lg: 6 }}>
           <Controller
@@ -102,10 +113,9 @@ const BooksToBeBorrowedDetailsForm = ({ seeType, setSeeType }: FormProps) => {
                   {...field}
                   error={<>{errors.bookType?.message}</>}
                   disabled={
-                    isBookLoading ||
-                    isBookTypeLoading ||
-                    watch("borrowersName") === null ||
-                    watch("borrowersName") === undefined
+                    isBookLoading || isBookTypeLoading
+                    // watch("borrowersName") === null ||
+                    // watch("borrowersName") === undefined
                   }
                   onChange={(e) => {
                     onChange(e);
@@ -125,7 +135,7 @@ const BooksToBeBorrowedDetailsForm = ({ seeType, setSeeType }: FormProps) => {
             rules={{
               required: true,
             }}
-            render={({ field }) => {
+            render={({ field: { onChange, ...field } }) => {
               return (
                 <Select
                   label="Title"
@@ -141,6 +151,10 @@ const BooksToBeBorrowedDetailsForm = ({ seeType, setSeeType }: FormProps) => {
                   }))}
                   comboboxProps={{
                     transitionProps: { transition: "pop", duration: 200 },
+                  }}
+                  onChange={(e) => {
+                    onChange(e);
+                    handleChangeTitle();
                   }}
                   withErrorStyles={errors.bookTitle?.message ? true : false}
                   {...field}

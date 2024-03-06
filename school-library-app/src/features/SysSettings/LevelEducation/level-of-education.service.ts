@@ -3,6 +3,7 @@ import {
   collection,
   doc,
   getDocs,
+  orderBy,
   query,
   serverTimestamp,
   updateDoc,
@@ -14,7 +15,10 @@ import ILevelOfEducation from "./level-of-education.interface";
 
 const getAllLevelOfEducation = async (): Promise<ILevelOfEducation[]> => {
   const bookTypeDocs = await getDocs(
-    collection(firestore, FIRESTORE_COLLECTION_QUERY_KEY.LEVEL_OF_EDUCATION)
+    query(
+      collection(firestore, FIRESTORE_COLLECTION_QUERY_KEY.LEVEL_OF_EDUCATION),
+      orderBy("createdAt", "asc")
+    )
   );
 
   return bookTypeDocs.docs.map((doc) => ({

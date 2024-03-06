@@ -1,3 +1,15 @@
+/* eslint-disable comma-dangle */
+/* eslint-disable object-curly-spacing */
+/* eslint-disable indent */
+// /* eslint-disable require-jsdoc */
+// /* eslint-disable linebreak-style */
+// /* eslint-disable padded-blocks */
+// /* eslint-disable linebreak-style */
+// /* eslint-disable object-curly-spacing */
+// /* eslint-disable comma-dangle */
+// /* eslint-disable indent */
+// /**
+
 /**
  * Import function triggers from their respective submodules:
  *
@@ -110,78 +122,84 @@ exports.taskRunner = functions
     });
   });
 
-exports.booksStockChecker = functions
+exports.documentReservedChecker = functions
   .runWith({ memory: "4GB" })
   .pubsub.schedule("* * * * *")
   .onRun(async () => {
-    const testData = admin.firestore().collection("books-catalogue").get();
+    admin
+      .firestore()
+      .collection("books-reserved")
+      .get()
+      .then((docs) => {
+        return docs.docs.map(async (doc) => {
+          const snapshot = doc.data();
 
-    return await testData.then((data) => {
-      return data.docs.forEach(async (doc) => {
-        const snapshot = doc.data();
+          const msg = {
+            to: snapshot.borrowersEmail,
+            from: "librsystem.e@gmail.com",
+            fullName: snapshot.borrowersName,
+            templateId: AUTOMATE_CANCELLED_RESERVE,
+            dynamic_template_data: {
+              fullName: snapshot.borrowersName,
+              bookTitle: snapshot.bookTitle,
+            },
+          };
 
-        const { numberOfBooksAvailable_QUANTITY } = snapshot;
+          const dateCreated =
+            doc.data().createdAt._seconds * 1000 +
+            Math.floor(doc.data().createdAt._nanoseconds / 1000000);
 
-        if (numberOfBooksAvailable_QUANTITY === 0) {
-          return doc.ref.update({ bookStatus: "Out of Stock" });
-        }
+          const past = new Date(
+            admin.firestore.Timestamp.now().toMillis() - 24 * 60 * 60 * 1000
+          );
+
+          if (dateCreated < past) {
+            const booksTransactionRef = await admin
+              .firestore()
+              .collection("books-transaction")
+              .where("reservedId", "==", doc.id)
+              .get();
+
+            booksTransactionRef.docs.map(async (transactDoc) =>
+              admin
+                .firestore()
+                .doc(`books-transaction/${transactDoc.id}`)
+                .update({
+                  status: "Cancelled",
+                  modifiedAt: admin.firestore.Timestamp.now(),
+                })
+            );
+            await admin.firestore().doc(`books-reserved/${doc.id}`).delete();
+
+            return sgMail.send(msg);
+          } else {
+            doc.ref.update({ status: "Reserved" });
+          }
+        });
       });
-    });
   });
 
-// exports.documentReservedChecker = functions
-//   .runWith({ memory: "4GB" })
-//   .pubsub.schedule("* * * * *")
-//   .onRun(async () => {
-//     admin
-//       .firestore()
-//       .collection("books-reserved")
-//       .get()
-//       .then((docs) => {
-//         return docs.docs.map(async (doc) => {
-//           const snapshot = doc.data();
+// const userUids = [];
+// admin
+//   .firestore()
+//   .collection("users")
+//   .where("userRole", "==", "Student")
+//   .get()
+//   .then((users) =>
+//     users.docs.map(async (doc) => {
+//       const studentsRef = await admin
+//         .firestore()
+//         .collection("students")
+//         .where("userDocID", "==", doc.id)
+//         .get();
 
-//           const msg = {
-//             to: snapshot.borrowersEmail,
-//             from: "librsystem.e@gmail.com",
-//             fullName: snapshot.borrowersName,
-//             templateId: AUTOMATE_CANCELLED_RESERVE,
-//             dynamic_template_data: {
-//               fullName: snapshot.borrowersName,
-//               bookTitle: snapshot.bookTitle,
-//             },
-//           };
+//       studentsRef.docs.map(
+//         async (studDoc) =>
+//           await admin.firestore().doc(`students/${studDoc.id}`).delete()
+//       );
 
-//           const dateCreated =
-//             doc.data().createdAt._seconds * 1000 +
-//             Math.floor(doc.data().createdAt._nanoseconds / 1000000);
-
-//           const past = new Date(
-//             admin.firestore.Timestamp.now().toMillis() - 24 * 60 * 60 * 1000
-//           );
-
-//           if (dateCreated < past) {
-//             const booksTransactionRef = await admin
-//               .firestore()
-//               .collection("books-transaction")
-//               .where("reservedId", "==", doc.id)
-//               .get();
-
-//             booksTransactionRef.docs.map(async (transactDoc) =>
-//               admin
-//                 .firestore()
-//                 .doc(`books-transaction/${transactDoc.id}`)
-//                 .update({
-//                   status: "Cancelled",
-//                   modifiedAt: admin.firestore.Timestamp.now(),
-//                 })
-//             );
-//             await admin.firestore().doc(`books-reserved/${doc.id}`).delete();
-
-//             return sgMail.send(msg);
-//           } else {
-//             doc.ref.update({ status: "Reserved" });
-//           }
-//         });
-//       });
-//   });
+//       userUids.push(doc.data().userUID);
+//       doc.ref.delete();
+//     })
+//   );
+// admin.auth().deleteUsers(userUids);
