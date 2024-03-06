@@ -2,22 +2,15 @@ import Form from "@components/Form/Form";
 import useReadAuthor from "@features/SysSettings/BookAuthor/hooks/useReadBookType";
 import useReadGenre from "@features/SysSettings/BookGenre/hooks/useReadGenre";
 import useReadBookType from "@features/SysSettings/BookType/hooks/useReadBookType";
-import {
-  Anchor,
-  Anchor,
-  Drawer,
-  Drawer,
-  MultiSelect,
-  Select,
-  TextInput,
-} from "@mantine/core";
+import { Anchor, Drawer, MultiSelect, Select, TextInput } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import BookAuthor from "@pages/SystemSettings/BookAuthor";
 import BookGenre from "@pages/SystemSettings/BookGenres";
+import BookType from "@pages/SystemSettings/BookType";
 import { MRT_Row, MRT_RowData, MRT_TableInstance } from "mantine-react-table";
 import { useEffect, useMemo, useState } from "react";
 import { Controller, useFormContext } from "react-hook-form";
-import { useHref, useLocation, useSearchParams } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 
 interface BookInformationProps<TData extends MRT_RowData> {
   table?: MRT_TableInstance<TData>;
@@ -109,6 +102,17 @@ const BookInformationForm = <TData extends MRT_RowData>({
     return setSearchParams(searchParams);
   };
 
+  const removeQueryParams = () => {
+    const param = searchParams.get("ctx");
+
+    if (param) {
+      // 👇️ delete each query param
+      searchParams.delete("ctx");
+
+      // 👇️ update state after
+      setSearchParams(searchParams);
+    }
+  };
   return (
     <>
       <Form.Box mt={"md"}>
@@ -137,6 +141,26 @@ const BookInformationForm = <TData extends MRT_RowData>({
                     {...field}
                     error={<>{errors.bookType?.message}</>}
                     disabled={isBookTypeLoading}
+                    searchable
+                    nothingFoundMessage={
+                      <>
+                        Nothing found...
+                        <br />
+                        Add Type{" "}
+                        <Anchor
+                          variant="gradient"
+                          gradient={{ from: "pink", to: "yellow" }}
+                          fw={500}
+                          underline="hover"
+                          onClick={() => {
+                            open();
+                            handleChange("add_books_type");
+                          }}
+                        >
+                          here
+                        </Anchor>
+                      </>
+                    }
                   />
                 );
               }}
@@ -234,7 +258,7 @@ const BookInformationForm = <TData extends MRT_RowData>({
                     withErrorStyles={errors.authors?.message ? true : false}
                     {...field}
                     error={<>{errors.authors?.message}</>}
-                    // disabled={isAuthorsLoading || watchBookType === ""}
+                    disabled={isAuthorsLoading || watchBookType === ""}
                     searchable
                     nothingFoundMessage={
                       <>
@@ -267,7 +291,7 @@ const BookInformationForm = <TData extends MRT_RowData>({
         opened={opened}
         onClose={() => {
           close();
-          searchParams.delete("ctx", searchParams.get("ctx"));
+          removeQueryParams();
         }}
         size={"xl"}
       >
@@ -280,6 +304,8 @@ const BookInformationForm = <TData extends MRT_RowData>({
             {searchParams.get("ctx") === "add_author" && <BookAuthor />}
 
             {searchParams.get("ctx") === "add_genres" && <BookGenre />}
+
+            {searchParams.get("ctx") === "add_books_type" && <BookType />}
           </Drawer.Body>
         </Drawer.Content>
       </Drawer.Root>
