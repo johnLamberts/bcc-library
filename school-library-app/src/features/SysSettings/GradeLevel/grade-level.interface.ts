@@ -6,4 +6,6 @@ export default interface IGradeLevel {
   levelOfEducation?: string;
 
   createdAt?: Date;
+
+  level?: string;
 }

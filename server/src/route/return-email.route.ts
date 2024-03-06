@@ -7,6 +7,10 @@ router.post("/return-email", EmailReturnedController.createReturnEmail);
 router.post("/requested-email", EmailReturnedController.createRequestedEmail);
 router.post("/request-email", EmailReturnedController.createRequestedBook);
 router.post(
+  "/completed-transaction",
+  EmailReturnedController.createEmailCompletedTransaction
+);
+router.post(
   "/returned-pending-payment",
   EmailReturnedController.createEmailReturnedWithPendingPayment
 );

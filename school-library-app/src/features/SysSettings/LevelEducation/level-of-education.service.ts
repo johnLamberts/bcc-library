@@ -6,6 +6,7 @@ import {
   orderBy,
   query,
   serverTimestamp,
+  updateDoc,
   where,
   writeBatch,
 } from "firebase/firestore";
@@ -58,15 +59,15 @@ const addLevelOfEducation = async (payload: Partial<ILevelOfEducation>) => {
   }
 };
 
-//
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const updateLevelOfducation = async (
   payload: Partial<ILevelOfEducation>,
   docId?: string | undefined
 ) => {
+  console.log(payload);
   try {
     const batch = writeBatch(firestore);
 
+    // Teachers
     const teachersRef = await getDocs(
       query(
         collection(firestore, FIRESTORE_COLLECTION_QUERY_KEY.TEACHER),
@@ -74,6 +75,7 @@ const updateLevelOfducation = async (
       )
     );
 
+    // Students
     const studentsRef = await getDocs(
       query(
         collection(firestore, FIRESTORE_COLLECTION_QUERY_KEY.STUDENT),
@@ -81,22 +83,64 @@ const updateLevelOfducation = async (
       )
     );
 
-    studentsRef.docs.forEach((docs) =>
-      batch.update(
-        doc(firestore, FIRESTORE_COLLECTION_QUERY_KEY.STUDENT, docs.id),
-        {
-          levelOfEducation: payload.levelOfEducation,
-        }
+    // Grade Level
+    const gradeLevelRef = await getDocs(
+      query(
+        collection(firestore, FIRESTORE_COLLECTION_QUERY_KEY.GRADE_LEVEL),
+        where("levelOfEducation", "==", payload.education)
       )
     );
 
-    teachersRef.docs.forEach((docs) =>
-      batch.update(
-        doc(firestore, FIRESTORE_COLLECTION_QUERY_KEY.TEACHER, docs.id),
-        {
-          levelOfEducation: payload.levelOfEducation,
-        }
+    // Academic Course
+    const academicCourseRef = await getDocs(
+      query(
+        collection(firestore, FIRESTORE_COLLECTION_QUERY_KEY.ACADEMIC_COURSE),
+        where("levelOfEducation", "==", payload.education)
       )
+    );
+
+    gradeLevelRef.docs.forEach(
+      async (docs) =>
+        await updateDoc(
+          doc(firestore, FIRESTORE_COLLECTION_QUERY_KEY.GRADE_LEVEL, docs.id),
+          {
+            levelOfEducation: payload.levelOfEducation,
+          }
+        )
+    );
+
+    academicCourseRef.docs.forEach(
+      async (docs) =>
+        await updateDoc(
+          doc(
+            firestore,
+            FIRESTORE_COLLECTION_QUERY_KEY.ACADEMIC_COURSE,
+            docs.id
+          ),
+          {
+            levelOfEducation: payload.levelOfEducation,
+          }
+        )
+    );
+
+    studentsRef.docs.forEach(
+      async (docs) =>
+        await updateDoc(
+          doc(firestore, FIRESTORE_COLLECTION_QUERY_KEY.STUDENT, docs.id),
+          {
+            levelOfEducation: payload.levelOfEducation,
+          }
+        )
+    );
+
+    teachersRef.docs.forEach(
+      async (docs) =>
+        await updateDoc(
+          doc(firestore, FIRESTORE_COLLECTION_QUERY_KEY.TEACHER, docs.id),
+          {
+            levelOfEducation: payload.levelOfEducation,
+          }
+        )
     );
 
     batch.update(

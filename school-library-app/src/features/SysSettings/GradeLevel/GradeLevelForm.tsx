@@ -1,4 +1,4 @@
-import { useCallback } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
   Title,
   Select,
@@ -39,6 +39,7 @@ function GradeLevelForm<TData extends MRT_RowData>({
     defaultValues: isEditing ? row.original : {},
   });
 
+  const [level, setLevel] = useState("");
   const isCreating = table.getState().creatingRow?.id === row.id;
 
   const onSubmit = useCallback(
@@ -58,13 +59,22 @@ function GradeLevelForm<TData extends MRT_RowData>({
       }
 
       if (isEditing) {
-        onSave?.(data);
+        onSave?.({
+          ...data,
+          level,
+        });
       } else if (isCreating) {
         onCreate?.(data);
       }
     },
-    [onCreate, onSave, isEditing, isCreating]
+    [isEditing, isCreating, onSave, level, onCreate]
   );
+
+  useEffect(() => {
+    if (isEditing) {
+      setLevel(row.original.gradeLevel);
+    }
+  }, [isEditing, row.original.gradeLevel]);
 
   return (
     <>

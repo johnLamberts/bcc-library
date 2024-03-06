@@ -21,7 +21,7 @@ const useModifyEducation = () => {
       );
 
       queryClient.invalidateQueries({
-        queryKey: [FIRESTORE_COLLECTION_QUERY_KEY.GRADE_LEVEL],
+        queryKey: [FIRESTORE_COLLECTION_QUERY_KEY.LEVEL_OF_EDUCATION],
       });
     },
   });
