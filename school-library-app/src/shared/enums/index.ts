@@ -50,4 +50,8 @@ export enum FIRESTORE_COLLECTION_QUERY_KEY {
   PARTIAL_PAYMENT = "partial-payment-transaction",
   COMPLETE_PAYMENT = "complete-payment",
   PAYMENT_TRANSACTION = "payment-transaction",
+
+  //PAGES
+
+  ADMIN_DASHBOARD = "admin-dashboard",
 }

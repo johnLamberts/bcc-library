@@ -32,7 +32,6 @@ import BookConditionReport from "@pages/Reports/BookConditionReport";
 import InventoryReport from "@pages/Reports/InventoryReport";
 import FeeReport from "@pages/Reports/FeeReport";
 import TeacherReport from "@pages/Reports/TeacherReport";
-import StudentReportTable from "@features/Reports/StudentReport";
 
 function App() {
   // Will Refactor this after I finish the admin page with fully functionality
