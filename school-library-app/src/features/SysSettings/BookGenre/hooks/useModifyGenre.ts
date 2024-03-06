@@ -45,6 +45,10 @@ const useModifyGenre = () => {
           context.prevLevel.filter((prev) => prev.id === data.id)[0]?.genres
         } Changes to ${data.genres} have been applied.`
       );
+
+      queryClient.invalidateQueries({
+        queryKey: [FIRESTORE_COLLECTION_QUERY_KEY.GENRE],
+      });
     },
   });
 

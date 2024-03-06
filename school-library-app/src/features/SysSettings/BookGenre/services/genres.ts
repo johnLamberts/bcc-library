@@ -55,13 +55,13 @@ const updateGenre = async (
   docId?: string | undefined
 ) => {
   try {
-    await updateDoc(
-      doc(firestore, FIRESTORE_COLLECTION_QUERY_KEY.GENRE, docId as string),
-      {
-        ...payload,
-        updatedAt: serverTimestamp(),
-      }
-    );
+    // await updateDoc(
+    //   doc(firestore, FIRESTORE_COLLECTION_QUERY_KEY.GENRE, docId as string),
+    //   {
+    //     ...payload,
+    //     updatedAt: serverTimestamp(),
+    //   }
+    // );
 
     console.log(payload, docId);
   } catch (err) {

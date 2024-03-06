@@ -18,7 +18,7 @@ import {
   MantineReactTable,
   useMantineReactTable,
 } from "mantine-react-table";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import classes from "../styles/user.module.css";
 
 import IGenre from "@features/SysSettings/BookGenre/models/genres";

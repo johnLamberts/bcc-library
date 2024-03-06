@@ -1,5 +1,6 @@
 import {
   addDoc,
+  arrayUnion,
   collection,
   doc,
   getDocs,
@@ -7,11 +8,13 @@ import {
   serverTimestamp,
   updateDoc,
   where,
+  writeBatch,
+  FieldValue,
+  arrayRemove,
 } from "firebase/firestore";
 import { firestore } from "src/shared/firebase/firebase";
 import { FIRESTORE_COLLECTION_QUERY_KEY } from "src/shared/enums";
 import IAuthor from "../models/book-author.interface";
-
 const getAllAuthor = async (): Promise<IAuthor[]> => {
   const bookTypeDocs = await getDocs(
     collection(firestore, FIRESTORE_COLLECTION_QUERY_KEY.AUTHOR)
@@ -55,13 +58,40 @@ const updateAuthor = async (
   docId?: string | undefined
 ) => {
   try {
-    await updateDoc(
+    const batch = writeBatch(firestore);
+
+    const booksRef = await getDocs(
+      query(
+        collection(firestore, FIRESTORE_COLLECTION_QUERY_KEY.CATALOGUE),
+        where("authors", "array-contains-any", [payload.authorName])
+      )
+    );
+
+    booksRef.docs.map((docs) => {
+      const oldAuthors = docs
+        .data()
+        .authors.filter((item: string) => item !== payload.authorName);
+
+      const newAuthors = [...oldAuthors, payload.bookAuthor];
+
+      console.log(newAuthors);
+      return batch.update(
+        doc(firestore, FIRESTORE_COLLECTION_QUERY_KEY.CATALOGUE, docs.id),
+        {
+          authors: newAuthors,
+        }
+      );
+    });
+
+    batch.update(
       doc(firestore, FIRESTORE_COLLECTION_QUERY_KEY.AUTHOR, docId as string),
       {
-        ...payload,
+        bookAuthor: payload.bookAuthor,
         updatedAt: serverTimestamp(),
       }
     );
+
+    batch.commit();
   } catch (err) {
     throw new Error(`${err}`);
   }

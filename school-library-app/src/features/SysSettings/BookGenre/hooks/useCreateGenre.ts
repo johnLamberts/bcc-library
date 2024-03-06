@@ -8,25 +8,6 @@ const useCreateGenre = () => {
 
   const { mutateAsync: createGenre, isPending } = useMutation({
     mutationFn: addGenre,
-    // onMutate: async (newAcademic: TGenre) => {
-    //   await queryClient.cancelQueries({
-    //     queryKey: [FIRESTORE_COLLECTION_QUERY_KEY.USER_ROLE],
-    //   });
-
-    //   const prevTGenre = queryClient.getQueryData([
-    //     FIRESTORE_COLLECTION_QUERY_KEY.USER_ROLE,
-    //   ]);
-
-    //   queryClient.setQueryData(
-    //     [FIRESTORE_COLLECTION_QUERY_KEY.USER_ROLE],
-    //     (prevLevels: TGenre[]) =>
-    //     prevLevels?.map((level: TGenre) =>
-    //       ([...])
-    //     )
-    //   );
-
-    //   return { prevTGenre };
-    // },
 
     onError: (err) => {
       toast.error(err.message);
