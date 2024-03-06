@@ -2,8 +2,10 @@ import PendingTable from "@features/Transaction/BorrowsTablePage/PendingTable";
 import ReturnTransactionTable from "@features/Transaction/ReturnTransactionTable";
 import { Box, Divider, Flex, SegmentedControl } from "@mantine/core";
 import { useSearchParams } from "react-router-dom";
+import { useHeadTitle } from "src/hooks/use-head-tag";
 
 const ReturnTransaction = () => {
+  useHeadTitle("Return Transaction");
   const [searchParams, setSearchParams] = useSearchParams();
 
   const handleParams = (value: string) => {

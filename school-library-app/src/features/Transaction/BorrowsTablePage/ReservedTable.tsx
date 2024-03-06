@@ -56,10 +56,17 @@ const BookRequestedTable = () => {
         header: "Borrower",
       },
       {
-        accessorKey: "borrowersName",
-        header: "Borrower Name",
+        accessorKey: "firstName",
+        header: "First Name",
       },
-
+      {
+        accessorKey: "middleName",
+        header: "Middle Name",
+      },
+      {
+        accessorKey: "lastName",
+        header: "Last Name",
+      },
       {
         accessorKey: "borrowersEmail",
         header: "Borrower Email",

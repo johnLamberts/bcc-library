@@ -17,7 +17,7 @@ import {
   MantineReactTable,
   useMantineReactTable,
 } from "mantine-react-table";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import classes from "../styles/user.module.css";
 
 import useReadCategorySection from "@features/SysSettings/CategorySection/hooks/useReadCategorySection";
@@ -28,6 +28,8 @@ import ICategorySection from "@features/SysSettings/CategorySection/models/categ
 const CategorySection = () => {
   const { createCategorySection, isPending: isCreating } =
     useCreateCategorySection();
+
+  const [categoryName, setCategoryName] = useState("");
 
   const {
     data: categorySectionData = [],
@@ -66,7 +68,11 @@ const CategorySection = () => {
 
   const handleSaveLevel: MRT_TableOptions<ICategorySection>["onEditingRowSave"] =
     async ({ values, table }) => {
-      await modifyCategorySection(values);
+      const value = {
+        ...values,
+        categoryName,
+      };
+      await modifyCategorySection(value);
 
       table.setEditingRow(null);
     };
@@ -104,7 +110,10 @@ const CategorySection = () => {
           <Tooltip label="Edit">
             <ActionIcon
               variant="light"
-              onClick={() => table.setEditingRow(row)}
+              onClick={() => {
+                table.setEditingRow(row);
+                setCategoryName(row.original.categorySection);
+              }}
             >
               <IconEdit />
             </ActionIcon>

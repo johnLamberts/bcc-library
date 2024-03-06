@@ -68,10 +68,17 @@ const BorrowTransactionTable = () => {
         header: "Borrower",
       },
       {
-        accessorKey: "borrowersName",
-        header: "Borrower Name",
+        accessorKey: "firstName",
+        header: "First Name",
       },
-
+      {
+        accessorKey: "middleName",
+        header: "Middle Name",
+      },
+      {
+        accessorKey: "lastName",
+        header: "Last Name",
+      },
       {
         accessorKey: "borrowersEmail",
         header: "Borrower Email",
@@ -192,10 +199,12 @@ const BorrowTransactionTable = () => {
   // CREATE action
   const handleCreateLevel: MRT_TableOptions<ICirculation>["onCreatingRowSave"] =
     async ({ values, table }) => {
+      delete values.borrowersName;
       if (values.requesting === "Request") {
         await createRequestTransaction(values);
       } else if (values.requesting === "Borrow") {
         await createBorrowTransaction(values);
+        console.log(values);
       } else if (values.requesting === "Reserved") {
         await createWalkinReserved(values);
       }

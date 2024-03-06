@@ -4,13 +4,11 @@ import {
   collection,
   deleteDoc,
   doc,
-  getDoc,
   getDocs,
   or,
   orderBy,
   query,
   serverTimestamp,
-  setDoc,
   updateDoc,
   where,
 } from "firebase/firestore";
@@ -18,68 +16,68 @@ import { ICirculation } from "../models/circulation.interface";
 import { firestore } from "src/shared/firebase/firebase";
 import { FIRESTORE_COLLECTION_QUERY_KEY } from "src/shared/enums";
 import axios from "axios";
-const addBorrowCirculation = async (borrow: ICirculation) => {
-  const borrowRef = await addDoc(
-    collection(firestore, FIRESTORE_COLLECTION_QUERY_KEY.BORROW_TRANSACTION),
-    {
-      ...borrow,
-      borrowStatus: "Active",
-      expiryTime: borrow.timeDuration! + new Date().getTime(),
-      returnStatus: "Due",
-      createdAt: serverTimestamp(),
-    }
-  );
+// const addBorrowCirculation = async (borrow: ICirculation) => {
+//   const borrowRef = await addDoc(
+//     collection(firestore, FIRESTORE_COLLECTION_QUERY_KEY.BORROW_TRANSACTION),
+//     {
+//       ...borrow,
+//       borrowStatus: "Active",
+//       expiryTime: borrow.timeDuration! + new Date().getTime(),
+//       returnStatus: "Due",
+//       createdAt: serverTimestamp(),
+//     }
+//   );
 
-  await addDoc(
-    collection(
-      firestore,
-      FIRESTORE_COLLECTION_QUERY_KEY.AVAILABILITY_TRANSACTION
-    ),
-    {
-      booksBorrowedId: borrowRef.id,
-      expiryTime: borrow.timeDuration + new Date().getTime(),
-      booksId: borrow.booksId,
-      bookTitle: borrow.bookTitle,
-      bookISBN: borrow.bookISBN,
-      borrowers: borrow.borrowers,
-      bookType: borrow.bookType,
-      borrowersId: borrow.borrowersId,
-      borrowersEmail: borrow.borrowersEmail,
-      borrowersName: borrow.borrowersName,
-      borrowersNumber: borrow.borrowersNumber,
-      returnStatus: "Due",
-      borrowStatus: "Active",
-    }
-  );
+//   await addDoc(
+//     collection(
+//       firestore,
+//       FIRESTORE_COLLECTION_QUERY_KEY.AVAILABILITY_TRANSACTION
+//     ),
+//     {
+//       booksBorrowedId: borrowRef.id,
+//       expiryTime: borrow.timeDuration + new Date().getTime(),
+//       booksId: borrow.booksId,
+//       bookTitle: borrow.bookTitle,
+//       bookISBN: borrow.bookISBN,
+//       borrowers: borrow.borrowers,
+//       bookType: borrow.bookType,
+//       borrowersId: borrow.borrowersId,
+//       borrowersEmail: borrow.borrowersEmail,
+//       borrowersName: borrow.borrowersName,
+//       borrowersNumber: borrow.borrowersNumber,
+//       returnStatus: "Due",
+//       borrowStatus: "Active",
+//     }
+//   );
 
-  await addDoc(
-    collection(firestore, FIRESTORE_COLLECTION_QUERY_KEY.ALL_BOOKS_TRANSACTION),
-    {
-      booksBorrowedId: borrowRef.id,
-      expiryTime: borrow.timeDuration! + new Date().getTime(),
-      booksId: borrow.booksId,
-      bookTitle: borrow.bookTitle,
-      bookISBN: borrow.bookISBN,
-      borrowers: borrow.borrowers,
-      borrowersId: borrow.borrowersId,
-      bookType: borrow.bookType,
-      borrowersEmail: borrow.borrowersEmail,
-      borrowersName: borrow.borrowersName,
-      borrowersNumber: borrow.borrowersNumber,
-      returnStatus: "Due",
-      borrowStatus: "Active",
-      createdAt: serverTimestamp(),
-    }
-  );
+//   await addDoc(
+//     collection(firestore, FIRESTORE_COLLECTION_QUERY_KEY.ALL_BOOKS_TRANSACTION),
+//     {
+//       booksBorrowedId: borrowRef.id,
+//       expiryTime: borrow.timeDuration! + new Date().getTime(),
+//       booksId: borrow.booksId,
+//       bookTitle: borrow.bookTitle,
+//       bookISBN: borrow.bookISBN,
+//       borrowers: borrow.borrowers,
+//       borrowersId: borrow.borrowersId,
+//       bookType: borrow.bookType,
+//       borrowersEmail: borrow.borrowersEmail,
+//       borrowersName: borrow.borrowersName,
+//       borrowersNumber: borrow.borrowersNumber,
+//       returnStatus: "Due",
+//       borrowStatus: "Active",
+//       createdAt: serverTimestamp(),
+//     }
+//   );
 
-  await updateDoc(
-    doc(firestore, FIRESTORE_COLLECTION_QUERY_KEY.CATALOGUE, borrow.booksId),
-    {
-      numberOfBooksAvailable_QUANTITY:
-        borrow.numberOfBooksAvailable_QUANTITY - 1,
-    }
-  );
-};
+//   await updateDoc(
+//     doc(firestore, FIRESTORE_COLLECTION_QUERY_KEY.CATALOGUE, borrow.booksId),
+//     {
+//       numberOfBooksAvailable_QUANTITY:
+//         borrow.numberOfBooksAvailable_QUANTITY - 1,
+//     }
+//   );
+// };
 
 const addBorrowTransaction = async (borrow: ICirculation) => {
   const borrowTransactionRef = await addDoc(
@@ -117,7 +115,9 @@ const addBorrowTransaction = async (borrow: ICirculation) => {
       borrowersId: borrow.borrowersId,
       bookType: borrow.bookType,
       borrowersEmail: borrow.borrowersEmail,
-      borrowersName: borrow.borrowersName,
+      firstName: borrow.firstName,
+      middleName: borrow.middleName,
+      lastName: borrow.lastName,
       borrowersNumber: borrow.borrowersNumber,
       booksPrice: borrow.bookPrice,
       status: "Active",
@@ -154,7 +154,9 @@ const addRequestTransaction = async (request: ICirculation) => {
       borrowersId: request.borrowersId,
       bookType: request.bookType,
       borrowersEmail: request.borrowersEmail,
-      borrowersName: request.borrowersName,
+      firstName: request.firstName,
+      middleName: request.middleName,
+      lastName: request.lastName,
       borrowersNumber: request.borrowersNumber,
       booksPrice: request.bookPrice,
       status: "Request",
@@ -258,7 +260,9 @@ const addClaimedReservedBook = async (reserved: ICirculation) => {
       borrowersId: otherValues.borrowersId,
       bookType: otherValues.bookType,
       borrowersEmail: otherValues.borrowersEmail,
-      borrowersName: otherValues.borrowersName,
+      firstName: otherValues.firstName,
+      middleName: otherValues.middleName,
+      lastName: otherValues.lastName,
       borrowersNumber: otherValues.borrowersNumber,
       booksPrice: otherValues.bookPrice,
       status: "Active",
@@ -355,7 +359,9 @@ const addReturnedBook = async (returns: Partial<ICirculation>) => {
     booksId,
     borrowers,
     borrowersEmail,
-    borrowersName,
+    firstName,
+    middleName,
+    lastName,
     borrowersNumber,
     status,
     booksBorrowedId,
@@ -431,7 +437,9 @@ const addReturnedBook = async (returns: Partial<ICirculation>) => {
         booksId,
         borrowers,
         borrowersEmail,
-        borrowersName,
+        firstName,
+        middleName,
+        lastName,
         borrowersNumber,
         booksBorrowedId,
         bookType,
@@ -473,7 +481,9 @@ const addReturnedBook = async (returns: Partial<ICirculation>) => {
 
       borrowersEmail,
       borrowers,
-      borrowersName,
+      firstName,
+      middleName,
+      lastName,
       borrowersNumber,
 
       status,
@@ -506,7 +516,9 @@ const addCompletePaymentTransaction = async (
     bookCondition,
     bookTitle,
     borrowersEmail,
-    borrowersName,
+    firstName,
+    middleName,
+    lastName,
     borrowersId,
   } = payment;
 
@@ -523,7 +535,9 @@ const addCompletePaymentTransaction = async (
       bookCondition,
       bookTitle,
       borrowersEmail,
-      borrowersName,
+      firstName,
+      middleName,
+      lastName,
       borrowersId,
       createdAt: serverTimestamp(),
       paymentStatus: "Paid",
@@ -543,7 +557,9 @@ const addPatrialPaymentTransaction = async (partial: Partial<ICirculation>) => {
     bookCondition,
     bookTitle,
     borrowersEmail,
-    borrowersName,
+    firstName,
+    middleName,
+    lastName,
     borrowersId,
     descriptionOrNotes,
     conditionCategory,
@@ -562,7 +578,9 @@ const addPatrialPaymentTransaction = async (partial: Partial<ICirculation>) => {
       bookCondition,
       bookTitle,
       borrowersEmail,
-      borrowersName,
+      firstName,
+      middleName,
+      lastName,
       borrowersId,
       descriptionOrNotes,
       conditionCategory,
@@ -585,7 +603,9 @@ const addPatrialPaymentTransaction = async (partial: Partial<ICirculation>) => {
       bookCondition,
       bookTitle,
       borrowersEmail,
-      borrowersName,
+      firstName,
+      middleName,
+      lastName,
       borrowersId,
       descriptionOrNotes,
       conditionCategory,
@@ -835,7 +855,7 @@ const getPartialPayment = async () => {
 };
 
 export {
-  addBorrowCirculation,
+  // addBorrowCirculation,
   //* NOTE: New implementation of Borrow Transaction. Simplified.
   addBorrowTransaction,
   addRequestTransaction,

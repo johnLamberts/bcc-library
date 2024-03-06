@@ -1,80 +1,22 @@
-import { useMemo, useState } from "react";
-import UsersBox from "@features/Users/UsersBox";
 import {
   ActionIcon,
   Box,
   Divider,
   Flex,
-  Grid,
   Group,
   Select,
   Text,
   TextInput,
-  Tooltip,
   rem,
 } from "@mantine/core";
-import {
-  IconArrowRight,
-  IconBoxMultiple1,
-  IconSearch,
-  IconTable,
-} from "@tabler/icons-react";
+import { IconArrowRight, IconSearch } from "@tabler/icons-react";
 import { useSearchParams } from "react-router-dom";
 import CatalogueTable from "@features/Catalogue/CatalogueTable";
-
-const userData = [
-  {
-    id: 1,
-    fullName: "John Lambert",
-    role: "Admin",
-    email: "admin@test.admin",
-    image: "/images/bcc-logo.svg",
-  },
-  {
-    id: 2,
-    fullName: "Damien Liliard",
-    role: "Student",
-    email: "admin@test.admin",
-    image: "/images/bcc-logo.svg",
-  },
-  {
-    id: 3,
-    fullName: "Gl Ocamp",
-    role: "Teacher",
-    email: "admin@test.admin",
-    image: "/images/bcc-logo.svg",
-  },
-];
+import { useHeadTitle } from "src/hooks/use-head-tag";
 
 export default function CatalogueManagement() {
+  useHeadTitle("Books and Catalogue Management");
   const [searchParams, setSearchParams] = useSearchParams();
-
-  const [getId, setGetId] = useState("");
-
-  const filterUserData = userData.filter(
-    (user) => user.id === Number(getId)
-  )[0];
-
-  const memoizedCards = useMemo(() => {
-    return (
-      searchParams.get("view") === "by-cards" && (
-        <Box my={"xl"}>
-          {/* gutter={{ base: 12, xs: "md", md: "lg", xl: 5 }} */}
-          <Grid>
-            {userData.map((user, index) => (
-              <UsersBox
-                key={index}
-                // index={index}
-                user={user}
-                filterUserData={filterUserData}
-                setGetId={setGetId}
-              />
-            ))}
-          </Grid>
-        </Box>
-      )
-    );
-  }, [filterUserData, searchParams]);
 
   const handleChange = (params: string | null) => {
     searchParams.set("viewBy", params as string);
@@ -132,8 +74,6 @@ export default function CatalogueManagement() {
 
       {/* List of Users */}
       <Divider my="lg" c={"dimmed"} />
-
-      {memoizedCards}
 
       {searchParams.get("viewBy") === "All" && (
         <>
