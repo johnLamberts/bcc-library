@@ -8,6 +8,7 @@ import {
   serverTimestamp,
   updateDoc,
   where,
+  writeBatch,
 } from "firebase/firestore";
 import { firestore } from "src/shared/firebase/firebase";
 import { FIRESTORE_COLLECTION_QUERY_KEY } from "src/shared/enums";
@@ -61,7 +62,57 @@ const updateGradeSection = async (
   payload: Partial<IGradeSection>,
   docId?: string | undefined
 ) => {
+  console.log(payload);
   try {
+    const batch = writeBatch(firestore);
+
+    const teachersRef = await getDocs(
+      query(
+        collection(firestore, FIRESTORE_COLLECTION_QUERY_KEY.TEACHER),
+        where("gradeSection", "==", payload.section)
+      )
+    );
+
+    const studentsRef = await getDocs(
+      query(
+        collection(firestore, FIRESTORE_COLLECTION_QUERY_KEY.STUDENT),
+        where("gradeSection", "==", payload.section)
+      )
+    );
+
+    studentsRef.docs.forEach((docs) =>
+      batch.update(
+        doc(firestore, FIRESTORE_COLLECTION_QUERY_KEY.STUDENT, docs.id),
+        {
+          gradeSection: payload.gradeSection,
+        }
+      )
+    );
+
+    teachersRef.docs.forEach((docs) =>
+      batch.update(
+        doc(firestore, FIRESTORE_COLLECTION_QUERY_KEY.TEACHER, docs.id),
+        {
+          gradeSection: payload.gradeSection,
+        }
+      )
+    );
+
+    batch.update(
+      doc(
+        firestore,
+        FIRESTORE_COLLECTION_QUERY_KEY.GRADE_SECTION,
+        docId as string
+      ),
+      {
+        gradeLevel: payload.gradeLevel,
+        gradeSection: payload.gradeSection,
+        updatedAt: serverTimestamp(),
+      }
+    );
+
+    batch.commit();
+
     await updateDoc(
       doc(
         firestore,

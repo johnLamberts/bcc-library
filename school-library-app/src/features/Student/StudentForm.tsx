@@ -161,7 +161,7 @@ export default function StudentForm<TData extends MRT_RowData>({
             loading={table.getState().isSaving}
             onClick={() => setEdit(true)}
             color="yellow"
-            alias={`${isCreating ? "Save" : "Update"} Student`}
+            alias={`${isCreating ? "Save" : "Update"} and Exit`}
           />
         </Box>
       </Form>

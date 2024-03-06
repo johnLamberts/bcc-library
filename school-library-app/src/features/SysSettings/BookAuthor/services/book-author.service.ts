@@ -70,7 +70,6 @@ const updateAuthor = async (
 
       const newAuthors = [...oldAuthors, payload.bookAuthor];
 
-      console.log(newAuthors);
       return batch.update(
         doc(firestore, FIRESTORE_COLLECTION_QUERY_KEY.CATALOGUE, docs.id),
         {

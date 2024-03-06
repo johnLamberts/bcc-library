@@ -17,7 +17,7 @@ import {
   MantineReactTable,
   useMantineReactTable,
 } from "mantine-react-table";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import classes from "../styles/user.module.css";
 import useReadEducation from "@features/SysSettings/LevelEducation/useReadEducation";
 import useCreateEducation from "@features/SysSettings/LevelEducation/useCreateEducation";
@@ -38,6 +38,8 @@ const LevelEducation = () => {
 
   const { modifyLevelOfEducation, isPending: isUpdating } =
     useModifyEducation();
+
+  const [education, setEducation] = useState<string | undefined>("");
 
   const customColumns = useMemo<MRT_ColumnDef<ILevelOfEducation>[]>(
     () => [
@@ -83,7 +85,11 @@ const LevelEducation = () => {
 
   const handleSaveLevel: MRT_TableOptions<ILevelOfEducation>["onEditingRowSave"] =
     async ({ values, table }) => {
-      await modifyLevelOfEducation(values);
+      const value = {
+        ...values,
+        education,
+      };
+      await modifyLevelOfEducation(value);
 
       table.setEditingRow(null);
     };
@@ -121,7 +127,10 @@ const LevelEducation = () => {
           <Tooltip label="Edit">
             <ActionIcon
               variant="light"
-              onClick={() => table.setEditingRow(row)}
+              onClick={() => {
+                setEducation(row.original.levelOfEducation);
+                table.setEditingRow(row);
+              }}
             >
               <IconEdit />
             </ActionIcon>
