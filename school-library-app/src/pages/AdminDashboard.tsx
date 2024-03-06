@@ -13,6 +13,8 @@ import {
   Stack,
   Divider,
   CardSection,
+  Loader,
+  LoadingOverlay,
 } from "@mantine/core";
 import {
   IconUser,
@@ -23,13 +25,26 @@ import {
 import classes from "./styles/admin-dashboard.module.css";
 import { Overview } from "@features/AdminDashboard/Overview";
 import RecentOverdue from "@features/AdminDashboard/RecentOverdue";
+import {
+  useReadAllStudents,
+  useReadAllTeachers,
+} from "@features/AdminDashboard/hooks/useReadAllBorrowers";
 
 export default function AdminDashboard() {
   const theme = useMantineTheme();
+
+  const { data: students, isLoading: isStudent } = useReadAllStudents();
+  const { data: teachers, isLoading: isTeacher } = useReadAllTeachers();
+  const { data: transaction, isLoading: isAllTransaction } =
+    useReadAllTeachers();
+
+  const allBorrowers =
+    isStudent || isTeacher ? <Loader size={15} /> : students! + teachers!;
   const mockdata = [
     {
-      title: "1000",
-      description: "Number of Students",
+      id: 1,
+      title: isAllTransaction ? <Loader size={15} /> : transaction,
+      description: "All Transactions",
       icon: IconUserStar,
     },
     {
@@ -44,8 +59,8 @@ export default function AdminDashboard() {
     },
 
     {
-      title: "400",
-      description: "Number of Students",
+      title: allBorrowers,
+      description: "Number of Borrowers",
       icon: IconCookie,
     },
   ];
@@ -82,7 +97,7 @@ export default function AdminDashboard() {
 
   const features = mockdata.map((feature) => (
     <Card
-      key={feature.title}
+      key={feature.id}
       shadow="md"
       radius="md"
       className={classes.card}
@@ -109,6 +124,12 @@ export default function AdminDashboard() {
           color={theme.colors.red[4]}
         />
       </Group>
+
+      <LoadingOverlay
+        visible={isTeacher || isStudent || isAllTransaction}
+        zIndex={1000}
+        overlayProps={{ radius: "sm", blur: 2 }}
+      />
     </Card>
   ));
 
@@ -117,11 +138,7 @@ export default function AdminDashboard() {
       {/*  */}
       {/* <Container miw={"fit-content"}> */}
       <Box maw={"100rem"}>
-        <SimpleGrid
-          cols={{ base: 1, sm: 2, md: 2, lg: 4 }}
-          spacing="sm"
-          mt={50}
-        >
+        <SimpleGrid cols={{ base: 1, sm: 2, md: 2, lg: 4 }} spacing="sm">
           {features}
         </SimpleGrid>
 

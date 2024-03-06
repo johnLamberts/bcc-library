@@ -5,7 +5,7 @@ import { getAllRecentOverdue } from "../service/admin-dashboard.service";
 const useReadRecentOverdue = () => {
   return useQuery({
     queryFn: getAllRecentOverdue,
-    queryKey: [FIRESTORE_COLLECTION_QUERY_KEY.BOOKS_OVERDUE],
+    queryKey: [FIRESTORE_COLLECTION_QUERY_KEY.ADMIN_DASHBOARD],
 
     refetchOnWindowFocus: false,
   });
