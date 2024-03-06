@@ -1,16 +1,12 @@
 import {
   addDoc,
-  arrayUnion,
   collection,
   doc,
   getDocs,
   query,
   serverTimestamp,
-  updateDoc,
   where,
   writeBatch,
-  FieldValue,
-  arrayRemove,
 } from "firebase/firestore";
 import { firestore } from "src/shared/firebase/firebase";
 import { FIRESTORE_COLLECTION_QUERY_KEY } from "src/shared/enums";

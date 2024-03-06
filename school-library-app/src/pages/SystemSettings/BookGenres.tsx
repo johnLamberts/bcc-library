@@ -18,7 +18,7 @@ import {
   MantineReactTable,
   useMantineReactTable,
 } from "mantine-react-table";
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import classes from "../styles/user.module.css";
 
 import IGenre from "@features/SysSettings/BookGenre/models/genres";
@@ -72,7 +72,6 @@ const BookGenre = () => {
     table,
   }) => {
     await modifyGenre(values);
-
     table.setEditingRow(null);
   };
 

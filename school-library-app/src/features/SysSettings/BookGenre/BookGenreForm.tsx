@@ -31,9 +31,7 @@ function BookGenreForm<TData extends MRT_RowData>({
   onCreate,
   onSave,
 }: BookGenreFormProps<TData>) {
-  const [disableBtn, setDisabledBtn] = useState(false);
-
-  const { data: bookTypeData = [] } = useReadBookType();
+  const { data: bookTypeData = [], isLoading } = useReadBookType();
 
   const isEditing = table.getState().editingRow?.id === row.id;
 
@@ -61,8 +59,6 @@ function BookGenreForm<TData extends MRT_RowData>({
       } else if (isCreating) {
         onCreate?.(data);
       }
-
-      setDisabledBtn(true);
     },
     [isEditing, isCreating, onSave, genresName, onCreate]
   );
@@ -133,7 +129,7 @@ function BookGenreForm<TData extends MRT_RowData>({
 
           <Flex justify="flex-end" gap={"xs"} mt={"sm"}>
             <Button
-              disabled={disableBtn}
+              disabled={isLoading}
               loading={table.getState().isSaving}
               type="submit"
             >
