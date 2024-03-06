@@ -17,7 +17,7 @@ import {
   MantineReactTable,
   useMantineReactTable,
 } from "mantine-react-table";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import classes from "../styles/user.module.css";
 import useCreateAuthor from "@features/SysSettings/BookAuthor/hooks/useCreateBookAuthor";
 import useModifyAuthor from "@features/SysSettings/BookAuthor/hooks/useModifyBookAuthor";
@@ -35,6 +35,8 @@ const BookAuthor = () => {
   } = useReadAuthor();
 
   const { modifyAuthor, isPending: isUpdating } = useModifyAuthor();
+
+  const [authorName, setAuthorName] = useState("");
 
   const customColumns = useMemo<MRT_ColumnDef<IAuthor>[]>(
     () => [
@@ -63,7 +65,11 @@ const BookAuthor = () => {
 
   const handleSaveLevel: MRT_TableOptions<IAuthor>["onEditingRowSave"] =
     async ({ values, table }) => {
-      await modifyAuthor(values);
+      const value = {
+        ...values,
+        authorName,
+      };
+      await modifyAuthor(value);
 
       table.setEditingRow(null);
     };
@@ -93,6 +99,9 @@ const BookAuthor = () => {
 
     initialState: {
       pagination: { pageIndex: 0, pageSize: 5 },
+      columnVisibility: {
+        id: false,
+      },
     },
 
     renderRowActions: ({ row }) => (
@@ -101,7 +110,10 @@ const BookAuthor = () => {
           <Tooltip label="Edit">
             <ActionIcon
               variant="light"
-              onClick={() => table.setEditingRow(row)}
+              onClick={() => {
+                setAuthorName(row.original.bookAuthor);
+                table.setEditingRow(row);
+              }}
             >
               <IconEdit />
             </ActionIcon>

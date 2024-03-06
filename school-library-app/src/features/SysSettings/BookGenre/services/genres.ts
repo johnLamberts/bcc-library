@@ -3,10 +3,11 @@ import {
   collection,
   doc,
   getDocs,
+  or,
   query,
   serverTimestamp,
-  updateDoc,
   where,
+  writeBatch,
 } from "firebase/firestore";
 import IGenre from "../models/genres";
 import { firestore } from "src/shared/firebase/firebase";
@@ -55,15 +56,39 @@ const updateGenre = async (
   docId?: string | undefined
 ) => {
   try {
-    await updateDoc(
+    const batch = writeBatch(firestore);
+
+    const bookRef = await getDocs(
+      query(
+        collection(firestore, FIRESTORE_COLLECTION_QUERY_KEY.CATALOGUE),
+        where("genres", "!=", [])
+      )
+    );
+
+    bookRef.docs.map((docs) => {
+      const oldAuthors = docs
+        .data()
+        .genres.filter((item: string) => item !== payload.genresName);
+
+      const newAuthors = [...oldAuthors, payload.genres];
+
+      return batch.update(
+        doc(firestore, FIRESTORE_COLLECTION_QUERY_KEY.CATALOGUE, docs.id),
+        {
+          genres: newAuthors,
+        }
+      );
+    });
+    batch.update(
       doc(firestore, FIRESTORE_COLLECTION_QUERY_KEY.GENRE, docId as string),
       {
-        ...payload,
+        genres: payload.genres,
+        bookType: payload.bookType,
         updatedAt: serverTimestamp(),
       }
     );
 
-    console.log(payload, docId);
+    batch.commit();
   } catch (err) {
     throw new Error(`${err}`);
   }

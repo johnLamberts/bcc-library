@@ -3,8 +3,10 @@ import BookRequestedTable from "@features/Transaction/BorrowsTablePage/Requested
 import BookReservedTable from "@features/Transaction/BorrowsTablePage/ReservedTable";
 import { Box, Divider, Flex, SegmentedControl } from "@mantine/core";
 import { useSearchParams } from "react-router-dom";
+import { useHeadTitle } from "src/hooks/use-head-tag";
 
 const BorrowTransactionPage = () => {
+  useHeadTitle("Borrow Transaction");
   const [searchParams, setSearchParams] = useSearchParams();
 
   const handleParams = (value: string) => {

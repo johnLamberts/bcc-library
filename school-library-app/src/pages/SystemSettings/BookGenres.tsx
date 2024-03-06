@@ -72,7 +72,6 @@ const BookGenre = () => {
     table,
   }) => {
     await modifyGenre(values);
-
     table.setEditingRow(null);
   };
 

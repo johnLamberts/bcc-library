@@ -6,6 +6,7 @@ import {
   Flex,
   ActionIcon,
   Tooltip,
+  LoadingOverlay,
 } from "@mantine/core";
 import { IconEdit, IconPlus } from "@tabler/icons-react";
 import {
@@ -17,7 +18,7 @@ import {
   MantineReactTable,
   useMantineReactTable,
 } from "mantine-react-table";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import classes from "../styles/user.module.css";
 
 import IBookType from "@features/SysSettings/BookType/models/book-type.interface";
@@ -34,6 +35,8 @@ const BookType = () => {
     isError: isLoadingBookTypeError,
     isFetching: isFetchingBookType,
   } = useReadBookType();
+
+  const [types, setBookType] = useState<string>("");
 
   const { modifyBookType, isPending: isUpdating } = useModifyBookType();
 
@@ -64,7 +67,11 @@ const BookType = () => {
 
   const handleSaveLevel: MRT_TableOptions<IBookType>["onEditingRowSave"] =
     async ({ values, table }) => {
-      await modifyBookType(values);
+      const value = {
+        ...values,
+        types,
+      };
+      await modifyBookType(value);
 
       table.setEditingRow(null);
     };
@@ -80,6 +87,17 @@ const BookType = () => {
     getRowId: (row) => String(row.id),
     onCreatingRowSave: handleCreateLevel,
     onEditingRowSave: handleSaveLevel,
+
+    mantineEditRowModalProps: {
+      centered: true,
+      children: (
+        <LoadingOverlay
+          visible={isUpdating}
+          zIndex={1000}
+          overlayProps={{ radius: "sm", blur: 2 }}
+        />
+      ),
+    },
     mantineTableContainerProps: {
       style: {
         height: "100%",
@@ -94,6 +112,9 @@ const BookType = () => {
 
     initialState: {
       pagination: { pageIndex: 0, pageSize: 5 },
+      columnVisibility: {
+        id: false,
+      },
     },
 
     renderRowActions: ({ row }) => (
@@ -102,7 +123,10 @@ const BookType = () => {
           <Tooltip label="Edit">
             <ActionIcon
               variant="light"
-              onClick={() => table.setEditingRow(row)}
+              onClick={() => {
+                table.setEditingRow(row);
+                setBookType(row.original.bookType);
+              }}
             >
               <IconEdit />
             </ActionIcon>

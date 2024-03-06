@@ -12,41 +12,20 @@ const useModifyCategorySection = () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     mutationFn: (userRole: ICategorySection) =>
       updateCategorySection(userRole, userRole.id as string),
-    onMutate: async (newLevels: ICategorySection) => {
-      await queryClient.cancelQueries({
+
+    onError: (err) => {
+      toast.error(`ERROR: ${err.message}`);
+    },
+
+    onSuccess: (_newArr, data) => {
+      toast.success(
+        `Update successful! 
+          Changes to ${data.categorySection} have been applied.`
+      );
+
+      queryClient.invalidateQueries({
         queryKey: [FIRESTORE_COLLECTION_QUERY_KEY.CATEGORY_SECTION],
       });
-
-      const prevLevel = queryClient.getQueryData([
-        FIRESTORE_COLLECTION_QUERY_KEY.CATEGORY_SECTION,
-      ]) as ICategorySection[];
-
-      queryClient.setQueryData(
-        [FIRESTORE_COLLECTION_QUERY_KEY.CATEGORY_SECTION],
-        (prevLevels: ICategorySection[]) =>
-          prevLevels?.map((level: ICategorySection) =>
-            level.id === newLevels.id ? newLevels : level
-          )
-      );
-
-      return { prevLevel };
-    },
-
-    onError: (err, _newLevel, context) => {
-      toast.error(`ERROR: ${err.message}`);
-      return queryClient.setQueryData(
-        [FIRESTORE_COLLECTION_QUERY_KEY.CATEGORY_SECTION],
-        context?.prevLevel
-      );
-    },
-
-    onSuccess: (_newArr, data, context) => {
-      toast.success(
-        `Update successful! ${
-          context.prevLevel.filter((prev) => prev.id === data.id)[0]
-            ?.categorySection
-        } Changes to ${data.categorySection} have been applied.`
-      );
     },
   });
 

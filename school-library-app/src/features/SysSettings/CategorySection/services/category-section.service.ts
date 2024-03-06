@@ -5,8 +5,8 @@ import {
   getDocs,
   query,
   serverTimestamp,
-  updateDoc,
   where,
+  writeBatch,
 } from "firebase/firestore";
 import { firestore } from "src/shared/firebase/firebase";
 import { FIRESTORE_COLLECTION_QUERY_KEY } from "src/shared/enums";
@@ -57,7 +57,25 @@ const updateCategorySection = async (
   docId?: string | undefined
 ) => {
   try {
-    await updateDoc(
+    const batch = writeBatch(firestore);
+
+    const booksRef = await getDocs(
+      query(
+        collection(firestore, FIRESTORE_COLLECTION_QUERY_KEY.CATALOGUE),
+        where("bookSection", "==", payload.categoryName)
+      )
+    );
+
+    booksRef.docs.forEach((docs) =>
+      batch.update(
+        doc(firestore, FIRESTORE_COLLECTION_QUERY_KEY.CATALOGUE, docs.id),
+        {
+          bookSection: payload.categorySection,
+        }
+      )
+    );
+
+    batch.update(
       doc(
         firestore,
         FIRESTORE_COLLECTION_QUERY_KEY.CATEGORY_SECTION,
@@ -68,6 +86,8 @@ const updateCategorySection = async (
         updatedAt: serverTimestamp(),
       }
     );
+
+    batch.commit();
   } catch (err) {
     throw new Error(`${err}`);
   }

@@ -24,7 +24,9 @@ export interface ICirculation {
 
   borrowersId: string;
 
-  borrowersName: string;
+  firstName?: string;
+  middleName?: string;
+  lastName?: string;
 
   borrowersNumber: string;
 

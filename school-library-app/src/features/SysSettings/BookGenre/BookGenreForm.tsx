@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
   Title,
   Select,
@@ -8,6 +8,7 @@ import {
   Box,
   Divider,
   TextInput,
+  LoadingOverlay,
 } from "@mantine/core";
 import { Controller, useForm } from "react-hook-form";
 import { MRT_Row, MRT_RowData, MRT_TableInstance } from "mantine-react-table";
@@ -30,9 +31,7 @@ function BookGenreForm<TData extends MRT_RowData>({
   onCreate,
   onSave,
 }: BookGenreFormProps<TData>) {
-  const [disableBtn, setDisabledBtn] = useState(false);
-
-  const { data: bookTypeData = [] } = useReadBookType();
+  const { data: bookTypeData = [], isLoading } = useReadBookType();
 
   const isEditing = table.getState().editingRow?.id === row.id;
 
@@ -41,6 +40,7 @@ function BookGenreForm<TData extends MRT_RowData>({
   });
 
   const isCreating = table.getState().creatingRow?.id === row.id;
+  const [genresName, setGenresName] = useState("");
 
   const onSubmit = useCallback(
     (data: IGenre) => {
@@ -52,19 +52,32 @@ function BookGenreForm<TData extends MRT_RowData>({
       }
 
       if (isEditing) {
-        onSave?.(data);
+        onSave?.({
+          ...data,
+          genresName,
+        });
       } else if (isCreating) {
         onCreate?.(data);
       }
-
-      setDisabledBtn(true);
     },
-    [onCreate, onSave, isEditing, isCreating]
+    [isEditing, isCreating, onSave, genresName, onCreate]
   );
+
+  useEffect(() => {
+    if (isEditing) {
+      setGenresName(row.original.genres);
+    }
+  }, [isEditing, row.original.genres]);
 
   return (
     <>
       <Box p={"md"}>
+        <LoadingOverlay
+          visible={table.getState().isSaving}
+          zIndex={1000}
+          overlayProps={{ radius: "sm", blur: 2 }}
+        />
+
         <form onSubmit={handleSubmit(onSubmit)}>
           <Title order={5}>
             {`${isEditing ? "Editing" : "Adding"}`} form for Genre
@@ -116,7 +129,7 @@ function BookGenreForm<TData extends MRT_RowData>({
 
           <Flex justify="flex-end" gap={"xs"} mt={"sm"}>
             <Button
-              disabled={disableBtn}
+              disabled={isLoading}
               loading={table.getState().isSaving}
               type="submit"
             >
