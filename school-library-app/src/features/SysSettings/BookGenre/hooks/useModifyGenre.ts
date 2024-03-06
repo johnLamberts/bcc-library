@@ -11,39 +11,14 @@ const useModifyGenre = () => {
   const { mutateAsync: modifyGenre, isPending } = useMutation({
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     mutationFn: (genre: IGenre) => updateGenre(genre, genre.id as string),
-    onMutate: async (newLevels: IGenre) => {
-      await queryClient.cancelQueries({
-        queryKey: [FIRESTORE_COLLECTION_QUERY_KEY.GENRE],
-      });
 
-      const prevLevel = queryClient.getQueryData([
-        FIRESTORE_COLLECTION_QUERY_KEY.GENRE,
-      ]) as IGenre[];
-
-      queryClient.setQueryData(
-        [FIRESTORE_COLLECTION_QUERY_KEY.GENRE],
-        (prevLevels: IGenre[]) =>
-          prevLevels?.map((level: IGenre) =>
-            level.id === newLevels.id ? newLevels : level
-          )
-      );
-
-      return { prevLevel };
-    },
-
-    onError: (err, _newLevel, context) => {
+    onError: (err) => {
       toast.error(`ERROR: ${err.message}`);
-      return queryClient.setQueryData(
-        [FIRESTORE_COLLECTION_QUERY_KEY.GENRE],
-        context?.prevLevel
-      );
     },
 
-    onSuccess: (_newArr, data, context) => {
+    onSuccess: (_newArr, data) => {
       toast.success(
-        `Update successful! ${
-          context.prevLevel.filter((prev) => prev.id === data.id)[0]?.genres
-        } Changes to ${data.genres} have been applied.`
+        `Update successful!  Changes to ${data.genres} have been applied.`
       );
 
       queryClient.invalidateQueries({

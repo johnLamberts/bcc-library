@@ -3,5 +3,5 @@ export default interface IGenre {
   bookType: string;
   genres: string;
 
-  genreName?: string;
+  genresName?: string;
 }
