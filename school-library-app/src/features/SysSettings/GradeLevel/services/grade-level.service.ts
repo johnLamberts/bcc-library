@@ -8,6 +8,7 @@ import {
   serverTimestamp,
   updateDoc,
   where,
+  writeBatch,
 } from "firebase/firestore";
 import { firestore } from "src/shared/firebase/firebase";
 import { FIRESTORE_COLLECTION_QUERY_KEY } from "src/shared/enums";
@@ -62,7 +63,63 @@ const updateGradeLevel = async (
   docId?: string | undefined
 ) => {
   try {
-    await updateDoc(
+    const batch = writeBatch(firestore);
+
+    // Teachers
+    const teachersRef = await getDocs(
+      query(
+        collection(firestore, FIRESTORE_COLLECTION_QUERY_KEY.TEACHER),
+        where("gradeLevel", "==", payload.level)
+      )
+    );
+
+    // Students
+    const studentsRef = await getDocs(
+      query(
+        collection(firestore, FIRESTORE_COLLECTION_QUERY_KEY.STUDENT),
+        where("gradeLevel", "==", payload.level)
+      )
+    );
+
+    //Grade Section
+    const gradeSectionRef = await getDocs(
+      query(
+        collection(firestore, FIRESTORE_COLLECTION_QUERY_KEY.GRADE_SECTION),
+        where("gradeLevel", "==", payload.level)
+      )
+    );
+
+    studentsRef.docs.forEach(
+      async (docs) =>
+        await updateDoc(
+          doc(firestore, FIRESTORE_COLLECTION_QUERY_KEY.STUDENT, docs.id),
+          {
+            gradeLevel: payload.gradeLevel,
+          }
+        )
+    );
+
+    gradeSectionRef.docs.forEach(
+      async (docs) =>
+        await updateDoc(
+          doc(firestore, FIRESTORE_COLLECTION_QUERY_KEY.GRADE_SECTION, docs.id),
+          {
+            gradeLevel: payload.gradeLevel,
+          }
+        )
+    );
+
+    teachersRef.docs.forEach(
+      async (docs) =>
+        await updateDoc(
+          doc(firestore, FIRESTORE_COLLECTION_QUERY_KEY.TEACHER, docs.id),
+          {
+            gradeLevel: payload.gradeLevel,
+          }
+        )
+    );
+
+    batch.update(
       doc(
         firestore,
         FIRESTORE_COLLECTION_QUERY_KEY.GRADE_LEVEL,
@@ -73,6 +130,8 @@ const updateGradeLevel = async (
         updatedAt: serverTimestamp(),
       }
     );
+
+    batch.commit();
   } catch (err) {
     throw new Error(`${err}`);
   }

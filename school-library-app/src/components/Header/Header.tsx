@@ -57,7 +57,6 @@ const Header = () => {
   ));
   const [userMenuOpened, setUserMenuOpened] = useState(false);
 
-  if (isLoading) return <>Loading...</>;
   return (
     <>
       <header className={classes.header}>

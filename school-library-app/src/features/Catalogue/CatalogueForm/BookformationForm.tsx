@@ -2,10 +2,22 @@ import Form from "@components/Form/Form";
 import useReadAuthor from "@features/SysSettings/BookAuthor/hooks/useReadBookType";
 import useReadGenre from "@features/SysSettings/BookGenre/hooks/useReadGenre";
 import useReadBookType from "@features/SysSettings/BookType/hooks/useReadBookType";
-import { MultiSelect, Select, TextInput } from "@mantine/core";
+import {
+  Anchor,
+  Anchor,
+  Drawer,
+  Drawer,
+  MultiSelect,
+  Select,
+  TextInput,
+} from "@mantine/core";
+import { useDisclosure } from "@mantine/hooks";
+import BookAuthor from "@pages/SystemSettings/BookAuthor";
+import BookGenre from "@pages/SystemSettings/BookGenres";
 import { MRT_Row, MRT_RowData, MRT_TableInstance } from "mantine-react-table";
 import { useEffect, useMemo, useState } from "react";
 import { Controller, useFormContext } from "react-hook-form";
+import { useHref, useLocation, useSearchParams } from "react-router-dom";
 
 interface BookInformationProps<TData extends MRT_RowData> {
   table?: MRT_TableInstance<TData>;
@@ -28,6 +40,8 @@ const BookInformationForm = <TData extends MRT_RowData>({
     isEditing ? row?.original.genres : []
   );
 
+  const [opened, { open, close }] = useDisclosure(false);
+
   const { data: bookTypeData = [], isLoading: isBookTypeLoading } =
     useReadBookType();
 
@@ -37,6 +51,8 @@ const BookInformationForm = <TData extends MRT_RowData>({
     useReadAuthor();
 
   const watchBookType = watch("bookType") || "";
+
+  const [searchParams, setSearchParams] = useSearchParams();
 
   const filteredGenre = useMemo(() => {
     return (
@@ -86,6 +102,12 @@ const BookInformationForm = <TData extends MRT_RowData>({
     row?.original.genres,
     isGenresLoading,
   ]);
+
+  const handleChange = (params: string | null) => {
+    searchParams.set("ctx", params as string);
+
+    return setSearchParams(searchParams);
+  };
 
   return (
     <>
@@ -153,6 +175,26 @@ const BookInformationForm = <TData extends MRT_RowData>({
                     {...field}
                     error={<>{errors.sex?.message}</>}
                     disabled={isGenresLoading || filteredGenre.length === 0}
+                    searchable
+                    nothingFoundMessage={
+                      <>
+                        Nothing found...
+                        <br />
+                        Add genres{" "}
+                        <Anchor
+                          variant="gradient"
+                          gradient={{ from: "pink", to: "yellow" }}
+                          fw={500}
+                          underline="hover"
+                          onClick={() => {
+                            open();
+                            handleChange("add_genres");
+                          }}
+                        >
+                          here
+                        </Anchor>
+                      </>
+                    }
                   />
                 );
               }}
@@ -192,8 +234,27 @@ const BookInformationForm = <TData extends MRT_RowData>({
                     withErrorStyles={errors.authors?.message ? true : false}
                     {...field}
                     error={<>{errors.authors?.message}</>}
-                    disabled={isAuthorsLoading || watchBookType === ""}
+                    // disabled={isAuthorsLoading || watchBookType === ""}
                     searchable
+                    nothingFoundMessage={
+                      <>
+                        Nothing found...
+                        <br />
+                        Add author{" "}
+                        <Anchor
+                          variant="gradient"
+                          gradient={{ from: "pink", to: "yellow" }}
+                          fw={500}
+                          underline="hover"
+                          onClick={() => {
+                            open();
+                            handleChange("add_author");
+                          }}
+                        >
+                          here
+                        </Anchor>
+                      </>
+                    }
                   />
                 );
               }}
@@ -201,6 +262,27 @@ const BookInformationForm = <TData extends MRT_RowData>({
           </Form.Col>
         </Form.Grid>
       </Form.Box>
+
+      <Drawer.Root
+        opened={opened}
+        onClose={() => {
+          close();
+          searchParams.delete("ctx", searchParams.get("ctx"));
+        }}
+        size={"xl"}
+      >
+        <Drawer.Overlay />
+        <Drawer.Content>
+          <Drawer.Header>
+            <Drawer.CloseButton />
+          </Drawer.Header>
+          <Drawer.Body>
+            {searchParams.get("ctx") === "add_author" && <BookAuthor />}
+
+            {searchParams.get("ctx") === "add_genres" && <BookGenre />}
+          </Drawer.Body>
+        </Drawer.Content>
+      </Drawer.Root>
     </>
   );
 };
