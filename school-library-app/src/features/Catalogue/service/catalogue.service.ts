@@ -72,6 +72,7 @@ const addCatalogue = async (catalogue: Partial<IBooks>) => {
           bookFile: filePathUrl,
           bookImageCover: imagePathUrl,
           createdAt: serverTimestamp(),
+          bookStatus: "Active",
         }
       );
     } else {
@@ -95,11 +96,11 @@ const updateCatalogue = async (
           firestore,
           FIRESTORE_COLLECTION_QUERY_KEY.AVAILABILITY_TRANSACTION
         ),
-        where("bookid", "==", booksId as string)
+        where("booksId", "==", booksId as string)
       )
     );
 
-    if (availabilityRef.size) {
+    if (availabilityRef.size > 0) {
       throw new Error(
         "This books cannot be modified, there are still active books in borrowed transaction."
       );
@@ -134,6 +135,7 @@ const updateCatalogue = async (
     }
   }
 };
+
 const getAllBooksCatalogue = async () => {
   const booksCatalogueSnapshot = await getDocs(
     collection(firestore, FIRESTORE_COLLECTION_QUERY_KEY.CATALOGUE)
@@ -145,4 +147,23 @@ const getAllBooksCatalogue = async () => {
   })) as IBooks[];
 };
 
-export { addCatalogue, getAllBooksCatalogue, updateCatalogue };
+const updateCatalogueAvailability = async (books: Partial<IBooks>) => {
+  const { id, bookStatus } = books;
+
+  await updateDoc(
+    doc(firestore, FIRESTORE_COLLECTION_QUERY_KEY.CATALOGUE, id as string),
+    {
+      bookStatus: bookStatus === "Active" ? "Inactive" : "Active",
+      modifiedAt: serverTimestamp(),
+    }
+  );
+
+  console.log(id, bookStatus);
+};
+
+export {
+  addCatalogue,
+  getAllBooksCatalogue,
+  updateCatalogue,
+  updateCatalogueAvailability,
+};

@@ -57,44 +57,6 @@ export default function StudentManagement() {
     <>
       <Group justify="space-between">
         <Box>
-          {/* <Tooltip label="View the students by Table">
-            <ActionIcon
-              m={1.2}
-              variant={
-                searchParams.get("view") === "by-table" ||
-                searchParams.get("view") === null
-                  ? "outline"
-                  : "default"
-              }
-              color="red"
-              size="lg"
-              aria-label="Settings"
-              onClick={() => {
-                searchParams.set("view", "by-table");
-                setSearchParams(searchParams);
-              }}
-            >
-              <IconTable style={{ width: rem(20) }} stroke={1.5} />
-            </ActionIcon>
-          </Tooltip>
-          <Tooltip label="View the students by Card">
-            <ActionIcon
-              m={1.2}
-              variant={
-                searchParams.get("view") === "by-cards" ? "outline" : "default"
-              }
-              color="red"
-              size="lg"
-              aria-label="Gallery"
-              onClick={() => {
-                searchParams.set("view", "by-cards");
-                setSearchParams(searchParams);
-              }}
-            >
-              <IconBoxMultiple1 style={{ width: rem(20) }} stroke={1.5} />
-            </ActionIcon>
-          </Tooltip> */}
-
           <Flex align={"center"} gap={"xs"}>
             <Text span c={"dimmed"} size="md">
               View

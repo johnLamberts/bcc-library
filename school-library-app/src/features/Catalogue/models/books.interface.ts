@@ -29,4 +29,6 @@ export interface IBooks {
     nanoseconds: number;
     seconds: number;
   };
+
+  bookStatus?: string;
 }

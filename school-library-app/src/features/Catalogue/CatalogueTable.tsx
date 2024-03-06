@@ -4,13 +4,21 @@ import {
   Button,
   Text,
   Flex,
-  ActionIcon,
-  Tooltip,
   Stack,
   ScrollArea,
   Avatar,
+  Badge,
+  Menu,
+  rem,
 } from "@mantine/core";
-import { IconEdit, IconEyeMinus, IconPlus } from "@tabler/icons-react";
+import {
+  IconArchive,
+  IconDots,
+  IconEdit,
+  IconLockOff,
+  IconLockOpen,
+  IconPlus,
+} from "@tabler/icons-react";
 import {
   MRT_ColumnDef,
   MRT_Row,
@@ -30,10 +38,12 @@ import { modals } from "@mantine/modals";
 import { useCreateCatalogue } from "./hooks/useCreateCatalogue";
 import useReadCatalogue from "./hooks/useReadCatalogue";
 import useModifyCatalogue from "./hooks/useModifyCatalogue";
+import useModifyBookAvailability from "./hooks/useModifyBookAvailability";
 
 const CatalogueTable = () => {
   const { isCreatingCatalogue, createCatalogue } = useCreateCatalogue();
 
+  const { modifyBookAvailability, isPending } = useModifyBookAvailability();
   const {
     data: booksCatalogueData = [],
     isLoading: isLoadingStudent,
@@ -82,8 +92,49 @@ const CatalogueTable = () => {
         header: "Call Number",
       },
       {
-        accessorKey: "bookISBN",
-        header: "Book ISBN",
+        accessorKey: "bookStatus",
+        header: "Status",
+
+        Cell: ({ row }) => {
+          const status = row.getValue("bookStatus");
+
+          switch (status) {
+            case "Active":
+              return (
+                <Badge
+                  color="#0CAF49"
+                  tt={"inherit"}
+                  variant="dot"
+                  fw={"normal"}
+                >
+                  {status}
+                </Badge>
+              );
+            case "Inactive":
+              return (
+                <Badge
+                  color="#e74c3c"
+                  tt={"inherit"}
+                  variant="dot"
+                  fw={"normal"}
+                >
+                  {status}
+                </Badge>
+              );
+
+            case "Out of Stock":
+              return (
+                <Badge
+                  color="#dbe20a"
+                  tt={"inherit"}
+                  variant="dot"
+                  fw={"normal"}
+                >
+                  {status}
+                </Badge>
+              );
+          }
+        },
       },
     ],
     []
@@ -93,31 +144,34 @@ const CatalogueTable = () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const openUpdateStatusConfirmModal = (row: MRT_Row<IBooks>) =>
     modals.openConfirmModal({
-      // title: (
-      //   <Text>
-      //     Are you sure you want to{" "}
-      //     <b>{!row.original.isEnabled ? "enabled" : "disabled"}</b> this
-      //     student?
-      //   </Text>
-      // ),
-      // children: (
-      //   <Text>
-      //     Are you sure you want to delete{" "}
-      //     <b>
-      //       {row.original.studentNumber}: {row.original.email}
-      //     </b>
-      //     ? This action cannot be undone.
-      //   </Text>
-      // ),
-      // labels: {
-      //   confirm: `${!row.original.isEnabled ? "Enabled" : "Disabled"}`,
-      //   cancel: "Cancel",
-      // },
-      // confirmProps: { color: "red" },
-      // onConfirm: () => {
-      //   // modifyUserStatus(row.original);
-      //   modifyStudentStatus(row.original);
-      // },
+      title: (
+        <Text>
+          Are you sure you want to{" "}
+          <b>{row.original.bookStatus === "Active" ? "Disabled" : "Enable"}</b>{" "}
+          this book?
+        </Text>
+      ),
+      children: (
+        <Text>
+          Are you sure you want to disable{" "}
+          <b>
+            {row.original.bookISBN}: {row.original.title}
+          </b>
+          ? This action cannot be undone.
+        </Text>
+      ),
+      labels: {
+        confirm: `${
+          row.original.bookStatus === "Active" ? "Disabled" : "Enabled"
+        }`,
+        cancel: "Cancel",
+      },
+      confirmProps: { color: "red" },
+      onConfirm: () => {
+        // modifyUserStatus(row.original);
+
+        modifyBookAvailability(row.original);
+      },
     });
 
   // CREATE action
@@ -169,6 +223,7 @@ const CatalogueTable = () => {
       isSaving: isCreatingCatalogue || isUpdating,
       showAlertBanner: isLoadingStudentError,
       showProgressBars: isFetchingStudent,
+      showLoadingOverlay: isPending || isCreatingCatalogue || isUpdating,
     },
 
     initialState: {
@@ -180,27 +235,45 @@ const CatalogueTable = () => {
 
     renderRowActions: ({ row }) => (
       <>
-        <Flex gap="md">
-          <Tooltip label="Edit">
-            <ActionIcon
-              variant="light"
+        <Menu shadow="md">
+          <Menu.Target>
+            <IconDots size={24} />
+          </Menu.Target>
+
+          <Menu.Dropdown>
+            <Menu.Item
+              leftSection={
+                <IconEdit style={{ width: rem(18), height: rem(18) }} />
+              }
               onClick={() => table.setEditingRow(row)}
             >
-              <IconEdit />
-            </ActionIcon>
-          </Tooltip>
+              Edit
+            </Menu.Item>
 
-          <Tooltip label="Book Disabled">
-            <ActionIcon
-              variant="light"
+            <Menu.Item
+              leftSection={
+                <IconArchive style={{ width: rem(18), height: rem(18) }} />
+              }
+              onClick={() => table.setEditingRow(row)}
+            >
+              Archive
+            </Menu.Item>
+            <Menu.Item
               onClick={() => {
                 openUpdateStatusConfirmModal(row);
               }}
+              leftSection={
+                row.original.bookStatus === "Disabled" ? (
+                  <IconLockOff style={{ width: rem(18), height: rem(18) }} />
+                ) : (
+                  <IconLockOpen style={{ width: rem(18), height: rem(18) }} />
+                )
+              }
             >
-              <IconEyeMinus />
-            </ActionIcon>
-          </Tooltip>
-        </Flex>
+              {row.original.bookStatus === "Inactive" ? "Disabled" : "Enable"}
+            </Menu.Item>
+          </Menu.Dropdown>
+        </Menu>
       </>
     ),
 
