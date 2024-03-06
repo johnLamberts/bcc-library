@@ -37,6 +37,21 @@ const sendEmailReturnedWithPendingPayment = async (
   return await sgMail.send(msg as any);
 };
 
+const sendEmailCompletedTransaction = async (snapshot: Record<string, any>) => {
+  const msg = {
+    to: snapshot.borrowersEmail,
+    subject: "",
+    from: "librsystem.e@gmail.com",
+    templateId: process.env.VITE_COMPLETED_TRANSACTION,
+    dynamic_template_data: {
+      fullName: snapshot.fullName,
+      bookTitle: snapshot.bookTitle,
+    },
+  };
+
+  return await sgMail.send(msg as any);
+};
+
 const sendOverdueEmailReturned = async (snapshot: Record<string, any>) => {
   const expiryDate = new Date(snapshot.expiryTime).toLocaleString();
   const msg = {
@@ -89,6 +104,7 @@ export const EmailReturnedService = {
   sendEmailReturned,
   sendOverdueEmailReturned,
   sendRequestedEmail,
+  sendEmailCompletedTransaction,
   sendRequestedBook,
   sendEmailReturnedWithPendingPayment,
 };

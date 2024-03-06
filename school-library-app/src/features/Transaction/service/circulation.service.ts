@@ -543,6 +543,17 @@ const addCompletePaymentTransaction = async (
       paymentStatus: "Paid",
     }
   );
+  const fullName = `${firstName} ${middleName} ${lastName}`;
+
+  return axios({
+    method: "POST",
+    url: `${import.meta.env.VITE_SERVER_URL}api/v1/email/completed-transaction`,
+    data: {
+      fullName,
+      bookTitle,
+      borrowersEmail,
+    },
+  });
 };
 
 const addPatrialPaymentTransaction = async (partial: Partial<ICirculation>) => {
@@ -753,6 +764,7 @@ const addPatrialPaymentTransaction = async (partial: Partial<ICirculation>) => {
         fullName,
         bookTitle,
         totalFee,
+        borrowersEmail,
       },
     });
   } else {
@@ -761,13 +773,15 @@ const addPatrialPaymentTransaction = async (partial: Partial<ICirculation>) => {
       url: `${import.meta.env.VITE_SERVER_URL}api/v1/email/return-email`,
       data: {
         fullName,
+        borrowersEmail,
       },
     });
   }
 };
 
 const addUpdatePaymentTransaction = async (payment: Partial<ICirculation>) => {
-  const { id } = payment;
+  const { id, firstName, lastName, borrowersEmail, middleName, bookTitle } =
+    payment;
 
   const transactionRef = await getDocs(
     query(
@@ -794,6 +808,17 @@ const addUpdatePaymentTransaction = async (payment: Partial<ICirculation>) => {
   await deleteDoc(
     doc(firestore, FIRESTORE_COLLECTION_QUERY_KEY.PARTIAL_PAYMENT, id as string)
   );
+
+  const fullName = `${firstName} ${middleName} ${lastName}`;
+  return axios({
+    method: "POST",
+    url: `${import.meta.env.VITE_SERVER_URL}api/v1/email/completed-transaction`,
+    data: {
+      fullName,
+      bookTitle,
+      borrowersEmail,
+    },
+  });
 };
 
 // const returnOverdueCirculation = async (returnBook: Partial<ICirculation>) => {
