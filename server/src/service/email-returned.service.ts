@@ -12,7 +12,25 @@ const sendEmailReturned = async (snapshot: Record<string, any>) => {
     from: "librsystem.e@gmail.com",
     templateId: process.env.VITE_RETURNED_TEMPLATE_ID,
     dynamic_template_data: {
-      fullName: snapshot.borrowersName,
+      fullName: snapshot.fullName,
+    },
+  };
+
+  return await sgMail.send(msg as any);
+};
+
+const sendEmailReturnedWithPendingPayment = async (
+  snapshot: Record<string, any>
+) => {
+  const msg = {
+    to: snapshot.borrowersEmail,
+    subject: "",
+    from: "librsystem.e@gmail.com",
+    templateId: process.env.VITE_RETURNED_WITH_PENDING_PAYMENT,
+    dynamic_template_data: {
+      fullName: snapshot.fullName,
+      bookTitle: snapshot.bookTitle,
+      totalFee: snapshot.totalFee,
     },
   };
 
@@ -26,7 +44,7 @@ const sendOverdueEmailReturned = async (snapshot: Record<string, any>) => {
     from: "librsystem.e@gmail.com",
     templateId: process.env.VITE_RETURNED_OVERDUE_TEMPLATE_ID,
     dynamic_template_data: {
-      fullName: snapshot.borrowersName,
+      fullName: snapshot.fullName,
       bookTitle: snapshot.bookTitle,
       expiryTime: expiryDate,
       totalFee: `₱${snapshot.totalFee}`,
@@ -44,7 +62,7 @@ const sendRequestedEmail = async (snapshot: Record<string, any>) => {
     from: "librsystem.e@gmail.com",
     templateId: process.env.VITE_REQUESTED_BOOK,
     dynamic_template_data: {
-      fullName: snapshot.borrowersName,
+      fullName: snapshot.fullName,
       bookTitle: snapshot.bookTitle,
     },
   };
@@ -59,7 +77,7 @@ const sendRequestedBook = async (snapshot: Record<string, any>) => {
     from: "librsystem.e@gmail.com",
     templateId: process.env.VITE_REQUEST_BOOK,
     dynamic_template_data: {
-      fullName: snapshot.borrowersName,
+      fullName: snapshot.fullName,
       bookTitle: snapshot.bookTitle,
     },
   };
@@ -70,5 +88,7 @@ const sendRequestedBook = async (snapshot: Record<string, any>) => {
 export const EmailReturnedService = {
   sendEmailReturned,
   sendOverdueEmailReturned,
-  sendRequestedEmail, sendRequestedBook
+  sendRequestedEmail,
+  sendRequestedBook,
+  sendEmailReturnedWithPendingPayment,
 };

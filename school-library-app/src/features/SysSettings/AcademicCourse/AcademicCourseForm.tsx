@@ -1,4 +1,4 @@
-import { useCallback } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
   Title,
   Select,
@@ -34,6 +34,7 @@ function AcademicCourseForm<TData extends MRT_RowData>({
   const { data: educationData = [] } = useReadEducation();
 
   const isEditing = table.getState().editingRow?.id === row.id;
+  const [course, setCourse] = useState();
 
   const { control, handleSubmit, register } = useForm<IAcademicCourse>({
     defaultValues: isEditing ? row.original : {},
@@ -65,13 +66,22 @@ function AcademicCourseForm<TData extends MRT_RowData>({
         return;
       }
       if (isEditing) {
-        onSave?.(data);
+        onSave?.({
+          ...data,
+          course,
+        });
       } else if (isCreating) {
         onCreate?.(data);
       }
     },
-    [onCreate, onSave, isEditing, isCreating]
+    [isEditing, isCreating, onSave, course, onCreate]
   );
+
+  useEffect(() => {
+    if (isEditing) {
+      setCourse(row.original.academicCourse);
+    }
+  }, [isEditing, row.original.academicCourse]);
 
   return (
     <>

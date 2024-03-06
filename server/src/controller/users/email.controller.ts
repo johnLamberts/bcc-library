@@ -76,10 +76,32 @@ const createRequestedBook = async (req: Request, res: Response) => {
     }
   }
 };
+const createEmailReturnedWithPendingPayment = async (
+  req: Request,
+  res: Response
+) => {
+  try {
+    const newUsers =
+      await EmailReturnedService.sendEmailReturnedWithPendingPayment({
+        ...req.body,
+      });
 
+    return res.json({
+      data: newUsers,
+      status: "You have send an email already!",
+    });
+  } catch (err) {
+    if (err instanceof Error) {
+      res.status(500).json({
+        error: err.message,
+      });
+    }
+  }
+};
 export const EmailReturnedController = {
   createReturnEmail,
   createReturnOVerdueEmail,
   createRequestedEmail,
   createRequestedBook,
+  createEmailReturnedWithPendingPayment,
 };

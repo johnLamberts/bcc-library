@@ -563,6 +563,12 @@ const addPatrialPaymentTransaction = async (partial: Partial<ICirculation>) => {
     borrowersId,
     descriptionOrNotes,
     conditionCategory,
+
+    bookISBN,
+    booksId,
+    borrowers,
+    borrowersNumber,
+    status,
   } = partial;
 
   const partialRef = await addDoc(
@@ -613,6 +619,151 @@ const addPatrialPaymentTransaction = async (partial: Partial<ICirculation>) => {
       paymentStatus: "With Balance",
     }
   );
+
+  if (status === "Active") {
+    const availabilityRef = await getDocs(
+      query(
+        collection(
+          firestore,
+          FIRESTORE_COLLECTION_QUERY_KEY.AVAILABILITY_TRANSACTION
+        ),
+        where("booksBorrowedId", "==", booksBorrowedId)
+      )
+    );
+
+    availabilityRef.docs.map(
+      async (docId) =>
+        await deleteDoc(
+          doc(
+            firestore,
+            FIRESTORE_COLLECTION_QUERY_KEY.AVAILABILITY_TRANSACTION,
+            docId.id
+          )
+        )
+    );
+  }
+
+  // * DELETE `borrow-transaction`
+  await deleteDoc(
+    doc(
+      firestore,
+      FIRESTORE_COLLECTION_QUERY_KEY.BORROW_TRANSACTION,
+      booksBorrowedId as string
+    )
+  );
+
+  // * UPDATE quantity in` books-catalogue`
+  await updateDoc(
+    doc(firestore, FIRESTORE_COLLECTION_QUERY_KEY.CATALOGUE, booksId as string),
+    {
+      numberOfBooksAvailable_QUANTITY: 1,
+    }
+  );
+
+  // * UPDATE status in `books-transaction`
+  const transactionRef = await getDocs(
+    query(
+      collection(
+        firestore,
+        FIRESTORE_COLLECTION_QUERY_KEY.ALL_BOOKS_TRANSACTION
+      ),
+      where("booksBorrowedId", "==", booksBorrowedId)
+    )
+  );
+
+  transactionRef.docs.map(async (docId) => {
+    return await updateDoc(
+      doc(
+        firestore,
+        FIRESTORE_COLLECTION_QUERY_KEY.ALL_BOOKS_TRANSACTION,
+        docId.id
+      ),
+      {
+        bookCondition,
+        bookISBN,
+        bookTitle,
+        booksId,
+        borrowers,
+        borrowersEmail,
+        firstName,
+        middleName,
+        lastName,
+        borrowersNumber,
+        booksBorrowedId,
+        bookType,
+        status: "Returned",
+        modifiedAt: serverTimestamp(),
+      }
+    );
+  });
+
+  // * ADD book item condition after return transaction
+  await addDoc(
+    collection(
+      firestore,
+      FIRESTORE_COLLECTION_QUERY_KEY.BOOKS_RETURN_CONDITION
+    ),
+    {
+      bookTitle,
+      bookType,
+      bookISBN,
+      bookCondition,
+      booksId,
+      booksBorrowedId,
+      dateReturned: serverTimestamp(),
+    }
+  );
+
+  // * ADD borrower history in `transaction`
+  await addDoc(
+    collection(
+      firestore,
+      FIRESTORE_COLLECTION_QUERY_KEY.BORROWERS_HISTORY_TRANSACTION
+    ),
+    {
+      bookTitle,
+      bookType,
+      bookCondition,
+      booksId,
+      booksBorrowedId,
+
+      borrowersEmail,
+      borrowers,
+      firstName,
+      middleName,
+      lastName,
+      borrowersNumber,
+
+      status,
+      createdAt: serverTimestamp(),
+    }
+  );
+
+  // * ADD borrower history in `transaction`
+
+  const fullName = `${firstName} ${middleName} ${lastName}`;
+
+  if (!bookCondition?.toLowerCase().includes("return")) {
+    return axios({
+      method: "POST",
+      url: `${
+        import.meta.env.VITE_SERVER_URL
+      }api/v1/email/returned-pending-payment`,
+      data: {
+        fullName,
+        bookTitle,
+        totalFee,
+      },
+    });
+  } else {
+    return axios({
+      method: "POST",
+      url: `${import.meta.env.VITE_SERVER_URL}api/v1/email/return-email`,
+      data: {
+        fullName,
+      },
+    });
+  }
 };
 
 const addUpdatePaymentTransaction = async (payment: Partial<ICirculation>) => {

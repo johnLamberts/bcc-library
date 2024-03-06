@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
   Title,
   Select,
@@ -36,6 +36,7 @@ function GradeSectionForm<TData extends MRT_RowData>({
   const { data: gradeLevelData = [] } = useReadGradeLevel();
 
   const isEditing = table.getState().editingRow?.id === row.id;
+  const [section, setSection] = useState<string | undefined>("");
 
   const { control, handleSubmit, register } = useForm<IGradeSection>({
     defaultValues: isEditing ? row.original : {},
@@ -54,16 +55,24 @@ function GradeSectionForm<TData extends MRT_RowData>({
       }
 
       if (isEditing) {
-        onSave?.(data);
+        onSave?.({
+          ...data,
+          section,
+        });
       } else if (isCreating) {
         onCreate?.(data);
       }
 
       setDisabledBtn(true);
     },
-    [onCreate, onSave, isEditing, isCreating]
+    [isEditing, isCreating, onSave, section, onCreate]
   );
 
+  useEffect(() => {
+    if (isEditing) {
+      setSection(row.original.gradeSection);
+    }
+  }, [isEditing, row.original.gradeSection]);
   return (
     <>
       <Box p={"md"}>

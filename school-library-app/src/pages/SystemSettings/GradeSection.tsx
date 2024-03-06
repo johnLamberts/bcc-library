@@ -25,7 +25,7 @@ import useReadGradeSection from "@features/SysSettings/GradeSection/useReadGrade
 import GradeSectionForm from "@features/SysSettings/GradeSection/GradeSectionForm";
 import useCreateGradeSection from "@features/SysSettings/GradeSection/useCreateGradeSection";
 import useModifyGradeSection from "@features/SysSettings/GradeSection/useModifyGradeSection";
-import IGradeSection from "@features/SysSettings/GradeSection/grade-level.interface";
+import IGradeSection from "@features/SysSettings/GradeSection/grade-section.interface";
 
 const GradeLevel = () => {
   const { createGradeSection, isPending: isCreating } = useCreateGradeSection();

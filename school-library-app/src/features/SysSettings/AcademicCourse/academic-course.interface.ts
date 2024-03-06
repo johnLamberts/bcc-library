@@ -4,4 +4,6 @@ export default interface IAcademicCourse {
   academicCourse?: string;
 
   levelOfEducation?: string;
+
+  course?: string;
 }
