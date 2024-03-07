@@ -1,9 +1,7 @@
-import { useMemo, useState } from "react";
 import {
   Box,
   Divider,
   Flex,
-  Grid,
   Group,
   Select,
   Text,
@@ -13,41 +11,37 @@ import {
 import { IconSearch } from "@tabler/icons-react";
 import StudentTable from "@features/Student/StudentTable";
 import { useSearchParams } from "react-router-dom";
-import useReadStudents from "@features/Student/hooks/useReadStudents";
-import { IStudents } from "@features/Student/models/student.interface";
-import StudentBox from "@features/Student/StudentBox";
-
 export default function StudentManagement() {
   const [searchParams, setSearchParams] = useSearchParams();
 
-  const [getId, setGetId] = useState("");
+  // const [getId, setGetId] = useState("");
 
-  const { data: studentData, isLoading } = useReadStudents();
+  // const { data: studentData, isLoading } = useReadStudents();
 
-  const filterStudentData = studentData?.filter(
-    (user: IStudents) => user.id === getId
-  )[0];
+  // const filterStudentData = studentData?.filter(
+  //   (user: IStudents) => user.id === getId
+  // )[0];
 
-  const memoizedCards = useMemo(() => {
-    return (
-      searchParams.get("view") === "by-cards" && (
-        <Box my={"xl"}>
-          {/* gutter={{ base: 12, xs: "md", md: "lg", xl: 5 }} */}
-          <Grid>
-            {isLoading && <>Loading...</>}
-            {studentData?.map((user, index) => (
-              <StudentBox
-                key={index}
-                user={user}
-                filterStudentData={filterStudentData}
-                setGetId={setGetId}
-              />
-            ))}
-          </Grid>
-        </Box>
-      )
-    );
-  }, [studentData, isLoading, searchParams, filterStudentData]);
+  // const memoizedCards = useMemo(() => {
+  //   return (
+  //     searchParams.get("view") === "by-cards" && (
+  //       <Box my={"xl"}>
+  //         {/* gutter={{ base: 12, xs: "md", md: "lg", xl: 5 }} */}
+  //         <Grid>
+  //           {isLoading && <>Loading...</>}
+  //           {studentData?.map((user, index) => (
+  //             <StudentBox
+  //               key={index}
+  //               user={user}
+  //               filterStudentData={filterStudentData}
+  //               setGetId={setGetId}
+  //             />
+  //           ))}
+  //         </Grid>
+  //       </Box>
+  //     )
+  //   );
+  // }, [studentData, isLoading, searchParams, filterStudentData]);
   const handleChange = (params: string | null) => {
     searchParams.set("viewBy", params as string);
 
@@ -92,7 +86,7 @@ export default function StudentManagement() {
       {/* List of Users */}
       <Divider my="lg" c={"dimmed"} />
 
-      {memoizedCards}
+      {/* {memoizedCards} */}
 
       {searchParams.get("view") === "by-table" && (
         <>
