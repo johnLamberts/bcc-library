@@ -3,7 +3,6 @@ import { FIRESTORE_COLLECTION_QUERY_KEY } from "src/shared/enums";
 import { getAllBooks } from "../services/books.service";
 import { useSearchParams } from "react-router-dom";
 import { PAGE_SIZE } from "src/shared/constant";
-import { count } from "firebase/firestore";
 
 const useBooks = () => {
   const queryClient = useQueryClient();
@@ -11,8 +10,7 @@ const useBooks = () => {
 
   const page = !searchParams.get("page") ? 1 : Number(searchParams.get("page"));
 
-  console.log(page);
-  const { data: books } = useQuery({
+  const { data: books, isLoading } = useQuery({
     queryFn: () => getAllBooks(page),
     queryKey: [FIRESTORE_COLLECTION_QUERY_KEY.BOOKS_CATALOGUE, page],
 
@@ -35,6 +33,6 @@ const useBooks = () => {
 
   //   const pageCount = Math.ceil(books!.count / PAGE_SIZE);
 
-  return { booksData: books?.booksData, count: books?.count };
+  return { booksData: books?.booksData, count: books?.count, isLoading };
 };
 export default useBooks;
