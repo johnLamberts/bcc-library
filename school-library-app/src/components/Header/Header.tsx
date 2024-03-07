@@ -30,7 +30,6 @@ import { toast } from "sonner";
 const links = [
   { link: "/home", label: "Home" },
   { link: "library", label: "Library" },
-  { link: "/services", label: "Services" },
   { link: "/announcement", label: "Announcement" },
   { link: "/contact-us", label: "Contact Us" },
 ];
