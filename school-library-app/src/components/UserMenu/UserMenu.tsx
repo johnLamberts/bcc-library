@@ -27,7 +27,7 @@ import { useDisclosure } from "@mantine/hooks";
 
 export default function UserMenu() {
   const [userMenuOpened, setUserMenuOpened] = useState(false);
-  const [opened, { open, close }] = useDisclosure(true);
+  const [opened, { open, close }] = useDisclosure(false);
 
   const { logoutUser } = useLogout();
 

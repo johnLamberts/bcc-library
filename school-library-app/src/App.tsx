@@ -34,6 +34,7 @@ import FeeReport from "@pages/Reports/FeeReport";
 import TeacherReport from "@pages/Reports/TeacherReport";
 import ProtectedRoute from "./routes/ProtectedRoute";
 import { PageNotFound } from "@pages/PageNotFound";
+import ForgetPassword from "@pages/ForgetPassword";
 
 function App() {
   // Will Refactor this after I finish the admin page with fully functionality
@@ -56,6 +57,7 @@ function App() {
       >
         <Routes>
           <Route path="login" element={<Login />} />
+          <Route path="forget-password" element={<ForgetPassword />} />
           <Route path="*" element={<PageNotFound />} />
 
           <Route element={<AppPageLayout />}>
@@ -67,9 +69,9 @@ function App() {
           </Route>
           <Route
             element={
-              // <ProtectedRoute>
-              // </ProtectedRoute>
-              <AdminLayout />
+              <ProtectedRoute>
+                <AdminLayout />
+              </ProtectedRoute>
             }
           >
             <Route index element={<AdminDashboard />} />
