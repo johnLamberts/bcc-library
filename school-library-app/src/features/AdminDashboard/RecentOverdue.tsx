@@ -10,8 +10,10 @@ import {
   Group,
   Divider,
   Text,
+  LoadingOverlay,
 } from "@mantine/core";
 import { IconTimeDurationOff } from "@tabler/icons-react";
+import { format } from "date-fns";
 import useReadRecentOverdue from "./hooks/useReadRecentOverdue";
 
 const RecentOverdue = () => {
@@ -37,20 +39,28 @@ const RecentOverdue = () => {
             </ThemeIcon>
           }
         >
-          {isRecentOverdueLoading && "Wait..."}
           {recentOverdue.map((overdue: any) => (
             <Box key={overdue.booksId}>
               <List.Item>
                 <Stack w={"max "} align="flex-start" justify="flex-start">
                   <Box>
                     <Text size="sm" c={"dimmed"}>
-                      January 24 2024 -{" "}
-                      {new Date(overdue.expiryTime).toLocaleString()}
+                      {format(
+                        new Date(
+                          overdue?.createdAt.seconds * 1000 +
+                            overdue?.createdAt.nanoseconds / 1000
+                        ),
+                        "MMMM dd yyyy"
+                      )}{" "}
+                      - {new Date(overdue.expiryTime).toLocaleString()}
                       <br />
                     </Text>
                     <Group justify="space-between" w={"max-content"}>
                       <Text>{overdue.bookISBN}</Text> -
-                      <Text>{overdue.borrowersName}</Text>
+                      <Text>
+                        {overdue.firstName} {overdue.middleName}{" "}
+                        {overdue.lastName}
+                      </Text>
                     </Group>
                   </Box>
                 </Stack>
@@ -60,6 +70,12 @@ const RecentOverdue = () => {
           ))}
         </List>
       </Card.Section>
+
+      <LoadingOverlay
+        visible={isRecentOverdueLoading}
+        zIndex={1000}
+        overlayProps={{ radius: "sm", blur: 2 }}
+      />
     </Card>
   );
 };

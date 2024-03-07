@@ -1,5 +1,7 @@
+import { ICirculation } from "@features/Transaction/models/circulation.interface";
 import {
   collection,
+  doc,
   getDocs,
   limit,
   orderBy,
@@ -16,13 +18,14 @@ const getAllRecentOverdue = async () => {
         firestore,
         FIRESTORE_COLLECTION_QUERY_KEY.ALL_BOOKS_TRANSACTION
       ),
-      where("status", "==", "Overdue"),
-      orderBy("createdAt", "asc"),
-      limit(5)
+      where("status", "==", "Overdue")
     )
   );
 
-  return transactionRef.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+  return transactionRef.docs.map((doc) => ({
+    id: doc.id,
+    ...doc.data(),
+  })) as ICirculation[];
 };
 
 const getAllTransaction = async () => {

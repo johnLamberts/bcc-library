@@ -54,4 +54,7 @@ export enum FIRESTORE_COLLECTION_QUERY_KEY {
   //PAGES
 
   ADMIN_DASHBOARD = "admin-dashboard",
+
+  //
+  ACTIVITY_LOGS = "activity-logs-timeline",
 }

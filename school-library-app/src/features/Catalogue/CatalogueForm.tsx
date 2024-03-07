@@ -1,10 +1,14 @@
 import Form from "@components/Form/Form";
 import { Box } from "@mantine/core";
-import { useCallback } from "react";
+import { useCallback, useEffect } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { MRT_RowData, MRT_TableInstance, MRT_Row } from "mantine-react-table";
 import { IBooks } from "./models/books.interface";
 import BookLocationAndDetailsForm from "./CatalogueForm/BookLocationAndDetailsForm";
+import Availability from "./CatalogueForm/Availability";
+import BookImageForm from "./CatalogueForm/BookImageForm";
+import BookInformationForm from "./CatalogueForm/BookformationForm";
+import BookPublicationForm from "./CatalogueForm/PublicationInformation";
 
 interface CatalogueFormProps<TData extends MRT_RowData> {
   table: MRT_TableInstance<TData>;
@@ -54,12 +58,12 @@ export default function CatalogueForm<TData extends MRT_RowData>({
       );
 
       if (isCreating) {
-        // onCreate?.({
-        //   ...values,
-        //   milliseconds,
-        // });
+        onCreate?.({
+          ...values,
+          milliseconds,
+        });
 
-        console.log(values);
+        // console.log(values);
       } else if (isEditing) {
         onSave?.({
           ...values,
@@ -75,43 +79,43 @@ export default function CatalogueForm<TData extends MRT_RowData>({
     [onCreate, isCreating, isEditing, onSave]
   );
 
-  // useEffect(() => {
-  //   if (form.formState.errors) {
-  //     const elements = Object.keys(form.formState.errors)
-  //       .map(
-  //         () =>
-  //           document.querySelectorAll<HTMLInputElement>(
-  //             `[data-error="true"]`
-  //           )[0]
-  //       )
-  //       .filter((el) => !!el);
-  //     elements.sort(
-  //       (a, b) => a.getBoundingClientRect().top - b.getBoundingClientRect().top
-  //     );
+  useEffect(() => {
+    if (form.formState.errors) {
+      const elements = Object.keys(form.formState.errors)
+        .map(
+          () =>
+            document.querySelectorAll<HTMLInputElement>(
+              `[data-error="true"]`
+            )[0]
+        )
+        .filter((el) => !!el);
+      elements.sort(
+        (a, b) => a.getBoundingClientRect().top - b.getBoundingClientRect().top
+      );
 
-  //     if (elements.length > 0) {
-  //       const errorElem = elements[0];
+      if (elements.length > 0) {
+        const errorElem = elements[0];
 
-  //       errorElem.scrollIntoView({ behavior: "smooth", block: "center" });
+        errorElem.scrollIntoView({ behavior: "smooth", block: "center" });
 
-  //       // errorElem.focus({ preventScroll: true });
-  //       errorElem.focus();
-  //     }
-  //   }
-  // }, [form.formState.errors]);
+        // errorElem.focus({ preventScroll: true });
+        errorElem.focus();
+      }
+    }
+  }, [form.formState.errors]);
 
   return (
     <FormProvider {...form}>
       <Form onSubmit={form.handleSubmit(onSubmit)}>
-        {/* <BookInformationForm table={table} row={row} /> */}
+        <BookInformationForm table={table} row={row} />
 
         <BookLocationAndDetailsForm />
 
-        {/* <BookPublicationForm /> */}
+        <BookPublicationForm />
 
-        {/* <Availability table={table} row={row} /> */}
+        <Availability table={table} row={row} />
 
-        {/* <BookImageForm table={table} row={row} /> */}
+        <BookImageForm table={table} row={row} />
 
         <Box
           style={{
