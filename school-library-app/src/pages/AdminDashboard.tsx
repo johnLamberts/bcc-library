@@ -48,17 +48,20 @@ export default function AdminDashboard() {
       icon: IconUserStar,
     },
     {
+      id: 2,
       title: "200",
       description: "Number of Students",
       icon: IconUser,
     },
     {
+      id: 3,
       title: "400",
       description: "Number of Students",
       icon: IconCookie,
     },
 
     {
+      id: 4,
       title: allBorrowers,
       description: "Number of Borrowers",
       icon: IconCookie,
@@ -181,8 +184,8 @@ export default function AdminDashboard() {
                     </ThemeIcon>
                   }
                 >
-                  {listOverdue.map((overdue, index) => (
-                    <Box key={index}>
+                  {listOverdue?.map((overdue) => (
+                    <Box key={overdue.id}>
                       <List.Item>
                         <Stack
                           w={"max "}

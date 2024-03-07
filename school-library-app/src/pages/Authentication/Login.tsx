@@ -20,23 +20,7 @@ const Login = () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const onSubmit = async (data: Record<string, any>) => {
     try {
-      // setIsLoading(true);
-      // const { email, password } = data;
-      // const user = await login(email, password);
-
-      // // const resultUser = (await user?.[0]) as IUser[];
-
-      // const userRole = user?.[0].userRole;
-
-      // console.log(userRole);
-
-      // if (userRole === "Student" || userRole === "Teacher") {
-      //   navigate("/home", { replace: true });
-      // }
-
-      const user = loginUser(data);
-
-      console.log(user);
+      loginUser(data);
     } catch (err) {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       toast.error(
@@ -108,11 +92,7 @@ const Login = () => {
         {/* {isError && <Text c={"red"}>Invalid Email and Password</Text>} */}
 
         <Text ta="center" mt="md">
-          <Anchor<"a">
-            href="#"
-            fw={700}
-            onClick={(event) => event.preventDefault()}
-          >
+          <Anchor<"a"> fw={700} onClick={() => navigate("/forget-password")}>
             Forget your password?
           </Anchor>
         </Text>

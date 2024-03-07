@@ -1,6 +1,9 @@
 import { IUser } from "@features/Users/models/user.interface";
 import { FirebaseError } from "firebase/app";
-import { signInWithEmailAndPassword } from "firebase/auth";
+import {
+  sendPasswordResetEmail,
+  signInWithEmailAndPassword,
+} from "firebase/auth";
 import { collection, getDocs, query, where } from "firebase/firestore";
 import { FIRESTORE_COLLECTION_QUERY_KEY } from "src/shared/enums";
 import { auth, firestore } from "src/shared/firebase/firebase";
@@ -83,4 +86,17 @@ const logout = async () => {
   return await auth.signOut();
 };
 
-export { login, getCurrentUser, logout };
+const forgetPassword = async (email: string) => {
+  try {
+    await sendPasswordResetEmail(auth, email);
+  } catch (err) {
+    if (err instanceof FirebaseError) {
+      const errCode = err.code;
+      const errMessage = err.message;
+
+      throw new Error(`${errCode}: ${errMessage}`);
+    }
+  }
+};
+
+export { login, getCurrentUser, logout, forgetPassword };

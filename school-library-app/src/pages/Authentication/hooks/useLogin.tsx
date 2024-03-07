@@ -30,6 +30,8 @@ const useLogin = () => {
 
       if (userRole === "Student" || userRole === "Teacher") {
         navigate("/home");
+      } else if (userRole?.toLowerCase().includes("admin")) {
+        navigate("/dashboard");
       }
 
       toast.success("You have successfully");

@@ -45,6 +45,7 @@ export enum FIRESTORE_COLLECTION_QUERY_KEY {
   BOOK_DETAILS = "book-details",
 
   CURRENT_USER = "current-user",
+  FORGET_PASSWORD = "forget-password",
   CURRENT_USER_PROFILE = "current-user-profile",
 
   PARTIAL_PAYMENT = "partial-payment-transaction",
@@ -54,4 +55,7 @@ export enum FIRESTORE_COLLECTION_QUERY_KEY {
   //PAGES
 
   ADMIN_DASHBOARD = "admin-dashboard",
+
+  //
+  ACTIVITY_LOGS = "activity-logs-timeline",
 }
