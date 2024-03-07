@@ -24,12 +24,15 @@ import cn from "clsx";
 import useLogout from "@pages/Authentication/hooks/useLogout";
 import useCurrentUser from "@pages/Authentication/hooks/useCurrentUser";
 import { useDisclosure } from "@mantine/hooks";
+import { useNavigate } from "react-router-dom";
 
 export default function UserMenu() {
   const [userMenuOpened, setUserMenuOpened] = useState(false);
   const [opened, { open, close }] = useDisclosure(false);
 
   const { logoutUser } = useLogout();
+
+  const navigate = useNavigate();
 
   const { user } = useCurrentUser();
   const stats = [
@@ -89,20 +92,11 @@ export default function UserMenu() {
                 stroke={1.5}
               />
             }
-            onClick={open}
+            onClick={() => navigate("/library")}
           >
-            Account settings
+            Go to Library Page
           </Menu.Item>
-          <Menu.Item
-            leftSection={
-              <IconSwitchHorizontal
-                style={{ width: rem(16), height: rem(16) }}
-                stroke={1.5}
-              />
-            }
-          >
-            Change account
-          </Menu.Item>
+
           <Menu.Item
             leftSection={
               <IconLogout
