@@ -35,6 +35,7 @@ import TeacherReport from "@pages/Reports/TeacherReport";
 import ProtectedRoute from "./routes/ProtectedRoute";
 import { PageNotFound } from "@pages/PageNotFound";
 import ForgetPassword from "@pages/ForgetPassword";
+import Announcement from "@pages/Homepage/Announcement";
 
 function App() {
   // Will Refactor this after I finish the admin page with fully functionality
@@ -63,6 +64,7 @@ function App() {
           <Route element={<AppPageLayout />}>
             <Route index element={<Home />} />
             <Route path="home" element={<Home />} />
+            <Route path="announcement" element={<Announcement />} />
             <Route path="library" element={<LibraryPage />} />
             <Route path="library/:bookId" element={<BookDetail />} />
             <Route path="profile/:manageProfileId" element={<ProfilePage />} />
