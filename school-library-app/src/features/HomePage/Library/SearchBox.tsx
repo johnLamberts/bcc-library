@@ -8,8 +8,15 @@ import {
   rem,
 } from "@mantine/core";
 import { IconSearch, IconArrowRight } from "@tabler/icons-react";
+import { Dispatch } from "react";
 
-const SearchBox = () => {
+interface SearchBoxProps {
+  query: string;
+  setQuery: Dispatch<React.SetStateAction<string>>;
+  handleSearch: () => void;
+}
+
+const SearchBox = ({ query, setQuery, handleSearch }: SearchBoxProps) => {
   return (
     <Box w={"100vw"} bg={"#ffa903"} h={"5rem"}>
       <Flex
@@ -36,6 +43,8 @@ const SearchBox = () => {
           w={"25rem"}
           placeholder="Search books"
           rightSectionWidth={42}
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
           leftSection={
             <IconSearch
               style={{ width: rem(18), height: rem(18) }}
@@ -43,7 +52,12 @@ const SearchBox = () => {
             />
           }
           rightSection={
-            <ActionIcon size={32} radius="xl" color="#5C0505">
+            <ActionIcon
+              size={32}
+              radius="xl"
+              color="#5C0505"
+              onClick={handleSearch}
+            >
               <IconArrowRight
                 style={{ width: rem(18), height: rem(18) }}
                 stroke={1.5}

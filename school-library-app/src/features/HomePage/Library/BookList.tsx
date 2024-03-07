@@ -1,4 +1,3 @@
-import useReadCatalogue from "@features/Catalogue/hooks/useReadCatalogue";
 import {
   ActionIcon,
   Group,
@@ -22,54 +21,18 @@ import { Link } from "react-router-dom";
 import classes from "./book-list.module.css";
 import useBooks from "../hooks/useBooks";
 import BookPagination from "./BookPagination";
-import { count } from "firebase/firestore";
+import { IBooks } from "@features/Catalogue/models/books.interface";
 
-// const bookCard = [
-//   {
-//     image: `https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/images/bg-8.png`,
-//     title: "Norway Fjord Adventures",
-//     extra: "On Sale",
-//     description: `With Fjord Tours you can explore more of the magical fjord landscapes with tours and
-//     activities on and around the fjords of Norway`,
-//   },
+const BookList = ({
+  booksData,
+  count,
+}: {
+  booksData?: IBooks[];
+  count?: number;
+}) => {
+  // const { data: bookData = [], isLoading: isBookLoading } = useReadCatalogue();
 
-//   {
-//     image: `https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/images/bg-8.png`,
-//     title: "Norway Fjord Adventures",
-//     extra: "On Sale",
-//     description: `With Fjord Tours you can explore more of the magical fjord landscapes with tours and
-//     activities on and around the fjords of Norway`,
-//   },
-
-//   {
-//     image: `https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/images/bg-8.png`,
-//     title: "Norway Fjord Adventures",
-//     extra: "On Sale",
-//     description: `With Fjord Tours you can explore more of the magical fjord landscapes with tours and
-//     activities on and around the fjords of Norway`,
-//   },
-
-//   {
-//     image: `https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/images/bg-8.png`,
-//     title: "Norway Fjord Adventures",
-//     extra: "On Sale",
-//     description: `With Fjord Tours you can explore more of the magical fjord landscapes with tours and
-//     activities on and around the fjords of Norway`,
-//   },
-
-//   {
-//     image: `https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/images/bg-8.png`,
-//     title: "Norway Fjord Adventures",
-//     extra: "On Sale",
-//     description: `With Fjord Tours you can explore more of the magical fjord landscapes with tours and
-//     activities on and around the fjords of Norway`,
-//   },
-// ];
-
-const BookList = () => {
-  const { data: bookData = [], isLoading: isBookLoading } = useReadCatalogue();
-
-  const { booksData, count } = useBooks();
+  const { isLoading } = useBooks();
 
   return (
     <Paper p={"xs"}>
@@ -101,7 +64,7 @@ const BookList = () => {
 
       <Divider my={"sm"} />
       <BookPagination count={count} />
-      {isBookLoading ? (
+      {isLoading ? (
         "Loading..."
       ) : (
         <>
@@ -130,10 +93,10 @@ const BookList = () => {
                     </Group>
 
                     <Text size="sm" c="dimmed">
-                      {/* {book.bookDescription} */}
-                      With Fjord Tours you can explore more of the magical fjord
+                      {book.bookDescription}
+                      {/* With Fjord Tours you can explore more of the magical fjord
                       landscapes with tours and activities on and around the
-                      fjords of Norway
+                      fjords of Norway */}
                     </Text>
 
                     <Text size="sm" my={"xs"}>

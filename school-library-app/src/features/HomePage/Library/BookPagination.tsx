@@ -1,4 +1,4 @@
-import { Box, Button, Group, Pagination, Text } from "@mantine/core";
+import { Box, Button, Group, Text } from "@mantine/core";
 import { IconChevronLeft, IconChevronRight } from "@tabler/icons-react";
 import { useSearchParams } from "react-router-dom";
 import { PAGE_SIZE } from "src/shared/constant";
