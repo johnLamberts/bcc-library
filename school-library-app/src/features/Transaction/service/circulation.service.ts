@@ -163,12 +163,15 @@ const addRequestTransaction = async (request: ICirculation) => {
       createdAt: serverTimestamp(),
     }
   );
+  const fullName = `${request.firstName} ${request.middleName} ${request.lastName}`;
 
   return axios({
     method: "POST",
     url: `${import.meta.env.VITE_SERVER_URL}api/v1/email/request-email`,
     data: {
-      ...request,
+      fullName,
+      borrowersEmail: request.borrowersEmail,
+      bookTitle: request.bookTitle,
     },
   });
 };
@@ -225,12 +228,15 @@ const addApproveRequestedBook = async (approve: ICirculation) => {
       createdAt: serverTimestamp(),
     }
   );
+  const fullName = `${approve.firstName} ${approve.middleName} ${approve.lastName}`;
 
   return axios({
     method: "POST",
     url: `${import.meta.env.VITE_SERVER_URL}api/v1/email/requested-email`,
     data: {
-      ...otherValues,
+      fullName,
+      borrowersEmail: approve.borrowersEmail,
+      bookTitle: approve.bookTitle,
     },
   });
 };
@@ -339,12 +345,15 @@ const addWalkinReservedBook = async (reserved: ICirculation) => {
       createdAt: serverTimestamp(),
     }
   );
+  const fullName = `${reserved.firstName} ${reserved.middleName} ${reserved.lastName}`;
 
   return axios({
     method: "POST",
     url: `${import.meta.env.VITE_SERVER_URL}api/v1/email/requested-email`,
     data: {
-      ...reserved,
+      fullName,
+      bookTitle: reserved.bookTitle,
+      borrowersEmail: reserved.borrowersEmail,
     },
   });
 };

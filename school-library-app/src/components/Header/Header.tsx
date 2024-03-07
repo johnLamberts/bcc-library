@@ -36,7 +36,7 @@ const links = [
 ];
 
 const Header = () => {
-  const { user, isLoading } = useCurrentUser();
+  const { user } = useCurrentUser();
 
   const navigate = useNavigate();
 
@@ -45,7 +45,6 @@ const Header = () => {
       key={link.link}
       to={link.link}
       className={classes.link}
-      // onClick={(event) => event.preventDefault()}
       style={{
         fontFamily: "Montserrat",
         color: "white",
@@ -123,19 +122,36 @@ const Header = () => {
 
                   <Menu.Dropdown>
                     <Menu.Label>Application</Menu.Label>
-                    <Menu.Item
-                      leftSection={
-                        <IconSettings
-                          style={{ width: rem(14), height: rem(14) }}
-                        />
-                      }
-                      onClick={() =>
-                        navigate(`profile/${user?.userUID}_${user?.userRole}`)
-                      }
-                    >
-                      Settings
-                    </Menu.Item>
+                    {user.userRole.toLowerCase().includes("student") &&
+                      user.userRole.toLowerCase().includes("teacher") && (
+                        <Menu.Item
+                          leftSection={
+                            <IconSettings
+                              style={{ width: rem(14), height: rem(14) }}
+                            />
+                          }
+                          onClick={() =>
+                            navigate(
+                              `profile/${user?.userUID}_${user?.userRole}`
+                            )
+                          }
+                        >
+                          Settings
+                        </Menu.Item>
+                      )}
 
+                    {user.userRole.toLowerCase().includes("admin") && (
+                      <Menu.Item
+                        leftSection={
+                          <IconSettings
+                            style={{ width: rem(14), height: rem(14) }}
+                          />
+                        }
+                        onClick={() => navigate(`/dashboard`)}
+                      >
+                        Go to dashboard
+                      </Menu.Item>
+                    )}
                     <Menu.Divider />
 
                     <Menu.Label>Danger zone</Menu.Label>
