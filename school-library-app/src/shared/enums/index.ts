@@ -58,4 +58,9 @@ export enum FIRESTORE_COLLECTION_QUERY_KEY {
 
   //
   ACTIVITY_LOGS = "activity-logs-timeline",
+
+  // ARCHIVE
+  ARCHIVE_GENRE = "archive-genres",
+  ARCHIVE_AUTHOR = "archive-authors",
+  ARCHIVE_CATEGORY_SECTION = "archive-category-section",
 }

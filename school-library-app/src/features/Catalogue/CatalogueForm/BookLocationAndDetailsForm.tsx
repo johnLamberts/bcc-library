@@ -1,5 +1,5 @@
 import Form from "@components/Form/Form";
-import useReadCategorySection from "@features/SysSettings/CategorySection/hooks/useReadCategorySection";
+import { useReadCategorySection } from "@features/SysSettings/CategorySection/hooks/useReadCategorySection";
 import {
   Anchor,
   Checkbox,

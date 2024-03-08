@@ -4,4 +4,5 @@ export default interface IGenre {
   genres: string;
 
   genresName?: string;
+  isArchived?: boolean;
 }

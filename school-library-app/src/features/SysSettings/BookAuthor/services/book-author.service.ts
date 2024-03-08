@@ -5,6 +5,7 @@ import {
   getDocs,
   query,
   serverTimestamp,
+  updateDoc,
   where,
   writeBatch,
 } from "firebase/firestore";
@@ -13,13 +14,43 @@ import { FIRESTORE_COLLECTION_QUERY_KEY } from "src/shared/enums";
 import IAuthor from "../models/book-author.interface";
 const getAllAuthor = async (): Promise<IAuthor[]> => {
   const bookTypeDocs = await getDocs(
-    collection(firestore, FIRESTORE_COLLECTION_QUERY_KEY.AUTHOR)
+    query(
+      collection(firestore, FIRESTORE_COLLECTION_QUERY_KEY.AUTHOR),
+      where("isArchived", "==", false)
+    )
   );
 
   return bookTypeDocs.docs.map((doc) => ({
     ...doc.data(),
     id: doc.id,
   })) as IAuthor[];
+};
+
+const getArchivedAuthor = async (): Promise<IAuthor[]> => {
+  const bookTypeDocs = await getDocs(
+    query(
+      collection(firestore, FIRESTORE_COLLECTION_QUERY_KEY.AUTHOR),
+      where("isArchived", "==", true)
+    )
+  );
+
+  return bookTypeDocs.docs.map((doc) => ({
+    ...doc.data(),
+    id: doc.id,
+  })) as IAuthor[];
+};
+
+const createArchiveAuthor = async (author: IAuthor) => {
+  const { id, isArchived } = author;
+
+  const authorsRef = doc(
+    firestore,
+    FIRESTORE_COLLECTION_QUERY_KEY.AUTHOR,
+    id as string
+  );
+  await updateDoc(authorsRef, {
+    isArchived: isArchived ? false : true,
+  });
 };
 
 const addAuthor = async (payload: Partial<IAuthor>) => {
@@ -92,4 +123,10 @@ const updateAuthor = async (
   }
 };
 
-export { getAllAuthor, addAuthor, updateAuthor };
+export {
+  getAllAuthor,
+  addAuthor,
+  updateAuthor,
+  getArchivedAuthor,
+  createArchiveAuthor,
+};

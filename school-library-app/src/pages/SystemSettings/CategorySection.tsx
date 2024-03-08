@@ -1,161 +1,63 @@
-import {
-  Group,
-  Box,
-  Button,
-  Text,
-  Flex,
-  ActionIcon,
-  Tooltip,
-} from "@mantine/core";
-import { IconEdit, IconPlus } from "@tabler/icons-react";
-import {
-  MRT_ColumnDef,
-  MRT_ShowHideColumnsButton,
-  MRT_TableOptions,
-  MRT_ToggleDensePaddingButton,
-  MRT_ToggleGlobalFilterButton,
-  MantineReactTable,
-  useMantineReactTable,
-} from "mantine-react-table";
-import { useMemo, useState } from "react";
+import { Group, Box, Text, Flex, Select } from "@mantine/core";
+
 import classes from "../styles/user.module.css";
 
-import useReadCategorySection from "@features/SysSettings/CategorySection/hooks/useReadCategorySection";
-import useCreateCategorySection from "@features/SysSettings/CategorySection/hooks/useCreateCategorySection";
-import useModifyCategorySection from "@features/SysSettings/CategorySection/hooks/useModifyCategorySection";
-import ICategorySection from "@features/SysSettings/CategorySection/models/category-section.interface";
+import ArchiveGenre from "@features/SysSettings/BookGenre/ArchiveGenre";
+import { useSearchParams, useLocation } from "react-router-dom";
+import CategorySectionTable from "@features/SysSettings/CategorySection/CategorySectionTable";
+import ArchiveCategorySection from "@features/SysSettings/CategorySection/ArchiveCategorySection";
 
 const CategorySection = () => {
-  const { createCategorySection, isPending: isCreating } =
-    useCreateCategorySection();
+  const [searchParams, setSearchParams] = useSearchParams();
 
-  const [categoryName, setCategoryName] = useState("");
+  const { pathname } = useLocation();
 
-  const {
-    data: categorySectionData = [],
-    isLoading: isLoadingCategorySection,
-    isError: isLoadingCategorySectionError,
-    isFetching: isFetchingCategorySection,
-  } = useReadCategorySection();
+  const handleChange = (params: string | null) => {
+    searchParams.set("viewBy", params as string);
 
-  const { modifyCategorySection, isPending: isUpdating } =
-    useModifyCategorySection();
-
-  const customColumns = useMemo<MRT_ColumnDef<ICategorySection>[]>(
-    () => [
-      {
-        accessorKey: "id",
-        header: "Id",
-        enableEditing: false,
-        enableColumnActions: false,
-        size: 80,
-      },
-      {
-        accessorKey: "categorySection",
-        header: "Category Section",
-      },
-    ],
-    []
-  );
-
-  // CREATE action
-  const handleCreateLevel: MRT_TableOptions<ICategorySection>["onCreatingRowSave"] =
-    async ({ values, table }) => {
-      await createCategorySection(values);
-
-      table.setCreatingRow(null);
-    };
-
-  const handleSaveLevel: MRT_TableOptions<ICategorySection>["onEditingRowSave"] =
-    async ({ values, table }) => {
-      const value = {
-        ...values,
-        categoryName,
-      };
-      await modifyCategorySection(value);
-
-      table.setEditingRow(null);
-    };
-
-  const table = useMantineReactTable({
-    data: categorySectionData,
-    columns: customColumns,
-    createDisplayMode: "modal",
-    editDisplayMode: "modal",
-    enableRowActions: true,
-    enableEditing: true,
-    positionActionsColumn: "last",
-    getRowId: (row) => String(row.id),
-    onCreatingRowSave: handleCreateLevel,
-    onEditingRowSave: handleSaveLevel,
-    mantineTableContainerProps: {
-      style: {
-        height: "100%",
-      },
-    },
-    state: {
-      isLoading: isLoadingCategorySection,
-      isSaving: isCreating || isUpdating,
-      showAlertBanner: isLoadingCategorySectionError,
-      showProgressBars: isFetchingCategorySection,
-    },
-
-    initialState: {
-      pagination: { pageIndex: 0, pageSize: 5 },
-    },
-
-    renderRowActions: ({ row }) => (
-      <>
-        <Flex gap="md">
-          <Tooltip label="Edit">
-            <ActionIcon
-              variant="light"
-              onClick={() => {
-                table.setEditingRow(row);
-                setCategoryName(row.original.categorySection);
-              }}
-            >
-              <IconEdit />
-            </ActionIcon>
-          </Tooltip>
-        </Flex>
-      </>
-    ),
-
-    renderToolbarInternalActions: ({ table }) => {
-      return (
-        <Flex gap="xs" align="center">
-          <MRT_ToggleGlobalFilterButton table={table} />{" "}
-          <MRT_ToggleDensePaddingButton table={table} />
-          <MRT_ShowHideColumnsButton table={table} />
-        </Flex>
-      );
-    },
-  });
+    return setSearchParams(searchParams);
+  };
 
   return (
     <>
       <Group justify="space-between">
-        <Box className={classes.highlight}>
-          <Text fz={"xl"} fw={"bold"} c={"red"}>
-            Category Section
-          </Text>
+        <Box>
+          <Flex align={"center"} gap={"xs"}>
+            <Box className={classes.highlight}>
+              <Text fz={"xs"} fw={"bold"} c={"red"}>
+                Category Section View
+              </Text>
+            </Box>
+            {pathname.toLowerCase().includes("category-section") && (
+              <Select
+                allowDeselect={false}
+                size="xs"
+                data={["All", "Archive"]}
+                value={searchParams.get("viewBy") || "All"}
+                onChange={handleChange}
+              />
+            )}
+          </Flex>
         </Box>
-        <Group>
-          <Button
-            variant="light"
-            onClick={() => table.setCreatingRow(true)}
-            leftSection={<IconPlus size={14} />}
-            bg={" var(--mantine-color-red-light)"}
-            color={" var(--mantine-color-red-light-color)"}
-          >
-            Add Category Section
-          </Button>
-        </Group>
       </Group>
+      <Box w={"100%"}>
+        {searchParams.get("viewBy") === null && (
+          <Box mt={"lg"}>
+            <CategorySectionTable />
+          </Box>
+        )}
 
-      <Box mt={"lg"}>
-        <MantineReactTable table={table} />
+        {searchParams.get("viewBy") === "All" && (
+          <Box mt={"lg"}>
+            <CategorySectionTable />
+          </Box>
+        )}
+
+        {searchParams.get("viewBy") === "Archive" && (
+          <Box mt={"lg"}>
+            <ArchiveCategorySection />
+          </Box>
+        )}
       </Box>
     </>
   );

@@ -5,6 +5,7 @@ import {
   getDocs,
   query,
   serverTimestamp,
+  updateDoc,
   where,
   writeBatch,
 } from "firebase/firestore";
@@ -14,13 +15,44 @@ import ICategorySection from "../models/category-section.interface";
 
 const getAllCategorySection = async (): Promise<ICategorySection[]> => {
   const categorySectionDocs = await getDocs(
-    collection(firestore, FIRESTORE_COLLECTION_QUERY_KEY.CATEGORY_SECTION)
+    query(
+      collection(firestore, FIRESTORE_COLLECTION_QUERY_KEY.CATEGORY_SECTION),
+      where("isArchived", "==", false)
+    )
   );
 
   return categorySectionDocs.docs.map((doc) => ({
     ...doc.data(),
     id: doc.id,
   })) as ICategorySection[];
+};
+
+const getArchiveCategorySection = async (): Promise<ICategorySection[]> => {
+  const categorySectionDocs = await getDocs(
+    query(
+      collection(firestore, FIRESTORE_COLLECTION_QUERY_KEY.CATEGORY_SECTION),
+      where("isArchived", "==", true)
+    )
+  );
+
+  return categorySectionDocs.docs.map((doc) => ({
+    ...doc.data(),
+    id: doc.id,
+  })) as ICategorySection[];
+};
+
+const createArchiveCategorySection = async (payload: ICategorySection) => {
+  const { isArchived, id } = payload;
+
+  const genresRef = doc(
+    firestore,
+    FIRESTORE_COLLECTION_QUERY_KEY.CATEGORY_SECTION,
+    id as string
+  );
+
+  await updateDoc(genresRef, {
+    isArchived: isArchived ? false : true,
+  });
 };
 
 const addCategorySection = async (payload: Partial<ICategorySection>) => {
@@ -93,4 +125,10 @@ const updateCategorySection = async (
   }
 };
 
-export { getAllCategorySection, addCategorySection, updateCategorySection };
+export {
+  getAllCategorySection,
+  getArchiveCategorySection,
+  createArchiveCategorySection,
+  addCategorySection,
+  updateCategorySection,
+};

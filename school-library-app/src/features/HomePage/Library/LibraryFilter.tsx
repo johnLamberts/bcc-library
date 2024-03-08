@@ -1,7 +1,7 @@
 import { Accordion, Paper, Title } from "@mantine/core";
 import BookFilter from "./BookFilter";
 import useReadBookType from "@features/SysSettings/BookType/hooks/useReadBookType";
-import useReadGenre from "@features/SysSettings/BookGenre/hooks/useReadGenre";
+import { useReadGenre } from "@features/SysSettings/BookGenre/hooks/useReadGenre";
 
 // const dummyBookTypes = [
 //   {

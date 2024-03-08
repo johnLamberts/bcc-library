@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { FIRESTORE_COLLECTION_QUERY_KEY } from "src/shared/enums";
-import { getAllGenres,  } from "../services/genres";
+import { getAllGenres, getArchiveGenres } from "../services/genres";
 
 const useReadGenre = () => {
   return useQuery({
@@ -10,4 +10,13 @@ const useReadGenre = () => {
     refetchOnWindowFocus: false,
   });
 };
-export default useReadGenre;
+
+const useReadArchiveGenre = () => {
+  return useQuery({
+    queryFn: getArchiveGenres,
+    queryKey: [FIRESTORE_COLLECTION_QUERY_KEY.ARCHIVE_GENRE],
+
+    refetchOnWindowFocus: false,
+  });
+};
+export { useReadGenre, useReadArchiveGenre };
