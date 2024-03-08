@@ -1,6 +1,9 @@
 import { useQuery } from "@tanstack/react-query";
 import { FIRESTORE_COLLECTION_QUERY_KEY } from "src/shared/enums";
-import { getAllCategorySection } from "../services/category-section.service";
+import {
+  getAllCategorySection,
+  getArchiveCategorySection,
+} from "../services/category-section.service";
 
 const useReadCategorySection = () => {
   return useQuery({
@@ -10,4 +13,13 @@ const useReadCategorySection = () => {
     refetchOnWindowFocus: false,
   });
 };
-export default useReadCategorySection;
+
+const useReadArchiveCategorySection = () => {
+  return useQuery({
+    queryFn: getArchiveCategorySection,
+    queryKey: [FIRESTORE_COLLECTION_QUERY_KEY.ARCHIVE_CATEGORY_SECTION],
+
+    refetchOnWindowFocus: false,
+  });
+};
+export { useReadCategorySection, useReadArchiveCategorySection };

@@ -1,45 +1,48 @@
 import {
-  Highlight,
+  Box,
+  Text,
   Flex,
   ActionIcon,
-  rem,
   Tooltip,
-  Text,
-  Box,
+  Stack,
+  rem,
+  Highlight,
 } from "@mantine/core";
-import { modals } from "@mantine/modals";
 import { IconEdit, IconRestore } from "@tabler/icons-react";
 import {
   MRT_ColumnDef,
-  MRT_TableOptions,
-  useMantineReactTable,
-  MRT_ToggleGlobalFilterButton,
-  MRT_ToggleDensePaddingButton,
+  MRT_Row,
   MRT_ShowHideColumnsButton,
+  MRT_TableOptions,
+  MRT_ToggleDensePaddingButton,
+  MRT_ToggleGlobalFilterButton,
   MantineReactTable,
+  useMantineReactTable,
 } from "mantine-react-table";
 import { useMemo } from "react";
 
-import { useRecoverArchiveAuthor } from "./hooks/useArchiveAuthor";
-import useModifyAuthor from "./hooks/useModifyBookAuthor";
-import IAuthor from "./models/book-author.interface";
-import { useReadArchiveAuthor } from "./hooks/useReadAuthor";
+import BookGenreForm from "@features/SysSettings/BookGenre/BookGenreForm";
+import { modals } from "@mantine/modals";
+import ICategorySection from "./models/category-section.interface";
+import { useRecoverArchiveCategorySection } from "./hooks/useArchiveCategorySection";
+import { useReadArchiveCategorySection } from "./hooks/useReadCategorySection";
+import useModifyCategorySection from "./hooks/useModifyCategorySection";
 
-const ArchiveAuthor = () => {
+const ArchiveCategorySection = () => {
   const {
     data: genresData = [],
     isLoading: isLoadingGenre,
     isError: isLoadingGenreError,
     isFetching: isFetchingGenre,
-  } = useReadArchiveAuthor();
+  } = useReadArchiveCategorySection();
 
-  const { modifyAuthor, isPending: isUpdating } = useModifyAuthor();
-  const { modifyGenre: modifyArchiveGenre, isArchiving } =
-    useRecoverArchiveAuthor();
+  const { modifyCategorySection, isPending: isUpdating } =
+    useModifyCategorySection();
 
   // Archive
-
-  const openArhivedModalAction = (row: IAuthor) =>
+  const { modifyGenre: modifyArchiveCategorySection, isArchiving } =
+    useRecoverArchiveCategorySection();
+  const openArhivedModalAction = (row: MRT_Row<ICategorySection>) =>
     modals.openConfirmModal({
       centered: true,
       title: (
@@ -50,36 +53,38 @@ const ArchiveAuthor = () => {
         </Text>
       ),
       labels: {
-        confirm: `Recover`,
+        confirm: `Reciver`,
         cancel: "Cancel",
       },
       confirmProps: { color: "red" },
       onConfirm: async () => {
         // modifyUserStatus(row.original);
-        await modifyArchiveGenre(row);
+        // alert("Archived: " + row.original.genresName);
+        await modifyArchiveCategorySection(row.original);
       },
     });
 
-  const customColumns = useMemo<MRT_ColumnDef<IAuthor>[]>(
+  const customColumns = useMemo<MRT_ColumnDef<ICategorySection>[]>(
     () => [
       {
         accessorKey: "id",
         header: "Id",
         enableEditing: false,
-        enableColumnActions: false,
         size: 80,
       },
       {
-        accessorKey: "bookAuthor",
-        header: "Author",
+        accessorKey: "categorySection",
+        header: "Category Section",
       },
     ],
     []
   );
 
-  const handleSaveLevel: MRT_TableOptions<IAuthor>["onEditingRowSave"] =
+  // CREATE action
+
+  const handleSaveLevel: MRT_TableOptions<ICategorySection>["onEditingRowSave"] =
     async ({ values, table }) => {
-      await modifyAuthor(values);
+      await modifyCategorySection(values);
       table.setEditingRow(null);
     };
 
@@ -114,10 +119,10 @@ const ArchiveAuthor = () => {
     renderRowActions: ({ row }) => (
       <>
         <Flex gap="md">
-          <Tooltip label="Recover">
+          <Tooltip label="Restoer">
             <ActionIcon
               variant="subtle"
-              onClick={() => openArhivedModalAction(row.original)}
+              onClick={() => openArhivedModalAction(row)}
             >
               <IconRestore
                 style={{ width: rem(16), height: rem(16) }}
@@ -125,6 +130,7 @@ const ArchiveAuthor = () => {
               />
             </ActionIcon>
           </Tooltip>
+
           <Tooltip label="Edit">
             <ActionIcon
               variant="subtle"
@@ -150,34 +156,36 @@ const ArchiveAuthor = () => {
       );
     },
 
-    // renderEditRowModalContent: ({ row, table }) => {
-    //   return (
-    //     <>
-    //       <Stack>
-    //         <BookGenreForm
-    //           table={table}
-    //           row={row}
-    //           onSave={(data) =>
-    //             handleSaveLevel({
-    //               values: data,
-    //               table: table,
-    //               row: row,
-    //               exitEditingMode: () => null,
-    //             })
-    //           }
-    //         />
-    //       </Stack>
-    //     </>
-    //   );
-    // },
+    renderEditRowModalContent: ({ row, table }) => {
+      return (
+        <>
+          <Stack>
+            <BookGenreForm
+              table={table}
+              row={row}
+              onSave={(data) =>
+                handleSaveLevel({
+                  values: data,
+                  table: table,
+                  row: row,
+                  exitEditingMode: () => null,
+                })
+              }
+            />
+          </Stack>
+        </>
+      );
+    },
   });
 
   return (
     <>
       <Box maw={"90vw"}>
-        <MantineReactTable table={table} />
+        <Box mt={"lg"}>
+          <MantineReactTable table={table} />
+        </Box>
       </Box>
     </>
   );
 };
-export default ArchiveAuthor;
+export default ArchiveCategorySection;
