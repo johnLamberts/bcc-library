@@ -1,12 +1,14 @@
 import { Group, Box, Text, Flex, Select } from "@mantine/core";
 import classes from "../styles/user.module.css";
 
-import { useSearchParams } from "react-router-dom";
+import { useLocation, useSearchParams } from "react-router-dom";
 import ArchiveGenre from "@features/SysSettings/BookGenre/ArchiveGenre";
 import BookGenreTable from "@features/SysSettings/BookGenre/BookGenreTable";
 
 const BookGenre = () => {
   const [searchParams, setSearchParams] = useSearchParams();
+
+  const { pathname } = useLocation();
 
   const handleChange = (params: string | null) => {
     searchParams.set("viewBy", params as string);
@@ -24,13 +26,15 @@ const BookGenre = () => {
                 Book Genre View
               </Text>
             </Box>
-            <Select
-              allowDeselect={false}
-              size="xs"
-              data={["All", "Archive"]}
-              value={searchParams.get("viewBy") || "All"}
-              onChange={handleChange}
-            />
+            {pathname.toLowerCase().includes("genre") && (
+              <Select
+                allowDeselect={false}
+                size="xs"
+                data={["All", "Archive"]}
+                value={searchParams.get("viewBy") || "All"}
+                onChange={handleChange}
+              />
+            )}
           </Flex>
         </Box>
       </Group>

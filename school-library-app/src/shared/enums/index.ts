@@ -11,7 +11,6 @@ export enum FIRESTORE_COLLECTION_QUERY_KEY {
   BOOK_TYPE = "book-type",
   USER_ROLE = "user-role",
   GENRE = "genres",
-  ARCHIVE_GENRE = "archive-genres",
   USERS = "users",
 
   // reports
@@ -59,4 +58,8 @@ export enum FIRESTORE_COLLECTION_QUERY_KEY {
 
   //
   ACTIVITY_LOGS = "activity-logs-timeline",
+
+  // ARCHIVE
+  ARCHIVE_GENRE = "archive-genres",
+  ARCHIVE_AUTHOR = "archive-authors",
 }
