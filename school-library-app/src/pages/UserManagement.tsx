@@ -10,7 +10,6 @@ import {
   Select,
   Text,
   TextInput,
-  Tooltip,
   rem,
 } from "@mantine/core";
 import { IconArrowRight, IconSearch } from "@tabler/icons-react";
@@ -65,79 +64,10 @@ export default function UserManagement() {
     <>
       <Group justify="space-between">
         <Box>
-          {/* <Flex align={"center"} gap={"0.2rem"}>
-            <Flex align={"center"}>
-              <Text span c={"dimmed"} size="xs">
-                Table
-              </Text>{" "}
-              <Tooltip label="Table">
-                <ActionIcon
-                  m={1.2}
-                  variant={
-                    searchParams.get("view") === "by-table" ||
-                    searchParams.get("view") === null
-                      ? "outline"
-                      : "default"
-                  }
-                  color="red"
-                  size="lg"
-                  aria-label="Settings"
-                  onClick={() => {
-                    searchParams.set("view", "by-table");
-                    setSearchParams(searchParams);
-                  }}
-                >
-                  <IconTable style={{ width: rem(20) }} stroke={1.5} />
-                </ActionIcon>
-              </Tooltip>
-            </Flex>
-            <Flex align={"center"}>
-              <Tooltip label="Card">
-                <ActionIcon
-                  m={1.2}
-                  variant={
-                    searchParams.get("view") === "by-cards"
-                      ? "outline"
-                      : "default"
-                  }
-                  color="red"
-                  size="lg"
-                  aria-label="Gallery"
-                  onClick={() => {
-                    searchParams.set("view", "by-cards");
-                    setSearchParams(searchParams);
-                  }}
-                >
-                  <IconBoxMultiple1 style={{ width: rem(20) }} stroke={1.5} />
-                </ActionIcon>
-              </Tooltip>
-              <Text span c={"dimmed"} size="xs">
-                Cards
-              </Text>
-            </Flex>
-          </Flex> */}
-
           <Flex align={"center"} gap={"xs"}>
             <Text span c={"dimmed"} size="md">
               View
             </Text>
-            {/* <ActionIcon
-                m={1.2}
-                variant={
-                  searchParams.get("view") === "by-cards"
-                    ? "outline"
-                    : "default"
-                }
-                color="red"
-                size="lg"
-                aria-label="Gallery"
-                onClick={() => {
-                  searchParams.set("view", "by-cards");
-                  setSearchParams(searchParams);
-                }}
-              >
-                <IconBoxMultiple1 style={{ width: rem(20) }} stroke={1.5} />
-              </ActionIcon> */}
             <Select
               allowDeselect={false}
               size="xs"

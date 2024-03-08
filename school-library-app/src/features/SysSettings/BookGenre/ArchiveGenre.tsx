@@ -1,41 +1,33 @@
 import {
-  Group,
-  Box,
-  Button,
-  Text,
+  Highlight,
   Flex,
   ActionIcon,
-  Tooltip,
-  Stack,
-  Select,
   rem,
-  Highlight,
+  Stack,
+  Tooltip,
+  Text,
 } from "@mantine/core";
-import { IconEdit, IconPlus, IconTrash } from "@tabler/icons-react";
+import { modals } from "@mantine/modals";
+import { IconEdit, IconTrash } from "@tabler/icons-react";
 import {
-  MRT_ColumnDef,
   MRT_Row,
-  MRT_ShowHideColumnsButton,
+  MRT_ColumnDef,
   MRT_TableOptions,
-  MRT_ToggleDensePaddingButton,
-  MRT_ToggleGlobalFilterButton,
-  MantineReactTable,
   useMantineReactTable,
+  MRT_ToggleGlobalFilterButton,
+  MRT_ToggleDensePaddingButton,
+  MRT_ShowHideColumnsButton,
+  MantineReactTable,
 } from "mantine-react-table";
 import { useMemo } from "react";
-import classes from "../styles/user.module.css";
+import BookGenreForm from "./BookGenreForm";
+import useCreateGenre from "./hooks/useCreateGenre";
+import useModifyGenre from "./hooks/useModifyGenre";
+import { useReadArchiveGenre } from "./hooks/useReadGenre";
+import IGenre from "./models/genres";
+import useArchiveGenre from "./hooks/useArchiveGenre";
 
-import IGenre from "@features/SysSettings/BookGenre/models/genres";
-import useCreateGenre from "@features/SysSettings/BookGenre/hooks/useCreateGenre";
-import useModifyGenre from "@features/SysSettings/BookGenre/hooks/useModifyGenre";
-import BookGenreForm from "@features/SysSettings/BookGenre/BookGenreForm";
-import { useSearchParams } from "react-router-dom";
-import { modals } from "@mantine/modals";
-import ArchiveGenre from "@features/SysSettings/BookGenre/ArchiveGenre";
-import { useReadGenre } from "@features/SysSettings/BookGenre/hooks/useReadGenre";
-import useArchiveGenre from "@features/SysSettings/BookGenre/hooks/useArchiveGenre";
-
-const BookGenre = () => {
+const ArchiveGenre = () => {
   const { createGenre, isPending: isCreating } = useCreateGenre();
 
   const {
@@ -43,13 +35,14 @@ const BookGenre = () => {
     isLoading: isLoadingGenre,
     isError: isLoadingGenreError,
     isFetching: isFetchingGenre,
-  } = useReadGenre();
+  } = useReadArchiveGenre();
 
   const { modifyGenre, isPending: isUpdating } = useModifyGenre();
+  const { modifyGenre: modifyArchiveGenre, isArchiving } = useArchiveGenre();
 
   // Archive
-  const { modifyGenre: modifyArchiveGenre, isArchiving } = useArchiveGenre();
-  const openArhivedModalAction = (row: MRT_Row<IGenre>) =>
+
+  const openArhivedModalAction = (row: IGenre) =>
     modals.openConfirmModal({
       centered: true,
       title: (
@@ -60,19 +53,16 @@ const BookGenre = () => {
         </Text>
       ),
       children: (
-        <Text>
-          Note: You can still recover {row.original.genres} on Archive View
-        </Text>
+        <Text>Note: You can still recover {row.genres} on Archive View</Text>
       ),
       labels: {
         confirm: `Remove`,
         cancel: "Cancel",
       },
       confirmProps: { color: "red" },
-      onConfirm: () => {
+      onConfirm: async () => {
         // modifyUserStatus(row.original);
-        // alert("Archived: " + row.original.genresName);
-        modifyArchiveGenre(row.original);
+        await modifyArchiveGenre(row);
       },
     });
 
@@ -159,7 +149,7 @@ const BookGenre = () => {
           <Tooltip label="Trash">
             <ActionIcon
               variant="subtle"
-              onClick={() => openArhivedModalAction(row)}
+              onClick={() => openArhivedModalAction(row.original)}
             >
               <IconTrash
                 style={{ width: rem(16), height: rem(16) }}
@@ -223,65 +213,11 @@ const BookGenre = () => {
     },
   });
 
-  const [searchParams, setSearchParams] = useSearchParams();
-
-  const handleChange = (params: string | null) => {
-    searchParams.set("viewBy", params as string);
-
-    return setSearchParams(searchParams);
-  };
-
   return (
     <>
-      <Group justify="space-between">
-        <Box>
-          <Flex align={"center"} gap={"xs"}>
-            <Box className={classes.highlight}>
-              <Text fz={"xs"} fw={"bold"} c={"red"}>
-                Book Genre View
-              </Text>
-            </Box>
-            <Select
-              allowDeselect={false}
-              size="xs"
-              data={["All", "Archive"]}
-              defaultValue={"All"}
-              onChange={handleChange}
-            />
-          </Flex>
-        </Box>
-        <Group>
-          <Button
-            variant="light"
-            onClick={() => table.setCreatingRow(true)}
-            leftSection={<IconPlus size={14} />}
-            bg={" var(--mantine-color-red-light)"}
-            color={" var(--mantine-color-red-light-color)"}
-            disabled={searchParams.get("viewBy") === "Archive"}
-          >
-            Add Book Genre
-          </Button>
-        </Group>
-      </Group>
-
-      {searchParams.get("viewBy") === null && (
-        <Box mt={"lg"}>
-          <MantineReactTable table={table} />
-        </Box>
-      )}
-
-      {searchParams.get("viewBy") === "All" && (
-        <Box mt={"lg"}>
-          <MantineReactTable table={table} />
-        </Box>
-      )}
-
-      {searchParams.get("viewBy") === "Archive" && (
-        <Box mt={"lg"}>
-          <ArchiveGenre />
-        </Box>
-      )}
+      Archive
+      <MantineReactTable table={table} />
     </>
   );
 };
-export default BookGenre;
+export default ArchiveGenre;

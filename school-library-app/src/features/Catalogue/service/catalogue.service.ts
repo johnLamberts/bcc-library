@@ -157,8 +157,6 @@ const updateCatalogueAvailability = async (books: Partial<IBooks>) => {
       modifiedAt: serverTimestamp(),
     }
   );
-
-  console.log(id, bookStatus);
 };
 
 export {

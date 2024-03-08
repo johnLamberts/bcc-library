@@ -3,9 +3,9 @@ import {
   collection,
   doc,
   getDocs,
-  or,
   query,
   serverTimestamp,
+  updateDoc,
   where,
   writeBatch,
 } from "firebase/firestore";
@@ -15,13 +15,44 @@ import { FIRESTORE_COLLECTION_QUERY_KEY } from "src/shared/enums";
 
 const getAllGenres = async (): Promise<IGenre[]> => {
   const userRoleDocs = await getDocs(
-    collection(firestore, FIRESTORE_COLLECTION_QUERY_KEY.GENRE)
+    query(
+      collection(firestore, FIRESTORE_COLLECTION_QUERY_KEY.GENRE),
+      where("isArchived", "==", false)
+    )
   );
 
   return userRoleDocs.docs.map((doc) => ({
     ...doc.data(),
     id: doc.id,
   })) as IGenre[];
+};
+
+const getArchiveGenres = async (): Promise<IGenre[]> => {
+  const userRoleDocs = await getDocs(
+    query(
+      collection(firestore, FIRESTORE_COLLECTION_QUERY_KEY.GENRE),
+      where("isArchived", "==", true)
+    )
+  );
+
+  return userRoleDocs.docs.map((doc) => ({
+    ...doc.data(),
+    id: doc.id,
+  })) as IGenre[];
+};
+
+const archiveGenre = async (payload: IGenre) => {
+  const { isArchived, id } = payload;
+
+  const genresRef = doc(
+    firestore,
+    FIRESTORE_COLLECTION_QUERY_KEY.GENRE,
+    id as string
+  );
+
+  await updateDoc(genresRef, {
+    isArchived: isArchived ? false : true,
+  });
 };
 
 const addGenre = async (payload: Partial<IGenre>) => {
@@ -94,4 +125,4 @@ const updateGenre = async (
   }
 };
 
-export { getAllGenres, addGenre, updateGenre };
+export { getAllGenres, addGenre, updateGenre, archiveGenre, getArchiveGenres };
