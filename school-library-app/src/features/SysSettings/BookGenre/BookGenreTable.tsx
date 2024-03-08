@@ -1,33 +1,37 @@
 import {
-  Highlight,
+  Box,
+  Text,
   Flex,
   ActionIcon,
-  rem,
-  Stack,
   Tooltip,
-  Text,
-  Box,
+  Stack,
+  rem,
+  Highlight,
+  Button,
+  Group,
 } from "@mantine/core";
-import { modals } from "@mantine/modals";
-import { IconEdit, IconRestore } from "@tabler/icons-react";
+import { IconEdit, IconPlus, IconTrash } from "@tabler/icons-react";
 import {
   MRT_ColumnDef,
-  MRT_TableOptions,
-  useMantineReactTable,
-  MRT_ToggleGlobalFilterButton,
-  MRT_ToggleDensePaddingButton,
+  MRT_Row,
   MRT_ShowHideColumnsButton,
+  MRT_TableOptions,
+  MRT_ToggleDensePaddingButton,
+  MRT_ToggleGlobalFilterButton,
   MantineReactTable,
+  useMantineReactTable,
 } from "mantine-react-table";
 import { useMemo } from "react";
-import BookGenreForm from "./BookGenreForm";
-import useCreateGenre from "./hooks/useCreateGenre";
-import useModifyGenre from "./hooks/useModifyGenre";
-import { useReadArchiveGenre } from "./hooks/useReadGenre";
-import IGenre from "./models/genres";
-import { useRecoverArchiveGenre } from "./hooks/useArchiveGenre";
 
-const ArchiveGenre = () => {
+import IGenre from "@features/SysSettings/BookGenre/models/genres";
+import useCreateGenre from "@features/SysSettings/BookGenre/hooks/useCreateGenre";
+import useModifyGenre from "@features/SysSettings/BookGenre/hooks/useModifyGenre";
+import BookGenreForm from "@features/SysSettings/BookGenre/BookGenreForm";
+import { modals } from "@mantine/modals";
+import { useReadGenre } from "@features/SysSettings/BookGenre/hooks/useReadGenre";
+import { useArchiveGenre } from "@features/SysSettings/BookGenre/hooks/useArchiveGenre";
+
+const BookGenreTable = () => {
   const { createGenre, isPending: isCreating } = useCreateGenre();
 
   const {
@@ -35,32 +39,36 @@ const ArchiveGenre = () => {
     isLoading: isLoadingGenre,
     isError: isLoadingGenreError,
     isFetching: isFetchingGenre,
-  } = useReadArchiveGenre();
+  } = useReadGenre();
 
   const { modifyGenre, isPending: isUpdating } = useModifyGenre();
-  const { modifyGenre: modifyArchiveGenre, isArchiving } =
-    useRecoverArchiveGenre();
 
   // Archive
-
-  const openArhivedModalAction = (row: IGenre) =>
+  const { modifyGenre: modifyArchiveGenre, isArchiving } = useArchiveGenre();
+  const openArhivedModalAction = (row: MRT_Row<IGenre>) =>
     modals.openConfirmModal({
       centered: true,
       title: (
         <Text>
           <Highlight highlight="remove">
-            Are you sure you want to recover this items?
+            Are you sure you want to remove this items?
           </Highlight>
         </Text>
       ),
+      children: (
+        <Text>
+          Note: You can still recover {row.original.genres} on Archive View
+        </Text>
+      ),
       labels: {
-        confirm: `Recover`,
+        confirm: `Remove`,
         cancel: "Cancel",
       },
       confirmProps: { color: "red" },
-      onConfirm: async () => {
+      onConfirm: () => {
         // modifyUserStatus(row.original);
-        await modifyArchiveGenre(row);
+        // alert("Archived: " + row.original.genresName);
+        modifyArchiveGenre(row.original);
       },
     });
 
@@ -132,23 +140,24 @@ const ArchiveGenre = () => {
     renderRowActions: ({ row }) => (
       <>
         <Flex gap="md">
-          <Tooltip label="Recover">
-            <ActionIcon
-              variant="subtle"
-              onClick={() => openArhivedModalAction(row.original)}
-            >
-              <IconRestore
-                style={{ width: rem(16), height: rem(16) }}
-                stroke={1.5}
-              />
-            </ActionIcon>
-          </Tooltip>
           <Tooltip label="Edit">
             <ActionIcon
               variant="subtle"
               onClick={() => table.setEditingRow(row)}
             >
               <IconEdit
+                style={{ width: rem(16), height: rem(16) }}
+                stroke={1.5}
+              />
+            </ActionIcon>
+          </Tooltip>
+
+          <Tooltip label="Trash">
+            <ActionIcon
+              variant="subtle"
+              onClick={() => openArhivedModalAction(row)}
+            >
+              <IconTrash
                 style={{ width: rem(16), height: rem(16) }}
                 stroke={1.5}
               />
@@ -213,9 +222,39 @@ const ArchiveGenre = () => {
   return (
     <>
       <Box maw={"90vw"}>
-        <MantineReactTable table={table} />
+        <Group
+          justify="end"
+          pos={"absolute"}
+          top={"1rem"}
+          right={"1rem"}
+          visibleFrom="md"
+        >
+          <Button
+            variant="light"
+            onClick={() => table.setCreatingRow(true)}
+            leftSection={<IconPlus size={14} />}
+            bg={" var(--mantine-color-red-light)"}
+            color={" var(--mantine-color-red-light-color)"}
+          >
+            Add Book Genre
+          </Button>
+        </Group>
+        <Group hiddenFrom="sm">
+          <Button
+            variant="light"
+            onClick={() => table.setCreatingRow(true)}
+            leftSection={<IconPlus size={14} />}
+            bg={" var(--mantine-color-red-light)"}
+            color={" var(--mantine-color-red-light-color)"}
+          >
+            Add Book Genre
+          </Button>
+        </Group>
+        <Box mt={"lg"}>
+          <MantineReactTable table={table} />
+        </Box>
       </Box>
     </>
   );
 };
-export default ArchiveGenre;
+export default BookGenreTable;
