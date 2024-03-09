@@ -86,9 +86,9 @@ export default function TeacherForm<TData extends MRT_RowData>({
           <Form.Grid p={"lg"}>
             <Form.Col span={{ base: 12, md: 3, lg: 6 }}>
               <TextInput
-                label="Student Number"
+                label="Teacher Number"
                 withAsterisk
-                placeholder="Place your student number here"
+                placeholder="Place your teacher number here"
                 disabled={isEditing && edit}
                 {...form.register("teacherNumber", {
                   required: "This field is required!",

@@ -247,14 +247,6 @@ const PendingTable = () => {
   return (
     <>
       <Box maw={"75.2vw"}>
-        <Group align="end" justify="space-between">
-          <Box className={classes.highlight}>
-            <Text fz={"xl"} fw={"bold"} c={"red"}>
-              Pending Transaction
-            </Text>
-          </Box>
-        </Group>
-
         <Box mt={"lg"}>
           <MantineReactTable table={table} />
         </Box>

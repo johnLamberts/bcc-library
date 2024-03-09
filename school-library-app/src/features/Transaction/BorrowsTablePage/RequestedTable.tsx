@@ -1,5 +1,4 @@
 import {
-  Group,
   Box,
   Flex,
   ScrollArea,
@@ -19,7 +18,6 @@ import {
 } from "mantine-react-table";
 import { useMemo } from "react";
 
-import classes from "@pages/styles/user.module.css";
 import { ICirculation } from "../models/circulation.interface";
 import useReadRequest from "../hooks/useReadRequest";
 import { modals } from "@mantine/modals";
@@ -197,14 +195,10 @@ const BookRequestedTable = () => {
 
   return (
     <>
-      <Box maw={"75.2vw"}>
-        <Group align="end" justify="space-between">
-          <Box className={classes.highlight}>
-            <Text fz={"xl"} fw={"bold"} c={"red"}>
-              Requested Book
-            </Text>
-          </Box>
-        </Group>
+      <Box maw={"90vw"}>
+        {/* <Group align="end" justify="space-between">
+         
+        </Group> */}
 
         <Box mt={"lg"}>
           <MantineReactTable table={table} />

@@ -23,7 +23,6 @@ import {
 import { useMemo, useState } from "react";
 
 import { ICirculation } from "./models/circulation.interface";
-import classes from "@pages/styles/user.module.css";
 import { format, formatDistance, isAfter, isToday } from "date-fns";
 import { formatDistanceFromNow } from "src/utils/helpers/formatDistanceFromNow";
 import BooksReturnForm from "./BooksReturnForm";
@@ -463,14 +462,6 @@ const ReturnTransactionTable = () => {
   return (
     <>
       <Box maw={"75.2vw"}>
-        <Group align="end" justify="space-between">
-          <Box className={classes.highlight}>
-            <Text fz={"xl"} fw={"bold"} c={"red"}>
-              Return Transaction
-            </Text>
-          </Box>
-        </Group>
-
         <Box mt={"lg"}>
           <MantineReactTable table={table} />
         </Box>
