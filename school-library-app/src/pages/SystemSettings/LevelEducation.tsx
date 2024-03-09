@@ -1,180 +1,61 @@
-import {
-  Group,
-  Box,
-  Button,
-  Text,
-  Flex,
-  ActionIcon,
-  Tooltip,
-} from "@mantine/core";
-import { IconEdit, IconPlus } from "@tabler/icons-react";
-import {
-  MRT_ColumnDef,
-  MRT_ShowHideColumnsButton,
-  MRT_TableOptions,
-  MRT_ToggleDensePaddingButton,
-  MRT_ToggleGlobalFilterButton,
-  MantineReactTable,
-  useMantineReactTable,
-} from "mantine-react-table";
-import { useMemo, useState } from "react";
+import { Group, Box, Text, Flex, Select, Box } from "@mantine/core";
 import classes from "../styles/user.module.css";
-import useReadEducation from "@features/SysSettings/LevelEducation/useReadEducation";
-import useCreateEducation from "@features/SysSettings/LevelEducation/useCreateEducation";
-import useModifyEducation from "@features/SysSettings/LevelEducation/useModifyEducation";
-import { toast } from "sonner";
-import ILevelOfEducation from "@features/SysSettings/LevelEducation/level-of-education.interface";
+import ArchiveCategorySection from "@features/SysSettings/CategorySection/ArchiveCategorySection";
+import CategorySectionTable from "@features/SysSettings/CategorySection/CategorySectionTable";
+import { useSearchParams, useLocation } from "react-router-dom";
+import LevelEducationTable from "@features/SysSettings/LevelEducation/LevelEducationTable";
 
 const LevelEducation = () => {
-  const { createLevelOfEducation, isPending: isCreating } =
-    useCreateEducation();
+  const [searchParams, setSearchParams] = useSearchParams();
 
-  const {
-    data: eduData = [],
-    isLoading: isLoadingEducation,
-    isError: isLoadingLevelsError,
-    isFetching: isFetchingLevels,
-  } = useReadEducation();
+  const { pathname } = useLocation();
 
-  const { modifyLevelOfEducation, isPending: isUpdating } =
-    useModifyEducation();
+  const handleChange = (params: string | null) => {
+    searchParams.set("viewBy", params as string);
 
-  const [education, setEducation] = useState<string | undefined>("");
-
-  const customColumns = useMemo<MRT_ColumnDef<ILevelOfEducation>[]>(
-    () => [
-      {
-        accessorKey: "id",
-        header: "Id",
-        enableEditing: false,
-        size: 80,
-      },
-      {
-        accessorKey: "levelOfEducation",
-        header: "Name",
-      },
-    ],
-    []
-  );
-
-  // CREATE action
-  const handleCreateLevel: MRT_TableOptions<ILevelOfEducation>["onCreatingRowSave"] =
-    async ({ values, exitCreatingMode }) => {
-      const isDuplicate = eduData.some(
-        (level) => level.levelOfEducation === values.levelOfEducation
-      );
-
-      if (isDuplicate) {
-        toast.error(
-          "Oops! It looks like we already have that information.\nPlease double-check your input and try again."
-        );
-        return;
-      }
-
-      if (!values.levelOfEducation) {
-        toast.error(
-          "Uh-oh! It seems like you forgot to fill in some required information. Please make sure all fields are filled out before submitting."
-        );
-        return;
-      }
-
-      await createLevelOfEducation(values);
-
-      exitCreatingMode();
-    };
-
-  const handleSaveLevel: MRT_TableOptions<ILevelOfEducation>["onEditingRowSave"] =
-    async ({ values, table }) => {
-      const value = {
-        ...values,
-        education,
-      };
-      await modifyLevelOfEducation(value);
-
-      table.setEditingRow(null);
-    };
-
-  const table = useMantineReactTable({
-    data: eduData,
-    columns: customColumns,
-    createDisplayMode: "modal",
-    editDisplayMode: "modal",
-    enableRowActions: true,
-    enableEditing: true,
-    positionActionsColumn: "last",
-    getRowId: (row) => String(row.id),
-    onCreatingRowSave: handleCreateLevel,
-    onEditingRowSave: handleSaveLevel,
-    mantineTableContainerProps: {
-      style: {
-        height: "100%",
-      },
-    },
-    state: {
-      isLoading: isLoadingEducation,
-      isSaving: isCreating || isUpdating,
-      showAlertBanner: isLoadingLevelsError,
-      showProgressBars: isFetchingLevels,
-    },
-
-    initialState: {
-      pagination: { pageIndex: 0, pageSize: 5 },
-    },
-
-    renderRowActions: ({ row }) => (
-      <>
-        <Flex gap="md">
-          <Tooltip label="Edit">
-            <ActionIcon
-              variant="light"
-              onClick={() => {
-                setEducation(row.original.levelOfEducation);
-                table.setEditingRow(row);
-              }}
-            >
-              <IconEdit />
-            </ActionIcon>
-          </Tooltip>
-        </Flex>
-      </>
-    ),
-
-    renderToolbarInternalActions: ({ table }) => {
-      return (
-        <Flex gap="xs" align="center">
-          {/* add custom button to print table  */}
-          {/* along-side built-in buttons in whatever order you want them */}
-          <MRT_ToggleGlobalFilterButton table={table} />{" "}
-          <MRT_ToggleDensePaddingButton table={table} />
-          <MRT_ShowHideColumnsButton table={table} />
-        </Flex>
-      );
-    },
-  });
+    return setSearchParams(searchParams);
+  };
 
   return (
     <>
       <Group justify="space-between">
-        <Box className={classes.highlight}>
-          <Text fz={"xl"} fw={"bold"} c={"red"}>
-            Level of Education
-          </Text>
+        <Box>
+          <Flex align={"center"} gap={"xs"}>
+            <Box className={classes.highlight}>
+              <Text fz={"xs"} fw={"bold"} c={"red"}>
+                Level of Education View
+              </Text>
+            </Box>
+            {pathname.toLowerCase().includes("education") && (
+              <Select
+                allowDeselect={false}
+                size="xs"
+                data={["All", "Archive"]}
+                value={searchParams.get("viewBy") || "All"}
+                onChange={handleChange}
+              />
+            )}
+          </Flex>
         </Box>
-        <Group>
-          <Button
-            variant="light"
-            onClick={() => table.setCreatingRow(true)}
-            leftSection={<IconPlus size={14} />}
-            bg={" var(--mantine-color-red-light)"}
-            color={" var(--mantine-color-red-light-color)"}
-          >
-            Add Level of Education
-          </Button>
-        </Group>
       </Group>
+      <Box w={"100%"}>
+        {searchParams.get("viewBy") === null && (
+          <Box mt={"lg"}>
+            <LevelEducationTable />
+          </Box>
+        )}
 
-      <Box mt={"lg"}>
-        <MantineReactTable table={table} />
+        {searchParams.get("viewBy") === "All" && (
+          <Box mt={"lg"}>
+            <LevelEducationTable />
+          </Box>
+        )}
+
+        {searchParams.get("viewBy") === "Archive" && (
+          <Box mt={"lg"}>
+            <ArchiveCategorySection />
+          </Box>
+        )}
       </Box>
     </>
   );

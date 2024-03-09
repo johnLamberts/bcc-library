@@ -130,11 +130,7 @@ const mainFeatures = [
         label: "Level of Education",
         icon: IconUsersGroup,
       },
-      {
-        link: "/level-education-copy",
-        label: "Level of Education -copy",
-        icon: IconUsersGroup,
-      },
+
       {
         link: "/grade-level",
         label: "Grade Level",

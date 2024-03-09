@@ -2,7 +2,6 @@ import { Group, Box, Text, Flex, Select } from "@mantine/core";
 
 import classes from "../styles/user.module.css";
 
-import ArchiveGenre from "@features/SysSettings/BookGenre/ArchiveGenre";
 import { useSearchParams, useLocation } from "react-router-dom";
 import CategorySectionTable from "@features/SysSettings/CategorySection/CategorySectionTable";
 import ArchiveCategorySection from "@features/SysSettings/CategorySection/ArchiveCategorySection";

@@ -1,6 +1,5 @@
 import {
   LoadingOverlay,
-  Flex,
   ActionIcon,
   Group,
   Box,
@@ -9,6 +8,9 @@ import {
   Highlight,
   Text,
   rem,
+  Stack,
+  Title,
+  Flex,
 } from "@mantine/core";
 import { IconEdit, IconPlus, IconTrash } from "@tabler/icons-react";
 import {
@@ -19,6 +21,7 @@ import {
   MRT_ToggleDensePaddingButton,
   MRT_ShowHideColumnsButton,
   MantineReactTable,
+  MRT_EditActionButtons,
 } from "mantine-react-table";
 import { useState, useMemo } from "react";
 import useCreateBookType from "./hooks/useCreateBookType";
@@ -121,13 +124,6 @@ const BookTypeTable = () => {
 
     mantineEditRowModalProps: {
       centered: true,
-      children: (
-        <LoadingOverlay
-          visible={isUpdating}
-          zIndex={1000}
-          overlayProps={{ radius: "sm", blur: 2 }}
-        />
-      ),
     },
     mantineTableContainerProps: {
       style: {
@@ -148,6 +144,44 @@ const BookTypeTable = () => {
         id: false,
       },
     },
+
+    renderEditRowModalContent: ({ internalEditComponents, row, table }) => (
+      <>
+        <LoadingOverlay
+          visible={table.getState().isSaving}
+          zIndex={1000}
+          overlayProps={{ radius: "sm", blur: 2 }}
+        />
+        <Stack>
+          <Title order={5}>Edit Book Type</Title>
+          {internalEditComponents}{" "}
+          {/*or map over row.getAllCells() and render your own components */}
+          <Flex justify="flex-end">
+            <MRT_EditActionButtons row={row} table={table} variant="text" />{" "}
+            {/*or render your own buttons */}
+          </Flex>
+        </Stack>
+      </>
+    ),
+
+    renderCreateRowModalContent: ({ internalEditComponents, row, table }) => (
+      <>
+        <LoadingOverlay
+          visible={table.getState().isSaving}
+          zIndex={1000}
+          overlayProps={{ radius: "sm", blur: 2 }}
+        />
+        <Stack>
+          <Title order={5}>Add Book Type</Title>
+          {internalEditComponents}{" "}
+          {/*or map over row.getAllCells() and render your own components */}
+          <Flex justify="flex-end">
+            <MRT_EditActionButtons row={row} table={table} variant="text" />{" "}
+            {/*or render your own buttons */}
+          </Flex>
+        </Stack>
+      </>
+    ),
 
     renderRowActions: ({ row }) => (
       <>
