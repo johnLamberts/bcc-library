@@ -25,7 +25,7 @@ import bccLogoPng from "src/assets/bccLogo3.png";
 import { Row } from "@tanstack/react-table";
 import { IBooks } from "@features/Catalogue/models/books.interface";
 import useReadInventoryReport from "./hooks/useInventoryReport";
-import useReadBookType from "@features/SysSettings/BookType/hooks/useReadBookType";
+import { useReadBookType } from "@features/SysSettings/BookType/hooks/useReadBookType";
 
 const InventoryReportTable = () => {
   const {

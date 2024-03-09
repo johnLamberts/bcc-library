@@ -1,174 +1,60 @@
-import {
-  Group,
-  Box,
-  Button,
-  Text,
-  Flex,
-  ActionIcon,
-  Tooltip,
-  LoadingOverlay,
-} from "@mantine/core";
-import { IconEdit, IconPlus } from "@tabler/icons-react";
-import {
-  MRT_ColumnDef,
-  MRT_ShowHideColumnsButton,
-  MRT_TableOptions,
-  MRT_ToggleDensePaddingButton,
-  MRT_ToggleGlobalFilterButton,
-  MantineReactTable,
-  useMantineReactTable,
-} from "mantine-react-table";
-import { useMemo, useState } from "react";
+import { Group, Box, Flex, Select, Text } from "@mantine/core";
+import { useSearchParams, useLocation } from "react-router-dom";
+
 import classes from "../styles/user.module.css";
-
-import IBookType from "@features/SysSettings/BookType/models/book-type.interface";
-import useReadBookType from "@features/SysSettings/BookType/hooks/useReadBookType";
-import useModifyBookType from "@features/SysSettings/BookType/hooks/useModifyBookType";
-import useCreateBookType from "@features/SysSettings/BookType/hooks/useCreateBookType";
-
+import BookTypeTable from "@features/SysSettings/BookType/BookTypeTable";
+import ArchiveBookType from "@features/SysSettings/BookType/ArchiveBookType";
 const BookType = () => {
-  const { createBookType, isPending: isCreating } = useCreateBookType();
+  const [searchParams, setSearchParams] = useSearchParams();
 
-  const {
-    data: bookTypeData = [],
-    isLoading: isLoadingBookType,
-    isError: isLoadingBookTypeError,
-    isFetching: isFetchingBookType,
-  } = useReadBookType();
+  const { pathname } = useLocation();
 
-  const [types, setBookType] = useState<string>("");
+  const handleChange = (params: string | null) => {
+    searchParams.set("viewBy", params as string);
 
-  const { modifyBookType, isPending: isUpdating } = useModifyBookType();
-
-  const customColumns = useMemo<MRT_ColumnDef<IBookType>[]>(
-    () => [
-      {
-        accessorKey: "id",
-        header: "Id",
-        enableEditing: false,
-        enableColumnActions: false,
-        size: 80,
-      },
-      {
-        accessorKey: "bookType",
-        header: "Book Type",
-      },
-    ],
-    []
-  );
-
-  // CREATE action
-  const handleCreateLevel: MRT_TableOptions<IBookType>["onCreatingRowSave"] =
-    async ({ values, table }) => {
-      await createBookType(values);
-
-      table.setCreatingRow(null);
-    };
-
-  const handleSaveLevel: MRT_TableOptions<IBookType>["onEditingRowSave"] =
-    async ({ values, table }) => {
-      const value = {
-        ...values,
-        types,
-      };
-      await modifyBookType(value);
-
-      table.setEditingRow(null);
-    };
-
-  const table = useMantineReactTable({
-    data: bookTypeData,
-    columns: customColumns,
-    createDisplayMode: "modal",
-    editDisplayMode: "modal",
-    enableRowActions: true,
-    enableEditing: true,
-    positionActionsColumn: "last",
-    getRowId: (row) => String(row.id),
-    onCreatingRowSave: handleCreateLevel,
-    onEditingRowSave: handleSaveLevel,
-
-    mantineEditRowModalProps: {
-      centered: true,
-      children: (
-        <LoadingOverlay
-          visible={isUpdating}
-          zIndex={1000}
-          overlayProps={{ radius: "sm", blur: 2 }}
-        />
-      ),
-    },
-    mantineTableContainerProps: {
-      style: {
-        height: "100%",
-      },
-    },
-    state: {
-      isLoading: isLoadingBookType,
-      isSaving: isCreating || isUpdating,
-      showAlertBanner: isLoadingBookTypeError,
-      showProgressBars: isFetchingBookType,
-    },
-
-    initialState: {
-      pagination: { pageIndex: 0, pageSize: 5 },
-      columnVisibility: {
-        id: false,
-      },
-    },
-
-    renderRowActions: ({ row }) => (
-      <>
-        <Flex gap="md">
-          <Tooltip label="Edit">
-            <ActionIcon
-              variant="light"
-              onClick={() => {
-                table.setEditingRow(row);
-                setBookType(row.original.bookType);
-              }}
-            >
-              <IconEdit />
-            </ActionIcon>
-          </Tooltip>
-        </Flex>
-      </>
-    ),
-
-    renderToolbarInternalActions: ({ table }) => {
-      return (
-        <Flex gap="xs" align="center">
-          <MRT_ToggleGlobalFilterButton table={table} />{" "}
-          <MRT_ToggleDensePaddingButton table={table} />
-          <MRT_ShowHideColumnsButton table={table} />
-        </Flex>
-      );
-    },
-  });
+    return setSearchParams(searchParams);
+  };
 
   return (
     <>
       <Group justify="space-between">
-        <Box className={classes.highlight}>
-          <Text fz={"xl"} fw={"bold"} c={"red"}>
-            Book Type
-          </Text>
+        <Box>
+          <Flex align={"center"} gap={"xs"}>
+            <Box className={classes.highlight}>
+              <Text fz={"xs"} fw={"bold"} c={"red"}>
+                Book Type View
+              </Text>
+            </Box>
+            {pathname.toLowerCase().includes("book-type") && (
+              <Select
+                allowDeselect={false}
+                size="xs"
+                data={["All", "Archive"]}
+                value={searchParams.get("viewBy") || "All"}
+                onChange={handleChange}
+              />
+            )}
+          </Flex>
         </Box>
-        <Group>
-          <Button
-            variant="light"
-            onClick={() => table.setCreatingRow(true)}
-            leftSection={<IconPlus size={14} />}
-            bg={" var(--mantine-color-red-light)"}
-            color={" var(--mantine-color-red-light-color)"}
-          >
-            Add Book Type
-          </Button>
-        </Group>
       </Group>
+      <Box w={"100%"}>
+        {searchParams.get("viewBy") === null && (
+          <Box mt={"lg"}>
+            <BookTypeTable />
+          </Box>
+        )}
 
-      <Box mt={"lg"}>
-        <MantineReactTable table={table} />
+        {searchParams.get("viewBy") === "All" && (
+          <Box mt={"lg"}>
+            <BookTypeTable />
+          </Box>
+        )}
+
+        {searchParams.get("viewBy") === "Archive" && (
+          <Box mt={"lg"}>
+            <ArchiveBookType />
+          </Box>
+        )}
       </Box>
     </>
   );

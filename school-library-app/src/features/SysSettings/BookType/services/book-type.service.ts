@@ -5,6 +5,7 @@ import {
   getDocs,
   query,
   serverTimestamp,
+  updateDoc,
   where,
   writeBatch,
 } from "firebase/firestore";
@@ -14,13 +15,44 @@ import IBookType from "../models/book-type.interface";
 
 const getAllBookType = async (): Promise<IBookType[]> => {
   const bookTypeDocs = await getDocs(
-    collection(firestore, FIRESTORE_COLLECTION_QUERY_KEY.BOOK_TYPE)
+    query(
+      collection(firestore, FIRESTORE_COLLECTION_QUERY_KEY.BOOK_TYPE),
+      where("isArchived", "==", false)
+    )
   );
 
   return bookTypeDocs.docs.map((doc) => ({
     ...doc.data(),
     id: doc.id,
   })) as IBookType[];
+};
+
+const getArchiveBookType = async (): Promise<IBookType[]> => {
+  const bookTypeDocs = await getDocs(
+    query(
+      collection(firestore, FIRESTORE_COLLECTION_QUERY_KEY.BOOK_TYPE),
+      where("isArchived", "==", true)
+    )
+  );
+
+  return bookTypeDocs.docs.map((doc) => ({
+    ...doc.data(),
+    id: doc.id,
+  })) as IBookType[];
+};
+
+const createArchiveBookType = async (payload: IBookType) => {
+  const { isArchived, id } = payload;
+
+  const bookTypesRef = doc(
+    firestore,
+    FIRESTORE_COLLECTION_QUERY_KEY.BOOK_TYPE,
+    id as string
+  );
+
+  await updateDoc(bookTypesRef, {
+    isArchived: isArchived ? false : true,
+  });
 };
 
 const addBookType = async (payload: Partial<IBookType>) => {
@@ -225,4 +257,10 @@ const updateBookType = async (
   }
 };
 
-export { getAllBookType, addBookType, updateBookType };
+export {
+  getAllBookType,
+  addBookType,
+  updateBookType,
+  getArchiveBookType,
+  createArchiveBookType,
+};
