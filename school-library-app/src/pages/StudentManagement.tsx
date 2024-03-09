@@ -1,19 +1,9 @@
-import {
-  Box,
-  Divider,
-  Flex,
-  Group,
-  Select,
-  Text,
-  TextInput,
-  rem,
-} from "@mantine/core";
-import { IconSearch } from "@tabler/icons-react";
+import { Box, Flex, Group, Select, Text } from "@mantine/core";
 import StudentTable from "@features/Student/StudentTable";
-import { useSearchParams } from "react-router-dom";
-export default function StudentManagement() {
-  const [searchParams, setSearchParams] = useSearchParams();
+import { useLocation, useSearchParams } from "react-router-dom";
+import classes from "./styles/user.module.css";
 
+export default function StudentManagement() {
   // const [getId, setGetId] = useState("");
 
   // const { data: studentData, isLoading } = useReadStudents();
@@ -42,67 +32,67 @@ export default function StudentManagement() {
   //     )
   //   );
   // }, [studentData, isLoading, searchParams, filterStudentData]);
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const { pathname } = useLocation();
+
   const handleChange = (params: string | null) => {
     searchParams.set("viewBy", params as string);
 
     return setSearchParams(searchParams);
   };
+
   return (
     <>
       <Group justify="space-between">
         <Box>
           <Flex align={"center"} gap={"xs"}>
-            <Text span c={"dimmed"} size="md">
-              View
-            </Text>
-
-            <Select
-              size="xs"
-              allowDeselect={false}
-              data={["All", "Archive"]}
-              defaultValue={"All"}
-              onChange={handleChange}
-            />
+            <Box className={classes.highlight}>
+              <Text fz={"xs"} fw={"bold"} c={"red"}>
+                Student Management
+              </Text>
+            </Box>
+            {pathname.toLowerCase().includes("student") && (
+              <Select
+                allowDeselect={false}
+                size="xs"
+                data={["All", "Archive"]}
+                value={searchParams.get("viewBy") || "All"}
+                onChange={handleChange}
+              />
+            )}
           </Flex>
         </Box>
-
-        {searchParams.get("view") === "by-cards" && (
-          <TextInput
-            radius="md"
-            w={"18rem"}
-            size="md"
-            placeholder="Search by email or student number"
-            rightSectionWidth={42}
-            leftSection={
-              <IconSearch
-                style={{ width: rem(18), height: rem(18) }}
-                stroke={1.5}
-              />
-            }
-          />
-        )}
       </Group>
 
       {/* List of Users */}
-      <Divider my="lg" c={"dimmed"} />
 
-      {/* {memoizedCards} */}
+      <Box w={"100%"}>
+        {searchParams.get("viewBy") === "All" && (
+          <>
+            <Box my="xl">
+              <StudentTable />
+            </Box>
+          </>
+        )}
 
-      {searchParams.get("view") === "by-table" && (
-        <>
-          <Box my="xl">
-            <StudentTable />
-          </Box>
-        </>
-      )}
+        {searchParams.get("viewBy") === null && (
+          <>
+            <Box my="xl">
+              <StudentTable />
+            </Box>
+          </>
+        )}
 
-      {searchParams.get("view") === null && (
-        <>
-          <Box my="xl">
-            <StudentTable />
-          </Box>
-        </>
-      )}
+        {searchParams.get("viewBy") === "Archive" && (
+          <>
+            <Box my="xl">
+              {/* <CatalogueTable /> */}
+              Archive Table
+            </Box>
+          </>
+        )}
+      </Box>
     </>
   );
 }

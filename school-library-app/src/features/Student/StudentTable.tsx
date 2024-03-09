@@ -33,7 +33,6 @@ import {
 } from "mantine-react-table";
 import { useMemo } from "react";
 
-import classes from "@pages/styles/user.module.css";
 import StudentForm from "./StudentForm";
 import { useCreateStudent } from "./hooks/useCreateStudent";
 import useReadStudents from "./hooks/useReadStudents";
@@ -344,37 +343,37 @@ const StudentTable = () => {
 
   return (
     <>
-      <Box maw={"78vw"}>
-        <Group justify="space-between">
-          <Box className={classes.highlight}>
-            <Text fz={"xl"} fw={"bold"} c={"red"}>
-              Student Management
-            </Text>
-          </Box>
-          <Group>
-            <Button
-              variant="light"
-              onClick={() => table.setCreatingRow(true)}
-              leftSection={<IconPlus size={14} />}
-              bg={" var(--mantine-color-red-light)"}
-              color={" var(--mantine-color-red-light-color)"}
-            >
-              Add Student
-            </Button>
-
-            {/* <Button
-              variant="light"
-              onClick={() => open()}
-              leftSection={<IconFileImport size={14} />}
-              bg={" var(--mantine-color-yellow-light)"}
-              color={" var(--mantine-color-yellow-light-color)"}
-            >
-              Import Students
-            </Button> */}
-          </Group>
+      <Box maw={"78.2vw"}>
+        <Group
+          justify="end"
+          pos={"absolute"}
+          top={"1rem"}
+          right={"1rem"}
+          visibleFrom="md"
+        >
+          <Button
+            variant="light"
+            onClick={() => table.setCreatingRow(true)}
+            leftSection={<IconPlus size={14} />}
+            bg={" var(--mantine-color-red-light)"}
+            color={" var(--mantine-color-red-light-color)"}
+          >
+            Add Student
+          </Button>
+        </Group>
+        <Group hiddenFrom="sm">
+          <Button
+            variant="light"
+            onClick={() => table.setCreatingRow(true)}
+            leftSection={<IconPlus size={14} />}
+            bg={" var(--mantine-color-red-light)"}
+            color={" var(--mantine-color-red-light-color)"}
+          >
+            Add Student
+          </Button>
         </Group>
 
-        <Box mt={"lg"}>
+        <Box>
           <MantineReactTable table={table} />
         </Box>
       </Box>

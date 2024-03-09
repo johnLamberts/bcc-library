@@ -31,7 +31,6 @@ import {
 } from "mantine-react-table";
 import { useMemo } from "react";
 
-import classes from "@pages/styles/user.module.css";
 import StudentForm from "./CatalogueForm";
 import { IBooks } from "./models/books.interface";
 import { modals } from "@mantine/modals";
@@ -333,7 +332,7 @@ const CatalogueTable = () => {
 
   return (
     <>
-      <Box maw={"75.2vw"}>
+      {/* <Box maw={"75.2vw"}>
         <Group justify="space-between">
           <Box className={classes.highlight}>
             <Text fz={"xl"} fw={"bold"} c={"red"}>
@@ -354,6 +353,40 @@ const CatalogueTable = () => {
         </Group>
 
         <Box mt={"lg"}>
+          <MantineReactTable table={table} />
+        </Box>
+      </Box> */}
+      <Box maw={"78.2vw"}>
+        <Group
+          justify="end"
+          pos={"absolute"}
+          top={"1rem"}
+          right={"1rem"}
+          visibleFrom="md"
+        >
+          <Button
+            variant="light"
+            onClick={() => table.setCreatingRow(true)}
+            leftSection={<IconPlus size={14} />}
+            bg={" var(--mantine-color-red-light)"}
+            color={" var(--mantine-color-red-light-color)"}
+          >
+            Add Book Catalogue
+          </Button>
+        </Group>
+        <Group hiddenFrom="sm">
+          <Button
+            variant="light"
+            onClick={() => table.setCreatingRow(true)}
+            leftSection={<IconPlus size={14} />}
+            bg={" var(--mantine-color-red-light)"}
+            color={" var(--mantine-color-red-light-color)"}
+          >
+            Add Book Catalogue
+          </Button>
+        </Group>
+
+        <Box>
           <MantineReactTable table={table} />
         </Box>
       </Box>
