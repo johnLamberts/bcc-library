@@ -30,6 +30,7 @@ import useCreateEducation from "./useCreateEducation";
 import useModifyEducation from "./useModifyEducation";
 import useReadEducation from "./useReadEducation";
 import { modals } from "@mantine/modals";
+import { useArchiveEducation } from "./useArchiveEducation";
 
 const LevelEducationTable = () => {
   const { createLevelOfEducation, isPending: isCreating } =
@@ -46,6 +47,9 @@ const LevelEducationTable = () => {
     useModifyEducation();
 
   const [education, setEducation] = useState<string | undefined>("");
+
+  const { modifyGenre: modifyArchiveLevelOfEducation, isArchiving } =
+    useArchiveEducation();
 
   const openArhivedModalAction = (row: ILevelOfEducation) =>
     modals.openConfirmModal({
@@ -67,10 +71,10 @@ const LevelEducationTable = () => {
         cancel: "Cancel",
       },
       confirmProps: { color: "red" },
-      onConfirm: () => {
+      onConfirm: async () => {
         // modifyUserStatus(row.original);
         // alert("Archived: " + row.original.genresName);
-        //   modifyArchiveGenre(row);
+        await modifyArchiveLevelOfEducation(row);
       },
     });
 
@@ -151,6 +155,7 @@ const LevelEducationTable = () => {
       isSaving: isCreating || isUpdating,
       showAlertBanner: isLoadingLevelsError,
       showProgressBars: isFetchingLevels,
+      showLoadingOverlay: isArchiving,
     },
 
     initialState: {
@@ -167,10 +172,8 @@ const LevelEducationTable = () => {
         <Stack>
           <Title order={5}>Edit Level of Education</Title>
           {internalEditComponents}{" "}
-          {/*or map over row.getAllCells() and render your own components */}
           <Flex justify="flex-end">
             <MRT_EditActionButtons row={row} table={table} variant="text" />{" "}
-            {/*or render your own buttons */}
           </Flex>
         </Stack>
       </>

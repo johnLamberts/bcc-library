@@ -11,6 +11,7 @@ import {
   IconMoneybag,
   IconReport,
   IconSettingsAutomation,
+  IconBrandStocktwits,
 } from "@tabler/icons-react";
 import { IconCategory2 } from "@tabler/icons-react";
 import LinkGroups from "./LinkGroups";
@@ -38,6 +39,11 @@ const mainFeatures = [
     link: "/catalogue-management",
     label: "Catalogue Management",
     icon: IconBook,
+  },
+  {
+    link: "/acquisition-and-stock-management",
+    label: "Acquisition and Stock Management",
+    icon: IconBrandStocktwits,
   },
   {
     label: "Transaction",

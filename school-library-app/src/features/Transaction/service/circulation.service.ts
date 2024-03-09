@@ -4,6 +4,7 @@ import {
   collection,
   deleteDoc,
   doc,
+  getDoc,
   getDocs,
   or,
   orderBy,
@@ -180,7 +181,21 @@ const addApproveRequestedBook = async (approve: ICirculation) => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   delete (approve as any).requesting;
 
-  const { id, numberOfBooksAvailable_QUANTITY, ...otherValues } = approve;
+  const { id, ...otherValues } = approve;
+
+  const bookRef = await getDoc(
+    doc(
+      firestore,
+      FIRESTORE_COLLECTION_QUERY_KEY.CATALOGUE,
+      approve.booksId as string
+    )
+  );
+
+  if (bookRef.data()?.numberOfBooksAvailable_QUANTITY === 0) {
+    throw new Error(
+      "Sorry, the item you're attempting to borrow is currently unavailable"
+    );
+  }
 
   const reservedRef = await addDoc(
     collection(firestore, FIRESTORE_COLLECTION_QUERY_KEY.RESERVED_BOOK),
@@ -210,6 +225,18 @@ const addApproveRequestedBook = async (approve: ICirculation) => {
       )
     );
   });
+
+  await updateDoc(
+    doc(
+      firestore,
+      FIRESTORE_COLLECTION_QUERY_KEY.CATALOGUE,
+      approve.booksId as string
+    ),
+    {
+      numberOfBooksAvailable_QUANTITY:
+        approve.numberOfBooksAvailable_QUANTITY - 1,
+    }
+  );
 
   await deleteDoc(
     doc(
@@ -276,14 +303,6 @@ const addClaimedReservedBook = async (reserved: ICirculation) => {
     }
   );
 
-  await updateDoc(
-    doc(firestore, FIRESTORE_COLLECTION_QUERY_KEY.CATALOGUE, reserved.booksId),
-    {
-      numberOfBooksAvailable_QUANTITY:
-        otherValues.numberOfBooksAvailable_QUANTITY - 1,
-    }
-  );
-
   await addDoc(
     collection(
       firestore,
@@ -327,12 +346,38 @@ const addClaimedReservedBook = async (reserved: ICirculation) => {
 };
 
 const addWalkinReservedBook = async (reserved: ICirculation) => {
+  const bookRef = await getDoc(
+    doc(
+      firestore,
+      FIRESTORE_COLLECTION_QUERY_KEY.CATALOGUE,
+      reserved.booksId as string
+    )
+  );
+
+  if (bookRef.data()?.numberOfBooksAvailable_QUANTITY === 0) {
+    throw new Error(
+      "Sorry, the item you're attempting to borrow is currently unavailable"
+    );
+  }
+
   const reservedRef = await addDoc(
     collection(firestore, FIRESTORE_COLLECTION_QUERY_KEY.RESERVED_BOOK),
     {
       ...reserved,
       status: "Reserved",
       createdAt: serverTimestamp(),
+    }
+  );
+
+  await updateDoc(
+    doc(
+      firestore,
+      FIRESTORE_COLLECTION_QUERY_KEY.CATALOGUE,
+      reserved.booksId as string
+    ),
+    {
+      numberOfBooksAvailable_QUANTITY:
+        reserved.numberOfBooksAvailable_QUANTITY - 1,
     }
   );
 

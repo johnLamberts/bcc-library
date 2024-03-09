@@ -1,9 +1,19 @@
 import Form from "@components/Form/Form";
 import { InputBase, Select, TextInput } from "@mantine/core";
+import { MRT_Row, MRT_RowData, MRT_TableInstance } from "mantine-react-table";
 import { Controller, useFormContext } from "react-hook-form";
 import { IMaskInput } from "react-imask";
 
-const BasicInformationForm = () => {
+interface BasicInformationFormProps<TData extends MRT_RowData> {
+  table: MRT_TableInstance<TData>;
+  row?: MRT_Row<TData>;
+}
+const BasicInformationForm = <TData extends MRT_RowData>({
+  table,
+  row,
+}: BasicInformationFormProps<TData>) => {
+  const isEditing = table?.getState().editingRow?.id === row?.id;
+
   const {
     register,
     control,
@@ -104,6 +114,21 @@ const BasicInformationForm = () => {
               withErrorStyles={errors.email?.message ? true : false}
             />
           </Form.Col>
+
+          {isEditing && (
+            <Form.Col span={{ base: 12, md: 6, lg: 12 }}>
+              <TextInput
+                label="Pasasword"
+                placeholder="Password"
+                withAsterisk
+                {...register("password", {
+                  required: `This field is required`,
+                })}
+                error={<>{errors.email?.message}</>}
+                withErrorStyles={errors.email?.message ? true : false}
+              />
+            </Form.Col>
+          )}
         </Form.Grid>
       </Form.Box>
     </>

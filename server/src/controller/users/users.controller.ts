@@ -90,6 +90,8 @@ const updateUserStatus = async (req: Request, res: Response) => {
       userId
     );
 
+    console.log(req.body);
+
     return res.json({
       data: updateUser,
       status: "Updating User's status has been successfully done.",

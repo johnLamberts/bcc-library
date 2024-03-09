@@ -3,4 +3,6 @@ export default interface ILevelOfEducation {
   id?: string;
 
   education?: string;
+
+  isArchived?: boolean;
 }

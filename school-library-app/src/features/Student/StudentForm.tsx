@@ -1,5 +1,11 @@
 import Form from "@components/Form/Form";
-import { Box, Checkbox, TextInput, Tooltip } from "@mantine/core";
+import {
+  Box,
+  Checkbox,
+  LoadingOverlay,
+  TextInput,
+  Tooltip,
+} from "@mantine/core";
 import { useCallback, useEffect, useState } from "react";
 import BasicInformationForm from "./StudentForm/BasicInformationForm";
 import { FormProvider, useForm } from "react-hook-form";
@@ -102,6 +108,11 @@ export default function StudentForm<TData extends MRT_RowData>({
 
   return (
     <FormProvider {...form}>
+      <LoadingOverlay
+        visible={table.getState().isSaving}
+        zIndex={1000}
+        overlayProps={{ radius: "sm", blur: 2 }}
+      />
       <Form onSubmit={form.handleSubmit(onSubmit)}>
         <Form.Grid p={"lg"}>
           <Form.Col span={{ base: 12, md: 3, lg: 6 }}>
@@ -135,7 +146,7 @@ export default function StudentForm<TData extends MRT_RowData>({
             />
           </Form.Col>
         </Form.Grid>
-        <BasicInformationForm />
+        <BasicInformationForm table={table} row={row} />
 
         <EducationForm />
 

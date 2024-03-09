@@ -1,4 +1,10 @@
-import { Box, Checkbox, TextInput, Tooltip } from "@mantine/core";
+import {
+  Box,
+  Checkbox,
+  LoadingOverlay,
+  TextInput,
+  Tooltip,
+} from "@mantine/core";
 import { FormProvider, useForm } from "react-hook-form";
 import Form from "@components/Form/Form";
 import { useCallback, useEffect, useState } from "react";
@@ -71,6 +77,11 @@ export default function TeacherForm<TData extends MRT_RowData>({
   return (
     <>
       <FormProvider {...form}>
+        <LoadingOverlay
+          visible={table.getState().isSaving}
+          zIndex={1000}
+          overlayProps={{ radius: "sm", blur: 2 }}
+        />
         <Form onSubmit={form.handleSubmit(onSubmit)}>
           <Form.Grid p={"lg"}>
             <Form.Col span={{ base: 12, md: 3, lg: 6 }}>

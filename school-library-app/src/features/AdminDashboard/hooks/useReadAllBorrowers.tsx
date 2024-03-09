@@ -9,7 +9,7 @@ import {
 function useReadAllStudents() {
   return useQuery({
     queryFn: getTeachers,
-    queryKey: [FIRESTORE_COLLECTION_QUERY_KEY.TEACHER],
+    queryKey: [FIRESTORE_COLLECTION_QUERY_KEY.ADMIN_TEACHER_DASHBOARD],
 
     refetchOnWindowFocus: false,
   });
@@ -18,7 +18,7 @@ function useReadAllStudents() {
 function useReadAllTeachers() {
   return useQuery({
     queryFn: getStudents,
-    queryKey: [FIRESTORE_COLLECTION_QUERY_KEY.STUDENT],
+    queryKey: [FIRESTORE_COLLECTION_QUERY_KEY.ADMIN_STUDENT_DASHBOARD],
 
     refetchOnWindowFocus: false,
   });

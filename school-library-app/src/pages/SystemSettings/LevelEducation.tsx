@@ -1,9 +1,8 @@
-import { Group, Box, Text, Flex, Select, Box } from "@mantine/core";
+import { Group, Text, Flex, Select, Box } from "@mantine/core";
 import classes from "../styles/user.module.css";
-import ArchiveCategorySection from "@features/SysSettings/CategorySection/ArchiveCategorySection";
-import CategorySectionTable from "@features/SysSettings/CategorySection/CategorySectionTable";
 import { useSearchParams, useLocation } from "react-router-dom";
 import LevelEducationTable from "@features/SysSettings/LevelEducation/LevelEducationTable";
+import ArchiveEducationTable from "@features/SysSettings/LevelEducation/ArchiveEducationTable";
 
 const LevelEducation = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -53,7 +52,7 @@ const LevelEducation = () => {
 
         {searchParams.get("viewBy") === "Archive" && (
           <Box mt={"lg"}>
-            <ArchiveCategorySection />
+            <ArchiveEducationTable />
           </Box>
         )}
       </Box>

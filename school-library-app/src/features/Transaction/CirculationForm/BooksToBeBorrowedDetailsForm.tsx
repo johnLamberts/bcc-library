@@ -1,12 +1,12 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import Form from "@components/Form/Form";
-import useReadCatalogue from "@features/Catalogue/hooks/useReadCatalogue";
 import { useReadBookType } from "@features/SysSettings/BookType/hooks/useReadBookType";
 import { Select, Text, TextInput, rem } from "@mantine/core";
 import { IconEye } from "@tabler/icons-react";
 import { Dispatch, SetStateAction, useCallback, useEffect } from "react";
 import { Controller, useFormContext } from "react-hook-form";
 import { IBooks } from "../models/books.interface";
+import useReadActiveBooks from "@features/Catalogue/hooks/useReadActiveBooks";
 
 interface FormProps {
   seeType: string | null;
@@ -24,7 +24,8 @@ const BooksToBeBorrowedDetailsForm = ({ seeType, setSeeType }: FormProps) => {
   const { data: bookTypeData = [], isLoading: isBookTypeLoading } =
     useReadBookType();
 
-  const { data: bookData = [], isLoading: isBookLoading } = useReadCatalogue();
+  const { data: bookData = [], isLoading: isBookLoading } =
+    useReadActiveBooks();
 
   const filteredBook = bookData.filter((book) => book.bookType === seeType);
 

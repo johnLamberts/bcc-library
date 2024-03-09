@@ -3,7 +3,6 @@ import {
   collection,
   doc,
   getDocs,
-  orderBy,
   query,
   serverTimestamp,
   updateDoc,
@@ -18,7 +17,7 @@ const getAllLevelOfEducation = async (): Promise<ILevelOfEducation[]> => {
   const bookTypeDocs = await getDocs(
     query(
       collection(firestore, FIRESTORE_COLLECTION_QUERY_KEY.LEVEL_OF_EDUCATION),
-      orderBy("createdAt", "asc")
+      where("isArchived", "==", false)
     )
   );
 
@@ -28,6 +27,33 @@ const getAllLevelOfEducation = async (): Promise<ILevelOfEducation[]> => {
   })) as ILevelOfEducation[];
 };
 
+const getArchivedLevelOfEducation = async (): Promise<ILevelOfEducation[]> => {
+  const bookTypeDocs = await getDocs(
+    query(
+      collection(firestore, FIRESTORE_COLLECTION_QUERY_KEY.LEVEL_OF_EDUCATION),
+      where("isArchived", "==", true)
+    )
+  );
+
+  return bookTypeDocs.docs.map((doc) => ({
+    ...doc.data(),
+    id: doc.id,
+  })) as ILevelOfEducation[];
+};
+
+const createArchiveLevelOfEducation = async (payload: ILevelOfEducation) => {
+  const { isArchived, id } = payload;
+
+  const levelOfEducationRef = doc(
+    firestore,
+    FIRESTORE_COLLECTION_QUERY_KEY.LEVEL_OF_EDUCATION,
+    id as string
+  );
+
+  await updateDoc(levelOfEducationRef, {
+    isArchived: isArchived ? false : true,
+  });
+};
 const addLevelOfEducation = async (payload: Partial<ILevelOfEducation>) => {
   try {
     const querySnapshot = await getDocs(
@@ -161,4 +187,10 @@ const updateLevelOfducation = async (
   }
 };
 
-export { getAllLevelOfEducation, addLevelOfEducation, updateLevelOfducation };
+export {
+  getAllLevelOfEducation,
+  addLevelOfEducation,
+  updateLevelOfducation,
+  getArchivedLevelOfEducation,
+  createArchiveLevelOfEducation,
+};

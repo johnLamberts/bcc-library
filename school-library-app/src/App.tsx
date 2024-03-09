@@ -36,6 +36,7 @@ import ProtectedRoute from "./routes/ProtectedRoute";
 import { PageNotFound } from "@pages/PageNotFound";
 import ForgetPassword from "@pages/ForgetPassword";
 import Announcement from "@pages/Homepage/Announcement";
+import AcquisitionStock from "@features/AcquisitionStock/AcquisitionStock";
 
 function App() {
   // Will Refactor this after I finish the admin page with fully functionality
@@ -80,6 +81,10 @@ function App() {
             <Route path="/dashboard" element={<AdminDashboard />} />
             <Route path="/user-management" element={<UserManagement />} />
             <Route path="/student-management" element={<StudentManagement />} />
+            <Route
+              path="/acquisition-and-stock-management"
+              element={<AcquisitionStock />}
+            />
             <Route path="/teacher-management" element={<TeacherManagement />} />
             <Route
               path="/catalogue-management"
