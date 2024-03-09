@@ -3,7 +3,6 @@ import useReadAcademicCourse from "@features/SysSettings/AcademicCourse/useReadA
 import useReadGradeLevel from "@features/SysSettings/GradeLevel/useReadGradeLevel";
 import useReadEducation from "@features/SysSettings/LevelEducation/useReadEducation";
 import { MRT_RowData, MRT_TableInstance } from "mantine-react-table";
-import { useSearchParams } from "react-router-dom";
 
 interface StudentToolbarProps<TData extends MRT_RowData> {
   table: MRT_TableInstance<TData>;

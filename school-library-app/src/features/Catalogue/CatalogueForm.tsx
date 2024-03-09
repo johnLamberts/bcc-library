@@ -1,5 +1,5 @@
 import Form from "@components/Form/Form";
-import { Box } from "@mantine/core";
+import { Box, LoadingOverlay } from "@mantine/core";
 import { useCallback, useEffect } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { MRT_RowData, MRT_TableInstance, MRT_Row } from "mantine-react-table";
@@ -106,6 +106,11 @@ export default function CatalogueForm<TData extends MRT_RowData>({
 
   return (
     <FormProvider {...form}>
+      <LoadingOverlay
+        visible={table.getState().isSaving}
+        zIndex={1000}
+        overlayProps={{ radius: "sm", blur: 2 }}
+      />
       <Form onSubmit={form.handleSubmit(onSubmit)}>
         <BookInformationForm table={table} row={row} />
 

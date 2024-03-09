@@ -26,19 +26,27 @@ const useLogin = () => {
         user
       );
 
-      const userRole = user?.[0].userRole;
+      if (user?.[0].isEnabled) {
+        const userRole = user?.[0].userRole;
 
-      if (userRole === "Student" || userRole === "Teacher") {
-        navigate("/home");
-      } else if (userRole?.toLowerCase().includes("admin")) {
-        navigate("/dashboard");
+        if (userRole === "Student" || userRole === "Teacher") {
+          navigate("/home");
+        } else if (userRole?.toLowerCase().includes("admin")) {
+          navigate("/dashboard");
+        }
+
+        toast.success("You have successfully");
+      } else {
+        toast.warning(
+          "Apologies, your account has been disabled. Please contact support for further assistance."
+        );
       }
-
-      toast.success("You have successfully");
     },
     onError: (err) => {
       console.log("ERROR", err);
-      toast.error("Provided email or password are incorrect");
+      toast.error(
+        "Invalid email or password. Please double-check your credentials and try again."
+      );
     },
   });
 

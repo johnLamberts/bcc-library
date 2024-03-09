@@ -101,6 +101,7 @@ const updateUserStatus = async (
     .where("userUID", "==", userUID)
     .get();
 
+  console.log(status);
   await admin.auth().updateUser(userUID, {
     disabled: status,
   });

@@ -1,4 +1,4 @@
-import { Box } from "@mantine/core";
+import { Box, LoadingOverlay } from "@mantine/core";
 import { FormProvider, useForm } from "react-hook-form";
 import Form from "@components/Form/Form";
 import UserImageForm from "./UserForm/UserImageForm";
@@ -70,6 +70,11 @@ export default function UserForm<TData extends MRT_RowData>({
   return (
     <>
       <FormProvider {...form}>
+        <LoadingOverlay
+          visible={table.getState().isSaving}
+          zIndex={1000}
+          overlayProps={{ radius: "sm", blur: 2 }}
+        />
         <Form onSubmit={form.handleSubmit(onSubmit)}>
           <BasicInformationForm />
 

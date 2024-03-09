@@ -39,6 +39,7 @@ import { useCreateCatalogue } from "./hooks/useCreateCatalogue";
 import useReadCatalogue from "./hooks/useReadCatalogue";
 import useModifyCatalogue from "./hooks/useModifyCatalogue";
 import useModifyBookAvailability from "./hooks/useModifyBookAvailability";
+import CatalogueToolbar from "./CatalogueToolbar/CatalogueToolbar";
 
 const CatalogueTable = () => {
   const { isCreatingCatalogue, createCatalogue } = useCreateCatalogue();
@@ -280,6 +281,7 @@ const CatalogueTable = () => {
     renderToolbarInternalActions: ({ table }) => {
       return (
         <Flex gap="xs" align="center">
+          <CatalogueToolbar table={table} />
           <MRT_ToggleGlobalFilterButton table={table} />{" "}
           <MRT_ToggleDensePaddingButton table={table} />
           <MRT_ShowHideColumnsButton table={table} />
