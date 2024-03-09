@@ -8,6 +8,9 @@ import {
   rem,
   Highlight,
   Text,
+  LoadingOverlay,
+  Stack,
+  Title,
 } from "@mantine/core";
 import { IconEdit, IconPlus, IconTrash } from "@tabler/icons-react";
 import {
@@ -19,6 +22,7 @@ import {
   MRT_ShowHideColumnsButton,
   MantineReactTable,
   MRT_Row,
+  MRT_EditActionButtons,
 } from "mantine-react-table";
 import { useState, useMemo } from "react";
 import useCreateAuthor from "./hooks/useCreateBookAuthor";
@@ -116,6 +120,9 @@ const BookAuthorTable = () => {
     getRowId: (row) => String(row.id),
     onCreatingRowSave: handleCreateLevel,
     onEditingRowSave: handleSaveLevel,
+    mantineEditRowModalProps: {
+      centered: true,
+    },
     mantineTableContainerProps: {
       style: {
         height: "100%",
@@ -135,6 +142,44 @@ const BookAuthorTable = () => {
         id: false,
       },
     },
+
+    renderEditRowModalContent: ({ internalEditComponents, row, table }) => (
+      <>
+        <LoadingOverlay
+          visible={table.getState().isSaving}
+          zIndex={1000}
+          overlayProps={{ radius: "sm", blur: 2 }}
+        />
+        <Stack>
+          <Title order={5}>Edit Author</Title>
+          {internalEditComponents}{" "}
+          {/*or map over row.getAllCells() and render your own components */}
+          <Flex justify="flex-end">
+            <MRT_EditActionButtons row={row} table={table} variant="text" />{" "}
+            {/*or render your own buttons */}
+          </Flex>
+        </Stack>
+      </>
+    ),
+
+    renderCreateRowModalContent: ({ internalEditComponents, row, table }) => (
+      <>
+        <LoadingOverlay
+          visible={table.getState().isSaving}
+          zIndex={1000}
+          overlayProps={{ radius: "sm", blur: 2 }}
+        />
+        <Stack>
+          <Title order={5}>Add Author</Title>
+          {internalEditComponents}{" "}
+          {/*or map over row.getAllCells() and render your own components */}
+          <Flex justify="flex-end">
+            <MRT_EditActionButtons row={row} table={table} variant="text" />{" "}
+            {/*or render your own buttons */}
+          </Flex>
+        </Stack>
+      </>
+    ),
 
     renderRowActions: ({ row }) => (
       <>

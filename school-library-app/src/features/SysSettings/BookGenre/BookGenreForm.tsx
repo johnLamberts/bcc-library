@@ -14,7 +14,7 @@ import { Controller, useForm } from "react-hook-form";
 import { MRT_Row, MRT_RowData, MRT_TableInstance } from "mantine-react-table";
 import { toast } from "sonner";
 import IGenre from "./models/genres";
-import useReadBookType from "../BookType/hooks/useReadBookType";
+import { useReadBookType } from "../BookType/hooks/useReadBookType";
 
 interface BookGenreFormProps<TData extends MRT_RowData> {
   table: MRT_TableInstance<TData>;

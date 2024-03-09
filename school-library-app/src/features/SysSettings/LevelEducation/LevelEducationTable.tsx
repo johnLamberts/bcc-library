@@ -2,15 +2,15 @@ import {
   Flex,
   ActionIcon,
   Group,
-  Button,
   Box,
-  Tooltip,
-  Highlight,
-  rem,
+  Button,
   Text,
+  Tooltip,
   LoadingOverlay,
   Stack,
   Title,
+  Highlight,
+  rem,
 } from "@mantine/core";
 import { IconEdit, IconPlus, IconTrash } from "@tabler/icons-react";
 import {
@@ -24,34 +24,30 @@ import {
   MRT_EditActionButtons,
 } from "mantine-react-table";
 import { useState, useMemo } from "react";
-import useCreateCategorySection from "./hooks/useCreateCategorySection";
-import useModifyCategorySection from "./hooks/useModifyCategorySection";
-import { useReadCategorySection } from "./hooks/useReadCategorySection";
-import ICategorySection from "./models/category-section.interface";
+import { toast } from "sonner";
+import ILevelOfEducation from "./level-of-education.interface";
+import useCreateEducation from "./useCreateEducation";
+import useModifyEducation from "./useModifyEducation";
+import useReadEducation from "./useReadEducation";
 import { modals } from "@mantine/modals";
-import { useArchiveCategorySection } from "./hooks/useArchiveCategorySection";
 
-const CategorySectionTable = () => {
-  const { createCategorySection, isPending: isCreating } =
-    useCreateCategorySection();
-
-  const [categoryName, setCategoryName] = useState("");
+const LevelEducationTable = () => {
+  const { createLevelOfEducation, isPending: isCreating } =
+    useCreateEducation();
 
   const {
-    data: categorySectionData = [],
-    isLoading: isLoadingCategorySection,
-    isError: isLoadingCategorySectionError,
-    isFetching: isFetchingCategorySection,
-  } = useReadCategorySection();
+    data: eduData = [],
+    isLoading: isLoadingEducation,
+    isError: isLoadingLevelsError,
+    isFetching: isFetchingLevels,
+  } = useReadEducation();
 
-  const { modifyCategorySection, isPending: isUpdating } =
-    useModifyCategorySection();
+  const { modifyLevelOfEducation, isPending: isUpdating } =
+    useModifyEducation();
 
-  //     archive
-  const { modifyGenre: modifyArchiveCategorySection, isArchiving } =
-    useArchiveCategorySection();
+  const [education, setEducation] = useState<string | undefined>("");
 
-  const openArhivedModalAction = (row: ICategorySection) =>
+  const openArhivedModalAction = (row: ILevelOfEducation) =>
     modals.openConfirmModal({
       centered: true,
       title: (
@@ -63,7 +59,7 @@ const CategorySectionTable = () => {
       ),
       children: (
         <Text>
-          Note: You can still recover {row.categorySection} on Archive View
+          Note: You can still recover {row.levelOfEducation} on Archive View
         </Text>
       ),
       labels: {
@@ -71,51 +67,68 @@ const CategorySectionTable = () => {
         cancel: "Cancel",
       },
       confirmProps: { color: "red" },
-      onConfirm: async () => {
+      onConfirm: () => {
         // modifyUserStatus(row.original);
         // alert("Archived: " + row.original.genresName);
-        await modifyArchiveCategorySection(row);
+        //   modifyArchiveGenre(row);
       },
     });
 
-  const customColumns = useMemo<MRT_ColumnDef<ICategorySection>[]>(
+  const customColumns = useMemo<MRT_ColumnDef<ILevelOfEducation>[]>(
     () => [
       {
         accessorKey: "id",
         header: "Id",
         enableEditing: false,
-        enableColumnActions: false,
         size: 80,
       },
       {
-        accessorKey: "categorySection",
-        header: "Category Section",
+        accessorKey: "levelOfEducation",
+        header: "Name",
       },
     ],
     []
   );
 
   // CREATE action
-  const handleCreateLevel: MRT_TableOptions<ICategorySection>["onCreatingRowSave"] =
-    async ({ values, table }) => {
-      await createCategorySection(values);
+  const handleCreateLevel: MRT_TableOptions<ILevelOfEducation>["onCreatingRowSave"] =
+    async ({ values, exitCreatingMode }) => {
+      const isDuplicate = eduData.some(
+        (level) => level.levelOfEducation === values.levelOfEducation
+      );
 
-      table.setCreatingRow(null);
+      if (isDuplicate) {
+        toast.error(
+          "Oops! It looks like we already have that information.\nPlease double-check your input and try again."
+        );
+        return;
+      }
+
+      if (!values.levelOfEducation) {
+        toast.error(
+          "Uh-oh! It seems like you forgot to fill in some required information. Please make sure all fields are filled out before submitting."
+        );
+        return;
+      }
+
+      await createLevelOfEducation(values);
+
+      exitCreatingMode();
     };
 
-  const handleSaveLevel: MRT_TableOptions<ICategorySection>["onEditingRowSave"] =
+  const handleSaveLevel: MRT_TableOptions<ILevelOfEducation>["onEditingRowSave"] =
     async ({ values, table }) => {
       const value = {
         ...values,
-        categoryName,
+        education,
       };
-      await modifyCategorySection(value);
+      await modifyLevelOfEducation(value);
 
       table.setEditingRow(null);
     };
 
   const table = useMantineReactTable({
-    data: categorySectionData,
+    data: eduData,
     columns: customColumns,
     createDisplayMode: "modal",
     editDisplayMode: "modal",
@@ -134,15 +147,14 @@ const CategorySectionTable = () => {
       },
     },
     state: {
-      isLoading: isLoadingCategorySection,
+      isLoading: isLoadingEducation,
       isSaving: isCreating || isUpdating,
-      showAlertBanner: isLoadingCategorySectionError,
-      showProgressBars: isFetchingCategorySection || isArchiving,
+      showAlertBanner: isLoadingLevelsError,
+      showProgressBars: isFetchingLevels,
     },
 
     initialState: {
       pagination: { pageIndex: 0, pageSize: 5 },
-      columnVisibility: { id: false },
     },
 
     renderEditRowModalContent: ({ internalEditComponents, row, table }) => (
@@ -153,7 +165,7 @@ const CategorySectionTable = () => {
           overlayProps={{ radius: "sm", blur: 2 }}
         />
         <Stack>
-          <Title order={5}>Edit Category Section</Title>
+          <Title order={5}>Edit Level of Education</Title>
           {internalEditComponents}{" "}
           {/*or map over row.getAllCells() and render your own components */}
           <Flex justify="flex-end">
@@ -172,7 +184,7 @@ const CategorySectionTable = () => {
           overlayProps={{ radius: "sm", blur: 2 }}
         />
         <Stack>
-          <Title order={5}>Add Category Section</Title>
+          <Title order={5}>Add Level of Education</Title>
           {internalEditComponents}{" "}
           {/*or map over row.getAllCells() and render your own components */}
           <Flex justify="flex-end">
@@ -190,7 +202,7 @@ const CategorySectionTable = () => {
             <ActionIcon
               variant="subtle"
               onClick={() => {
-                setCategoryName(row.original.categorySection);
+                setEducation(row.original.levelOfEducation);
                 table.setEditingRow(row);
               }}
             >
@@ -204,7 +216,7 @@ const CategorySectionTable = () => {
           <Tooltip label="Trash">
             <ActionIcon
               variant="subtle"
-              onClick={() => openArhivedModalAction(row.original)}
+              onClick={() => openArhivedModalAction(row)}
             >
               <IconTrash
                 style={{ width: rem(16), height: rem(16) }}
@@ -219,6 +231,8 @@ const CategorySectionTable = () => {
     renderToolbarInternalActions: ({ table }) => {
       return (
         <Flex gap="xs" align="center">
+          {/* add custom button to print table  */}
+          {/* along-side built-in buttons in whatever order you want them */}
           <MRT_ToggleGlobalFilterButton table={table} />{" "}
           <MRT_ToggleDensePaddingButton table={table} />
           <MRT_ShowHideColumnsButton table={table} />
@@ -244,7 +258,7 @@ const CategorySectionTable = () => {
             bg={" var(--mantine-color-red-light)"}
             color={" var(--mantine-color-red-light-color)"}
           >
-            Add Category Section
+            Add Book Genre
           </Button>
         </Group>
         <Group hiddenFrom="sm">
@@ -255,10 +269,9 @@ const CategorySectionTable = () => {
             bg={" var(--mantine-color-red-light)"}
             color={" var(--mantine-color-red-light-color)"}
           >
-            Add Category Section
+            Add Book Genre
           </Button>
         </Group>
-
         <Box mt={"lg"}>
           <MantineReactTable table={table} />
         </Box>
@@ -266,4 +279,4 @@ const CategorySectionTable = () => {
     </>
   );
 };
-export default CategorySectionTable;
+export default LevelEducationTable;

@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import Form from "@components/Form/Form";
 import useReadCatalogue from "@features/Catalogue/hooks/useReadCatalogue";
-import useReadBookType from "@features/SysSettings/BookType/hooks/useReadBookType";
+import { useReadBookType } from "@features/SysSettings/BookType/hooks/useReadBookType";
 import { Select, Text, TextInput, rem } from "@mantine/core";
 import { IconEye } from "@tabler/icons-react";
 import { Dispatch, SetStateAction, useCallback, useEffect } from "react";

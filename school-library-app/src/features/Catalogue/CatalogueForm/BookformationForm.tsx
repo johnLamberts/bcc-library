@@ -1,7 +1,7 @@
 import Form from "@components/Form/Form";
 import { useReadAuthor } from "@features/SysSettings/BookAuthor/hooks/useReadAuthor";
 import { useReadGenre } from "@features/SysSettings/BookGenre/hooks/useReadGenre";
-import useReadBookType from "@features/SysSettings/BookType/hooks/useReadBookType";
+import { useReadBookType } from "@features/SysSettings/BookType/hooks/useReadBookType";
 import { Anchor, Drawer, MultiSelect, Select, TextInput } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import BookAuthor from "@pages/SystemSettings/BookAuthor";

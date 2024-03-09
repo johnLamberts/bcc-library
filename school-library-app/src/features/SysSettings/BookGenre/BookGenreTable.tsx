@@ -9,10 +9,13 @@ import {
   Highlight,
   Button,
   Group,
+  LoadingOverlay,
+  Title,
 } from "@mantine/core";
 import { IconEdit, IconPlus, IconTrash } from "@tabler/icons-react";
 import {
   MRT_ColumnDef,
+  MRT_EditActionButtons,
   MRT_Row,
   MRT_ShowHideColumnsButton,
   MRT_TableOptions,
@@ -26,7 +29,6 @@ import { useMemo } from "react";
 import IGenre from "@features/SysSettings/BookGenre/models/genres";
 import useCreateGenre from "@features/SysSettings/BookGenre/hooks/useCreateGenre";
 import useModifyGenre from "@features/SysSettings/BookGenre/hooks/useModifyGenre";
-import BookGenreForm from "@features/SysSettings/BookGenre/BookGenreForm";
 import { modals } from "@mantine/modals";
 import { useReadGenre } from "@features/SysSettings/BookGenre/hooks/useReadGenre";
 import { useArchiveGenre } from "@features/SysSettings/BookGenre/hooks/useArchiveGenre";
@@ -119,6 +121,9 @@ const BookGenreTable = () => {
     getRowId: (row) => String(row.id),
     onCreatingRowSave: handleCreateLevel,
     onEditingRowSave: handleSaveLevel,
+    mantineEditRowModalProps: {
+      centered: true,
+    },
     mantineTableContainerProps: {
       style: {
         height: "100%",
@@ -136,6 +141,44 @@ const BookGenreTable = () => {
       pagination: { pageIndex: 0, pageSize: 5 },
       columnVisibility: { id: false },
     },
+
+    renderEditRowModalContent: ({ internalEditComponents, row, table }) => (
+      <>
+        <LoadingOverlay
+          visible={table.getState().isSaving}
+          zIndex={1000}
+          overlayProps={{ radius: "sm", blur: 2 }}
+        />
+        <Stack>
+          <Title order={5}>Edit Genres</Title>
+          {internalEditComponents}{" "}
+          {/*or map over row.getAllCells() and render your own components */}
+          <Flex justify="flex-end">
+            <MRT_EditActionButtons row={row} table={table} variant="text" />{" "}
+            {/*or render your own buttons */}
+          </Flex>
+        </Stack>
+      </>
+    ),
+
+    renderCreateRowModalContent: ({ internalEditComponents, row, table }) => (
+      <>
+        <LoadingOverlay
+          visible={table.getState().isSaving}
+          zIndex={1000}
+          overlayProps={{ radius: "sm", blur: 2 }}
+        />
+        <Stack>
+          <Title order={5}>Add Genres</Title>
+          {internalEditComponents}{" "}
+          {/*or map over row.getAllCells() and render your own components */}
+          <Flex justify="flex-end">
+            <MRT_EditActionButtons row={row} table={table} variant="text" />{" "}
+            {/*or render your own buttons */}
+          </Flex>
+        </Stack>
+      </>
+    ),
 
     renderRowActions: ({ row }) => (
       <>
@@ -177,46 +220,46 @@ const BookGenreTable = () => {
       );
     },
 
-    renderEditRowModalContent: ({ row, table }) => {
-      return (
-        <>
-          <Stack>
-            <BookGenreForm
-              table={table}
-              row={row}
-              onSave={(data) =>
-                handleSaveLevel({
-                  values: data,
-                  table: table,
-                  row: row,
-                  exitEditingMode: () => null,
-                })
-              }
-            />
-          </Stack>
-        </>
-      );
-    },
-    renderCreateRowModalContent: ({ table, row }) => {
-      return (
-        <>
-          <Stack>
-            <BookGenreForm
-              table={table}
-              row={row}
-              onCreate={(data) =>
-                handleCreateLevel({
-                  values: data,
-                  table: table,
-                  row: row,
-                  exitCreatingMode: () => null,
-                })
-              }
-            />
-          </Stack>
-        </>
-      );
-    },
+    // renderEditRowModalContent: ({ row, table }) => {
+    //   return (
+    //     <>
+    //       <Stack>
+    //         <BookGenreForm
+    //           table={table}
+    //           row={row}
+    //           onSave={(data) =>
+    //             handleSaveLevel({
+    //               values: data,
+    //               table: table,
+    //               row: row,
+    //               exitEditingMode: () => null,
+    //             })
+    //           }
+    //         />
+    //       </Stack>
+    //     </>
+    //   );
+    // },
+    // renderCreateRowModalContent: ({ table, row }) => {
+    //   return (
+    //     <>
+    //       <Stack>
+    //         <BookGenreForm
+    //           table={table}
+    //           row={row}
+    //           onCreate={(data) =>
+    //             handleCreateLevel({
+    //               values: data,
+    //               table: table,
+    //               row: row,
+    //               exitCreatingMode: () => null,
+    //             })
+    //           }
+    //         />
+    //       </Stack>
+    //     </>
+    //   );
+    // },
   });
 
   return (

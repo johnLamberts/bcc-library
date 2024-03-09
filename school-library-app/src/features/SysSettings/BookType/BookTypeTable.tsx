@@ -1,16 +1,16 @@
 import {
-  Flex,
+  LoadingOverlay,
   ActionIcon,
   Group,
-  Button,
   Box,
+  Button,
   Tooltip,
   Highlight,
-  rem,
   Text,
-  LoadingOverlay,
+  rem,
   Stack,
   Title,
+  Flex,
 } from "@mantine/core";
 import { IconEdit, IconPlus, IconTrash } from "@tabler/icons-react";
 import {
@@ -24,34 +24,32 @@ import {
   MRT_EditActionButtons,
 } from "mantine-react-table";
 import { useState, useMemo } from "react";
-import useCreateCategorySection from "./hooks/useCreateCategorySection";
-import useModifyCategorySection from "./hooks/useModifyCategorySection";
-import { useReadCategorySection } from "./hooks/useReadCategorySection";
-import ICategorySection from "./models/category-section.interface";
+import useCreateBookType from "./hooks/useCreateBookType";
+import useModifyBookType from "./hooks/useModifyBookType";
+import { useReadBookType } from "./hooks/useReadBookType";
+import IBookType from "./models/book-type.interface";
 import { modals } from "@mantine/modals";
-import { useArchiveCategorySection } from "./hooks/useArchiveCategorySection";
+import { useArchiveBookType } from "./hooks/useArchiveGenre";
 
-const CategorySectionTable = () => {
-  const { createCategorySection, isPending: isCreating } =
-    useCreateCategorySection();
-
-  const [categoryName, setCategoryName] = useState("");
+const BookTypeTable = () => {
+  const { createBookType, isPending: isCreating } = useCreateBookType();
 
   const {
-    data: categorySectionData = [],
-    isLoading: isLoadingCategorySection,
-    isError: isLoadingCategorySectionError,
-    isFetching: isFetchingCategorySection,
-  } = useReadCategorySection();
+    data: bookTypeData = [],
+    isLoading: isLoadingBookType,
+    isError: isLoadingBookTypeError,
+    isFetching: isFetchingBookType,
+  } = useReadBookType();
 
-  const { modifyCategorySection, isPending: isUpdating } =
-    useModifyCategorySection();
+  const [types, setBookType] = useState<string>("");
 
-  //     archive
-  const { modifyGenre: modifyArchiveCategorySection, isArchiving } =
-    useArchiveCategorySection();
+  const { modifyBookType, isPending: isUpdating } = useModifyBookType();
 
-  const openArhivedModalAction = (row: ICategorySection) =>
+  // Archive
+  const { modifyGenre: modifyArchiveBookType, isArchiving } =
+    useArchiveBookType();
+
+  const openArhivedModalAction = (row: IBookType) =>
     modals.openConfirmModal({
       centered: true,
       title: (
@@ -62,9 +60,7 @@ const CategorySectionTable = () => {
         </Text>
       ),
       children: (
-        <Text>
-          Note: You can still recover {row.categorySection} on Archive View
-        </Text>
+        <Text>Note: You can still recover {row.bookType} on Archive View</Text>
       ),
       labels: {
         confirm: `Remove`,
@@ -74,11 +70,11 @@ const CategorySectionTable = () => {
       onConfirm: async () => {
         // modifyUserStatus(row.original);
         // alert("Archived: " + row.original.genresName);
-        await modifyArchiveCategorySection(row);
+        await modifyArchiveBookType(row);
       },
     });
 
-  const customColumns = useMemo<MRT_ColumnDef<ICategorySection>[]>(
+  const customColumns = useMemo<MRT_ColumnDef<IBookType>[]>(
     () => [
       {
         accessorKey: "id",
@@ -88,34 +84,34 @@ const CategorySectionTable = () => {
         size: 80,
       },
       {
-        accessorKey: "categorySection",
-        header: "Category Section",
+        accessorKey: "bookType",
+        header: "Book Type",
       },
     ],
     []
   );
 
   // CREATE action
-  const handleCreateLevel: MRT_TableOptions<ICategorySection>["onCreatingRowSave"] =
+  const handleCreateLevel: MRT_TableOptions<IBookType>["onCreatingRowSave"] =
     async ({ values, table }) => {
-      await createCategorySection(values);
+      await createBookType(values);
 
       table.setCreatingRow(null);
     };
 
-  const handleSaveLevel: MRT_TableOptions<ICategorySection>["onEditingRowSave"] =
+  const handleSaveLevel: MRT_TableOptions<IBookType>["onEditingRowSave"] =
     async ({ values, table }) => {
       const value = {
         ...values,
-        categoryName,
+        types,
       };
-      await modifyCategorySection(value);
+      await modifyBookType(value);
 
       table.setEditingRow(null);
     };
 
   const table = useMantineReactTable({
-    data: categorySectionData,
+    data: bookTypeData,
     columns: customColumns,
     createDisplayMode: "modal",
     editDisplayMode: "modal",
@@ -125,6 +121,7 @@ const CategorySectionTable = () => {
     getRowId: (row) => String(row.id),
     onCreatingRowSave: handleCreateLevel,
     onEditingRowSave: handleSaveLevel,
+
     mantineEditRowModalProps: {
       centered: true,
     },
@@ -134,15 +131,18 @@ const CategorySectionTable = () => {
       },
     },
     state: {
-      isLoading: isLoadingCategorySection,
+      isLoading: isLoadingBookType,
       isSaving: isCreating || isUpdating,
-      showAlertBanner: isLoadingCategorySectionError,
-      showProgressBars: isFetchingCategorySection || isArchiving,
+      showAlertBanner: isLoadingBookTypeError,
+      showProgressBars: isFetchingBookType,
+      showLoadingOverlay: isArchiving,
     },
 
     initialState: {
       pagination: { pageIndex: 0, pageSize: 5 },
-      columnVisibility: { id: false },
+      columnVisibility: {
+        id: false,
+      },
     },
 
     renderEditRowModalContent: ({ internalEditComponents, row, table }) => (
@@ -153,7 +153,7 @@ const CategorySectionTable = () => {
           overlayProps={{ radius: "sm", blur: 2 }}
         />
         <Stack>
-          <Title order={5}>Edit Category Section</Title>
+          <Title order={5}>Edit Book Type</Title>
           {internalEditComponents}{" "}
           {/*or map over row.getAllCells() and render your own components */}
           <Flex justify="flex-end">
@@ -172,7 +172,7 @@ const CategorySectionTable = () => {
           overlayProps={{ radius: "sm", blur: 2 }}
         />
         <Stack>
-          <Title order={5}>Add Category Section</Title>
+          <Title order={5}>Add Book Type</Title>
           {internalEditComponents}{" "}
           {/*or map over row.getAllCells() and render your own components */}
           <Flex justify="flex-end">
@@ -190,8 +190,8 @@ const CategorySectionTable = () => {
             <ActionIcon
               variant="subtle"
               onClick={() => {
-                setCategoryName(row.original.categorySection);
                 table.setEditingRow(row);
+                setBookType(row.original.bookType);
               }}
             >
               <IconEdit
@@ -244,7 +244,7 @@ const CategorySectionTable = () => {
             bg={" var(--mantine-color-red-light)"}
             color={" var(--mantine-color-red-light-color)"}
           >
-            Add Category Section
+            Add Book Genre
           </Button>
         </Group>
         <Group hiddenFrom="sm">
@@ -255,7 +255,7 @@ const CategorySectionTable = () => {
             bg={" var(--mantine-color-red-light)"}
             color={" var(--mantine-color-red-light-color)"}
           >
-            Add Category Section
+            Add Book Genre
           </Button>
         </Group>
 
@@ -266,4 +266,4 @@ const CategorySectionTable = () => {
     </>
   );
 };
-export default CategorySectionTable;
+export default BookTypeTable;
