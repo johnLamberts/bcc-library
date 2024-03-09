@@ -3,6 +3,7 @@ import {
   Flex,
   ActionIcon,
   rem,
+  Stack,
   Tooltip,
   Text,
   Box,
@@ -19,27 +20,33 @@ import {
   MantineReactTable,
 } from "mantine-react-table";
 import { useMemo } from "react";
+import ILevelOfEducation from "./level-of-education.interface";
+import {
+  useArchiveReadEducation,
+  useRecoverArchiveEducation,
+} from "./useArchiveEducation";
+import BookGenreForm from "../BookGenre/BookGenreForm";
+import useCreateGenre from "../BookGenre/hooks/useCreateGenre";
+import useModifyEducation from "./useModifyEducation";
 
-import { useRecoverArchiveAuthor } from "./hooks/useArchiveAuthor";
-import useModifyAuthor from "./hooks/useModifyBookAuthor";
-import IAuthor from "./models/book-author.interface";
-import { useReadArchiveAuthor } from "./hooks/useReadAuthor";
+const ArchiveEducationTable = () => {
+  const { createGenre, isPending: isCreating } = useCreateGenre();
 
-const ArchiveAuthor = () => {
   const {
     data: genresData = [],
     isLoading: isLoadingGenre,
     isError: isLoadingGenreError,
     isFetching: isFetchingGenre,
-  } = useReadArchiveAuthor();
+  } = useArchiveReadEducation();
 
-  const { modifyAuthor, isPending: isUpdating } = useModifyAuthor();
+  const { modifyLevelOfEducation, isPending: isUpdating } =
+    useModifyEducation();
   const { modifyGenre: modifyArchiveGenre, isArchiving } =
-    useRecoverArchiveAuthor();
+    useRecoverArchiveEducation();
 
   // Archive
 
-  const openArhivedModalAction = (row: IAuthor) =>
+  const openArhivedModalAction = (row: ILevelOfEducation) =>
     modals.openConfirmModal({
       centered: true,
       title: (
@@ -60,26 +67,33 @@ const ArchiveAuthor = () => {
       },
     });
 
-  const customColumns = useMemo<MRT_ColumnDef<IAuthor>[]>(
+  const customColumns = useMemo<MRT_ColumnDef<ILevelOfEducation>[]>(
     () => [
       {
         accessorKey: "id",
         header: "Id",
         enableEditing: false,
-        enableColumnActions: false,
         size: 80,
       },
       {
-        accessorKey: "bookAuthor",
-        header: "Author",
+        accessorKey: "levelOfEducation",
+        header: "Name",
       },
     ],
     []
   );
 
-  const handleSaveLevel: MRT_TableOptions<IAuthor>["onEditingRowSave"] =
+  // CREATE action
+  const handleCreateLevel: MRT_TableOptions<ILevelOfEducation>["onCreatingRowSave"] =
     async ({ values, table }) => {
-      await modifyAuthor(values);
+      createGenre(values).then(() => {
+        table.setCreatingRow(null);
+      });
+    };
+
+  const handleSaveLevel: MRT_TableOptions<ILevelOfEducation>["onEditingRowSave"] =
+    async ({ values, table }) => {
+      await modifyLevelOfEducation(values);
       table.setEditingRow(null);
     };
 
@@ -92,6 +106,7 @@ const ArchiveAuthor = () => {
     enableEditing: true,
     positionActionsColumn: "last",
     getRowId: (row) => String(row.id),
+    onCreatingRowSave: handleCreateLevel,
     onEditingRowSave: handleSaveLevel,
     mantineTableContainerProps: {
       style: {
@@ -100,7 +115,7 @@ const ArchiveAuthor = () => {
     },
     state: {
       isLoading: isLoadingGenre,
-      isSaving: isUpdating,
+      isSaving: isCreating || isUpdating,
       showAlertBanner: isLoadingGenreError,
       showProgressBars: isFetchingGenre,
       showLoadingOverlay: isArchiving,
@@ -149,6 +164,27 @@ const ArchiveAuthor = () => {
         </Flex>
       );
     },
+
+    renderEditRowModalContent: ({ row, table }) => {
+      return (
+        <>
+          <Stack>
+            <BookGenreForm
+              table={table}
+              row={row}
+              onSave={(data) =>
+                handleSaveLevel({
+                  values: data,
+                  table: table,
+                  row: row,
+                  exitEditingMode: () => null,
+                })
+              }
+            />
+          </Stack>
+        </>
+      );
+    },
   });
 
   return (
@@ -159,4 +195,4 @@ const ArchiveAuthor = () => {
     </>
   );
 };
-export default ArchiveAuthor;
+export default ArchiveEducationTable;

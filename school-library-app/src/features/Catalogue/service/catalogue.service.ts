@@ -147,6 +147,20 @@ const getAllBooksCatalogue = async () => {
   })) as IBooks[];
 };
 
+const getActiveBooks = async () => {
+  const booksCatalogueSnapshot = await getDocs(
+    query(
+      collection(firestore, FIRESTORE_COLLECTION_QUERY_KEY.CATALOGUE),
+      where("bookStatus", "==", "Active")
+    )
+  );
+
+  return booksCatalogueSnapshot.docs.map((doc) => ({
+    id: doc.id,
+    ...doc.data(),
+  })) as IBooks[];
+};
+
 const updateCatalogueAvailability = async (books: Partial<IBooks>) => {
   const { id, bookStatus } = books;
 
@@ -164,4 +178,5 @@ export {
   getAllBooksCatalogue,
   updateCatalogue,
   updateCatalogueAvailability,
+  getActiveBooks,
 };

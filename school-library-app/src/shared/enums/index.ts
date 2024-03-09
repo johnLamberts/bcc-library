@@ -3,6 +3,7 @@ export enum FIRESTORE_COLLECTION_QUERY_KEY {
   CATEGORY = "category",
   CATEGORY_SECTION = "category-section",
   CATALOGUE = "books-catalogue",
+  ACTIVE_CATALOGUE = "active-books-catalogue",
   BOOKS_CATALOGUE = "books",
   RETURNED_CONDITION = "return-condition",
   DAMAGE_CATEGORY = "damaged-category",
@@ -64,4 +65,5 @@ export enum FIRESTORE_COLLECTION_QUERY_KEY {
   ARCHIVE_BOOK_TYPE = "archive-book-type",
   ARCHIVE_AUTHOR = "archive-authors",
   ARCHIVE_CATEGORY_SECTION = "archive-category-section",
+  ARCHIVE_LEVEL_OF_EDUCATION = "archive-level-of-education",
 }

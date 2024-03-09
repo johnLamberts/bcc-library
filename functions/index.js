@@ -110,7 +110,7 @@ exports.taskRunner = functions
     });
   });
 
-exports.booksStockChecker = functions
+exports.booksQuantityChecker = functions
   .runWith({ memory: "4GB" })
   .pubsub.schedule("* * * * *")
   .onRun(async () => {
@@ -120,68 +120,83 @@ exports.booksStockChecker = functions
       return data.docs.forEach(async (doc) => {
         const snapshot = doc.data();
 
-        const { numberOfBooksAvailable_QUANTITY } = snapshot;
-
-        if (numberOfBooksAvailable_QUANTITY === 0) {
-          return doc.ref.update({ bookStatus: "Out of Stock" });
+        if (snapshot.numberOfBooksAvailable_QUANTITY === 0) {
+          return doc.ref.update({
+            bookStatus: "Out of Stock",
+          });
+        } else {
+          return doc.ref.update({
+            bookStatus: snapshot.bookStatus,
+          });
         }
       });
     });
   });
 
-// exports.documentReservedChecker = functions
-//   .runWith({ memory: "4GB" })
-//   .pubsub.schedule("* * * * *")
-//   .onRun(async () => {
-//     admin
-//       .firestore()
-//       .collection("books-reserved")
-//       .get()
-//       .then((docs) => {
-//         return docs.docs.map(async (doc) => {
-//           const snapshot = doc.data();
+exports.documentReservedChecker = functions
+  .runWith({ memory: "4GB" })
+  .pubsub.schedule("* * * * *")
+  .onRun(async () => {
+    admin
+      .firestore()
+      .collection("books-reserved")
+      .get()
+      .then((docs) => {
+        return docs.docs.map(async (doc) => {
+          const snapshot = doc.data();
 
-//           const msg = {
-//             to: snapshot.borrowersEmail,
-//             from: "librsystem.e@gmail.com",
-//             fullName: snapshot.borrowersName,
-//             templateId: AUTOMATE_CANCELLED_RESERVE,
-//             dynamic_template_data: {
-//               fullName: snapshot.borrowersName,
-//               bookTitle: snapshot.bookTitle,
-//             },
-//           };
+          const msg = {
+            to: snapshot.borrowersEmail,
+            from: "librsystem.e@gmail.com",
+            fullName: snapshot.borrowersName,
+            templateId: AUTOMATE_CANCELLED_RESERVE,
+            dynamic_template_data: {
+              fullName: snapshot.borrowersName,
+              bookTitle: snapshot.bookTitle,
+            },
+          };
 
-//           const dateCreated =
-//             doc.data().createdAt._seconds * 1000 +
-//             Math.floor(doc.data().createdAt._nanoseconds / 1000000);
+          const dateCreated =
+            doc.data().createdAt._seconds * 1000 +
+            Math.floor(doc.data().createdAt._nanoseconds / 1000000);
 
-//           const past = new Date(
-//             admin.firestore.Timestamp.now().toMillis() - 24 * 60 * 60 * 1000
-//           );
+          const past = new Date(
+            admin.firestore.Timestamp.now().toMillis() - 24 * 60 * 60 * 1000
+          );
 
-//           if (dateCreated < past) {
-//             const booksTransactionRef = await admin
-//               .firestore()
-//               .collection("books-transaction")
-//               .where("reservedId", "==", doc.id)
-//               .get();
+          if (dateCreated < past) {
+            const booksTransactionRef = await admin
+              .firestore()
+              .collection("books-transaction")
+              .where("reservedId", "==", doc.id)
+              .get();
 
-//             booksTransactionRef.docs.map(async (transactDoc) =>
-//               admin
-//                 .firestore()
-//                 .doc(`books-transaction/${transactDoc.id}`)
-//                 .update({
-//                   status: "Cancelled",
-//                   modifiedAt: admin.firestore.Timestamp.now(),
-//                 })
-//             );
-//             await admin.firestore().doc(`books-reserved/${doc.id}`).delete();
+            booksTransactionRef.docs.map(async (transactDoc) =>
+              admin
+                .firestore()
+                .doc(`books-transaction/${transactDoc.id}`)
+                .update({
+                  status: "Cancelled",
+                  modifiedAt: admin.firestore.Timestamp.now(),
+                })
+            );
 
-//             return sgMail.send(msg);
-//           } else {
-//             doc.ref.update({ status: "Reserved" });
-//           }
-//         });
-//       });
-//   });
+            // const booksRef = await admin.firestore().doc(`books-catalogue/${doc.data().booksId}`).get();
+
+            await admin
+              .firestore()
+              .doc(`books-catalogue/${doc.data().booksId}`)
+              .update({
+                numberOfBooksAvailable_QUANTITY:
+                  doc.data().numberOfBooksAvailable_QUANTITY + 1,
+              });
+
+            await admin.firestore().doc(`books-reserved/${doc.id}`).delete();
+
+            return sgMail.send(msg);
+          } else {
+            doc.ref.update({ status: "Reserved" });
+          }
+        });
+      });
+  });

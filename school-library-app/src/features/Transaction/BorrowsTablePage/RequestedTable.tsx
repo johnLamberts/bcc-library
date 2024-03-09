@@ -156,6 +156,9 @@ const BookRequestedTable = () => {
         bookType: false,
         borrowersName: false,
         borrowers: false,
+        firstName: false,
+        middleName: false,
+        lastName: false,
       },
     },
 
