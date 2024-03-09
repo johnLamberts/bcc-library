@@ -1,5 +1,4 @@
 import {
-  Group,
   Box,
   Flex,
   ScrollArea,
@@ -19,7 +18,6 @@ import {
 } from "mantine-react-table";
 import { useMemo } from "react";
 
-import classes from "@pages/styles/user.module.css";
 import { ICirculation } from "../models/circulation.interface";
 import { modals } from "@mantine/modals";
 import useReadReserved from "../hooks/useReadReserved";
@@ -86,14 +84,6 @@ const BookRequestedTable = () => {
     ],
     []
   );
-
-  // CREATE action
-  // const handleCreateLevel: MRT_TableOptions<ICirculation>["onCreatingRowSave"] =
-  //   async ({ values, table }) => {
-  //     await createBorrowTransaction(values);
-
-  //     table.setCreatingRow(null);
-  //   };
 
   // Modal `APPROVE` action
   const openApproveConfirmModal = (row: MRT_Row<ICirculation>) =>
@@ -196,15 +186,7 @@ const BookRequestedTable = () => {
 
   return (
     <>
-      <Box maw={"75.2vw"}>
-        <Group align="end" justify="space-between">
-          <Box className={classes.highlight}>
-            <Text fz={"xl"} fw={"bold"} c={"red"}>
-              Reserved Book
-            </Text>
-          </Box>
-        </Group>
-
+      <Box maw={"78vw"}>
         <Box mt={"lg"}>
           <MantineReactTable table={table} />
         </Box>

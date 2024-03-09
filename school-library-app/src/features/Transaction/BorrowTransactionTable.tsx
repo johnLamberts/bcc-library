@@ -217,7 +217,6 @@ const BorrowTransactionTable = () => {
     columns: customColumns,
     createDisplayMode: "modal",
     editDisplayMode: "modal",
-    // positionActionsColumn: "last",
     onCreatingRowSave: handleCreateLevel,
     mantineTableContainerProps: {
       style: {
@@ -259,6 +258,9 @@ const BorrowTransactionTable = () => {
         borrowersName: false,
         borrowers: false,
       },
+      columnPinning: {
+        right: ["status"],
+      },
     },
 
     renderToolbarInternalActions: ({ table }) => {
@@ -294,7 +296,7 @@ const BorrowTransactionTable = () => {
 
   return (
     <>
-      <Box maw={"75.2vw"}>
+      <Box maw={"78vw"}>
         <Group align="end" justify="space-between">
           <Box className={classes.highlight}>
             <Text fz={"xl"} fw={"bold"} c={"red"}>
