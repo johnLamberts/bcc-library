@@ -1,50 +1,7 @@
-import {
-  LoadingOverlay,
-  LoadingOverlay,
-  useComputedColorScheme,
-  useMantineTheme,
-} from "@mantine/core";
+import { LoadingOverlay, useComputedColorScheme } from "@mantine/core";
 import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis } from "recharts";
 import useReadWeeklyReports from "./hooks/useReadWeeklyReports";
-import { getTotalTransactionsByDateRange } from "./service/admin-dashboard.service";
 
-// const data = [
-//   {
-//     name: "Monday",
-//     total: Math.floor(Math.random() * 5000) + 1000,
-//   },
-//   {
-//     name: "Tuesday",
-//     total: Math.floor(Math.random() * 5000) + 1000,
-//   },
-//   {
-//     name: "Wednesday",
-//     total: Math.floor(Math.random() * 5000) + 1000,
-//   },
-//   {
-//     name: "Thursday",
-//     total: Math.floor(Math.random() * 5000) + 1000,
-//   },
-//   {
-//     name: "Friday",
-//     total: Math.floor(Math.random() * 5000) + 1000,
-//   },
-// ];
-
-// function getDayNameFromDate(dateString: string): string {
-//   const date = new Date(dateString);
-//   const dayIndex = date.getDay();
-//   const days = [
-//     "Sunday",
-//     "Monday",
-//     "Tuesday",
-//     "Wednesday",
-//     "Thursday",
-//     "Friday",
-//     "Saturday",
-//   ];
-//   return days[dayIndex];
-// }
 export function Overview() {
   const computedColorScheme = useComputedColorScheme("light", {
     getInitialValueInEffect: true,

@@ -122,8 +122,8 @@ const Header = () => {
 
                   <Menu.Dropdown>
                     <Menu.Label>Application</Menu.Label>
-                    {user.userRole.toLowerCase().includes("student") ||
-                    user.userRole.toLowerCase().includes("teacher") ? (
+                    {user.userRole?.toLowerCase()!.includes("student") ||
+                    user.userRole?.toLowerCase()!.includes("teacher") ? (
                       <Menu.Item
                         leftSection={
                           <IconSettings
@@ -138,7 +138,7 @@ const Header = () => {
                       </Menu.Item>
                     ) : null}
 
-                    {user.userRole.toLowerCase().includes("admin") && (
+                    {user.userRole?.toLowerCase()!.includes("admin") && (
                       <Menu.Item
                         leftSection={
                           <IconSettings

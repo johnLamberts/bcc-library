@@ -417,6 +417,7 @@ const addReturnedBook = async (returns: Partial<ICirculation>) => {
     middleName,
     lastName,
     borrowersNumber,
+    borrowersId,
     status,
     booksBorrowedId,
     bookType,
@@ -534,6 +535,7 @@ const addReturnedBook = async (returns: Partial<ICirculation>) => {
       booksBorrowedId,
 
       borrowersEmail,
+      borrowersId,
       borrowers,
       firstName,
       middleName,
@@ -793,6 +795,8 @@ const addPatrialPaymentTransaction = async (partial: Partial<ICirculation>) => {
       booksBorrowedId,
 
       borrowersEmail,
+      borrowersId,
+
       borrowers,
       firstName,
       middleName,

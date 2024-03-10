@@ -30,8 +30,8 @@ const useLogin = () => {
         const userRole = user?.[0].userRole;
 
         if (
-          userRole?.toLowerCase().includes("student") ||
-          userRole?.toLowerCase().includes("teacher")
+          userRole?.toLowerCase()?.includes("student") ||
+          userRole?.toLowerCase()?.includes("teacher")
         ) {
           navigate("/home");
         } else if (userRole?.toLowerCase().includes("admin")) {

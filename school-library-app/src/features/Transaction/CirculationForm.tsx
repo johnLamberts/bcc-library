@@ -1,5 +1,5 @@
 import Form from "@components/Form/Form";
-import { Box, Divider } from "@mantine/core";
+import { Box, Divider, LoadingOverlay } from "@mantine/core";
 import { useCallback, useEffect, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { MRT_RowData, MRT_TableInstance, MRT_Row } from "mantine-react-table";
@@ -89,6 +89,11 @@ export default function CirculationForm<TData extends MRT_RowData>({
 
   return (
     <FormProvider {...form}>
+      <LoadingOverlay
+        visible={table.getState().isSaving}
+        zIndex={1000}
+        overlayProps={{ radius: "sm", blur: 2 }}
+      />{" "}
       <Form onSubmit={form.handleSubmit(onSubmit)}>
         <Divider mt={"xs"} mb={"xs"} />
         <BorrowersInformationForm seeRole={seeRole} setSeeRole={setSeeRole} />
