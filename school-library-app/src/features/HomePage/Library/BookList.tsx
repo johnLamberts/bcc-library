@@ -8,16 +8,18 @@ import {
   Divider,
   Grid,
   Badge,
-  Button,
   Card,
   Image,
+  rem,
+  Spoiler,
 } from "@mantine/core";
 import {
-  IconBrowserCheck,
+  IconBookmark,
+  IconHeart,
   IconLayoutDashboard,
   IconList,
+  IconShare,
 } from "@tabler/icons-react";
-import { Link } from "react-router-dom";
 import classes from "./book-list.module.css";
 import useBooks from "../hooks/useBooks";
 import BookPagination from "./BookPagination";
@@ -34,6 +36,7 @@ const BookList = ({
 
   const { isLoading } = useBooks();
 
+  console.log(booksData);
   return (
     <Paper p={"xs"}>
       <Group justify="space-between">
@@ -72,50 +75,58 @@ const BookList = ({
             {booksData?.map((book) => (
               <Grid.Col span={{ base: 12, md: 6, lg: 4 }}>
                 <Card
-                  shadow="sm"
+                  withBorder
                   padding="lg"
                   radius="md"
-                  withBorder
-                  key={book.id}
+                  className={classes.card}
+                  mt={"xs"}
+                  mah={"25rem"}
                 >
-                  <Link to={`/library/${book.id}`} className={classes.cardList}>
-                    <Card.Section>
-                      <Image
-                        src={book.bookImageCover}
-                        height={160}
-                        alt="Norway"
-                      />
-                    </Card.Section>
+                  <Card.Section mb="sm">
+                    <Image
+                      src={book.bookImageCover}
+                      alt="Top 50 underrated plants for house decoration"
+                      height={180}
+                    />
+                  </Card.Section>
 
-                    <Group justify="space-between" mt="md" mb="xs">
-                      <Text fw={500}>{book.title}</Text>
-                      <Badge color="#5C0505">{book.bookType}</Badge>
+                  <Badge w="fit-content" variant="light">
+                    {book.bookType}
+                  </Badge>
+
+                  <Spoiler
+                    maxHeight={50}
+                    showLabel="Show more"
+                    hideLabel="Hide"
+                  >
+                    <Text fw={700} className={classes.title} mt="xs">
+                      {book.title}
+                    </Text>
+                  </Spoiler>
+
+                  <Card.Section className={classes.footer}>
+                    <Group justify="space-between">
+                      <Group gap={0}>
+                        <ActionIcon variant="subtle" color="gray">
+                          <IconHeart
+                            style={{ width: rem(20), height: rem(20) }}
+                          />
+                        </ActionIcon>
+                        <ActionIcon variant="subtle" color="gray">
+                          <IconBookmark
+                            style={{ width: rem(20), height: rem(20) }}
+                            stroke={1.5}
+                          />
+                        </ActionIcon>
+                        <ActionIcon variant="subtle" color="gray">
+                          <IconShare
+                            style={{ width: rem(20), height: rem(20) }}
+                            stroke={1.5}
+                          />
+                        </ActionIcon>
+                      </Group>
                     </Group>
-
-                    <Text size="sm" c="dimmed">
-                      {book.bookDescription}
-                      {/* With Fjord Tours you can explore more of the magical fjord
-                      landscapes with tours and activities on and around the
-                      fjords of Norway */}
-                    </Text>
-
-                    <Text size="sm" my={"xs"}>
-                      Number of Copies Available:{" "}
-                      <b>{book.numberOfBooksAvailable_QUANTITY}</b>
-                    </Text>
-
-                    <Divider />
-
-                    <Button
-                      color="#ffa903"
-                      fullWidth
-                      mt="md"
-                      radius="md"
-                      rightSection={<IconBrowserCheck size={14} />}
-                    >
-                      Borrow Book
-                    </Button>
-                  </Link>
+                  </Card.Section>
                 </Card>
               </Grid.Col>
             ))}

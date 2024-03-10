@@ -1,8 +1,15 @@
-.cardList {
-  text-decoration: none;
-  color: inherit;
-  transition: 0.3s all ease-in;
-  &:hover {
-    transform: scale(1.05);
-  }
+.card {
+  background-color: var(--mantine-color-body);
+}
+
+.title {
+  font-family: Greycliff CF, var(--mantine-font-family);
+  height: 7rem;
+}
+
+.footer {
+  padding: var(--mantine-spacing-xs) var(--mantine-spacing-lg);
+  margin-top: var(--mantine-spacing-md);
+  border-top: rem(1px) solid
+    light-dark(var(--mantine-color-gray-2), var(--mantine-color-dark-5));
 }
