@@ -1,10 +1,12 @@
 import useBookDetail from "@features/HomePage/hooks/useBookDetail";
 import {
+  Accordion,
   Badge,
   Box,
   Button,
   Container,
   Divider,
+  FileInput,
   Flex,
   Grid,
   Image,
@@ -14,17 +16,20 @@ import {
   Tabs,
   Text,
   ThemeIcon,
+  ThemeIcon,
   Title,
   rem,
 } from "@mantine/core";
 import {
   IconAlignCenter,
+  IconBooks,
   IconCategory,
   IconClock,
   IconCopy,
   IconSection,
 } from "@tabler/icons-react";
 import classes from "./book-details.module.css";
+import { IconAddressBook } from "@tabler/icons-react";
 const books = {
   title: "Test Book",
   authors: ["John", "Angelo", "Llance", "Neil"],
@@ -125,6 +130,18 @@ const BookDetail = () => {
                     <List.Item
                       icon={
                         <ThemeIcon size={20} radius="xl" color="yellow">
+                          <IconAddressBook
+                            style={{ width: rem(12), height: rem(12) }}
+                            stroke={1.5}
+                          />
+                        </ThemeIcon>
+                      }
+                    >
+                      <b>ISBN-10, ISBN-13</b> – {book?.bookISBN}
+                    </List.Item>
+                    <List.Item
+                      icon={
+                        <ThemeIcon size={20} radius="xl" color="yellow">
                           <IconAlignCenter
                             style={{ width: rem(12), height: rem(12) }}
                             stroke={1.5}
@@ -161,6 +178,19 @@ const BookDetail = () => {
                       }
                     >
                       <b>Book Section</b> – {book?.bookSection}
+                    </List.Item>
+
+                    <List.Item
+                      icon={
+                        <ThemeIcon size={20} radius="xl" color="yellow">
+                          <IconBooks
+                            style={{ width: rem(12), height: rem(12) }}
+                            stroke={1.5}
+                          />
+                        </ThemeIcon>
+                      }
+                    >
+                      <b>Call Number</b> – {book?.callNumber}
                     </List.Item>
 
                     <List.Item
@@ -203,8 +233,17 @@ const BookDetail = () => {
 
                     <Box my={"sm"}>
                       <Paper shadow="xs" p="md" withBorder>
-                        <b>Description</b>
-                        <Text fw={500}>{book?.bookDescription}</Text>
+                        <b
+                          style={{
+                            marginTop: "1rem",
+                            marginBottom: "1rem",
+                          }}
+                        >
+                          Description
+                        </b>
+                        <Text mt={"sm"} fw={500} ta={"justify"}>
+                          {book?.bookDescription}
+                        </Text>
                       </Paper>
                     </Box>
                   </List>
@@ -225,39 +264,35 @@ const BookDetail = () => {
         </>
         <Tabs defaultValue="second" p={"xl"} mt={"md"}>
           <Tabs.List>
-            <Tabs.Tab value="first">Description</Tabs.Tab>
+            <Tabs.Tab value="first">PDF File</Tabs.Tab>
             <Tabs.Tab value="second">Location and Details</Tabs.Tab>
           </Tabs.List>
 
           <Box pt={"md"}>
             <Tabs.Panel value="first">
-              <Text ta={"justify"}>{books.description}</Text>
+              modal
+              {/* <Text ta={"justify"}>{books?.bookFile}</Text> */}
             </Tabs.Panel>
             <Tabs.Panel value="second">
-              <Box>
-                <Title order={3}>Location</Title>
-                <Text>
-                  {book?.bookSection} {book?.bookLocation} {book?.callNumber}
-                </Text>
-              </Box>
+              <Accordion variant="separated">
+                <Accordion.Item className={classes.item} value="reset-password">
+                  <Accordion.Control>Publication Date</Accordion.Control>
+                  <Accordion.Panel>{book?.publicationDate}</Accordion.Panel>
+                </Accordion.Item>
 
-              <Box my={"xs"}>
-                <Title order={3}>Publisher Details</Title>
-                <Text>
-                  {book?.publisher} {book?.publicationDetails}{" "}
-                  {book?.publicationDate} {book?.edition}
-                </Text>
-              </Box>
-              <Box my={"xs"}>
-                <Title order={3}>Book Availability</Title>
-                <Text>
-                  {book?.timeSpecifier} {book?.timeUnit}{" "}
-                </Text>
+                <Accordion.Item
+                  className={classes.item}
+                  value="another-account"
+                >
+                  <Accordion.Control>Publication Details</Accordion.Control>
+                  <Accordion.Panel>{book?.publicationDetails}</Accordion.Panel>
+                </Accordion.Item>
 
-                <Text>
-                  Copies: <b>{book?.numberOfBooksAvailable_QUANTITY}</b>
-                </Text>
-              </Box>
+                <Accordion.Item className={classes.item} value="newsletter">
+                  <Accordion.Control>Publisher</Accordion.Control>
+                  <Accordion.Panel>{book?.publisher}</Accordion.Panel>
+                </Accordion.Item>
+              </Accordion>
             </Tabs.Panel>
           </Box>
         </Tabs>
