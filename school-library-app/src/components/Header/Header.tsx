@@ -35,7 +35,7 @@ const links = [
 ];
 
 const Header = () => {
-  const { user } = useCurrentUser();
+  const { user, isLoading } = useCurrentUser();
 
   const navigate = useNavigate();
 
@@ -73,6 +73,7 @@ const Header = () => {
                   color="#ffa903"
                   size="xs"
                   onClick={() => navigate("login")}
+                  disabled={isLoading}
                 >
                   <Text
                     pt={"0.2em"}
@@ -121,25 +122,23 @@ const Header = () => {
 
                   <Menu.Dropdown>
                     <Menu.Label>Application</Menu.Label>
-                    {user.userRole.toLowerCase().includes("student") &&
-                      user.userRole.toLowerCase().includes("teacher") && (
-                        <Menu.Item
-                          leftSection={
-                            <IconSettings
-                              style={{ width: rem(14), height: rem(14) }}
-                            />
-                          }
-                          onClick={() =>
-                            navigate(
-                              `profile/${user?.userUID}_${user?.userRole}`
-                            )
-                          }
-                        >
-                          Settings
-                        </Menu.Item>
-                      )}
+                    {user.userRole?.toLowerCase()!.includes("student") ||
+                    user.userRole?.toLowerCase()!.includes("teacher") ? (
+                      <Menu.Item
+                        leftSection={
+                          <IconSettings
+                            style={{ width: rem(14), height: rem(14) }}
+                          />
+                        }
+                        onClick={() =>
+                          navigate(`profile/${user?.userUID}_${user?.userRole}`)
+                        }
+                      >
+                        Settings
+                      </Menu.Item>
+                    ) : null}
 
-                    {user.userRole.toLowerCase().includes("admin") && (
+                    {user.userRole?.toLowerCase()!.includes("admin") && (
                       <Menu.Item
                         leftSection={
                           <IconSettings

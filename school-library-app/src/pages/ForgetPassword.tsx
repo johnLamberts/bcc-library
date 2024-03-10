@@ -19,7 +19,7 @@ import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 
 const ForgetPassword = () => {
-  const { addForgetPassword, isSuccess } = useForgetPassword();
+  const { addForgetPassword, isSuccess, isPending } = useForgetPassword();
 
   const form = useForm();
 
@@ -77,6 +77,7 @@ const ForgetPassword = () => {
                       message: "Entered value does not match email format",
                     },
                   })}
+                  disabled={isPending}
                   error={<>{form.formState.errors.email?.message}</>}
                   withErrorStyles={
                     form.formState.errors.email?.message ? true : false
@@ -101,7 +102,11 @@ const ForgetPassword = () => {
                       <Box ml={5}>Back to the login page</Box>
                     </Center>
                   </Anchor>
-                  <Button className={classes.control} type="submit">
+                  <Button
+                    className={classes.control}
+                    type="submit"
+                    disabled={isPending}
+                  >
                     Reset password
                   </Button>
                 </Group>{" "}
