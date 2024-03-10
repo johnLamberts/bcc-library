@@ -12,18 +12,18 @@ import {
   Image,
   rem,
   Spoiler,
+  List,
 } from "@mantine/core";
 import {
   IconBookmark,
-  IconHeart,
   IconLayoutDashboard,
   IconList,
-  IconShare,
 } from "@tabler/icons-react";
 import classes from "./book-list.module.css";
 import useBooks from "../hooks/useBooks";
 import BookPagination from "./BookPagination";
 import { IBooks } from "@features/Catalogue/models/books.interface";
+import { Link } from "react-router-dom";
 
 const BookList = ({
   booksData,
@@ -74,60 +74,67 @@ const BookList = ({
           <Grid>
             {booksData?.map((book) => (
               <Grid.Col span={{ base: 12, md: 6, lg: 4 }}>
-                <Card
-                  withBorder
-                  padding="lg"
-                  radius="md"
-                  className={classes.card}
-                  mt={"xs"}
-                  mah={"25rem"}
+                <Link
+                  to={`/library/${book.id}`}
+                  style={{
+                    textDecoration: "none",
+                  }}
                 >
-                  <Card.Section mb="sm">
-                    <Image
-                      src={book.bookImageCover}
-                      alt="Top 50 underrated plants for house decoration"
-                      height={180}
-                    />
-                  </Card.Section>
-
-                  <Badge w="fit-content" variant="light">
-                    {book.bookType}
-                  </Badge>
-
-                  <Spoiler
-                    maxHeight={50}
-                    showLabel="Show more"
-                    hideLabel="Hide"
+                  <Card
+                    withBorder
+                    padding="lg"
+                    radius="md"
+                    className={classes.card}
+                    mt={"xs"}
+                    mah={"25rem"}
                   >
-                    <Text fw={700} className={classes.title} mt="xs">
-                      {book.title}
-                    </Text>
-                  </Spoiler>
+                    <Card.Section mb="sm">
+                      <Image
+                        src={book.bookImageCover}
+                        alt="Top 50 underrated plants for house decoration"
+                        height={180}
+                      />
+                    </Card.Section>
 
-                  <Card.Section className={classes.footer}>
-                    <Group justify="space-between">
-                      <Group gap={0}>
-                        <ActionIcon variant="subtle" color="gray">
-                          <IconHeart
-                            style={{ width: rem(20), height: rem(20) }}
-                          />
-                        </ActionIcon>
-                        <ActionIcon variant="subtle" color="gray">
-                          <IconBookmark
-                            style={{ width: rem(20), height: rem(20) }}
-                            stroke={1.5}
-                          />
-                        </ActionIcon>
-                        <ActionIcon variant="subtle" color="gray">
-                          <IconShare
-                            style={{ width: rem(20), height: rem(20) }}
-                            stroke={1.5}
-                          />
-                        </ActionIcon>
+                    <Badge w="fit-content" variant="light">
+                      {book.bookType}
+                    </Badge>
+
+                    <Spoiler
+                      maxHeight={50}
+                      showLabel="Show more"
+                      hideLabel="Hide"
+                    >
+                      <Text fw={700} className={classes.title} mt="xs">
+                        {book.title}
+                      </Text>
+                    </Spoiler>
+
+                    <Card.Section className={classes.footer}>
+                      <Group justify="space-between">
+                        <List>
+                          <Flex px={"xs"} gap={"xs"}>
+                            {book.genres?.[0] && (
+                              <List.Item>{book.genres[0]}</List.Item>
+                            )}
+
+                            {book.genres?.[1] && (
+                              <List.Item>{book.genres[1]}</List.Item>
+                            )}
+                          </Flex>
+                        </List>
+                        <Group gap={0}>
+                          <ActionIcon variant="subtle" color="gray">
+                            <IconBookmark
+                              style={{ width: rem(20), height: rem(20) }}
+                              stroke={1.5}
+                            />
+                          </ActionIcon>
+                        </Group>
                       </Group>
-                    </Group>
-                  </Card.Section>
-                </Card>
+                    </Card.Section>
+                  </Card>
+                </Link>
               </Grid.Col>
             ))}
           </Grid>

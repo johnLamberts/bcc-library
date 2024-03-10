@@ -1,5 +1,12 @@
 .card {
   background-color: var(--mantine-color-body);
+
+  cursor: pointer;
+}
+
+.card:hover {
+  transform: scale(1.025);
+  transition: 0.35s transform ease;
 }
 
 .title {
