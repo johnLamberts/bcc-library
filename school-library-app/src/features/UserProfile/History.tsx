@@ -2,15 +2,7 @@
 import { IBooks } from "@features/Catalogue/models/books.interface";
 import useReadInventoryReport from "@features/Reports/hooks/useInventoryReport";
 import { useReadBookType } from "@features/SysSettings/BookType/hooks/useReadBookType";
-import {
-  Badge,
-  Flex,
-  Box,
-  Button,
-  Text,
-  ScrollArea,
-  ScrollArea,
-} from "@mantine/core";
+import { Flex, Box, Button, Text, ScrollArea } from "@mantine/core";
 import { IconFileTypeCsv, IconFileTypePdf } from "@tabler/icons-react";
 import { format } from "date-fns";
 
@@ -23,9 +15,10 @@ import {
 } from "mantine-react-table";
 import { useMemo } from "react";
 import useBorrowersHistory from "./hooks/useBorrowersHistory";
+import { ICirculation } from "@features/Transaction/models/circulation.interface";
 
 const History = () => {
-  const { isLoading, userHistory } = useBorrowersHistory();
+  const { isLoading, userHistory = [] } = useBorrowersHistory();
 
   const {
     data: bookConditionList = [],
@@ -36,8 +29,7 @@ const History = () => {
 
   const { data: bookType, isLoading: isBookType } = useReadBookType();
 
-  console.log(bookType);
-  const customColumns = useMemo<MRT_ColumnDef<IBooks>[]>(
+  const customColumns = useMemo<MRT_ColumnDef<any>[]>(
     () => [
       {
         accessorKey: "id",
@@ -54,42 +46,28 @@ const History = () => {
         },
       },
       {
-        accessorKey: "title",
+        accessorKey: "bookTitle",
         header: "Title",
       },
-
       {
-        accessorKey: "bookSection",
-        header: "Book Section",
+        accessorKey: "bookCondition",
+        header: "Book Condition",
       },
       {
-        accessorKey: "callNumber",
-        header: "Call Number",
+        accessorKey: "totalFee",
+        header: "Total Fee",
       },
       {
-        accessorKey: "bookISBN",
-        header: "Book ISBN",
+        accessorKey: "paymentStatus",
+        header: "Payment Status",
       },
-      {
-        accessorKey: "numberOfBooksAvailable_QUANTITY",
-        header: "Copies Available",
-        enableEditing: false,
-        enableColumnFilter: false,
-        Cell: ({ row }) => (
-          <Badge color="" variant="dot">
-            {row.getValue("numberOfBooksAvailable_QUANTITY")}
-          </Badge>
-        ),
-      },
-
       {
         accessorFn: (originalRow) =>
           new Date(
             originalRow.createdAt?.seconds * 1000 +
               originalRow.createdAt?.nanoseconds / 1000
           ),
-        header: "Date Created",
-        filterVariant: "date-range",
+        header: "Date Borrowed",
         Cell: ({ row }) => {
           const date = format(
             new Date(
@@ -152,7 +130,7 @@ const History = () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
 
   const table = useMantineReactTable({
-    data: bookConditionList,
+    data: userHistory,
     columns: customColumns,
     mantineTableContainerProps: {
       style: {
