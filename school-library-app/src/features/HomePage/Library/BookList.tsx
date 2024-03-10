@@ -13,6 +13,7 @@ import {
   rem,
   Spoiler,
   Code,
+  Loader,
 } from "@mantine/core";
 import {
   IconBookmark,
@@ -36,7 +37,6 @@ const BookList = ({
 
   const { isLoading } = useBooks();
 
-  console.log(booksData);
   return (
     <Paper p={"xs"}>
       <Group justify="space-between">
@@ -68,7 +68,11 @@ const BookList = ({
       <Divider my={"sm"} />
       <BookPagination count={count} />
       {isLoading ? (
-        "Loading..."
+        <>
+          <Flex justify={"center"} align={"center"} h="100%" pos="relative">
+            <Loader color="red.5" />
+          </Flex>
+        </>
       ) : (
         <>
           <Grid>
