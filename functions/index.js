@@ -124,6 +124,13 @@ exports.booksQuantityChecker = functions
           return doc.ref.update({
             bookStatus: "Out of Stock",
           });
+        } else if (
+          snapshot.numberOfBooksAvailable_QUANTITY > 0 &&
+          snapshot.bookStatus === "Out of Stock"
+        ) {
+          return doc.ref.update({
+            bookStatus: "Active",
+          });
         } else {
           return doc.ref.update({
             bookStatus: snapshot.bookStatus,
@@ -171,24 +178,32 @@ exports.documentReservedChecker = functions
               .where("reservedId", "==", doc.id)
               .get();
 
-            booksTransactionRef.docs.map(async (transactDoc) =>
-              admin
-                .firestore()
-                .doc(`books-transaction/${transactDoc.id}`)
-                .update({
-                  status: "Cancelled",
-                  modifiedAt: admin.firestore.Timestamp.now(),
-                })
+            booksTransactionRef.docs.map(
+              async (transactDoc) =>
+                await admin
+                  .firestore()
+                  .doc(`books-transaction/${transactDoc.id}`)
+                  .update({
+                    status: "Cancelled",
+                    modifiedAt: admin.firestore.Timestamp.now(),
+                  })
             );
 
-            // const booksRef = await admin.firestore().doc(`books-catalogue/${doc.data().booksId}`).get();
+            const booksRef = await admin
+              .firestore()
+              .doc(`books-catalogue/${doc.data().booksId}`)
+              .get();
 
             await admin
               .firestore()
               .doc(`books-catalogue/${doc.data().booksId}`)
               .update({
-                numberOfBooksAvailable_QUANTITY:
-                  doc.data().numberOfBooksAvailable_QUANTITY + 1,
+                numberOfBooksAvailable_QUANTITY: doc.data()
+                  .numberOfBooksAvailable_QUANTITY++,
+                bookStatus:
+                  booksRef.data().bookStatus === "Out of Stock"
+                    ? "Active"
+                    : booksRef.data().bookStatus,
               });
 
             await admin.firestore().doc(`books-reserved/${doc.id}`).delete();
