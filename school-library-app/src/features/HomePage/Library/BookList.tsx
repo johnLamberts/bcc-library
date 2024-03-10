@@ -13,6 +13,7 @@ import {
   rem,
   Spoiler,
   List,
+  Code,
 } from "@mantine/core";
 import {
   IconBookmark,
@@ -112,7 +113,7 @@ const BookList = ({
 
                     <Card.Section className={classes.footer}>
                       <Group justify="space-between">
-                        <List>
+                        {/* <List>
                           <Flex px={"xs"} gap={"xs"}>
                             {book.genres?.[0] && (
                               <List.Item>{book.genres[0]}</List.Item>
@@ -122,7 +123,20 @@ const BookList = ({
                               <List.Item>{book.genres[1]}</List.Item>
                             )}
                           </Flex>
-                        </List>
+                        </List> */}
+                        <Code px={"xs"}>
+                          <Group>
+                            Available Copies:
+                            <Badge variant="light" color="yellow">
+                              {book.numberOfBooksAvailable_QUANTITY}
+                            </Badge>
+                            {book.bookStatus === "Out of Stock" && (
+                              <Badge variant="light" color="red" size="xs">
+                                {book.bookStatus}
+                              </Badge>
+                            )}
+                          </Group>
+                        </Code>
                         <Group gap={0}>
                           <ActionIcon variant="subtle" color="gray">
                             <IconBookmark
