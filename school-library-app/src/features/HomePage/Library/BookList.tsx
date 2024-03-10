@@ -12,7 +12,6 @@ import {
   Image,
   rem,
   Spoiler,
-  List,
   Code,
 } from "@mantine/core";
 import {

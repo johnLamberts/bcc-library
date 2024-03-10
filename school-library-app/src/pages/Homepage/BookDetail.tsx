@@ -3,21 +3,28 @@ import {
   Badge,
   Box,
   Button,
-  Card,
   Container,
   Divider,
-  Group,
+  Flex,
+  Grid,
   Image,
+  List,
   Paper,
   ScrollArea,
-  Stack,
   Tabs,
   Text,
+  ThemeIcon,
   Title,
+  rem,
 } from "@mantine/core";
-import { IconBrowserCheck } from "@tabler/icons-react";
-import { useParams } from "react-router-dom";
-
+import {
+  IconAlignCenter,
+  IconCategory,
+  IconClock,
+  IconCopy,
+  IconSection,
+} from "@tabler/icons-react";
+import classes from "./book-details.module.css";
 const books = {
   title: "Test Book",
   authors: ["John", "Angelo", "Llance", "Neil"],
@@ -41,6 +48,8 @@ const books = {
 };
 const BookDetail = () => {
   const { isLoading, book, error } = useBookDetail();
+
+  console.log(book);
   return (
     <ScrollArea
       scrollbars="y"
@@ -51,15 +60,13 @@ const BookDetail = () => {
       }}
     >
       <Paper withBorder p={"lg"}>
-        <Container mt={"lg"}>
-          <Group justify="center">
+        <>
+          {/* <Group justify="space-between">
             <Image
               // src={book?.bookImageCover}
               src={
                 "https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/images/bg-10.png"
               }
-              h={"60vh"}
-              w={"25vw"}
               loading="lazy"
               style={{
                 filter: "drop-shadow(0 0 0.75rem #ffa903)",
@@ -97,8 +104,125 @@ const BookDetail = () => {
                 Borrow Book
               </Button>
             </Box>
-          </Group>
-        </Container>
+          </Group> */}
+          <Grid>
+            <Grid.Col span={{ base: 12, md: 6, lg: 4 }}>
+              <Image
+                radius="sm"
+                h={"40rem"}
+                fit="contain"
+                src={book?.bookImageCover}
+              />
+            </Grid.Col>
+            <Grid.Col span={{ base: 12, md: 6, lg: 8 }}>
+              <Container size={"md"} p={"xl"}>
+                <Flex direction="column" justify={"space-around"} gap={"lg"}>
+                  <Title order={2}>{book?.title}</Title>
+
+                  <Divider my={"md"} />
+
+                  <List mt={30} spacing="sm" size="sm">
+                    <List.Item
+                      icon={
+                        <ThemeIcon size={20} radius="xl" color="yellow">
+                          <IconAlignCenter
+                            style={{ width: rem(12), height: rem(12) }}
+                            stroke={1.5}
+                          />
+                        </ThemeIcon>
+                      }
+                    >
+                      <b>Book Type</b> – {book?.bookType}
+                    </List.Item>
+                    <List.Item
+                      icon={
+                        <ThemeIcon size={20} radius="xl" color="yellow">
+                          <IconCategory
+                            style={{ width: rem(12), height: rem(12) }}
+                            stroke={1.5}
+                          />
+                        </ThemeIcon>
+                      }
+                    >
+                      <b>Genres</b> –{" "}
+                      {book?.genres.map((genre) => (
+                        <>{genre},</>
+                      ))}
+                    </List.Item>
+
+                    <List.Item
+                      icon={
+                        <ThemeIcon size={20} radius="xl" color="yellow">
+                          <IconSection
+                            style={{ width: rem(12), height: rem(12) }}
+                            stroke={1.5}
+                          />
+                        </ThemeIcon>
+                      }
+                    >
+                      <b>Book Section</b> – {book?.bookSection}
+                    </List.Item>
+
+                    <List.Item
+                      icon={
+                        <ThemeIcon size={20} radius="xl" color="yellow">
+                          <IconClock
+                            style={{ width: rem(12), height: rem(12) }}
+                            stroke={1.5}
+                          />
+                        </ThemeIcon>
+                      }
+                    >
+                      <b>Availability</b> – {book?.timeSpecifier}{" "}
+                      {book?.timeUnit}{" "}
+                    </List.Item>
+
+                    <List.Item
+                      icon={
+                        <ThemeIcon size={20} radius="xl" color="yellow">
+                          <IconCopy
+                            style={{ width: rem(12), height: rem(12) }}
+                            stroke={1.5}
+                          />
+                        </ThemeIcon>
+                      }
+                    >
+                      <b>
+                        Number of{" "}
+                        {book?.numberOfBooksAvailable_QUANTITY === 1
+                          ? "Copy"
+                          : "Copies"}
+                      </b>{" "}
+                      – {book?.numberOfBooksAvailable_QUANTITY}{" "}
+                      {book?.bookStatus === "Out of Stock" && (
+                        <Badge variant="light" size="xs">
+                          {book.bookStatus}
+                        </Badge>
+                      )}
+                    </List.Item>
+
+                    <Box my={"sm"}>
+                      <Paper shadow="xs" p="md" withBorder>
+                        <b>Description</b>
+                        <Text fw={500}>{book?.bookDescription}</Text>
+                      </Paper>
+                    </Box>
+                  </List>
+
+                  <Divider my={"sm"} />
+
+                  {book?.bookStatus === "Out of Stock" ? (
+                    <Button color="red" disabled className={classes.button}>
+                      Borrow Book
+                    </Button>
+                  ) : (
+                    <Button color="yellow">Borrow Book</Button>
+                  )}
+                </Flex>
+              </Container>
+            </Grid.Col>
+          </Grid>
+        </>
         <Tabs defaultValue="second" p={"xl"} mt={"md"}>
           <Tabs.List>
             <Tabs.Tab value="first">Description</Tabs.Tab>
