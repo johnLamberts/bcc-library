@@ -33,53 +33,6 @@ const getBook = async (
 };
 
 const getAllBooks = async (page: number) => {
-  // const booksCollectionRef = collection(
-  //   firestore,
-  //   FIRESTORE_COLLECTION_QUERY_KEY.CATALOGUE
-  // );
-
-  // const booksRef = await getDocs(
-  //   query(booksCollectionRef, orderBy("createdAt", "asc"))
-  // );
-
-  // let queryBooks = query(
-  //   collection(firestore, FIRESTORE_COLLECTION_QUERY_KEY.CATALOGUE),
-  //   orderBy("createdAt", "desc"),
-  //   limit(PAGE_SIZE)
-  // );
-
-  // if (page > 1) {
-  //   const fetchBooks = await getDocs(queryBooks);
-
-  //   // Check if there are any documents to paginate
-  //   if (!fetchBooks.empty) {
-  //     const lastVisible = fetchBooks.docs[fetchBooks.docs.length - 1];
-
-  //     console.log(lastVisible.data().title);
-  //     queryBooks = query(
-  //       collection(firestore, FIRESTORE_COLLECTION_QUERY_KEY.CATALOGUE),
-  //       orderBy("createdAt", "desc"),
-  //       startAfter(lastVisible),
-  //       limit(PAGE_SIZE)
-  //     );
-  //   }
-  // }
-
-  // const booksSnapshot = await getDocs(queryBooks);
-
-  // const booksData = booksSnapshot.docs.map(
-  //   (doc) =>
-  //     ({
-  //       id: doc.id,
-  //       ...doc.data(),
-  //     } as IBooks)
-  // );
-
-  // return {
-  //   booksData,
-  //   count: booksRef.docs.length,
-  // };
-
   const booksCollectionRef = collection(
     firestore,
     FIRESTORE_COLLECTION_QUERY_KEY.CATALOGUE

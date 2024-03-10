@@ -8,20 +8,22 @@ import {
   Divider,
   Grid,
   Badge,
-  Button,
   Card,
   Image,
+  rem,
+  Spoiler,
+  Code,
 } from "@mantine/core";
 import {
-  IconBrowserCheck,
+  IconBookmark,
   IconLayoutDashboard,
   IconList,
 } from "@tabler/icons-react";
-import { Link } from "react-router-dom";
 import classes from "./book-list.module.css";
 import useBooks from "../hooks/useBooks";
 import BookPagination from "./BookPagination";
 import { IBooks } from "@features/Catalogue/models/books.interface";
+import { Link } from "react-router-dom";
 
 const BookList = ({
   booksData,
@@ -34,6 +36,7 @@ const BookList = ({
 
   const { isLoading } = useBooks();
 
+  console.log(booksData);
   return (
     <Paper p={"xs"}>
       <Group justify="space-between">
@@ -71,52 +74,80 @@ const BookList = ({
           <Grid>
             {booksData?.map((book) => (
               <Grid.Col span={{ base: 12, md: 6, lg: 4 }}>
-                <Card
-                  shadow="sm"
-                  padding="lg"
-                  radius="md"
-                  withBorder
-                  key={book.id}
+                <Link
+                  to={`/library/${book.id}`}
+                  style={{
+                    textDecoration: "none",
+                  }}
                 >
-                  <Link to={`/library/${book.id}`} className={classes.cardList}>
-                    <Card.Section>
+                  <Card
+                    withBorder
+                    padding="lg"
+                    radius="md"
+                    className={classes.card}
+                    mt={"xs"}
+                    mah={"25rem"}
+                  >
+                    <Card.Section mb="sm">
                       <Image
                         src={book.bookImageCover}
-                        height={160}
-                        alt="Norway"
+                        alt="Top 50 underrated plants for house decoration"
+                        height={180}
                       />
                     </Card.Section>
 
-                    <Group justify="space-between" mt="md" mb="xs">
-                      <Text fw={500}>{book.title}</Text>
-                      <Badge color="#5C0505">{book.bookType}</Badge>
-                    </Group>
+                    <Badge w="fit-content" variant="light">
+                      {book.bookType}
+                    </Badge>
 
-                    <Text size="sm" c="dimmed">
-                      {book.bookDescription}
-                      {/* With Fjord Tours you can explore more of the magical fjord
-                      landscapes with tours and activities on and around the
-                      fjords of Norway */}
-                    </Text>
-
-                    <Text size="sm" my={"xs"}>
-                      Number of Copies Available:{" "}
-                      <b>{book.numberOfBooksAvailable_QUANTITY}</b>
-                    </Text>
-
-                    <Divider />
-
-                    <Button
-                      color="#ffa903"
-                      fullWidth
-                      mt="md"
-                      radius="md"
-                      rightSection={<IconBrowserCheck size={14} />}
+                    <Spoiler
+                      maxHeight={50}
+                      showLabel="Show more"
+                      hideLabel="Hide"
                     >
-                      Borrow Book
-                    </Button>
-                  </Link>
-                </Card>
+                      <Text fw={700} className={classes.title} mt="xs">
+                        {book.title}
+                      </Text>
+                    </Spoiler>
+
+                    <Card.Section className={classes.footer}>
+                      <Group justify="space-between">
+                        {/* <List>
+                          <Flex px={"xs"} gap={"xs"}>
+                            {book.genres?.[0] && (
+                              <List.Item>{book.genres[0]}</List.Item>
+                            )}
+
+                            {book.genres?.[1] && (
+                              <List.Item>{book.genres[1]}</List.Item>
+                            )}
+                          </Flex>
+                        </List> */}
+                        <Code px={"xs"}>
+                          <Group>
+                            Available Copies:
+                            <Badge variant="light" color="yellow">
+                              {book.numberOfBooksAvailable_QUANTITY}
+                            </Badge>
+                            {book.bookStatus === "Out of Stock" && (
+                              <Badge variant="light" color="red" size="xs">
+                                {book.bookStatus}
+                              </Badge>
+                            )}
+                          </Group>
+                        </Code>
+                        <Group gap={0}>
+                          <ActionIcon variant="subtle" color="gray">
+                            <IconBookmark
+                              style={{ width: rem(20), height: rem(20) }}
+                              stroke={1.5}
+                            />
+                          </ActionIcon>
+                        </Group>
+                      </Group>
+                    </Card.Section>
+                  </Card>
+                </Link>
               </Grid.Col>
             ))}
           </Grid>

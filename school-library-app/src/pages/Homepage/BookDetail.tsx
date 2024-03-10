@@ -1,23 +1,35 @@
 import useBookDetail from "@features/HomePage/hooks/useBookDetail";
 import {
+  Accordion,
   Badge,
   Box,
   Button,
-  Card,
   Container,
   Divider,
-  Group,
+  FileInput,
+  Flex,
+  Grid,
   Image,
+  List,
   Paper,
   ScrollArea,
-  Stack,
   Tabs,
   Text,
+  ThemeIcon,
+  ThemeIcon,
   Title,
+  rem,
 } from "@mantine/core";
-import { IconBrowserCheck } from "@tabler/icons-react";
-import { useParams } from "react-router-dom";
-
+import {
+  IconAlignCenter,
+  IconBooks,
+  IconCategory,
+  IconClock,
+  IconCopy,
+  IconSection,
+} from "@tabler/icons-react";
+import classes from "./book-details.module.css";
+import { IconAddressBook } from "@tabler/icons-react";
 const books = {
   title: "Test Book",
   authors: ["John", "Angelo", "Llance", "Neil"],
@@ -41,6 +53,8 @@ const books = {
 };
 const BookDetail = () => {
   const { isLoading, book, error } = useBookDetail();
+
+  console.log(book);
   return (
     <ScrollArea
       scrollbars="y"
@@ -51,15 +65,13 @@ const BookDetail = () => {
       }}
     >
       <Paper withBorder p={"lg"}>
-        <Container mt={"lg"}>
-          <Group justify="center">
+        <>
+          {/* <Group justify="space-between">
             <Image
               // src={book?.bookImageCover}
               src={
                 "https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/images/bg-10.png"
               }
-              h={"60vh"}
-              w={"25vw"}
               loading="lazy"
               style={{
                 filter: "drop-shadow(0 0 0.75rem #ffa903)",
@@ -97,43 +109,190 @@ const BookDetail = () => {
                 Borrow Book
               </Button>
             </Box>
-          </Group>
-        </Container>
+          </Group> */}
+          <Grid>
+            <Grid.Col span={{ base: 12, md: 6, lg: 4 }}>
+              <Image
+                radius="sm"
+                h={"40rem"}
+                fit="contain"
+                src={book?.bookImageCover}
+              />
+            </Grid.Col>
+            <Grid.Col span={{ base: 12, md: 6, lg: 8 }}>
+              <Container size={"md"} p={"xl"}>
+                <Flex direction="column" justify={"space-around"} gap={"lg"}>
+                  <Title order={2}>{book?.title}</Title>
+
+                  <Divider my={"md"} />
+
+                  <List mt={30} spacing="sm" size="sm">
+                    <List.Item
+                      icon={
+                        <ThemeIcon size={20} radius="xl" color="yellow">
+                          <IconAddressBook
+                            style={{ width: rem(12), height: rem(12) }}
+                            stroke={1.5}
+                          />
+                        </ThemeIcon>
+                      }
+                    >
+                      <b>ISBN-10, ISBN-13</b> – {book?.bookISBN}
+                    </List.Item>
+                    <List.Item
+                      icon={
+                        <ThemeIcon size={20} radius="xl" color="yellow">
+                          <IconAlignCenter
+                            style={{ width: rem(12), height: rem(12) }}
+                            stroke={1.5}
+                          />
+                        </ThemeIcon>
+                      }
+                    >
+                      <b>Book Type</b> – {book?.bookType}
+                    </List.Item>
+                    <List.Item
+                      icon={
+                        <ThemeIcon size={20} radius="xl" color="yellow">
+                          <IconCategory
+                            style={{ width: rem(12), height: rem(12) }}
+                            stroke={1.5}
+                          />
+                        </ThemeIcon>
+                      }
+                    >
+                      <b>Genres</b> –{" "}
+                      {book?.genres.map((genre) => (
+                        <>{genre},</>
+                      ))}
+                    </List.Item>
+
+                    <List.Item
+                      icon={
+                        <ThemeIcon size={20} radius="xl" color="yellow">
+                          <IconSection
+                            style={{ width: rem(12), height: rem(12) }}
+                            stroke={1.5}
+                          />
+                        </ThemeIcon>
+                      }
+                    >
+                      <b>Book Section</b> – {book?.bookSection}
+                    </List.Item>
+
+                    <List.Item
+                      icon={
+                        <ThemeIcon size={20} radius="xl" color="yellow">
+                          <IconBooks
+                            style={{ width: rem(12), height: rem(12) }}
+                            stroke={1.5}
+                          />
+                        </ThemeIcon>
+                      }
+                    >
+                      <b>Call Number</b> – {book?.callNumber}
+                    </List.Item>
+
+                    <List.Item
+                      icon={
+                        <ThemeIcon size={20} radius="xl" color="yellow">
+                          <IconClock
+                            style={{ width: rem(12), height: rem(12) }}
+                            stroke={1.5}
+                          />
+                        </ThemeIcon>
+                      }
+                    >
+                      <b>Availability</b> – {book?.timeSpecifier}{" "}
+                      {book?.timeUnit}{" "}
+                    </List.Item>
+
+                    <List.Item
+                      icon={
+                        <ThemeIcon size={20} radius="xl" color="yellow">
+                          <IconCopy
+                            style={{ width: rem(12), height: rem(12) }}
+                            stroke={1.5}
+                          />
+                        </ThemeIcon>
+                      }
+                    >
+                      <b>
+                        Number of{" "}
+                        {book?.numberOfBooksAvailable_QUANTITY === 1
+                          ? "Copy"
+                          : "Copies"}
+                      </b>{" "}
+                      – {book?.numberOfBooksAvailable_QUANTITY}{" "}
+                      {book?.bookStatus === "Out of Stock" && (
+                        <Badge variant="light" size="xs">
+                          {book.bookStatus}
+                        </Badge>
+                      )}
+                    </List.Item>
+
+                    <Box my={"sm"}>
+                      <Paper shadow="xs" p="md" withBorder>
+                        <b
+                          style={{
+                            marginTop: "1rem",
+                            marginBottom: "1rem",
+                          }}
+                        >
+                          Description
+                        </b>
+                        <Text mt={"sm"} fw={500} ta={"justify"}>
+                          {book?.bookDescription}
+                        </Text>
+                      </Paper>
+                    </Box>
+                  </List>
+
+                  <Divider my={"sm"} />
+
+                  {book?.bookStatus === "Out of Stock" ? (
+                    <Button color="red" disabled className={classes.button}>
+                      Borrow Book
+                    </Button>
+                  ) : (
+                    <Button color="yellow">Borrow Book</Button>
+                  )}
+                </Flex>
+              </Container>
+            </Grid.Col>
+          </Grid>
+        </>
         <Tabs defaultValue="second" p={"xl"} mt={"md"}>
           <Tabs.List>
-            <Tabs.Tab value="first">Description</Tabs.Tab>
+            <Tabs.Tab value="first">PDF File</Tabs.Tab>
             <Tabs.Tab value="second">Location and Details</Tabs.Tab>
           </Tabs.List>
 
           <Box pt={"md"}>
             <Tabs.Panel value="first">
-              <Text ta={"justify"}>{books.description}</Text>
+              modal
+              {/* <Text ta={"justify"}>{books?.bookFile}</Text> */}
             </Tabs.Panel>
             <Tabs.Panel value="second">
-              <Box>
-                <Title order={3}>Location</Title>
-                <Text>
-                  {book?.bookSection} {book?.bookLocation} {book?.callNumber}
-                </Text>
-              </Box>
+              <Accordion variant="separated">
+                <Accordion.Item className={classes.item} value="reset-password">
+                  <Accordion.Control>Publication Date</Accordion.Control>
+                  <Accordion.Panel>{book?.publicationDate}</Accordion.Panel>
+                </Accordion.Item>
 
-              <Box my={"xs"}>
-                <Title order={3}>Publisher Details</Title>
-                <Text>
-                  {book?.publisher} {book?.publicationDetails}{" "}
-                  {book?.publicationDate} {book?.edition}
-                </Text>
-              </Box>
-              <Box my={"xs"}>
-                <Title order={3}>Book Availability</Title>
-                <Text>
-                  {book?.timeSpecifier} {book?.timeUnit}{" "}
-                </Text>
+                <Accordion.Item
+                  className={classes.item}
+                  value="another-account"
+                >
+                  <Accordion.Control>Publication Details</Accordion.Control>
+                  <Accordion.Panel>{book?.publicationDetails}</Accordion.Panel>
+                </Accordion.Item>
 
-                <Text>
-                  Copies: <b>{book?.numberOfBooksAvailable_QUANTITY}</b>
-                </Text>
-              </Box>
+                <Accordion.Item className={classes.item} value="newsletter">
+                  <Accordion.Control>Publisher</Accordion.Control>
+                  <Accordion.Panel>{book?.publisher}</Accordion.Panel>
+                </Accordion.Item>
+              </Accordion>
             </Tabs.Panel>
           </Box>
         </Tabs>
