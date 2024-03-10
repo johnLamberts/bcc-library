@@ -29,7 +29,10 @@ const useLogin = () => {
       if (user?.[0].isEnabled) {
         const userRole = user?.[0].userRole;
 
-        if (userRole === "Student" || userRole === "Teacher") {
+        if (
+          userRole?.toLowerCase().includes("student") ||
+          userRole?.toLowerCase().includes("teacher")
+        ) {
           navigate("/home");
         } else if (userRole?.toLowerCase().includes("admin")) {
           navigate("/dashboard");

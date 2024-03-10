@@ -146,6 +146,15 @@ const updateStudent = async ({
   id: docId,
   ...student
 }: TStudents) => {
+  console.log(student.password);
+  await admin.auth().updateUser(userUID as string, {
+    email: student.email,
+    emailVerified: false,
+    password: student.password,
+    photoURL: student.studentImage,
+    disabled: false,
+  });
+
   await admin
     .firestore()
     .doc(`students/${docId}`)
@@ -155,14 +164,6 @@ const updateStudent = async ({
       modifiedAt: admin.firestore.FieldValue.serverTimestamp(),
       isArchived: false,
     });
-
-  await admin.auth().updateUser(userUID as string, {
-    email: student.email,
-    emailVerified: false,
-    password: student.password,
-    photoURL: student.studentImage,
-    disabled: false,
-  });
 
   return await admin.firestore().doc(`users/${userDocID}`).update({
     firstName: student.firstName,
