@@ -48,6 +48,7 @@ export enum FIRESTORE_COLLECTION_QUERY_KEY {
   CURRENT_USER = "current-user",
   FORGET_PASSWORD = "forget-password",
   CURRENT_USER_PROFILE = "current-user-profile",
+  CURRENT_USERS_HISTORY_TRANSACTION = "current-user-history-transaction",
 
   PARTIAL_PAYMENT = "partial-payment-transaction",
   COMPLETE_PAYMENT = "complete-payment",
