@@ -6,16 +6,16 @@ import {
   Button,
   Container,
   Divider,
-  FileInput,
   Flex,
   Grid,
   Image,
   List,
+  Loader,
+  Modal,
   Paper,
   ScrollArea,
   Tabs,
   Text,
-  ThemeIcon,
   ThemeIcon,
   Title,
   rem,
@@ -30,43 +30,38 @@ import {
 } from "@tabler/icons-react";
 import classes from "./book-details.module.css";
 import { IconAddressBook } from "@tabler/icons-react";
-const books = {
-  title: "Test Book",
-  authors: ["John", "Angelo", "Llance", "Neil"],
-  dateCreated: Date.now(),
-  bookType: "Dictionaries",
-  isbn: "12938123-12391203",
-  description: `Lorem ipsum dolor, sit amet consectetur adipisicing elit. Debitis ratione aliquid, impedit saepe provident eos hic ad, iusto consectetur asperiores, laborum itaque ex eius exercitationem nostrum eaque a in alias.
-  Accusamus esse nostrum id doloribus, eos beatae hic voluptates soluta architecto autem fugiat delectus officiis ab voluptas reiciendis deleniti ullam? Autem eos deleniti totam perspiciatis consequuntur dignissimos facere, pariatur fugit?
-  Ab dignissimos sapiente molestias et, quisquam ipsum odit error est numquam consequuntur maxime. Accusamus minima deleniti quaerat asperiores velit maiores laboriosam. Ut consequatur ducimus labore dolores velit dolore quam in!
-  Atque, asperiores provident sint officia debitis voluptatum omnis non laborum doloribus quam maxime dolorum minima nisi neque? Blanditiis, nulla quo. Magnam temporibus nulla sit saepe fugit, ipsa voluptates dolorum omnis.
-  Tempore eligendi nisi veritatis debitis commodi deserunt itaque est doloremque suscipit aspernatur expedita repellendus earum, accusantium magnam maiores impedit, ad nobis. Ab, quas. Hic debitis totam placeat. Distinctio, praesentium odit.
-  Hic molestias pariatur molestiae, impedit reprehenderit accusantium fuga asperiores. Inventore, reprehenderit similique aut excepturi animi vitae maiores ex rem labore nihil deserunt quisquam nam, expedita voluptatem minima, fuga sit asperiores!
-  Exercitationem animi aliquam excepturi voluptatum mollitia porro! Labore error harum, vel excepturi numquam architecto ea, inventore praesentium ullam, ipsum quaerat optio quidem quas assumenda distinctio voluptas quia dignissimos! Autem, facilis.
-  Minima, exercitationem! Soluta molestiae ullam alias doloribus, officia qui voluptate voluptatem et sit saepe libero ratione, dolorem eligendi amet. Accusantium ab provident distinctio iusto nam, ut iure possimus consectetur ipsa?
-  Veritatis hic libero tempore modi velit illo ex sint nam neque culpa ipsam nobis, veniam cupiditate blanditiis natus exercitationem? Quas a placeat nulla laborum debitis ipsum molestias aperiam incidunt et.
-  Temporibus cumque, illo hic voluptatibus debitis vitae molestias eius architecto, eos modi alias ex aspernatur, officiis dolorum sunt fuga deleniti delectus consequatur facilis libero nulla similique esse eligendi. Maxime, rerum.`,
-  location: "BookShelf 21",
-  publisher: "Test Product Compony",
-  bookFile: "123123",
-  edition: "123",
-};
-const BookDetail = () => {
-  const { isLoading, book, error } = useBookDetail();
+import { useDisclosure } from "@mantine/hooks";
 
-  console.log(book);
+const BookDetail = () => {
+  const { isLoading, book } = useBookDetail();
+  const [opened, { open, close }] = useDisclosure(false);
+
   return (
-    <ScrollArea
-      scrollbars="y"
-      style={{
-        paddingBottom: "var(--mantine-footer-height, 5rem)",
-        height:
-          "calc(100vh - var(--mantine-header-height, 0px) - var(--mantine-footer-height, 0px))", // viewport height - height of header - height of footer
-      }}
-    >
-      <Paper withBorder p={"lg"}>
+    <>
+      {isLoading && (
         <>
-          {/* <Group justify="space-between">
+          <Flex
+            justify={"center"}
+            align={"center"}
+            mih={"100vh"}
+            pos="relative"
+          >
+            <Loader color="red.5" />
+          </Flex>
+        </>
+      )}
+
+      <ScrollArea
+        scrollbars="y"
+        style={{
+          paddingBottom: "var(--mantine-footer-height, 5rem)",
+          height:
+            "calc(100vh - var(--mantine-header-height, 0px) - var(--mantine-footer-height, 0px))", // viewport height - height of header - height of footer
+        }}
+      >
+        <Paper withBorder p={"lg"}>
+          <>
+            {/* <Group justify="space-between">
             <Image
               // src={book?.bookImageCover}
               src={
@@ -110,194 +105,210 @@ const BookDetail = () => {
               </Button>
             </Box>
           </Group> */}
-          <Grid>
-            <Grid.Col span={{ base: 12, md: 6, lg: 4 }}>
-              <Image
-                radius="sm"
-                h={"40rem"}
-                fit="contain"
-                src={book?.bookImageCover}
-              />
-            </Grid.Col>
-            <Grid.Col span={{ base: 12, md: 6, lg: 8 }}>
-              <Container size={"md"} p={"xl"}>
-                <Flex direction="column" justify={"space-around"} gap={"lg"}>
-                  <Title order={2}>{book?.title}</Title>
+            <Grid>
+              <Grid.Col span={{ base: 12, md: 6, lg: 4 }}>
+                <Image
+                  radius="sm"
+                  h={"40rem"}
+                  fit="contain"
+                  src={book?.bookImageCover}
+                />
+              </Grid.Col>
+              <Grid.Col span={{ base: 12, md: 6, lg: 8 }}>
+                <Container size={"md"} p={"xl"}>
+                  <Flex direction="column" justify={"space-around"} gap={"lg"}>
+                    <Title order={2}>{book?.title}</Title>
 
-                  <Divider my={"md"} />
+                    <Divider my={"md"} />
 
-                  <List mt={30} spacing="sm" size="sm">
-                    <List.Item
-                      icon={
-                        <ThemeIcon size={20} radius="xl" color="yellow">
-                          <IconAddressBook
-                            style={{ width: rem(12), height: rem(12) }}
-                            stroke={1.5}
-                          />
-                        </ThemeIcon>
-                      }
-                    >
-                      <b>ISBN-10, ISBN-13</b> – {book?.bookISBN}
-                    </List.Item>
-                    <List.Item
-                      icon={
-                        <ThemeIcon size={20} radius="xl" color="yellow">
-                          <IconAlignCenter
-                            style={{ width: rem(12), height: rem(12) }}
-                            stroke={1.5}
-                          />
-                        </ThemeIcon>
-                      }
-                    >
-                      <b>Book Type</b> – {book?.bookType}
-                    </List.Item>
-                    <List.Item
-                      icon={
-                        <ThemeIcon size={20} radius="xl" color="yellow">
-                          <IconCategory
-                            style={{ width: rem(12), height: rem(12) }}
-                            stroke={1.5}
-                          />
-                        </ThemeIcon>
-                      }
-                    >
-                      <b>Genres</b> –{" "}
-                      {book?.genres.map((genre) => (
-                        <>{genre},</>
-                      ))}
-                    </List.Item>
+                    <List mt={30} spacing="sm" size="sm">
+                      <List.Item
+                        icon={
+                          <ThemeIcon size={20} radius="xl" color="yellow">
+                            <IconAddressBook
+                              style={{ width: rem(12), height: rem(12) }}
+                              stroke={1.5}
+                            />
+                          </ThemeIcon>
+                        }
+                      >
+                        <b>ISBN-10, ISBN-13</b> – {book?.bookISBN}
+                      </List.Item>
+                      <List.Item
+                        icon={
+                          <ThemeIcon size={20} radius="xl" color="yellow">
+                            <IconAlignCenter
+                              style={{ width: rem(12), height: rem(12) }}
+                              stroke={1.5}
+                            />
+                          </ThemeIcon>
+                        }
+                      >
+                        <b>Book Type</b> – {book?.bookType}
+                      </List.Item>
+                      <List.Item
+                        icon={
+                          <ThemeIcon size={20} radius="xl" color="yellow">
+                            <IconCategory
+                              style={{ width: rem(12), height: rem(12) }}
+                              stroke={1.5}
+                            />
+                          </ThemeIcon>
+                        }
+                      >
+                        <b>Genres</b> –{" "}
+                        {book?.genres.map((genre) => (
+                          <>{genre},</>
+                        ))}
+                      </List.Item>
 
-                    <List.Item
-                      icon={
-                        <ThemeIcon size={20} radius="xl" color="yellow">
-                          <IconSection
-                            style={{ width: rem(12), height: rem(12) }}
-                            stroke={1.5}
-                          />
-                        </ThemeIcon>
-                      }
-                    >
-                      <b>Book Section</b> – {book?.bookSection}
-                    </List.Item>
+                      <List.Item
+                        icon={
+                          <ThemeIcon size={20} radius="xl" color="yellow">
+                            <IconSection
+                              style={{ width: rem(12), height: rem(12) }}
+                              stroke={1.5}
+                            />
+                          </ThemeIcon>
+                        }
+                      >
+                        <b>Book Section</b> – {book?.bookSection}
+                      </List.Item>
 
-                    <List.Item
-                      icon={
-                        <ThemeIcon size={20} radius="xl" color="yellow">
-                          <IconBooks
-                            style={{ width: rem(12), height: rem(12) }}
-                            stroke={1.5}
-                          />
-                        </ThemeIcon>
-                      }
-                    >
-                      <b>Call Number</b> – {book?.callNumber}
-                    </List.Item>
+                      <List.Item
+                        icon={
+                          <ThemeIcon size={20} radius="xl" color="yellow">
+                            <IconBooks
+                              style={{ width: rem(12), height: rem(12) }}
+                              stroke={1.5}
+                            />
+                          </ThemeIcon>
+                        }
+                      >
+                        <b>Call Number</b> – {book?.callNumber}
+                      </List.Item>
 
-                    <List.Item
-                      icon={
-                        <ThemeIcon size={20} radius="xl" color="yellow">
-                          <IconClock
-                            style={{ width: rem(12), height: rem(12) }}
-                            stroke={1.5}
-                          />
-                        </ThemeIcon>
-                      }
-                    >
-                      <b>Availability</b> – {book?.timeSpecifier}{" "}
-                      {book?.timeUnit}{" "}
-                    </List.Item>
+                      <List.Item
+                        icon={
+                          <ThemeIcon size={20} radius="xl" color="yellow">
+                            <IconClock
+                              style={{ width: rem(12), height: rem(12) }}
+                              stroke={1.5}
+                            />
+                          </ThemeIcon>
+                        }
+                      >
+                        <b>Availability</b> – {book?.timeSpecifier}{" "}
+                        {book?.timeUnit}{" "}
+                      </List.Item>
 
-                    <List.Item
-                      icon={
-                        <ThemeIcon size={20} radius="xl" color="yellow">
-                          <IconCopy
-                            style={{ width: rem(12), height: rem(12) }}
-                            stroke={1.5}
-                          />
-                        </ThemeIcon>
-                      }
-                    >
-                      <b>
-                        Number of{" "}
-                        {book?.numberOfBooksAvailable_QUANTITY === 1
-                          ? "Copy"
-                          : "Copies"}
-                      </b>{" "}
-                      – {book?.numberOfBooksAvailable_QUANTITY}{" "}
-                      {book?.bookStatus === "Out of Stock" && (
-                        <Badge variant="light" size="xs">
-                          {book.bookStatus}
-                        </Badge>
-                      )}
-                    </List.Item>
+                      <List.Item
+                        icon={
+                          <ThemeIcon size={20} radius="xl" color="yellow">
+                            <IconCopy
+                              style={{ width: rem(12), height: rem(12) }}
+                              stroke={1.5}
+                            />
+                          </ThemeIcon>
+                        }
+                      >
+                        <b>
+                          Number of{" "}
+                          {book?.numberOfBooksAvailable_QUANTITY === 1
+                            ? "Copy"
+                            : "Copies"}
+                        </b>{" "}
+                        – {book?.numberOfBooksAvailable_QUANTITY}{" "}
+                        {book?.bookStatus === "Out of Stock" && (
+                          <Badge variant="light" size="xs">
+                            {book.bookStatus}
+                          </Badge>
+                        )}
+                      </List.Item>
 
-                    <Box my={"sm"}>
-                      <Paper shadow="xs" p="md" withBorder>
-                        <b
-                          style={{
-                            marginTop: "1rem",
-                            marginBottom: "1rem",
-                          }}
-                        >
-                          Description
-                        </b>
-                        <Text mt={"sm"} fw={500} ta={"justify"}>
-                          {book?.bookDescription}
-                        </Text>
-                      </Paper>
-                    </Box>
-                  </List>
+                      <Box my={"sm"}>
+                        <Paper shadow="xs" p="md" withBorder>
+                          <b
+                            style={{
+                              marginTop: "1rem",
+                              marginBottom: "1rem",
+                            }}
+                          >
+                            Description
+                          </b>
+                          <Text mt={"sm"} fw={500} ta={"justify"}>
+                            {book?.bookDescription}
+                          </Text>
+                        </Paper>
+                      </Box>
+                    </List>
 
-                  <Divider my={"sm"} />
+                    <Divider my={"sm"} />
 
-                  {book?.bookStatus === "Out of Stock" ? (
-                    <Button color="red" disabled className={classes.button}>
-                      Borrow Book
-                    </Button>
-                  ) : (
-                    <Button color="yellow">Borrow Book</Button>
-                  )}
-                </Flex>
-              </Container>
-            </Grid.Col>
-          </Grid>
-        </>
-        <Tabs defaultValue="second" p={"xl"} mt={"md"}>
-          <Tabs.List>
-            <Tabs.Tab value="first">PDF File</Tabs.Tab>
-            <Tabs.Tab value="second">Location and Details</Tabs.Tab>
-          </Tabs.List>
+                    {book?.bookStatus === "Out of Stock" ? (
+                      <Button color="red" disabled className={classes.button}>
+                        Borrow Book
+                      </Button>
+                    ) : (
+                      <Button color="yellow">Borrow Book</Button>
+                    )}
+                  </Flex>
+                </Container>
+              </Grid.Col>
+            </Grid>
+          </>
+          <Tabs defaultValue="second" p={"xl"} mt={"md"}>
+            <Tabs.List>
+              <Tabs.Tab value="first">PDF File</Tabs.Tab>
+              <Tabs.Tab value="second">Location and Details</Tabs.Tab>
+            </Tabs.List>
 
-          <Box pt={"md"}>
-            <Tabs.Panel value="first">
-              modal
-              {/* <Text ta={"justify"}>{books?.bookFile}</Text> */}
-            </Tabs.Panel>
-            <Tabs.Panel value="second">
-              <Accordion variant="separated">
-                <Accordion.Item className={classes.item} value="reset-password">
-                  <Accordion.Control>Publication Date</Accordion.Control>
-                  <Accordion.Panel>{book?.publicationDate}</Accordion.Panel>
-                </Accordion.Item>
+            <Box pt={"md"}>
+              <Tabs.Panel value="first">
+                {book?.bookFile ? (
+                  <Button onClick={open}>View PDF</Button>
+                ) : (
+                  <>
+                    <Text>No available PDF</Text>
+                  </>
+                )}
+              </Tabs.Panel>
+              <Tabs.Panel value="second">
+                <Accordion variant="separated">
+                  <Accordion.Item
+                    className={classes.item}
+                    value="reset-password"
+                  >
+                    <Accordion.Control>Publication Date</Accordion.Control>
+                    <Accordion.Panel>{book?.publicationDate}</Accordion.Panel>
+                  </Accordion.Item>
 
-                <Accordion.Item
-                  className={classes.item}
-                  value="another-account"
-                >
-                  <Accordion.Control>Publication Details</Accordion.Control>
-                  <Accordion.Panel>{book?.publicationDetails}</Accordion.Panel>
-                </Accordion.Item>
+                  <Accordion.Item
+                    className={classes.item}
+                    value="another-account"
+                  >
+                    <Accordion.Control>Publication Details</Accordion.Control>
+                    <Accordion.Panel>
+                      {book?.publicationDetails}
+                    </Accordion.Panel>
+                  </Accordion.Item>
 
-                <Accordion.Item className={classes.item} value="newsletter">
-                  <Accordion.Control>Publisher</Accordion.Control>
-                  <Accordion.Panel>{book?.publisher}</Accordion.Panel>
-                </Accordion.Item>
-              </Accordion>
-            </Tabs.Panel>
-          </Box>
-        </Tabs>
-      </Paper>
-    </ScrollArea>
+                  <Accordion.Item className={classes.item} value="newsletter">
+                    <Accordion.Control>Publisher</Accordion.Control>
+                    <Accordion.Panel>{book?.publisher}</Accordion.Panel>
+                  </Accordion.Item>
+                </Accordion>
+              </Tabs.Panel>
+            </Box>
+          </Tabs>
+        </Paper>
+      </ScrollArea>
+
+      <Modal opened={opened} onClose={close} title="Authentication" centered>
+        {/* Modal content */}
+        view pdf here
+      </Modal>
+    </>
   );
 };
 export default BookDetail;
