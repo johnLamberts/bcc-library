@@ -17,69 +17,8 @@ import { ICirculation } from "../models/circulation.interface";
 import { firestore } from "src/shared/firebase/firebase";
 import { FIRESTORE_COLLECTION_QUERY_KEY } from "src/shared/enums";
 import axios from "axios";
-// const addBorrowCirculation = async (borrow: ICirculation) => {
-//   const borrowRef = await addDoc(
-//     collection(firestore, FIRESTORE_COLLECTION_QUERY_KEY.BORROW_TRANSACTION),
-//     {
-//       ...borrow,
-//       borrowStatus: "Active",
-//       expiryTime: borrow.timeDuration! + new Date().getTime(),
-//       returnStatus: "Due",
-//       createdAt: serverTimestamp(),
-//     }
-//   );
 
-//   await addDoc(
-//     collection(
-//       firestore,
-//       FIRESTORE_COLLECTION_QUERY_KEY.AVAILABILITY_TRANSACTION
-//     ),
-//     {
-//       booksBorrowedId: borrowRef.id,
-//       expiryTime: borrow.timeDuration + new Date().getTime(),
-//       booksId: borrow.booksId,
-//       bookTitle: borrow.bookTitle,
-//       bookISBN: borrow.bookISBN,
-//       borrowers: borrow.borrowers,
-//       bookType: borrow.bookType,
-//       borrowersId: borrow.borrowersId,
-//       borrowersEmail: borrow.borrowersEmail,
-//       borrowersName: borrow.borrowersName,
-//       borrowersNumber: borrow.borrowersNumber,
-//       returnStatus: "Due",
-//       borrowStatus: "Active",
-//     }
-//   );
-
-//   await addDoc(
-//     collection(firestore, FIRESTORE_COLLECTION_QUERY_KEY.ALL_BOOKS_TRANSACTION),
-//     {
-//       booksBorrowedId: borrowRef.id,
-//       expiryTime: borrow.timeDuration! + new Date().getTime(),
-//       booksId: borrow.booksId,
-//       bookTitle: borrow.bookTitle,
-//       bookISBN: borrow.bookISBN,
-//       borrowers: borrow.borrowers,
-//       borrowersId: borrow.borrowersId,
-//       bookType: borrow.bookType,
-//       borrowersEmail: borrow.borrowersEmail,
-//       borrowersName: borrow.borrowersName,
-//       borrowersNumber: borrow.borrowersNumber,
-//       returnStatus: "Due",
-//       borrowStatus: "Active",
-//       createdAt: serverTimestamp(),
-//     }
-//   );
-
-//   await updateDoc(
-//     doc(firestore, FIRESTORE_COLLECTION_QUERY_KEY.CATALOGUE, borrow.booksId),
-//     {
-//       numberOfBooksAvailable_QUANTITY:
-//         borrow.numberOfBooksAvailable_QUANTITY - 1,
-//     }
-//   );
-// };
-
+// Directly borrow a books
 const addBorrowTransaction = async (borrow: ICirculation) => {
   const borrowTransactionRef = await addDoc(
     collection(firestore, FIRESTORE_COLLECTION_QUERY_KEY.BORROW_TRANSACTION),
@@ -135,6 +74,7 @@ const addBorrowTransaction = async (borrow: ICirculation) => {
   );
 };
 
+// Request a book
 const addRequestTransaction = async (request: ICirculation) => {
   const requestRef = await addDoc(
     collection(firestore, FIRESTORE_COLLECTION_QUERY_KEY.REQUEST_BOOK),
@@ -177,6 +117,7 @@ const addRequestTransaction = async (request: ICirculation) => {
   });
 };
 
+// Approved requested book
 const addApproveRequestedBook = async (approve: ICirculation) => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   delete (approve as any).requesting;
@@ -268,6 +209,7 @@ const addApproveRequestedBook = async (approve: ICirculation) => {
   });
 };
 
+// Claimed
 const addClaimedReservedBook = async (reserved: ICirculation) => {
   const { id: reservedId, ...otherValues } = reserved;
 
@@ -345,6 +287,7 @@ const addClaimedReservedBook = async (reserved: ICirculation) => {
   });
 };
 
+// Walk-in reserved
 const addWalkinReservedBook = async (reserved: ICirculation) => {
   const bookRef = await getDoc(
     doc(
@@ -404,7 +347,6 @@ const addWalkinReservedBook = async (reserved: ICirculation) => {
 };
 
 // Returned
-
 const addReturnedBook = async (returns: Partial<ICirculation>) => {
   const {
     bookCondition,
@@ -1032,6 +974,7 @@ const getReturnsTransaction = async () => {
     ...doc.data(),
   })) as ICirculation[];
 };
+
 const getBooksReturned = async () => {
   const booksTransactionRef = await getDocs(
     query(

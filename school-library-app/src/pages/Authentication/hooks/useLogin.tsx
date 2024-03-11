@@ -23,7 +23,7 @@ const useLogin = () => {
     onSuccess: (user) => {
       queryClient.setQueryData(
         [FIRESTORE_COLLECTION_QUERY_KEY.CURRENT_USER],
-        user
+        user?.[0]
       );
 
       if (user?.[0].isEnabled) {

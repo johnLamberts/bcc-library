@@ -1,4 +1,6 @@
 import { IBooks } from "@features/Catalogue/models/books.interface";
+import { ICirculation } from "@features/Transaction/models/circulation.interface";
+import axios from "axios";
 import {
   collection,
   doc,
@@ -76,4 +78,47 @@ const getAllBooks = async (page: number) => {
   return { booksData, count, hasMore: !booksSnapshot.empty };
 };
 
-export { getBook, getAllBooks };
+const borrowersRequestBook = async (request: ICirculation) => {
+  console.log(request);
+  // const requestRef = await addDoc(
+  //   collection(firestore, FIRESTORE_COLLECTION_QUERY_KEY.REQUEST_BOOK),
+  //   {
+  //     ...request,
+  //     status: "Request",
+  //   }
+  // );
+
+  // await addDoc(
+  //   collection(firestore, FIRESTORE_COLLECTION_QUERY_KEY.ALL_BOOKS_TRANSACTION),
+  //   {
+  //     requestId: requestRef.id,
+  //     booksId: request.booksId,
+  //     bookTitle: request.bookTitle,
+  //     bookISBN: request.bookISBN,
+  //     borrowers: request.borrowers,
+  //     borrowersId: request.borrowersId,
+  //     bookType: request.bookType,
+  //     borrowersEmail: request.borrowersEmail,
+  //     firstName: request.firstName,
+  //     middleName: request.middleName,
+  //     lastName: request.lastName,
+  //     borrowersNumber: request.borrowersNumber,
+  //     booksPrice: request.bookPrice,
+  //     status: "Request",
+  //     createdAt: serverTimestamp(),
+  //   }
+  // );
+  // const fullName = `${request.firstName} ${request.middleName} ${request.lastName}`;
+
+  // return axios({
+  //   method: "POST",
+  //   url: `${import.meta.env.VITE_SERVER_URL}api/v1/email/request-email`,
+  //   data: {
+  //     fullName,
+  //     borrowersEmail: request.borrowersEmail,
+  //     bookTitle: request.bookTitle,
+  //   },
+  // });
+};
+
+export { getBook, getAllBooks, borrowersRequestBook };

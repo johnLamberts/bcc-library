@@ -1,7 +1,6 @@
 import { Flex, Loader } from "@mantine/core";
 import useCurrentUser from "@pages/Authentication/hooks/useCurrentUser";
-import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { Navigate } from "react-router-dom";
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
@@ -9,11 +8,10 @@ interface ProtectedRouteProps {
 
 const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
   const { user, isLoading } = useCurrentUser();
-  const navigate = useNavigate();
 
-  useEffect(() => {
-    if (user === undefined && !isLoading) navigate("/login", { replace: true });
-  }, [isLoading, navigate, user]);
+  // useEffect(() => {
+  //   if (user === undefined && !isLoading) navigate("/login", { replace: true });
+  // }, [isLoading, navigate, user]);
 
   if (isLoading)
     return (
@@ -22,6 +20,10 @@ const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
       </Flex>
     );
 
-  return children;
+  return user === undefined && !isLoading ? (
+    <Navigate to={"/login"} />
+  ) : (
+    children
+  );
 };
 export default ProtectedRoute;

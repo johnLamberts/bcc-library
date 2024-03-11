@@ -12,7 +12,7 @@ const useLogout = () => {
     mutationFn: logout,
     onSuccess: () => {
       queryClient.removeQueries();
-      navigate("/home", { replace: true });
+      navigate("/login", { replace: true });
       toast.success(
         "Thank you for using our library! You're now being logged out. If you need assistance in the future, don't hesitate to reach out. Have a great day!"
       );
