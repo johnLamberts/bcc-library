@@ -48,7 +48,7 @@ const BookDetail = () => {
   const { book: transactions } = useCheckBorrowBooks();
   const [disable, setDisable] = useState<boolean>(false);
 
-  console.log(disable);
+  console.log(transactions);
 
   const isNotYetReturned = transactions?.filter(
     (ref) => ref.status !== "Returned"
@@ -282,39 +282,31 @@ const BookDetail = () => {
                       </Box>
                     </List>
                     <Divider my={"sm"} />
-                    {book?.bookStatus === "Out of Stock" && (
+                    {book?.bookStatus === "Out of Stock" ? (
                       <Button color="red" disabled className={classes.button}>
                         Out of Stock
                       </Button>
-                    )}
-                    {book?.bookStatus !== "Out of Stock" &&
-                      isNotYetReturned === 0 &&
-                      !disable && (
-                        <Button
-                          color="yellow"
-                          onClick={() => {
-                            open();
-                            handleChange("borrow_book");
-                          }}
-                          disabled={isRequestingBook}
-                        >
-                          Borrow Book
-                        </Button>
-                      )}
-
-                    {isNotYetReturned > 0 && (
-                      <Button
-                        color="yellow"
-                        disabled={isRequestingBook || isNotYetReturned > 0}
-                      >
-                        Pending transaction await
-                      </Button>
-                    )}
-
-                    {disable && (
-                      <Button color="yellow" disabled={disable}>
-                        Pending transaction await
-                      </Button>
+                    ) : (
+                      <>
+                        {isNotYetReturned > 0 || disable === true ? (
+                          <Button color="yellow" disabled>
+                            {isNotYetReturned > 0
+                              ? "Pending transaction await"
+                              : "Pending transaction await disable"}
+                          </Button>
+                        ) : (
+                          <Button
+                            color="yellow"
+                            onClick={() => {
+                              open();
+                              handleChange("borrow_book");
+                            }}
+                            disabled={isRequestingBook}
+                          >
+                            Borrow Book
+                          </Button>
+                        )}
+                      </>
                     )}
                     {/* (
                       
