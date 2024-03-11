@@ -37,6 +37,8 @@ import { PageNotFound } from "@pages/PageNotFound";
 import ForgetPassword from "@pages/ForgetPassword";
 import Announcement from "@pages/Homepage/Announcement";
 import AcquisitionStock from "@features/AcquisitionStock/AcquisitionStock";
+import AdminRequired from "./routes/AdminRequired";
+import { Forbidden } from "@pages/Forbidden";
 
 function App() {
   // Will Refactor this after I finish the admin page with fully functionality
@@ -61,6 +63,7 @@ function App() {
           <Route path="login" element={<Login />} />
           <Route path="forget-password" element={<ForgetPassword />} />
           <Route path="*" element={<PageNotFound />} />
+          <Route path="forbidden" element={<Forbidden />} />
 
           <Route element={<AppPageLayout />}>
             <Route index element={<Home />} />
@@ -73,7 +76,9 @@ function App() {
           <Route
             element={
               <ProtectedRoute>
-                <AdminLayout />
+                <AdminRequired>
+                  <AdminLayout />
+                </AdminRequired>
               </ProtectedRoute>
             }
           >
