@@ -34,11 +34,25 @@ import { useDisclosure } from "@mantine/hooks";
 import BookPdfFileViewer from "@features/HomePage/Library/BookFileViewer";
 import { useSearchParams } from "react-router-dom";
 import BorrowBookDetails from "./BorrowBookDetails";
+import { useRequestBorrowBook } from "@features/HomePage/hooks/useRequestBorrowBook";
+import useCheckBorrowBooks from "@features/HomePage/hooks/useCheckBorrowBooks";
+import { useState } from "react";
 
 const BookDetail = () => {
   const { isLoading, book } = useBookDetail();
   const [opened, { open, close }] = useDisclosure(false);
   const [searchParams, setSearchParams] = useSearchParams();
+
+  const { isRequestingBook, createRequestTransaction } = useRequestBorrowBook();
+
+  const { book: transactions } = useCheckBorrowBooks();
+  const [disable, setDisable] = useState<boolean>(false);
+
+  console.log(disable);
+
+  const isNotYetReturned = transactions?.filter(
+    (ref) => ref.status !== "Returned"
+  )?.length as number;
 
   const handleChange = (params: string | null) => {
     searchParams.set("ctx", params as string);
@@ -145,9 +159,7 @@ const BookDetail = () => {
                 <Container size={"md"} p={"xl"}>
                   <Flex direction="column" justify={"space-around"} gap={"xs"}>
                     <Title order={2}>{book?.title}</Title>
-
                     <Divider my={"md"} />
-
                     <List spacing="sm" size="sm">
                       <List.Item
                         icon={
@@ -269,24 +281,44 @@ const BookDetail = () => {
                         </Paper>
                       </Box>
                     </List>
-
                     <Divider my={"sm"} />
-
-                    {book?.bookStatus === "Out of Stock" ? (
+                    {book?.bookStatus === "Out of Stock" && (
                       <Button color="red" disabled className={classes.button}>
                         Out of Stock
                       </Button>
-                    ) : (
+                    )}
+                    {book?.bookStatus !== "Out of Stock" &&
+                      isNotYetReturned === 0 &&
+                      !disable && (
+                        <Button
+                          color="yellow"
+                          onClick={() => {
+                            open();
+                            handleChange("borrow_book");
+                          }}
+                          disabled={isRequestingBook}
+                        >
+                          Borrow Book
+                        </Button>
+                      )}
+
+                    {isNotYetReturned > 0 && (
                       <Button
                         color="yellow"
-                        onClick={() => {
-                          open();
-                          handleChange("borrow_book");
-                        }}
+                        disabled={isRequestingBook || isNotYetReturned > 0}
                       >
-                        Borrow Book
+                        Pending transaction await
                       </Button>
                     )}
+
+                    {disable && (
+                      <Button color="yellow" disabled={disable}>
+                        Pending transaction await
+                      </Button>
+                    )}
+                    {/* (
+                      
+                    ) */}
                   </Flex>
                 </Container>
               </Grid.Col>
@@ -364,7 +396,13 @@ const BookDetail = () => {
           <BookPdfFileViewer pdfViewer={book?.bookFile as string} />
         )}
         {searchParams.get("ctx") === "borrow_book" && (
-          <BorrowBookDetails close={handleCloseModal} book={book} />
+          <BorrowBookDetails
+            close={handleCloseModal}
+            book={book}
+            createRequestTransaction={createRequestTransaction}
+            isRequestingBook={isRequestingBook}
+            setDisable={setDisable}
+          />
         )}
       </Modal>
     </>

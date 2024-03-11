@@ -3,37 +3,6 @@ import BookFilter from "./BookFilter";
 import { useReadBookType } from "@features/SysSettings/BookType/hooks/useReadBookType";
 import { useReadGenre } from "@features/SysSettings/BookGenre/hooks/useReadGenre";
 
-// const dummyBookTypes = [
-//   {
-//     label: "Dictionaries",
-//     value: "Dictionaries",
-//   },
-//   {
-//     label: "Fiction Book",
-//     value: "Fiction Book",
-//   },
-//   {
-//     label: "Non-Fiction Book",
-//     value: "Non-Fiction Book",
-//   },
-//   {
-//     label: "Newspaper",
-//     value: "Newspaper",
-//   },
-//   {
-//     label: "Thesis",
-//     value: "Thesis",
-//   },
-//   {
-//     label: "Biography",
-//     value: "Biography",
-//   },
-//   {
-//     label: "Autobiography",
-//     value: "Autobiography",
-//   },
-// ];
-
 const LibraryFilter = () => {
   const { data: bookTypes = [], isLoading: isBookTypeLoading } =
     useReadBookType();
@@ -56,7 +25,7 @@ const LibraryFilter = () => {
                   label: book.bookType,
                   value: book.bookType,
                 }))}
-                paramsName="fqx"
+                paramsName="bookType"
               />
             </Accordion.Panel>
           </Accordion.Item>
@@ -69,7 +38,7 @@ const LibraryFilter = () => {
                   label: book.genres,
                   value: book.genres,
                 }))}
-                paramsName="fqx"
+                paramsName="genre"
               />
             </Accordion.Panel>
           </Accordion.Item>

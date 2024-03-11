@@ -1,10 +1,9 @@
 import { IBooks } from "@features/Catalogue/models/books.interface";
-import { useRequestBorrowBook } from "@features/HomePage/hooks/useRequestBorrowBook";
+import { ICirculation } from "@features/Transaction/models/circulation.interface";
 import {
   Paper,
   Group,
   Button,
-  Badge,
   List,
   ThemeIcon,
   rem,
@@ -23,23 +22,50 @@ import {
   IconCopy,
   IconHeading,
 } from "@tabler/icons-react";
+import { UseMutateAsyncFunction } from "@tanstack/react-query";
+import { AxiosResponse } from "axios";
 import { useForm } from "react-hook-form";
 
 interface BorrowBookDetailsProps {
   close?: () => void;
   book: IBooks | undefined;
+  createRequestTransaction: UseMutateAsyncFunction<
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    AxiosResponse<any, any>,
+    Error,
+    Partial<ICirculation>,
+    unknown
+  >;
+  isRequestingBook: boolean;
+  setDisable: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const BorrowBookDetails = ({ close, book }: BorrowBookDetailsProps) => {
+const BorrowBookDetails = ({
+  close,
+  book,
+  createRequestTransaction,
+  isRequestingBook,
+  setDisable,
+}: BorrowBookDetailsProps) => {
   const { user } = useCurrentUser();
-
-  const { isRequestingBook, createRequestTransaction } = useRequestBorrowBook();
 
   const form = useForm();
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const handleSubmit = (e: Record<string, any>) => {
-    console.log(e);
+  const handleSubmit = async (e: Record<string, any>) => {
+    await createRequestTransaction({
+      ...e,
+      borrowers: user?.userRole,
+      firstName: user?.firstName,
+      lastName: user?.lastName,
+      middleName: user?.middleName,
+      borrowersId: user?.userUID,
+      borrowersEmail: user?.email,
+    });
+
+    close?.();
+
+    setDisable(true);
   };
   return (
     <>
@@ -56,6 +82,26 @@ const BorrowBookDetails = ({ close, book }: BorrowBookDetailsProps) => {
             <Paper withBorder p="lg" radius="md" shadow="md">
               <List spacing="sm" size="sm">
                 <List.Item
+                  hidden
+                  icon={
+                    <ThemeIcon size={20} radius="xl" color="yellow">
+                      <IconHeading
+                        style={{ width: rem(12), height: rem(12) }}
+                        stroke={1.5}
+                      />
+                    </ThemeIcon>
+                  }
+                >
+                  <Flex align={"center"} justify={"center"} gap={"xs"}>
+                    <b>Book IDENTIFICATION</b> –{" "}
+                    <Input
+                      {...form.register("booksId")}
+                      value={book?.id}
+                      readOnly
+                    />
+                  </Flex>
+                </List.Item>{" "}
+                <List.Item
                   icon={
                     <ThemeIcon size={20} radius="xl" color="yellow">
                       <IconHeading
@@ -68,7 +114,7 @@ const BorrowBookDetails = ({ close, book }: BorrowBookDetailsProps) => {
                   <Flex align={"center"} justify={"center"} gap={"xs"}>
                     <b>Title</b> –{" "}
                     <Input
-                      {...form.register("title")}
+                      {...form.register("bookTitle")}
                       value={book?.title}
                       readOnly
                     />
@@ -112,7 +158,6 @@ const BorrowBookDetails = ({ close, book }: BorrowBookDetailsProps) => {
                     />
                   </Flex>
                 </List.Item>
-
                 <List.Item
                   icon={
                     <ThemeIcon size={20} radius="xl" color="yellow">
@@ -150,7 +195,6 @@ const BorrowBookDetails = ({ close, book }: BorrowBookDetailsProps) => {
                     <>{genre},</>
                   ))}
                 </List.Item>
-
                 <List.Item
                   icon={
                     <ThemeIcon size={20} radius="xl" color="yellow">
@@ -170,7 +214,6 @@ const BorrowBookDetails = ({ close, book }: BorrowBookDetailsProps) => {
                     />
                   </Flex>
                 </List.Item>
-
                 <List.Item
                   icon={
                     <ThemeIcon size={20} radius="xl" color="yellow">
@@ -190,7 +233,6 @@ const BorrowBookDetails = ({ close, book }: BorrowBookDetailsProps) => {
                     />
                   </Flex>
                 </List.Item>
-
                 <List.Item
                   icon={
                     <ThemeIcon size={20} radius="xl" color="yellow">
@@ -213,7 +255,6 @@ const BorrowBookDetails = ({ close, book }: BorrowBookDetailsProps) => {
                     />
                   </Flex>
                 </List.Item>
-
                 <List.Item
                   icon={
                     <ThemeIcon size={20} radius="xl" color="yellow">

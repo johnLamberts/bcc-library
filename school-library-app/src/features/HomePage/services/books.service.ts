@@ -2,6 +2,7 @@ import { IBooks } from "@features/Catalogue/models/books.interface";
 import { ICirculation } from "@features/Transaction/models/circulation.interface";
 import axios from "axios";
 import {
+  addDoc,
   collection,
   doc,
   getDoc,
@@ -9,11 +10,13 @@ import {
   limit,
   orderBy,
   query,
+  serverTimestamp,
   startAfter,
+  where,
 } from "firebase/firestore";
 import { PAGE_SIZE } from "src/shared/constant";
 import { FIRESTORE_COLLECTION_QUERY_KEY } from "src/shared/enums";
-import { firestore } from "src/shared/firebase/firebase";
+import { auth, firestore } from "src/shared/firebase/firebase";
 
 const getBook = async (
   bookId: string | undefined
@@ -34,7 +37,11 @@ const getBook = async (
   }
 };
 
-const getAllBooks = async (page: number) => {
+const getAllBooks = async (
+  page: number,
+  filterByType?: string,
+  filterByGenre?: string
+) => {
   const booksCollectionRef = collection(
     firestore,
     FIRESTORE_COLLECTION_QUERY_KEY.CATALOGUE
@@ -45,6 +52,20 @@ const getAllBooks = async (page: number) => {
     orderBy("createdAt", "desc"),
     limit(PAGE_SIZE)
   );
+
+  if (filterByType) {
+    queryBooks = query(
+      booksCollectionRef,
+      where("bookType", "==", filterByType)
+    );
+  }
+
+  if (filterByGenre) {
+    queryBooks = query(
+      booksCollectionRef,
+      where("genres", "in", [filterByGenre])
+    );
+  }
 
   if (page > 1) {
     for (let i = 0; i < page - 1; i++) {
@@ -78,47 +99,66 @@ const getAllBooks = async (page: number) => {
   return { booksData, count, hasMore: !booksSnapshot.empty };
 };
 
-const borrowersRequestBook = async (request: ICirculation) => {
+const borrowersRequestBook = async (request: Partial<ICirculation>) => {
   console.log(request);
-  // const requestRef = await addDoc(
-  //   collection(firestore, FIRESTORE_COLLECTION_QUERY_KEY.REQUEST_BOOK),
-  //   {
-  //     ...request,
-  //     status: "Request",
-  //   }
-  // );
 
-  // await addDoc(
-  //   collection(firestore, FIRESTORE_COLLECTION_QUERY_KEY.ALL_BOOKS_TRANSACTION),
-  //   {
-  //     requestId: requestRef.id,
-  //     booksId: request.booksId,
-  //     bookTitle: request.bookTitle,
-  //     bookISBN: request.bookISBN,
-  //     borrowers: request.borrowers,
-  //     borrowersId: request.borrowersId,
-  //     bookType: request.bookType,
-  //     borrowersEmail: request.borrowersEmail,
-  //     firstName: request.firstName,
-  //     middleName: request.middleName,
-  //     lastName: request.lastName,
-  //     borrowersNumber: request.borrowersNumber,
-  //     booksPrice: request.bookPrice,
-  //     status: "Request",
-  //     createdAt: serverTimestamp(),
-  //   }
-  // );
-  // const fullName = `${request.firstName} ${request.middleName} ${request.lastName}`;
+  const requestRef = await addDoc(
+    collection(firestore, FIRESTORE_COLLECTION_QUERY_KEY.REQUEST_BOOK),
+    {
+      ...request,
+      status: "Request",
+    }
+  );
 
-  // return axios({
-  //   method: "POST",
-  //   url: `${import.meta.env.VITE_SERVER_URL}api/v1/email/request-email`,
-  //   data: {
-  //     fullName,
-  //     borrowersEmail: request.borrowersEmail,
-  //     bookTitle: request.bookTitle,
-  //   },
-  // });
+  await addDoc(
+    collection(firestore, FIRESTORE_COLLECTION_QUERY_KEY.ALL_BOOKS_TRANSACTION),
+    {
+      requestId: requestRef.id,
+      booksId: request.booksId,
+      bookTitle: request.bookTitle,
+      bookISBN: request.bookISBN,
+      borrowers: request.borrowers,
+      borrowersId: request.borrowersId,
+      bookType: request.bookType,
+      borrowersEmail: request.borrowersEmail,
+      firstName: request.firstName,
+      middleName: request.middleName,
+      lastName: request.lastName,
+      booksPrice: request.bookPrice,
+      status: "Request",
+      createdAt: serverTimestamp(),
+    }
+  );
+  const fullName = `${request.firstName} ${request.middleName} ${request.lastName}`;
+
+  return axios({
+    method: "POST",
+    url: `${import.meta.env.VITE_SERVER_URL}api/v1/email/request-email`,
+    data: {
+      fullName,
+      borrowersEmail: request.borrowersEmail,
+      bookTitle: request.bookTitle,
+    },
+  });
 };
 
-export { getBook, getAllBooks, borrowersRequestBook };
+const checkTransactionBorrow = async (booksId: string | undefined) => {
+  const transactionsRef = await getDocs(
+    query(
+      collection(
+        firestore,
+        FIRESTORE_COLLECTION_QUERY_KEY.ALL_BOOKS_TRANSACTION
+      ),
+      // where("status", "!=", "Returned"),
+      where("booksId", "==", booksId),
+      where("borrowersId", "==", auth.currentUser?.uid)
+    )
+  );
+
+  return transactionsRef.docs.map((doc) => ({
+    id: doc.id,
+    ...doc.data(),
+  })) as ICirculation[];
+};
+
+export { getBook, getAllBooks, borrowersRequestBook, checkTransactionBorrow };

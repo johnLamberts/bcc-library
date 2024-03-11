@@ -5,9 +5,10 @@ import { PAGE_SIZE } from "src/shared/constant";
 
 interface BookPaginationProps {
   count?: number;
+  isLoading: boolean;
 }
 
-const BookPagination = ({ count }: BookPaginationProps) => {
+const BookPagination = ({ count, isLoading }: BookPaginationProps) => {
   const [searchParams, setSearchParams] = useSearchParams();
 
   const currentPage = !searchParams.get("page")
@@ -34,31 +35,33 @@ const BookPagination = ({ count }: BookPaginationProps) => {
   //   if (pageCount <= 1) return null;
   return (
     <div>
-      <Group justify="space-between">
-        <Text>
-          Showing <span>{(currentPage - 1) * PAGE_SIZE + 1}</span> to{" "}
-          <span>
-            {currentPage === pageCount ? count : currentPage * PAGE_SIZE}
-          </span>{" "}
-          of <span>{count}</span> results
-        </Text>
-        <Box>
-          <Button
-            leftSection={<IconChevronLeft />}
-            onClick={prevPage}
-            disabled={currentPage === 1}
-          >
-            <span>Previous</span>
-          </Button>
-          <Button
-            leftSection={<IconChevronRight />}
-            onClick={nextPage}
-            disabled={currentPage === pageCount}
-          >
-            <span>Next</span>
-          </Button>
-        </Box>
-      </Group>
+      {!isLoading && (
+        <Group justify="space-between">
+          <Text>
+            Showing <span>{(currentPage - 1) * PAGE_SIZE + 1}</span> to{" "}
+            <span>
+              {currentPage === pageCount ? count : currentPage * PAGE_SIZE}
+            </span>{" "}
+            of <span>{count}</span> results
+          </Text>
+          <Box>
+            <Button
+              leftSection={<IconChevronLeft />}
+              onClick={prevPage}
+              disabled={currentPage === 1}
+            >
+              <span>Previous</span>
+            </Button>
+            <Button
+              leftSection={<IconChevronRight />}
+              onClick={nextPage}
+              disabled={currentPage === pageCount}
+            >
+              <span>Next</span>
+            </Button>
+          </Box>
+        </Group>
+      )}
     </div>
   );
 };
