@@ -12,10 +12,8 @@ const useCheckBorrowBooks = () => {
     error,
   } = useQuery({
     queryKey: [FIRESTORE_COLLECTION_QUERY_KEY.TRANSACTION_IF_EXIST],
-    queryFn: async () => await checkTransactionBorrow(bookId),
+    queryFn: () => checkTransactionBorrow(bookId as string),
   });
-
-  console.log(book);
 
   return {
     isLoading,

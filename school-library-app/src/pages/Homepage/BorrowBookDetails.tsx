@@ -22,8 +22,13 @@ import {
   IconCopy,
   IconHeading,
 } from "@tabler/icons-react";
-import { UseMutateAsyncFunction } from "@tanstack/react-query";
+import {
+  QueryObserverResult,
+  RefetchOptions,
+  UseMutateAsyncFunction,
+} from "@tanstack/react-query";
 import { AxiosResponse } from "axios";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 
 interface BorrowBookDetailsProps {
@@ -37,6 +42,7 @@ interface BorrowBookDetailsProps {
     unknown
   >;
   isRequestingBook: boolean;
+  setDisable: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const BorrowBookDetails = ({
@@ -44,6 +50,7 @@ const BorrowBookDetails = ({
   book,
   createRequestTransaction,
   isRequestingBook,
+  setDisable,
 }: BorrowBookDetailsProps) => {
   const { user } = useCurrentUser();
 
@@ -62,6 +69,8 @@ const BorrowBookDetails = ({
     });
 
     close?.();
+
+    setDisable(true);
   };
   return (
     <>

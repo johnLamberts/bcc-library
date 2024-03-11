@@ -36,6 +36,7 @@ import { useSearchParams } from "react-router-dom";
 import BorrowBookDetails from "./BorrowBookDetails";
 import { useRequestBorrowBook } from "@features/HomePage/hooks/useRequestBorrowBook";
 import useCheckBorrowBooks from "@features/HomePage/hooks/useCheckBorrowBooks";
+import { useState } from "react";
 
 const BookDetail = () => {
   const { isLoading, book } = useBookDetail();
@@ -44,9 +45,14 @@ const BookDetail = () => {
 
   const { isRequestingBook, createRequestTransaction } = useRequestBorrowBook();
 
-  const { isLoading: isExisting, book: checkIfExist } = useCheckBorrowBooks();
+  const { book: transactions } = useCheckBorrowBooks();
+  const [disable, setDisable] = useState<boolean>(false);
 
-  console.log(checkIfExist);
+  console.log(disable);
+
+  const isNotYetReturned = transactions?.filter(
+    (ref) => ref.status !== "Returned"
+  )?.length as number;
 
   const handleChange = (params: string | null) => {
     searchParams.set("ctx", params as string);
@@ -281,18 +287,35 @@ const BookDetail = () => {
                         Out of Stock
                       </Button>
                     )}
-                    {book?.bookStatus !== "Out of Stock" && (
+                    {book?.bookStatus !== "Out of Stock" &&
+                      isNotYetReturned === 0 &&
+                      disable && (
+                        <Button
+                          color="yellow"
+                          onClick={() => {
+                            open();
+                            handleChange("borrow_book");
+                          }}
+                          disabled={isRequestingBook}
+                        >
+                          Borrow Book
+                        </Button>
+                      )}
+
+                    {isNotYetReturned > 0 && (
                       <Button
                         color="yellow"
-                        onClick={() => {
-                          open();
-                          handleChange("borrow_book");
-                        }}
-                        disabled={isRequestingBook}
+                        disabled={isRequestingBook || isNotYetReturned > 0}
                       >
-                        Borrow Book
+                        Pending transaction await
                       </Button>
-                    )}{" "}
+                    )}
+
+                    {disable && (
+                      <Button color="yellow" disabled={disable}>
+                        Pending transaction await
+                      </Button>
+                    )}
                     {/* (
                       
                     ) */}
@@ -378,6 +401,7 @@ const BookDetail = () => {
             book={book}
             createRequestTransaction={createRequestTransaction}
             isRequestingBook={isRequestingBook}
+            setDisable={setDisable}
           />
         )}
       </Modal>

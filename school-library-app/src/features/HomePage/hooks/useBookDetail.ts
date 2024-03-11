@@ -10,6 +10,7 @@ const useBookDetail = () => {
     isLoading,
     data: book,
     error,
+    refetch,
   } = useQuery({
     queryKey: [FIRESTORE_COLLECTION_QUERY_KEY.BOOKS_CATALOGUE, bookId],
     queryFn: () => getBook(bookId),
@@ -19,6 +20,7 @@ const useBookDetail = () => {
     isLoading,
     book,
     error,
+    refetch,
   };
 };
 export default useBookDetail;

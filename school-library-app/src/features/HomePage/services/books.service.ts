@@ -1,5 +1,8 @@
 import { IBooks } from "@features/Catalogue/models/books.interface";
-import { ICirculation } from "@features/Transaction/models/circulation.interface";
+import {
+  ICirculation,
+  ICirculation,
+} from "@features/Transaction/models/circulation.interface";
 import axios from "axios";
 import {
   addDoc,
@@ -8,6 +11,7 @@ import {
   getDoc,
   getDocs,
   limit,
+  or,
   orderBy,
   query,
   serverTimestamp,
@@ -131,14 +135,16 @@ const checkTransactionBorrow = async (booksId: string | undefined) => {
         firestore,
         FIRESTORE_COLLECTION_QUERY_KEY.ALL_BOOKS_TRANSACTION
       ),
+      // where("status", "!=", "Returned"),
       where("booksId", "==", booksId),
-      where("borrowersId", "==", auth.currentUser?.uid),
-      where("status", "!=", "Returned")
+      where("borrowersId", "==", auth.currentUser?.uid)
     )
   );
 
-  console.log(transactionsRef.size, booksId);
-  return transactionsRef.size;
+  return transactionsRef.docs.map((doc) => ({
+    id: doc.id,
+    ...doc.data(),
+  })) as ICirculation[];
 };
 
 export { getBook, getAllBooks, borrowersRequestBook, checkTransactionBorrow };
