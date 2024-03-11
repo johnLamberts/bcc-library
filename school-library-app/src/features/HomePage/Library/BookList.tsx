@@ -130,12 +130,13 @@ const BookList = ({
                         <Code px={"xs"}>
                           <Group>
                             Available Copies:
-                            <Badge variant="light" color="yellow">
-                              {book.numberOfBooksAvailable_QUANTITY}
-                            </Badge>
-                            {book.bookStatus === "Out of Stock" && (
+                            {book.bookStatus === "Out of Stock" ? (
                               <Badge variant="light" color="red" size="xs">
                                 {book.bookStatus}
+                              </Badge>
+                            ) : (
+                              <Badge variant="light" color="yellow">
+                                {book.numberOfBooksAvailable_QUANTITY}
                               </Badge>
                             )}
                           </Group>

@@ -172,8 +172,6 @@ const UserReportTable = () => {
     );
   };
 
-  console.log(customColumns);
-
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
 
   const table = useMantineReactTable({

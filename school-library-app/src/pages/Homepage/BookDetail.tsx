@@ -31,6 +31,7 @@ import {
 import classes from "./book-details.module.css";
 import { IconAddressBook } from "@tabler/icons-react";
 import { useDisclosure } from "@mantine/hooks";
+import BookPdfFileViewer from "@features/HomePage/Library/BookFileViewer";
 
 const BookDetail = () => {
   const { isLoading, book } = useBookDetail();
@@ -304,9 +305,15 @@ const BookDetail = () => {
         </Paper>
       </ScrollArea>
 
-      <Modal opened={opened} onClose={close} title="Authentication" centered>
+      <Modal
+        opened={opened}
+        onClose={close}
+        title={`${book?.title}`}
+        centered
+        size={"xl"}
+      >
         {/* Modal content */}
-        view pdf here
+        <BookPdfFileViewer pdfViewer={book?.bookFile as string} />
       </Modal>
     </>
   );
