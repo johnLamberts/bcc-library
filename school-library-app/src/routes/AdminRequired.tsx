@@ -1,7 +1,6 @@
 import { Flex, Loader } from "@mantine/core";
 import useCurrentUser from "@pages/Authentication/hooks/useCurrentUser";
-import { useEffect } from "react";
-import { Navigate, useNavigate } from "react-router-dom";
+import { Navigate } from "react-router-dom";
 
 interface AdminRequiredProps {
   children: React.ReactNode;

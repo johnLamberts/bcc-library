@@ -58,6 +58,11 @@ const BookDetail = () => {
     }
   };
 
+  const handleCloseModal = () => {
+    close();
+    removeQueryParams();
+  };
+
   return (
     <>
       {isLoading && (
@@ -358,7 +363,9 @@ const BookDetail = () => {
         {searchParams.get("ctx") === "view_pdf" && (
           <BookPdfFileViewer pdfViewer={book?.bookFile as string} />
         )}
-        {searchParams.get("ctx") === "borrow_book" && <BorrowBookDetails />}
+        {searchParams.get("ctx") === "borrow_book" && (
+          <BorrowBookDetails close={handleCloseModal} book={book} />
+        )}
       </Modal>
     </>
   );
