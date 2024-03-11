@@ -1,7 +1,7 @@
 import { Flex, Loader } from "@mantine/core";
 import useCurrentUser from "@pages/Authentication/hooks/useCurrentUser";
 import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 
 interface AdminRequiredProps {
   children: React.ReactNode;
@@ -9,13 +9,10 @@ interface AdminRequiredProps {
 
 const AdminRequired = ({ children }: AdminRequiredProps) => {
   const { user, isLoading } = useCurrentUser();
-  const navigate = useNavigate();
 
-  useEffect(() => {
-    if (!user?.userRole.toLowerCase().includes("admin"))
-      navigate("/forbidden", { replace: true });
-  }, [isLoading, navigate, user]);
+  const userRole = user?.userRole?.toLowerCase()?.includes("admin");
 
+  console.log(user);
   if (isLoading)
     return (
       <Flex justify={"center"} align={"center"} mih={"100vh"} pos="relative">
@@ -23,6 +20,6 @@ const AdminRequired = ({ children }: AdminRequiredProps) => {
       </Flex>
     );
 
-  return children;
+  return userRole ? children : <Navigate to={"/forbidden"} replace />;
 };
 export default AdminRequired;
