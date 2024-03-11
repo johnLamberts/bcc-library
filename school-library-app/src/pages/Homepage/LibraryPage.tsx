@@ -25,8 +25,6 @@ const LibraryPage = () => {
     try {
       const searchResults = await index.search(query);
       setResults(searchResults.hits);
-
-      console.log(searchResults);
     } catch (error) {
       if (error) toast.error("Error searching with Algolia: ", error);
     }

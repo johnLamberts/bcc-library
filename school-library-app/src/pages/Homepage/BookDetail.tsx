@@ -289,7 +289,7 @@ const BookDetail = () => {
                     )}
                     {book?.bookStatus !== "Out of Stock" &&
                       isNotYetReturned === 0 &&
-                      disable && (
+                      !disable && (
                         <Button
                           color="yellow"
                           onClick={() => {

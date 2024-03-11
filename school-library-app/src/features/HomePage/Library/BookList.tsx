@@ -66,7 +66,7 @@ const BookList = ({
       </Group>
 
       <Divider my={"sm"} />
-      <BookPagination count={count} />
+      <BookPagination count={count} isLoading={isLoading} />
       {isLoading ? (
         <>
           <Flex justify={"center"} align={"center"} h="100%" pos="relative">

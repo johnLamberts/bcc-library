@@ -1,8 +1,5 @@
 import { IBooks } from "@features/Catalogue/models/books.interface";
-import {
-  ICirculation,
-  ICirculation,
-} from "@features/Transaction/models/circulation.interface";
+import { ICirculation } from "@features/Transaction/models/circulation.interface";
 import axios from "axios";
 import {
   addDoc,
@@ -11,7 +8,6 @@ import {
   getDoc,
   getDocs,
   limit,
-  or,
   orderBy,
   query,
   serverTimestamp,
@@ -41,7 +37,11 @@ const getBook = async (
   }
 };
 
-const getAllBooks = async (page: number) => {
+const getAllBooks = async (
+  page: number,
+  filterByType?: string,
+  filterByGenre?: string
+) => {
   const booksCollectionRef = collection(
     firestore,
     FIRESTORE_COLLECTION_QUERY_KEY.CATALOGUE
@@ -52,6 +52,20 @@ const getAllBooks = async (page: number) => {
     orderBy("createdAt", "desc"),
     limit(PAGE_SIZE)
   );
+
+  if (filterByType) {
+    queryBooks = query(
+      booksCollectionRef,
+      where("bookType", "==", filterByType)
+    );
+  }
+
+  if (filterByGenre) {
+    queryBooks = query(
+      booksCollectionRef,
+      where("genres", "in", [filterByGenre])
+    );
+  }
 
   if (page > 1) {
     for (let i = 0; i < page - 1; i++) {

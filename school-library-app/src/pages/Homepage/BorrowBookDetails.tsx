@@ -22,13 +22,8 @@ import {
   IconCopy,
   IconHeading,
 } from "@tabler/icons-react";
-import {
-  QueryObserverResult,
-  RefetchOptions,
-  UseMutateAsyncFunction,
-} from "@tanstack/react-query";
+import { UseMutateAsyncFunction } from "@tanstack/react-query";
 import { AxiosResponse } from "axios";
-import { useState } from "react";
 import { useForm } from "react-hook-form";
 
 interface BorrowBookDetailsProps {
