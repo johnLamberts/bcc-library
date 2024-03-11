@@ -24,8 +24,7 @@ import ModeToggle from "@components/ModeToggle/ModeToggle";
 import cn from "clsx";
 import { useState } from "react";
 import useCurrentUser from "@pages/Authentication/hooks/useCurrentUser";
-import { logout } from "@pages/Authentication/services/auth.service";
-import { toast } from "sonner";
+import useLogout from "@pages/Authentication/hooks/useLogout";
 
 const links = [
   { link: "/home", label: "Home" },
@@ -38,6 +37,8 @@ const Header = () => {
   const { user, isLoading } = useCurrentUser();
 
   const navigate = useNavigate();
+
+  const { logoutUser } = useLogout();
 
   const items = links.map((link) => (
     <Link
@@ -161,11 +162,7 @@ const Header = () => {
                         />
                       }
                       onClick={async () => {
-                        await logout();
-                        toast.success(
-                          "Thank you for using our library! You're now being logged out. If you need assistance in the future, don't hesitate to reach out. Have a great day!"
-                        );
-                        navigate("/login", { replace: true });
+                        await logoutUser();
                       }}
                     >
                       Log out

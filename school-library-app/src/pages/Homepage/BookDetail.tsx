@@ -32,10 +32,31 @@ import classes from "./book-details.module.css";
 import { IconAddressBook } from "@tabler/icons-react";
 import { useDisclosure } from "@mantine/hooks";
 import BookPdfFileViewer from "@features/HomePage/Library/BookFileViewer";
+import { useSearchParams } from "react-router-dom";
+import BorrowBookDetails from "./BorrowBookDetails";
 
 const BookDetail = () => {
   const { isLoading, book } = useBookDetail();
   const [opened, { open, close }] = useDisclosure(false);
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const handleChange = (params: string | null) => {
+    searchParams.set("ctx", params as string);
+
+    return setSearchParams(searchParams);
+  };
+
+  const removeQueryParams = () => {
+    const param = searchParams.get("ctx");
+
+    if (param) {
+      // 👇️ delete each query param
+      searchParams.delete("ctx");
+
+      // 👇️ update state after
+      setSearchParams(searchParams);
+    }
+  };
 
   return (
     <>
@@ -117,12 +138,12 @@ const BookDetail = () => {
               </Grid.Col>
               <Grid.Col span={{ base: 12, md: 6, lg: 8 }}>
                 <Container size={"md"} p={"xl"}>
-                  <Flex direction="column" justify={"space-around"} gap={"lg"}>
+                  <Flex direction="column" justify={"space-around"} gap={"xs"}>
                     <Title order={2}>{book?.title}</Title>
 
                     <Divider my={"md"} />
 
-                    <List mt={30} spacing="sm" size="sm">
+                    <List spacing="sm" size="sm">
                       <List.Item
                         icon={
                           <ThemeIcon size={20} radius="xl" color="yellow">
@@ -248,10 +269,18 @@ const BookDetail = () => {
 
                     {book?.bookStatus === "Out of Stock" ? (
                       <Button color="red" disabled className={classes.button}>
-                        Borrow Book
+                        Out of Stock
                       </Button>
                     ) : (
-                      <Button color="yellow">Borrow Book</Button>
+                      <Button
+                        color="yellow"
+                        onClick={() => {
+                          open();
+                          handleChange("borrow_book");
+                        }}
+                      >
+                        Borrow Book
+                      </Button>
                     )}
                   </Flex>
                 </Container>
@@ -267,7 +296,14 @@ const BookDetail = () => {
             <Box pt={"md"}>
               <Tabs.Panel value="first">
                 {book?.bookFile ? (
-                  <Button onClick={open}>View PDF</Button>
+                  <Button
+                    onClick={() => {
+                      open();
+                      handleChange("view_pdf");
+                    }}
+                  >
+                    View PDF
+                  </Button>
                 ) : (
                   <>
                     <Text>No available PDF</Text>
@@ -307,13 +343,22 @@ const BookDetail = () => {
 
       <Modal
         opened={opened}
-        onClose={close}
-        title={`${book?.title}`}
+        onClose={() => {
+          close();
+          removeQueryParams();
+        }}
+        title={`${
+          searchParams.get("ctx") === "view_pdf"
+            ? book?.title
+            : "Borrow Book Details"
+        }`}
         centered
         size={"xl"}
       >
-        {/* Modal content */}
-        <BookPdfFileViewer pdfViewer={book?.bookFile as string} />
+        {searchParams.get("ctx") === "view_pdf" && (
+          <BookPdfFileViewer pdfViewer={book?.bookFile as string} />
+        )}
+        {searchParams.get("ctx") === "borrow_book" && <BorrowBookDetails />}
       </Modal>
     </>
   );
