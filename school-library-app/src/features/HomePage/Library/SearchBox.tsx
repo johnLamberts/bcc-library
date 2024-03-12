@@ -73,7 +73,7 @@ const SearchBox = ({
     (item) => item?.title || item?.bookISBN
   );
   return (
-    <Box w={"100vw"} bg={"#ffa903"} h={"5rem"}>
+    <Box w={"100vw"} bg={"#ffa903"} h={"5rem"} mt={"5rem"}>
       <Flex
         gap={"1rem"}
         align={"center"}

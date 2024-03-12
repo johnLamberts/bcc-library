@@ -1,30 +1,20 @@
 .header {
-  /* margin: 0 10rem; */
-  height: rem(60px);
-  padding-left: var(--mantine-spacing-md);
-  padding-right: var(--mantine-spacing-md);
-  padding-bottom: 4rem;
-  background-color: #5c0505;
-  border-bottom: rem(4px) solid #ffa903;
-}
+  align-items: center;
+  background: hsl(0 0% 100% / 0.55);
 
-.link {
-  display: block;
-  line-height: 1;
-  padding: rem(8px) rem(12px);
-  border-radius: var(--mantine-radius-sm);
-  text-decoration: none;
-  color: light-dark(var(--mantine-color-gray-7), var(--mantine-color-dark-0));
-  font-size: var(--mantine-font-size-sm);
-  font-weight: 500;
-
-  @mixin hover {
-    background-color: light-dark(
-      var(--mantine-color-gray-0),
-      var(--mantine-color-dark-6)
-    );
-  }
+  backdrop-filter: blur(10px);
+  display: flex;
+  height: rem(5rem);
+  width: 100%;
+  z-index: 111;
+  border-bottom: 2px solid #5c0505;
+  justify-content: space-around;
+  position: fixed;
+  top: 0;
+  margin-bottom: 5rem;
 }
+/*
+
 
 .subLink {
   width: 100%;
@@ -70,4 +60,114 @@
     var(--mantine-color-white),
     var(--mantine-color-dark-8)
   );
+} */
+
+.nav {
+  align-items: center;
+  background: hsl(0 0% 100% / 0.75);
+
+  backdrop-filter: blur(4px);
+  display: flex;
+  height: rem(5rem);
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 111;
+  border-bottom: 2px solid #5c0505;
+  justify-content: space-around;
 }
+
+a {
+  color: var(--text);
+}
+
+/* .link {
+  display: block;
+  line-height: 1;
+  padding: rem(8px) rem(12px);
+  border-radius: var(--mantine-radius-sm);
+  text-decoration: none;
+  color: light-dark(var(--mantine-color-gray-7), var(--mantine-color-dark-0));
+  font-size: var(--mantine-font-size-sm);
+  font-weight: 500;
+
+  @mixin hover {
+    background-color: light-dark(
+      var(--mantine-color-gray-0),
+      var(--mantine-color-dark-6)
+    );
+  }
+} */
+
+.nav-items {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 2rem;
+  background-color: transparent;
+}
+
+.link {
+  padding: rem(8px) rem(12px);
+  border-radius: var(--mantine-radius-sm);
+  text-decoration: none;
+  color: light-dark(var(--mantine-color-gray-7), var(--mantine-color-dark-0));
+  font-size: var(--mantine-font-size-sm);
+  font-weight: 500;
+  font-size: 0.9rem;
+
+  @mixin hover {
+    text-decoration: underline;
+
+    text-decoration-style: wavy;
+    text-decoration-color: #ffa903;
+  }
+
+  &[data-active="true"] {
+    text-decoration: underline;
+
+    text-decoration-style: wavy;
+    text-decoration-color: #ffa903;
+  }
+}
+
+/* .nav-items .link,
+.nav-items .link a {
+  list-style-type: none;
+  text-decoration: none;
+} */
+
+.button-background-move {
+  font-size: 0.8rem;
+  font-weight: 200;
+  letter-spacing: 1px;
+  padding: 0.7rem 1.3rem 0.7rem;
+  outline: 0;
+  border: 1px solid #5c0505;
+  cursor: pointer;
+  position: relative;
+  background-color: rgba(0, 0, 0, 0);
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  color: #000c;
+
+  &::after {
+    content: "";
+    background-color: #ffa903;
+    width: 100%;
+    z-index: -1;
+    position: absolute;
+    height: 120%;
+    top: 7px;
+    left: 7px;
+    transition: 0.2s;
+  }
+
+  &:hover:after {
+    top: 0px;
+    left: 0px;
+  }
+}
+
+/* .button-background-move .button-background-move; */

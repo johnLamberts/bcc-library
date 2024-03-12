@@ -12,7 +12,7 @@ const Home = () => {
       <ScrollArea
         scrollbars="y"
         style={{
-          paddingBottom: "var(--mantine-footer-height, 5rem)",
+          // paddingBottom: "var(--mantine-footer-height, 5rem)",
           height:
             "calc(100vh - var(--mantine-header-height, 0px) - var(--mantine-footer-height, 0px))", // viewport height - height of header - height of footer
         }}

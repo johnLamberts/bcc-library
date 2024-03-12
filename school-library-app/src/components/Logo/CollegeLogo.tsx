@@ -5,10 +5,10 @@ const CollegeLogo = () => {
     <Group>
       <Image src={"/images/bcc-logo.svg"} h={45} w={45} fit="cover" />
       <Box>
-        <Text fz={"lg"} c={"#ffa903"} ff={"Montserrat"} fw={"bold"}>
+        <Text fz={"lg"} c="#5c0505" ff={"Montserrat"} fw={"bolder"}>
           Binangonan Catholic College
         </Text>
-        <Text fs={"italic"} c={"white"} fz={"xs"}>
+        <Text fs={"italic"} fz={"xs"}>
           Open Public Access Catalog
         </Text>
       </Box>
