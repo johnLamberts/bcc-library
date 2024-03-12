@@ -105,6 +105,10 @@ a {
   align-items: center;
   gap: 2rem;
   background-color: transparent;
+
+  @media (max-width: $mantine-breakpoint-md) {
+    display: none;
+  }
 }
 
 .link {
