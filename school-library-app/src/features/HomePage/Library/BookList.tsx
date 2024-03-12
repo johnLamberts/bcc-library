@@ -75,48 +75,52 @@ const BookList = ({
         </>
       ) : (
         <>
-          <Grid>
-            {booksData?.map((book) => (
-              <Grid.Col span={{ base: 12, md: 6, lg: 4 }}>
-                <Link
-                  to={`/library/${book.id}`}
-                  style={{
-                    textDecoration: "none",
-                  }}
-                >
-                  <Card
-                    withBorder
-                    padding="lg"
-                    radius="md"
-                    className={classes.card}
-                    mt={"xs"}
-                    mah={"25rem"}
-                  >
-                    <Card.Section mb="sm">
-                      <Image
-                        src={book.bookImageCover}
-                        alt="Top 50 underrated plants for house decoration"
-                        height={180}
-                      />
-                    </Card.Section>
-
-                    <Badge w="fit-content" variant="light">
-                      {book.bookType}
-                    </Badge>
-
-                    <Spoiler
-                      maxHeight={50}
-                      showLabel="Show more"
-                      hideLabel="Hide"
+          {count === 0 ? (
+            <>No available books here</>
+          ) : (
+            <>
+              <Grid>
+                {booksData?.map((book) => (
+                  <Grid.Col span={{ base: 12, md: 6, lg: 4 }}>
+                    <Link
+                      to={`/library/${book.id}`}
+                      style={{
+                        textDecoration: "none",
+                      }}
                     >
-                      <Text fw={700} className={classes.title} mt="xs">
-                        {book.title}
-                      </Text>
-                    </Spoiler>
+                      <Card
+                        withBorder
+                        padding="lg"
+                        radius="md"
+                        className={classes.card}
+                        mt={"xs"}
+                        mah={"25rem"}
+                      >
+                        <Card.Section mb="sm">
+                          <Image
+                            src={book.bookImageCover}
+                            alt="Top 50 underrated plants for house decoration"
+                            height={180}
+                          />
+                        </Card.Section>
 
-                    <Card.Section className={classes.footer}>
-                      <Group justify="space-between">
-                        {/* <List>
+                        <Badge w="fit-content" variant="light">
+                          {book.bookType}
+                        </Badge>
+
+                        <Spoiler
+                          maxHeight={50}
+                          showLabel="Show more"
+                          hideLabel="Hide"
+                        >
+                          <Text fw={700} className={classes.title} mt="xs">
+                            {book.title}
+                          </Text>
+                        </Spoiler>
+
+                        <Card.Section className={classes.footer}>
+                          <Group justify="space-between">
+                            {/* <List>
                           <Flex px={"xs"} gap={"xs"}>
                             {book.genres?.[0] && (
                               <List.Item>{book.genres[0]}</List.Item>
@@ -127,35 +131,37 @@ const BookList = ({
                             )}
                           </Flex>
                         </List> */}
-                        <Code px={"xs"}>
-                          <Group>
-                            Available Copies:
-                            {book.bookStatus === "Out of Stock" ? (
-                              <Badge variant="light" color="red" size="xs">
-                                {book.bookStatus}
-                              </Badge>
-                            ) : (
-                              <Badge variant="light" color="yellow">
-                                {book.numberOfBooksAvailable_QUANTITY}
-                              </Badge>
-                            )}
+                            <Code px={"xs"}>
+                              <Group>
+                                Available Copies:
+                                {book.bookStatus === "Out of Stock" ? (
+                                  <Badge variant="light" color="red" size="xs">
+                                    {book.bookStatus}
+                                  </Badge>
+                                ) : (
+                                  <Badge variant="light" color="yellow">
+                                    {book.numberOfBooksAvailable_QUANTITY}
+                                  </Badge>
+                                )}
+                              </Group>
+                            </Code>
+                            <Group gap={0}>
+                              <ActionIcon variant="subtle" color="gray">
+                                <IconBookmark
+                                  style={{ width: rem(20), height: rem(20) }}
+                                  stroke={1.5}
+                                />
+                              </ActionIcon>
+                            </Group>
                           </Group>
-                        </Code>
-                        <Group gap={0}>
-                          <ActionIcon variant="subtle" color="gray">
-                            <IconBookmark
-                              style={{ width: rem(20), height: rem(20) }}
-                              stroke={1.5}
-                            />
-                          </ActionIcon>
-                        </Group>
-                      </Group>
-                    </Card.Section>
-                  </Card>
-                </Link>
-              </Grid.Col>
-            ))}
-          </Grid>
+                        </Card.Section>
+                      </Card>
+                    </Link>
+                  </Grid.Col>
+                ))}
+              </Grid>
+            </>
+          )}
         </>
       )}
     </Paper>

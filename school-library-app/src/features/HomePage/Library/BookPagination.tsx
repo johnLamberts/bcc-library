@@ -55,7 +55,7 @@ const BookPagination = ({ count, isLoading }: BookPaginationProps) => {
             <Button
               leftSection={<IconChevronRight />}
               onClick={nextPage}
-              disabled={currentPage === pageCount}
+              disabled={currentPage === pageCount || count === 0}
             >
               <span>Next</span>
             </Button>
