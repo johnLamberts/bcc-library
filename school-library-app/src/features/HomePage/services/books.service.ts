@@ -63,18 +63,16 @@ const getAllBooks = async (
   if (filterByGenre) {
     queryBooks = query(
       booksCollectionRef,
-      where("genres", "in", [filterByGenre])
+      where("genres", "array-contains", filterByGenre)
     );
   }
 
   if (page > 1) {
     for (let i = 0; i < page - 1; i++) {
       const booksSnapshot = await getDocs(queryBooks);
-
       if (booksSnapshot.empty) {
         return { booksData: [], count: 0, hasMore: false }; // No more documents
       }
-
       const lastVisible = booksSnapshot.docs[booksSnapshot.docs.length - 1];
       queryBooks = query(
         booksCollectionRef,
@@ -94,9 +92,88 @@ const getAllBooks = async (
   const countSnapshot = await getDocs(
     query(booksCollectionRef, orderBy("createdAt", "desc"))
   );
-  const count = countSnapshot.size;
+  const totalCount = countSnapshot.size;
 
-  return { booksData, count, hasMore: !booksSnapshot.empty };
+  let count;
+  if (filterByType !== "" || filterByGenre !== "") {
+    count = booksSnapshot.size; // If filtered, use the count of filtered documents
+  } else {
+    count = totalCount; // If not filtered, use the total count of all documents
+  }
+
+  return {
+    booksData,
+    count,
+    hasMore: !booksSnapshot.empty,
+  };
+  // const booksCollectionRef = collection(
+  //   firestore,
+  //   FIRESTORE_COLLECTION_QUERY_KEY.CATALOGUE
+  // );
+
+  // let queryBooks = query(
+  //   booksCollectionRef,
+  //   orderBy("createdAt", "desc"),
+  //   limit(PAGE_SIZE)
+  // );
+
+  // if (filterByType !== "") {
+  //   queryBooks = query(
+  //     booksCollectionRef,
+  //     where("bookType", "==", filterByType),
+  //     limit(PAGE_SIZE)
+  //   );
+  // }
+
+  // if (filterByGenre !== "") {
+  //   queryBooks = query(
+  //     booksCollectionRef,
+  //     where("genres", "array-contains", filterByGenre),
+  //     limit(PAGE_SIZE)
+  //   );
+  // }
+
+  // // Fetch count with the same filters applied for pagination
+  // let countSnapshot = await getDocs(queryBooks);
+
+  // // let hasMore = !countSnapshot.empty; // Check for initial empty result after applying filters
+  // const count = countSnapshot.size;
+
+  // if (page > 1) {
+  //   for (let i = 0; i < page - 1; i++) {
+  //     const booksSnapshot = await getDocs(queryBooks);
+  //     if (booksSnapshot.empty) {
+  //       return { booksData: [], count, hasMore: false }; // No more documents
+  //     }
+  //     const lastVisible = booksSnapshot.docs[booksSnapshot.docs.length - 1];
+
+  //     // Create new query for pagination with filters (unchanged)
+  //     queryBooks = query(
+  //       booksCollectionRef,
+  //       // where("genres", "array-contains", filterByGenre), // Maintain genre filter
+  //       // where("bookType", "==", filterByType), // Maintain bookType filter
+  //       orderBy("createdAt", "desc"),
+  //       startAfter(lastVisible),
+  //       limit(PAGE_SIZE)
+  //     );
+  //   }
+
+  //   const booksSnapshot = await getDocs(queryBooks);
+  //   if (booksSnapshot.empty) {
+  //     return { booksData: [], count, hasMore: false }; // No more documents
+  //   }
+
+  //   countSnapshot = booksSnapshot;
+  // }
+
+  // const booksSnapshot = await getDocs(queryBooks);
+  // const booksData = booksSnapshot.docs.map(
+  //   (doc) => ({ id: doc.id, ...doc.data() } as IBooks)
+  // );
+
+  // // hasMore = page * PAGE_SIZE < count; // Update hasMore after pagination with filters
+
+  // return { booksData, count, hasMore: !booksSnapshot.empty };
 };
 
 const borrowersRequestBook = async (request: Partial<ICirculation>) => {

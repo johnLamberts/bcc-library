@@ -13,7 +13,7 @@ const LibraryPage = () => {
   const { booksData, count } = useBooks();
 
   const [isSearching, setIsSearching] = useState<boolean>(false);
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const [query, setQuery] = useState<string>(searchParams.get("q") || "");
 
   const [debounced] = useDebouncedValue(query, 1000);
@@ -21,24 +21,47 @@ const LibraryPage = () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [results, setResults] = useState<any[] | undefined>([]);
 
+  useEffect(() => {
+    if (searchParams.get("q") === "" || searchParams.get("q") === null) {
+      setResults([]);
+      setQuery("");
+    }
+  }, [searchParams]);
+
   const handleSearch = async () => {
     try {
       setIsSearching(true);
-      const searchResults = await index.search(debounced);
 
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const newMap = searchResults.hits.map((item: any) => ({
-        ...item,
-        id: item.path.split("/").pop(),
-      }));
+      if (debounced.trim() === "") {
+        setResults(booksData);
 
-      setResults(newMap);
+        return;
+      } else {
+        const searchResults = await index.search(debounced);
+
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const newMap = searchResults.hits.map((item: any) => ({
+          ...item,
+          id: item.path.split("/").pop(),
+        }));
+
+        setResults(newMap);
+      }
     } catch (error) {
       if (error) toast.error("Error searching with Algolia: ", error);
     } finally {
       setIsSearching(false);
     }
   };
+
+  const handleReset = () => {
+    setResults([]);
+    setQuery("");
+    searchParams.delete("q");
+
+    return setSearchParams(searchParams);
+  };
+  const filteredCount = results?.length || count;
 
   return (
     <>
@@ -54,6 +77,7 @@ const LibraryPage = () => {
           query={query}
           setQuery={setQuery}
           handleSearch={handleSearch}
+          handleReset={handleReset}
         />
         <Box p={"md"}>
           <Grid>
@@ -63,16 +87,10 @@ const LibraryPage = () => {
             <Grid.Col span={{ base: 12, md: 8, lg: 9 }}>
               {isSearching && <>Searching for results</>}
 
-              {results?.length === 0 && <>No found results</>}
-
               {!isSearching && (
                 <BookList
-                  booksData={
-                    !results?.length || searchParams.get("q") === ""
-                      ? booksData
-                      : results
-                  }
-                  count={!results?.length ? count : results?.length}
+                  booksData={!results?.length ? booksData : results}
+                  count={filteredCount}
                 />
               )}
             </Grid.Col>
