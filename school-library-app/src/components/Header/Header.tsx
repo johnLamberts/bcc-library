@@ -1,10 +1,7 @@
 import {
   Avatar,
-  Box,
   Burger,
   Button,
-  Button,
-  Container,
   Divider,
   Drawer,
   Group,
@@ -14,16 +11,10 @@ import {
   rem,
 } from "@mantine/core";
 import classNamees from "./header.module.css";
-import {
-  IconChevronDown,
-  IconSettings,
-  IconTrash,
-  IconUser,
-} from "@tabler/icons-react";
+import { IconChevronDown, IconSettings, IconTrash } from "@tabler/icons-react";
 
 import CollegeLogo from "@components/Logo/CollegeLogo";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import ModeToggle from "@components/ModeToggle/ModeToggle";
 
 import cn from "clsx";
 import { useState } from "react";
@@ -43,7 +34,7 @@ const Header = () => {
   const { user, isLoading } = useCurrentUser();
 
   const navigate = useNavigate();
-  const [opened, { close, toggle }] = useDisclosure(true);
+  const [opened, { close, toggle }] = useDisclosure(false);
 
   const { logoutUser } = useLogout();
 
@@ -71,14 +62,14 @@ const Header = () => {
     </Link>
   ));
   const [userMenuOpened, setUserMenuOpened] = useState(false);
-  const [userMobileMenuOpened, setUserMobileMenuOpened] = useState(true);
+  const [userMobileMenuOpened, setUserMobileMenuOpened] = useState(false);
 
   return (
     <>
       <header className={classNamees.header}>
         <CollegeLogo />
         <div className={classes["nav-items"]}>{items}</div>
-        <Group visibleFrom="sm" justify="center" align="center">
+        <Group visibleFrom="md" justify="center" align="center">
           {user === null || user === undefined ? (
             <Button
               role="button"
@@ -86,6 +77,7 @@ const Header = () => {
               onClick={() => navigate("login")}
               disabled={isLoading}
               className={classes["button-background-move"]}
+              visibleFrom="md"
               style={{
                 fontSize: "0.8rem",
                 fontWeight: "200",
@@ -187,7 +179,7 @@ const Header = () => {
           opened={opened}
           onClick={toggle}
           size="md"
-          hiddenFrom="lg"
+          hiddenFrom="md"
           color="#5c0505"
         />
       </header>
@@ -207,7 +199,7 @@ const Header = () => {
         </div>
 
         <Divider my={"lg"} />
-        <Group visibleFrom="sm" justify="center" align="center">
+        <Group justify="center" align="center">
           {user === null || user === undefined ? (
             <Button
               role="button"
@@ -318,117 +310,6 @@ const Header = () => {
           )}
         </Group>
       </Drawer>
-
-      {/* <nav className={classes.nav}>
-        <CollegeLogo />
-        <div className={classes["nav-items"]}>{items}</div>
-
-        <Group visibleFrom="sm" justify="center" align="center">
-          {user === null || user === undefined ? (
-            <Button
-              role="button"
-              variant="light"
-              onClick={() => navigate("login")}
-              disabled={isLoading}
-              className={classes["button-background-move"]}
-              style={{
-                fontSize: "0.8rem",
-                fontWeight: "200",
-                letterSpacing: "1px",
-                padding: "0.7rem 1.3rem 0.7rem",
-                outline: "0",
-                border: "1px solid #5c0505",
-                // cursor: "pointer",
-                position: "relative",
-                backgroundColor: "rgba(0, 0, 0, 0)",
-                color: "#000c",
-              }}
-            >
-              Login
-            </Button>
-          ) : (
-            <Menu
-              width={260}
-              position="bottom-end"
-              transitionProps={{ transition: "pop-top-right" }}
-              onClose={() => setUserMenuOpened(false)}
-              onOpen={() => setUserMenuOpened(true)}
-              withinPortal
-            >
-              <Menu.Target>
-                <UnstyledButton
-                  className={cn(classNamees.user, {
-                    [classNamees.userActive]: userMenuOpened,
-                  })}
-                >
-                  <Group gap={7}>
-                    <Avatar
-                      src={user?.avatarImage as string}
-                      alt={user?.lastName}
-                      radius="xl"
-                      size={20}
-                    />
-                    <Text fw={500} size="sm" lh={1} mr={3} c={"black"}>
-                      {user?.firstName} {user?.middleName} {user?.lastName}
-                    </Text>
-                    <IconChevronDown
-                      style={{ width: rem(12), height: rem(12) }}
-                      stroke={1.5}
-                      color={"white"}
-                    />
-                  </Group>
-                </UnstyledButton>
-              </Menu.Target>
-
-              <Menu.Dropdown>
-                <Menu.Label>Application</Menu.Label>
-                {user.userRole?.toLowerCase()!.includes("student") ||
-                user.userRole?.toLowerCase()!.includes("teacher") ? (
-                  <Menu.Item
-                    leftSection={
-                      <IconSettings
-                        style={{ width: rem(14), height: rem(14) }}
-                      />
-                    }
-                    onClick={() =>
-                      navigate(`profile/${user?.userUID}_${user?.userRole}`)
-                    }
-                  >
-                    Settings
-                  </Menu.Item>
-                ) : null}
-
-                {user.userRole?.toLowerCase()!.includes("admin") && (
-                  <Menu.Item
-                    leftSection={
-                      <IconSettings
-                        style={{ width: rem(14), height: rem(14) }}
-                      />
-                    }
-                    onClick={() => navigate(`/dashboard`)}
-                  >
-                    Go to dashboard
-                  </Menu.Item>
-                )}
-                <Menu.Divider />
-
-                <Menu.Label>Danger zone</Menu.Label>
-                <Menu.Item
-                  color="red"
-                  leftSection={
-                    <IconTrash style={{ width: rem(14), height: rem(14) }} />
-                  }
-                  onClick={async () => {
-                    await logoutUser();
-                  }}
-                >
-                  Log out
-                </Menu.Item>
-              </Menu.Dropdown>
-            </Menu>
-          )}
-        </Group>
-      </nav> */}
     </>
   );
 };

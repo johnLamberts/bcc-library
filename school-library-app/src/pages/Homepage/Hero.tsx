@@ -1,14 +1,12 @@
-import { Container, Title, Button, Text } from "@mantine/core";
+import { Box } from "@mantine/core";
 import classes from "./hero.module.css";
-import { IconArrowRight } from "@tabler/icons-react";
 const Hero = () => {
   return (
     <div className={classes.root}>
-      <Container size="lg">
-        <div className={classes.inner}>
+      {/* <div className={classes.inner}>
           <div className={classes.content}>
             <Text
-              fz={"1.5rem"}
+              fz={"lg"}
               c="white"
               ff={"Montserrat"}
               style={{
@@ -57,8 +55,14 @@ const Hero = () => {
               Start browsing
             </Button>
           </div>
-        </div>
-      </Container>
+        </div> */}
+      <header className={classes.header}>
+        <Box>
+          <h1 className={classes.header__one}>
+            Binangonan Catholic College Library
+          </h1>
+        </Box>
+      </header>
     </div>
   );
 };

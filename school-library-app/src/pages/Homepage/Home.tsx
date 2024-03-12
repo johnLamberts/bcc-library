@@ -18,7 +18,9 @@ const Home = () => {
         }}
       >
         <Box bg={"white"}>
-          <Hero />
+          <Box mt={"5rem"}>
+            <Hero />
+          </Box>
 
           <About />
 
