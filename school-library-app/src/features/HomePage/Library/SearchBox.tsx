@@ -58,7 +58,20 @@ const SearchBox = ({
     return setSearchParams(searchParams);
   };
 
-  const uniqueBooks = [...new Set(booksData)];
+  const uniqueTitlesAndISBNs = new Set();
+  const uniqueBooksData = booksData?.filter((item) => {
+    const titleOrISBN = item?.title || item?.bookISBN;
+    if (!uniqueTitlesAndISBNs.has(titleOrISBN)) {
+      uniqueTitlesAndISBNs.add(titleOrISBN);
+      return true;
+    }
+    return false;
+  });
+
+  // Now map the unique books data to titles or bookISBNs
+  const autocompleteData = uniqueBooksData?.map(
+    (item) => item?.title || item?.bookISBN
+  );
   return (
     <Box w={"100vw"} bg={"#ffa903"} h={"5rem"}>
       <Flex
@@ -127,7 +140,7 @@ const SearchBox = ({
           }
         /> */}
         <Autocomplete
-          data={uniqueBooks?.map((item) => item?.title || item?.bookISBN)}
+          data={autocompleteData}
           radius="xl"
           size="md"
           w={"30rem"}
