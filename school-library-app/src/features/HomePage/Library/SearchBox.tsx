@@ -9,6 +9,7 @@ import {
 } from "@mantine/core";
 import { IconSearch, IconArrowRight } from "@tabler/icons-react";
 import { Dispatch } from "react";
+import { useSearchParams } from "react-router-dom";
 
 interface SearchBoxProps {
   query: string;
@@ -17,6 +18,17 @@ interface SearchBoxProps {
 }
 
 const SearchBox = ({ query, setQuery, handleSearch }: SearchBoxProps) => {
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const handleSearchParams = () => {
+    if (searchParams.get("q") === null) {
+      searchParams.delete("q");
+    }
+
+    searchParams.set("q", query);
+    handleSearch();
+    return setSearchParams(searchParams);
+  };
   return (
     <Box w={"100vw"} bg={"#ffa903"} h={"5rem"}>
       <Flex
@@ -32,7 +44,7 @@ const SearchBox = ({ query, setQuery, handleSearch }: SearchBoxProps) => {
             OPAC
           </Title>
 
-          <Text fz={"sm"} fs={"italic"}>
+          <Text fz={"sm"} fs={"italic"} hiddenFrom="md">
             OPEN PUBLIC ACCESS CATALOG
           </Text>
         </Box>
@@ -56,7 +68,7 @@ const SearchBox = ({ query, setQuery, handleSearch }: SearchBoxProps) => {
               size={32}
               radius="xl"
               color="#5C0505"
-              onClick={handleSearch}
+              onClick={handleSearchParams}
             >
               <IconArrowRight
                 style={{ width: rem(18), height: rem(18) }}

@@ -3,30 +3,40 @@ import LibraryFilter from "@features/HomePage/Library/LibraryFilter";
 import SearchBox from "@features/HomePage/Library/SearchBox";
 import useBooks from "@features/HomePage/hooks/useBooks";
 import { Box, Grid, ScrollArea } from "@mantine/core";
-import { useState } from "react";
+import { useDebouncedValue } from "@mantine/hooks";
+import { useEffect, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import { toast } from "sonner";
 import { index } from "src/shared/algolia/algolia";
 
 const LibraryPage = () => {
   const { booksData, count } = useBooks();
 
-  const [query, setQuery] = useState<string>("");
+  const [isSearching, setIsSearching] = useState<boolean>(false);
+  const [searchParams] = useSearchParams();
+  const [query, setQuery] = useState<string>(searchParams.get("q") || "");
+
+  const [debounced] = useDebouncedValue(query, 1000);
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [results, setResults] = useState<any[] | undefined>([]);
 
   const handleSearch = async () => {
-    if (query.trim() === "") {
-      setResults(booksData);
-    }
-
-    setResults(booksData);
-
     try {
-      const searchResults = await index.search(query);
-      setResults(searchResults.hits);
+      setIsSearching(true);
+      const searchResults = await index.search(debounced);
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const newMap = searchResults.hits.map((item: any) => ({
+        ...item,
+        id: item.path.split("/").pop(),
+      }));
+
+      setResults(newMap);
     } catch (error) {
       if (error) toast.error("Error searching with Algolia: ", error);
+    } finally {
+      setIsSearching(false);
     }
   };
 
@@ -51,10 +61,20 @@ const LibraryPage = () => {
               <LibraryFilter />
             </Grid.Col>
             <Grid.Col span={{ base: 12, md: 8, lg: 9 }}>
-              <BookList
-                booksData={!results?.length ? booksData : results}
-                count={!results?.length ? count : results?.length}
-              />
+              {isSearching && <>Searching for results</>}
+
+              {results?.length === 0 && <>No found results</>}
+
+              {!isSearching && (
+                <BookList
+                  booksData={
+                    !results?.length || searchParams.get("q") === ""
+                      ? booksData
+                      : results
+                  }
+                  count={!results?.length ? count : results?.length}
+                />
+              )}
             </Grid.Col>
           </Grid>
         </Box>
