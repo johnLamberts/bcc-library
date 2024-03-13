@@ -15,28 +15,45 @@ import {
   CardSection,
   Loader,
   LoadingOverlay,
+  Button,
 } from "@mantine/core";
 import {
-  IconUser,
   IconCookie,
-  IconUserStar,
   IconTimeDurationOff,
+  IconBooks,
+  IconUserHeart,
+  IconTransactionBitcoin,
 } from "@tabler/icons-react";
 import classes from "./styles/admin-dashboard.module.css";
 import { Overview } from "@features/AdminDashboard/Overview";
-import RecentOverdue from "@features/AdminDashboard/RecentOverdue";
 import {
   useReadAllStudents,
   useReadAllTeachers,
 } from "@features/AdminDashboard/hooks/useReadAllBorrowers";
+import useReadIncomingRequest from "@features/AdminDashboard/hooks/useReadIncomingRequest";
+import { format } from "date-fns";
+import { useNavigate } from "react-router-dom";
+import useCountBooks from "@features/AdminDashboard/hooks/useCountBooks";
+import useCountUsers from "@features/AdminDashboard/hooks/useCountUsers";
+import TodayTransaction from "@features/AdminDashboard/TodayTransaction";
+import useReadRecentOverdue from "@features/AdminDashboard/hooks/useReadRecentOverdue";
 
 export default function AdminDashboard() {
   const theme = useMantineTheme();
 
   const { data: students, isLoading: isStudent } = useReadAllStudents();
   const { data: teachers, isLoading: isTeacher } = useReadAllTeachers();
+  const { data: books, isLoading: isBooks } = useCountBooks();
+  const { data: users, isLoading: isUsers } = useCountUsers();
+
+  const { data: recentOverdue, isLoading: isTodayTransaction } =
+    useReadRecentOverdue();
+
   const { data: transaction, isLoading: isAllTransaction } =
     useReadAllTeachers();
+
+  const { data: requests, isLoading: isRequestIncoming } =
+    useReadIncomingRequest();
 
   const allBorrowers =
     isStudent || isTeacher ? <Loader size={15} /> : students! + teachers!;
@@ -45,18 +62,18 @@ export default function AdminDashboard() {
       id: 1,
       title: isAllTransaction ? <Loader size={15} /> : transaction,
       description: "All Transactions",
-      icon: IconUserStar,
+      icon: IconTransactionBitcoin,
     },
     {
       id: 2,
-      title: "200",
-      description: "Number of Students",
-      icon: IconUser,
+      title: isBooks ? <Loader size={15} /> : books,
+      description: "Number of Books",
+      icon: IconBooks,
     },
     {
       id: 3,
-      title: "400",
-      description: "Number of Students",
+      title: isUsers ? <Loader size={15} /> : users,
+      description: "Number of Users",
       icon: IconCookie,
     },
 
@@ -64,40 +81,7 @@ export default function AdminDashboard() {
       id: 4,
       title: allBorrowers,
       description: "Number of Borrowers",
-      icon: IconCookie,
-    },
-  ];
-
-  const listOverdue = [
-    {
-      id: 1,
-      fullName: "John Lambert P. Asis",
-      bookBorrowed: "Title For a cause",
-      expiryTime: new Date(1706152538372).toLocaleString(),
-    },
-    {
-      id: 2,
-      fullName: "John Lambert P. Asis",
-      bookBorrowed: "Title For a cause",
-      expiryTime: new Date(1706152538372).toLocaleString(),
-    },
-    {
-      id: 3,
-      fullName: "John Lambert P. Asis",
-      bookBorrowed: "Title For a cause",
-      expiryTime: new Date(1706152538372).toLocaleString(),
-    },
-
-    {
-      fullName: "John Lambert P. Asis",
-      bookBorrowed: "Title For a cause",
-      expiryTime: new Date(1706152538372).toLocaleString(),
-    },
-
-    {
-      fullName: "John Lambert P. Asis",
-      bookBorrowed: "Title For a cause",
-      expiryTime: new Date(1706152538372).toLocaleString(),
+      icon: IconUserHeart,
     },
   ];
 
@@ -125,9 +109,9 @@ export default function AdminDashboard() {
           </Text>
         </Box>
         <feature.icon
-          style={{ width: rem(30), height: rem(30) }}
-          stroke={2}
-          color={theme.colors.red[4]}
+          style={{ width: rem(18), height: rem(18) }}
+          stroke={1.5}
+          color={theme.colors.red[3]}
         />
       </Group>
 
@@ -139,6 +123,8 @@ export default function AdminDashboard() {
     </Card>
   ));
 
+  const navigate = useNavigate();
+
   return (
     <div>
       {/*  */}
@@ -148,20 +134,22 @@ export default function AdminDashboard() {
           {features}
         </SimpleGrid>
 
-        <Grid my={"md"} pos={"relative"}>
-          <Grid.Col span={{ base: 12, sm: 12, md: 12, lg: 4 }}>
-            <RecentOverdue />
-          </Grid.Col>
-          <Grid.Col span={{ base: 12, sm: 12, md: 12, lg: 8 }}>
+        <Grid my={"md"}>
+          <Grid.Col span={{ base: 12, sm: 12, md: 8, lg: 8 }}>
             <Card shadow="sm" padding="lg" radius="md" withBorder>
               <CardSection withBorder inheritPadding py="xs">
-                <Badge color={"yellow.8"}>Weekly Reports</Badge>
+                <Badge color={"yellow.8"}>
+                  Weekly Reports - All Transactions
+                </Badge>
               </CardSection>
 
-              <CardSection p={"lg"}>
+              <CardSection p={"md"}>
                 <Overview />
               </CardSection>
             </Card>
+          </Grid.Col>
+          <Grid.Col span={{ base: 12, sm: 12, md: 4, lg: 4 }}>
+            <TodayTransaction />
           </Grid.Col>
         </Grid>
 
@@ -169,12 +157,20 @@ export default function AdminDashboard() {
           <Grid.Col span={{ base: 12, sm: 12, md: 12, lg: 12 }}>
             <Card shadow="sm" padding="lg" radius="md" withBorder>
               <CardSection withBorder inheritPadding py="xs">
-                <Badge color={"yellow.8"}>Latest Activities</Badge>
+                <Group justify="space-between">
+                  <Badge color={"yellow.8"}>Overdue</Badge>
+
+                  <Button
+                    variant="light"
+                    radius={"md"}
+                    onClick={() => navigate("/return-transaction")}
+                  >
+                    Go to return table
+                  </Button>
+                </Group>
               </CardSection>
 
               <CardSection p={"lg"}>
-                {/* <Overview /> */}
-
                 <List
                   spacing="lg"
                   size="lg"
@@ -187,45 +183,132 @@ export default function AdminDashboard() {
                     </ThemeIcon>
                   }
                 >
-                  {listOverdue?.map((overdue) => (
-                    <Box key={overdue.id}>
-                      <List.Item>
-                        <Stack
-                          w={"max "}
-                          align="flex-start"
-                          justify="flex-start"
-                        >
-                          <Box>
-                            <Text size="sm" c={"dimmed"}>
-                              January 24 2024 -{" "}
-                              {new Date(1706152538372).toLocaleString()}
-                              <br />
-                            </Text>
-                            <Group justify="space-between" w={"max-content"}>
-                              <Text>{overdue.bookBorrowed}</Text>-
-                              <Text>{overdue.fullName}</Text>
-                            </Group>
-                          </Box>
-                        </Stack>
-                      </List.Item>
-                      <Divider my={"md"} />
-                    </Box>
-                  ))}
+                  <LoadingOverlay
+                    visible={isTodayTransaction}
+                    zIndex={1000}
+                    overlayProps={{ radius: "sm", blur: 2 }}
+                  />
+                  {!isTodayTransaction &&
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                    recentOverdue?.map((overdue: any) => (
+                      <Box key={overdue.id}>
+                        {/* <Group justify="space-between"> */}
+                        <List.Item>
+                          <Stack
+                            w={"max"}
+                            align="flex-start"
+                            justify="flex-start"
+                          >
+                            <Box>
+                              <Text size="sm" c={"dimmed"}>
+                                January 24 2024 -{" "}
+                                {new Date(1706152538372).toLocaleString()}
+                                <br />
+                              </Text>
+                              <Group justify="space-between" w={"max-content"}>
+                                {format(
+                                  new Date(
+                                    overdue?.createdAt.seconds * 1000 +
+                                      overdue?.createdAt.nanoseconds / 1000
+                                  ),
+                                  "MMMM dd yyyy"
+                                )}
+                                -
+                                <Text>
+                                  {overdue.firstName} {overdue.lastName}{" "}
+                                </Text>
+                              </Group>
+                            </Box>
+                          </Stack>
+                        </List.Item>
+                        {/* </Group> */}
+                        <Divider my={"md"} />
+                      </Box>
+                    ))}
+                </List>
+              </CardSection>
+            </Card>
+          </Grid.Col>
+        </Grid>
+
+        <Grid my={"md"} pos={"relative"}>
+          <Grid.Col span={{ base: 12, sm: 12, md: 12, lg: 12 }}>
+            <Card shadow="sm" padding="lg" radius="md" withBorder>
+              <CardSection withBorder inheritPadding py="xs">
+                <Group justify="space-between">
+                  <Badge color={"yellow.8"}>Incoming Request</Badge>
+
+                  <Button
+                    variant="light"
+                    radius={"md"}
+                    onClick={() => navigate("/borrow-transaction?bq=Request")}
+                  >
+                    Go to request table
+                  </Button>
+                </Group>
+              </CardSection>
+
+              <CardSection p={"lg"}>
+                <List
+                  spacing="lg"
+                  size="lg"
+                  center
+                  icon={
+                    <ThemeIcon color="yellow.7" size={24} radius="xl">
+                      <IconTimeDurationOff
+                        style={{ width: rem(16), height: rem(16) }}
+                      />
+                    </ThemeIcon>
+                  }
+                >
+                  <LoadingOverlay
+                    visible={isRequestIncoming}
+                    zIndex={1000}
+                    overlayProps={{ radius: "sm", blur: 2 }}
+                  />
+                  {!isRequestIncoming &&
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                    requests?.map((overdue: any) => (
+                      <Box key={overdue.id}>
+                        {/* <Group justify="space-between"> */}
+                        <List.Item>
+                          <Stack
+                            w={"max"}
+                            align="flex-start"
+                            justify="flex-start"
+                          >
+                            <Box>
+                              <Text size="sm" c={"dimmed"}>
+                                January 24 2024 -{" "}
+                                {new Date(1706152538372).toLocaleString()}
+                                <br />
+                              </Text>
+                              <Group justify="space-between" w={"max-content"}>
+                                {format(
+                                  new Date(
+                                    overdue?.createdAt.seconds * 1000 +
+                                      overdue?.createdAt.nanoseconds / 1000
+                                  ),
+                                  "MMMM dd yyyy"
+                                )}
+                                -
+                                <Text>
+                                  {overdue.firstName} {overdue.lastName}{" "}
+                                </Text>
+                              </Group>
+                            </Box>
+                          </Stack>
+                        </List.Item>
+                        {/* </Group> */}
+                        <Divider my={"md"} />
+                      </Box>
+                    ))}
                 </List>
               </CardSection>
             </Card>
           </Grid.Col>
         </Grid>
       </Box>
-
-      {/* <SimpleGrid cols={{ base: 1, sm: 2, md: 2, lg: 4 }} spacing="sm" mt={50}>
-        {announcement}
-      </SimpleGrid> */}
-
-      {/* <SimpleGrid cols={{ base: 1, sm: 2, md: 2, lg: 4 }} spacing="sm" mt={50}> */}
-      {/* {announcement} */}
-      {/* </SimpleGrid> */}
-      {/* </Container> */}
     </div>
   );
 }

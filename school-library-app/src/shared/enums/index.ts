@@ -60,6 +60,10 @@ export enum FIRESTORE_COLLECTION_QUERY_KEY {
   ADMIN_TEACHER_DASHBOARD = "admin-student",
   ADMIN_STUDENT_DASHBOARD = "admin-teacher",
   ADMIN_WEEKLY_REPORTS = "admin-weekly-reports",
+  ADMIN_INCOMING_REQUEST = "admin-incoming-request",
+  ADMIN_BOOKS = "admin-books",
+  ADMIN_USERS = "admin-users",
+  ADMIN_TODAY_TRANSACTION = "admin-today-transaction",
 
   //
   ACTIVITY_LOGS = "activity-logs-timeline",
