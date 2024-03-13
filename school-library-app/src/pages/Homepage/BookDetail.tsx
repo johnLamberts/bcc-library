@@ -95,12 +95,11 @@ const BookDetail = () => {
       <ScrollArea
         scrollbars="y"
         style={{
-          paddingBottom: "var(--mantine-footer-height, 5rem)",
           height:
             "calc(100vh - var(--mantine-header-height, 0px) - var(--mantine-footer-height, 0px))", // viewport height - height of header - height of footer
         }}
       >
-        <Paper withBorder p={"lg"}>
+        <Paper withBorder p={"lg"} mt={"5rem"}>
           <>
             {/* <Group justify="space-between">
             <Image

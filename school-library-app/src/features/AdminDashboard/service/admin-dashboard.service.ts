@@ -3,6 +3,7 @@ import {
   Timestamp,
   collection,
   getDocs,
+  limit,
   query,
   where,
 } from "firebase/firestore";
@@ -16,7 +17,26 @@ const getAllRecentOverdue = async () => {
         firestore,
         FIRESTORE_COLLECTION_QUERY_KEY.ALL_BOOKS_TRANSACTION
       ),
-      where("status", "==", "Overdue")
+      where("status", "==", "Overdue"),
+      limit(5)
+    )
+  );
+
+  return transactionRef.docs.map((doc) => ({
+    id: doc.id,
+    ...doc.data(),
+  })) as ICirculation[];
+};
+
+const getAllIncomingRequest = async () => {
+  const transactionRef = await getDocs(
+    query(
+      collection(
+        firestore,
+        FIRESTORE_COLLECTION_QUERY_KEY.ALL_BOOKS_TRANSACTION
+      ),
+      where("status", "==", "Request"),
+      limit(5)
     )
   );
 
@@ -82,6 +102,60 @@ const getWeeklyReports = async () => {
     id: doc.id,
     ...doc.data(),
   }));
+};
+
+const getBooks = async () => {
+  try {
+    const querySnapshot = await getDocs(
+      query(collection(firestore, FIRESTORE_COLLECTION_QUERY_KEY.CATALOGUE))
+    );
+
+    return querySnapshot.size;
+  } catch (err) {
+    throw new Error(`${err}`);
+  }
+};
+
+const getTodayTransaction = async () => {
+  try {
+    const startOfDay = new Date();
+    startOfDay.setHours(0, 0, 0, 0); // Set time to start of the day
+    const endOfDay = new Date();
+    endOfDay.setHours(23, 59, 59, 999); // Set time to end of the day
+
+    const startTimestamp = Timestamp.fromDate(startOfDay);
+    const endTimestamp = Timestamp.fromDate(endOfDay);
+
+    const querySnapshot = await getDocs(
+      query(
+        collection(
+          firestore,
+          FIRESTORE_COLLECTION_QUERY_KEY.ALL_BOOKS_TRANSACTION
+        ),
+        where("createdAt", ">=", startTimestamp),
+        where("createdAt", "<=", endTimestamp)
+      )
+    );
+
+    return querySnapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    })) as ICirculation[];
+  } catch (err) {
+    throw new Error(`${err}`);
+  }
+};
+
+const getUsers = async () => {
+  try {
+    const querySnapshot = await getDocs(
+      query(collection(firestore, FIRESTORE_COLLECTION_QUERY_KEY.USERS))
+    );
+
+    return querySnapshot.size;
+  } catch (err) {
+    throw new Error(`${err}`);
+  }
 };
 
 // async function getTotalTransactionsByDateRange(startDate: Date, endDate: Date) {
@@ -180,4 +254,8 @@ export {
   getAllTransaction,
   getWeeklyReports,
   getTotalTransactionsByDateRange,
+  getAllIncomingRequest,
+  getBooks,
+  getUsers,
+  getTodayTransaction,
 };
