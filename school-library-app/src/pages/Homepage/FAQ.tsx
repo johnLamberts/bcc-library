@@ -1,4 +1,4 @@
-import { Grid, Title, Accordion, Image, Box, Button } from "@mantine/core";
+import { Grid, Title, Accordion, Image, Button } from "@mantine/core";
 import classes from "./faq.module.css";
 import { useNavigate } from "react-router-dom";
 

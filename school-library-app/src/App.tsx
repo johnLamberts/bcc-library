@@ -40,6 +40,7 @@ import AcquisitionStock from "@features/AcquisitionStock/AcquisitionStock";
 import AdminRequired from "./routes/AdminRequired";
 import { Forbidden } from "@pages/Forbidden";
 import DetailsFAQ from "@pages/Homepage/DetailsFAQ";
+import { Footer } from "@pages/Homepage/Footer";
 
 function App() {
   // Will Refactor this after I finish the admin page with fully functionality

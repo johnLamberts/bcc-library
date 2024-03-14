@@ -1,9 +1,9 @@
 import { Box, ScrollArea } from "@mantine/core";
-import Footer from "./Footer";
 import About from "./About";
 import Hero from "./Hero";
 import useCurrentUser from "@pages/Authentication/hooks/useCurrentUser";
 import FAQ from "./FAQ";
+import { Footer } from "./Footer";
 
 const Home = () => {
   const { user } = useCurrentUser();

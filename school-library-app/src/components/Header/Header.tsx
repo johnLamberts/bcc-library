@@ -74,10 +74,10 @@ const Header = () => {
           {user === null || user === undefined ? (
             <Button
               role="button"
-              variant="light"
+              variant="outline"
               onClick={() => navigate("login")}
               disabled={isLoading}
-              className={classes["button-background-move"]}
+              // className={classes["button-background-move"]}
               visibleFrom="md"
               style={{
                 fontSize: "0.8rem",
@@ -88,11 +88,9 @@ const Header = () => {
                 border: "1px solid #5c0505",
                 // cursor: "pointer",
                 position: "relative",
-                backgroundColor: "rgba(0, 0, 0, 0)",
-                color: "#000c",
               }}
             >
-              Login
+              Sign In
             </Button>
           ) : (
             <Menu
@@ -207,7 +205,7 @@ const Header = () => {
               variant="light"
               onClick={() => navigate("login")}
               disabled={isLoading}
-              className={classes["button-background-move"]}
+              // className={classes["button-background-move"]}
               style={{
                 fontSize: "0.8rem",
                 fontWeight: "200",

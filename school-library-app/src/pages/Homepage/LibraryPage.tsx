@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { toast } from "sonner";
 import { index } from "src/shared/algolia/algolia";
+import { Footer } from "./Footer";
 
 const LibraryPage = () => {
   const { booksData, count } = useBooks();
@@ -95,6 +96,8 @@ const LibraryPage = () => {
             </Grid.Col>
           </Grid>
         </Box>
+
+        <Footer />
       </ScrollArea>
     </>
   );

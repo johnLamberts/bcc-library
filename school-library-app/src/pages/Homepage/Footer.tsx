@@ -1,83 +1,97 @@
-import {
-  Burger,
-  Button,
-  Container,
-  Divider,
-  Flex,
-  Group,
-  Image,
-  Text,
-} from "@mantine/core";
+import { ActionIcon, Container, Group, Text, rem } from "@mantine/core";
 import classes from "./footer.module.css";
-import { IconUser } from "@tabler/icons-react";
+import {
+  IconBrandFacebook,
+  IconBrandInstagram,
+  IconBrandTwitter,
+  IconBrandYoutube,
+} from "@tabler/icons-react";
 
 import CollegeLogo from "@components/Logo/CollegeLogo";
+import CollegeFooterLogo from "@components/Logo/CollegeLogoFooter";
 
-const links = [
-  { link: "/home", label: "Home" },
-  { link: "/library", label: "Library" },
-  { link: "/services", label: "Services" },
-  { link: "/announcement", label: "Announcement" },
-  { link: "/contact-us", label: "Contact Us" },
+const data = [
+  {
+    title: "About",
+    links: [
+      { label: "Home", link: "/home" },
+      { label: "Library", link: "/library" },
+      { label: "Announcement", link: "/announcement" },
+      { label: "FAQ", link: "/frequently-ask-questions" },
+      { label: "Contact Us", link: "/contact-us" },
+    ],
+  },
 ];
 
-const Footer = () => {
-  const items = links.map((link) => (
-    <a
-      key={link.label}
-      href={link.link}
-      className={classes.link}
-      onClick={(event) => event.preventDefault()}
-      style={{
-        fontFamily: "Montserrat",
-        color: "white",
-        fontWeight: 400,
-      }}
-    >
-      {link.label}
-    </a>
-  ));
+export function Footer() {
+  const groups = data.map((group) => {
+    const links = group.links.map((link, index) => (
+      <Text<"a">
+        key={index}
+        className={classes.link}
+        component="a"
+        href={link.link}
+        onClick={(event) => event.preventDefault()}
+        c={"white"}
+      >
+        {link.label}
+      </Text>
+    ));
+
+    return (
+      <div className={classes.wrapper} key={group.title}>
+        <Text className={classes.title} c={"white"}>
+          {group.title}
+        </Text>
+        {links}
+      </div>
+    );
+  });
 
   return (
-    <>
-      <footer className={classes.footer}>
-        <Container size={"lg"} pt={"xs"}>
-          <Flex justify={"center"} align="center" h="100%">
-            {/* <MantineLogo size={30} /> */}
-            <Image
-              src={"/images/bcc-logo.svg"}
-              h={"auto"}
-              w={"auto"}
-              fit="cover"
+    <footer className={classes.footer}>
+      <Container className={classes.inner}>
+        <div className={classes.logo}>
+          <CollegeFooterLogo />
+          <Text size="xs" c="white" className={classes.description}>
+            Revolutionize library access with an immersive and inclusive web
+            system, empowering users to seamlessly explore, borrow, and engage
+            with a diverse array of resources.
+          </Text>
+        </div>
+        <div className={classes.groups}>{groups}</div>
+      </Container>
+      <Container className={classes.afterFooter}>
+        <Text c="white" size="sm">
+          © 2023 bcc-opac-library.site. All rights reserved.
+        </Text>
+
+        <Group
+          gap={0}
+          className={classes.social}
+          justify="flex-end"
+          wrap="nowrap"
+        >
+          <ActionIcon size="lg" color="white" variant="subtle">
+            <IconBrandTwitter
+              style={{ width: rem(18), height: rem(18) }}
+              stroke={1.5}
             />
-
-            <Flex direction={"column"} h="100%" gap={0}>
-              <Text>About Us</Text>
-              <Divider />
-              Where exploration and learning thrive. Our Online Public Access
-              Catalog (OPAC) is your gateway to a world of educational
-              resources, from textbooks to multimedia materials. Join us in
-              empowering student learning through technology.
-            </Flex>
-
-            <Flex direction={"column"} h="100%" gap={0} visibleFrom="sm">
-              <Text>Useful Links</Text>
-              <Divider />
-              {items}
-            </Flex>
-
-            <Flex direction={"column"} h="100%" gap={0} visibleFrom="sm">
-              <Text>SEARCH SOMETHING</Text>
-              <Divider />
-              Where exploration and learning thrive. Our Online Public Access
-              Catalog (OPAC) is your gateway to a world of educational
-              resources, from textbooks to multimedia materials. Join us in
-              empowering student learning through technology.
-            </Flex>
-          </Flex>
-        </Container>
-      </footer>
-    </>
+          </ActionIcon>
+          <ActionIcon size="lg" color="white" variant="subtle">
+            <IconBrandFacebook
+              style={{ width: rem(18), height: rem(18) }}
+              stroke={1.5}
+            />
+          </ActionIcon>
+          <ActionIcon size="lg" color="white" variant="subtle">
+            <IconBrandInstagram
+              style={{ width: rem(18), height: rem(18) }}
+              stroke={1.5}
+            />
+          </ActionIcon>
+        </Group>
+      </Container>
+    </footer>
   );
-};
-export default Footer;
+}
