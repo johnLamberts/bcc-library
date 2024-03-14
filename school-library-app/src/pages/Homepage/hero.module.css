@@ -34,26 +34,27 @@
   font-size: 6.5rem;
   width: 100%;
 
+  text-align: center;
+
   padding-top: 5rem;
   padding-bottom: 5rem;
 
   /* color: var(--secondary); */
   color: #5c0505;
 
-  @media (max-width: $mantine-breakpoint-md) {
+  /* @media (max-width: $mantine-breakpoint-md) {
     font-size: 5rem;
     font-weight: 900;
     text-align: center;
     width: 80%;
   }
-
+ */
   @media (max-width: $mantine-breakpoint-sm) {
     font-size: 2rem;
-    font-weight: 900;
+    /* font-weight: 900;
     text-align: center;
-    margin-left: 2.35rem;
 
-    width: 50%;
+    width: 50%; */
   }
 }
 

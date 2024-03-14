@@ -27,6 +27,7 @@ const links = [
   { link: "/home", label: "Home" },
   { link: "/library", label: "Library" },
   { link: "/announcement", label: "Announcement" },
+  { link: "/frequently-ask-questions", label: "FAQ" },
   { link: "/contact-us", label: "Contact Us" },
 ];
 

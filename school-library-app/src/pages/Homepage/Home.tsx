@@ -3,6 +3,7 @@ import Footer from "./Footer";
 import About from "./About";
 import Hero from "./Hero";
 import useCurrentUser from "@pages/Authentication/hooks/useCurrentUser";
+import FAQ from "./FAQ";
 
 const Home = () => {
   const { user } = useCurrentUser();
@@ -21,8 +22,13 @@ const Home = () => {
           <Box mt={"5rem"}>
             <Hero />
           </Box>
+          <Box mt={"3rem"}>
+            <About />
+          </Box>
 
-          <About />
+          <Box mt={"5rem"} mb={"3rem"}>
+            <FAQ />
+          </Box>
 
           <Footer />
         </Box>
