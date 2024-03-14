@@ -40,6 +40,8 @@ const Header = () => {
   const { logoutUser } = useLogout();
 
   const { pathname } = useLocation();
+
+  console.log(pathname);
   const items = links.map((link) => (
     <Link
       key={link.link}

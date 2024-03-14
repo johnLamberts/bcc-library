@@ -4,10 +4,8 @@ import {
   IconBrandFacebook,
   IconBrandInstagram,
   IconBrandTwitter,
-  IconBrandYoutube,
 } from "@tabler/icons-react";
 
-import CollegeLogo from "@components/Logo/CollegeLogo";
 import CollegeFooterLogo from "@components/Logo/CollegeLogoFooter";
 
 const data = [
