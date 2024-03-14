@@ -8,9 +8,8 @@
 }
 
 .description {
-  max-width: rem(600px);
+  width: rem(100%);
   text-align: center;
-  margin: auto;
 
   &::after {
     content: "";
@@ -23,6 +22,15 @@
     margin-right: auto;
     border-radius: 4px;
   }
+
+  /* @media (max-width: $mantine-breakpoint-md) {
+    font-size: 5rem;
+    font-weight: 900;
+  }
+
+  @media (max-width: $mantine-breakpoint-sm) {
+    width: 50%;
+  } */
 }
 
 .cardShadow {

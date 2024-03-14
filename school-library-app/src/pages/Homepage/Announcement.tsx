@@ -6,8 +6,19 @@ import {
   Container,
   AspectRatio,
   ScrollArea,
+  Group,
+  Stack,
+  Container,
+  Divider,
+  Grid,
+  Skeleton,
+  rem,
+  Box,
+  CardSection,
+  Box,
 } from "@mantine/core";
 import classes from "../styles/ArticlesCardsGrid.module.css";
+import { Footer } from "./Footer";
 const mockdata = [
   {
     title: "Top 10 places to visit in Norway this summer",
@@ -35,27 +46,24 @@ const mockdata = [
   },
 ];
 
+const PRIMARY_COL_HEIGHT = rem(250);
+
 const Announcement = () => {
-  const cards = mockdata.map((article) => (
-    <Card
-      key={article.title}
-      p="md"
-      radius="md"
-      component="a"
-      href="#"
-      className={classes.card}
-    >
-      <AspectRatio ratio={1920 / 1080}>
-        <Image src={article.image} />
-      </AspectRatio>
-      <Text c="dimmed" size="xs" tt="uppercase" fw={700} mt="md">
-        {article.date}
-      </Text>
-      <Text className={classes.title} mt={5}>
-        {article.title}
-      </Text>
-    </Card>
-  ));
+  const SECONDARY_COL_HEIGHT = `calc(${PRIMARY_COL_HEIGHT} / 2 - var(--mantine-spacing-md) / 2)`;
+
+  const cardNumber = (num: number) => {
+    return mockdata.map((article) => (
+      <Card key={article.title} p="md" radius="md" component="a" href="#">
+        <CardSection>
+          <Image src={article.image} h={PRIMARY_COL_HEIGHT} />
+
+          <Box py={"xs"}>
+            <Text>{article.title}</Text>
+          </Box>
+        </CardSection>
+      </Card>
+    ))[num];
+  };
   return (
     <ScrollArea
       scrollbars="y"
@@ -65,8 +73,73 @@ const Announcement = () => {
       }}
     >
       <Container py="xl" mt={"5rem"}>
-        <SimpleGrid cols={{ base: 1, sm: 2 }}>{cards}</SimpleGrid>
+        <Stack>
+          <Text
+            ta={"center"}
+            style={{
+              fontSize: "2rem",
+            }}
+            ff={"Montserrat"}
+            tt={"uppercase"}
+          >
+            Latest announcement <br />
+            <span
+              style={{
+                fontSize: "1.5rem",
+              }}
+            ></span>
+          </Text>
+        </Stack>
+        {/* <SimpleGrid cols={{ base: 1, sm: 2 }}>{cards}</SimpleGrid>
+         */}
+
+        <Grid>
+          <Grid.Col span={{ base: 12, md: 6, lg: 6 }}>{cardNumber(0)}</Grid.Col>
+          <Grid.Col span={{ base: 12, md: 6, lg: 6 }}>{cardNumber(1)}</Grid.Col>
+        </Grid>
+
+        <Grid>
+          <Grid.Col span={{ base: 12, md: 6, lg: 3 }}>{cardNumber(0)}</Grid.Col>
+          <Grid.Col span={{ base: 12, md: 6, lg: 3 }}>{cardNumber(1)}</Grid.Col>
+          <Grid.Col span={{ base: 12, md: 6, lg: 3 }}>{cardNumber(2)}</Grid.Col>
+          <Grid.Col span={{ base: 12, md: 6, lg: 3 }}>{cardNumber(3)}</Grid.Col>
+        </Grid>
       </Container>
+
+      <Divider my={"md"} />
+
+      <Text
+        ta={"left"}
+        style={{
+          fontSize: "1.2rem",
+        }}
+        ff={"Montserrat"}
+        tt={"uppercase"}
+        px={"lg"}
+      >
+        Other blog <br />
+        <span
+          style={{
+            fontSize: "1.5rem",
+          }}
+        ></span>
+      </Text>
+
+      <Box px={"sm"}>
+        <Grid>
+          <Grid.Col span={{ base: 12, md: 6, lg: 3 }}>{cardNumber(0)}</Grid.Col>
+          <Grid.Col span={{ base: 12, md: 6, lg: 3 }}>{cardNumber(1)}</Grid.Col>
+          <Grid.Col span={{ base: 12, md: 6, lg: 3 }}>{cardNumber(2)}</Grid.Col>
+          <Grid.Col span={{ base: 12, md: 6, lg: 3 }}>{cardNumber(3)}</Grid.Col>
+
+          <Grid.Col span={{ base: 12, md: 6, lg: 3 }}>{cardNumber(0)}</Grid.Col>
+          <Grid.Col span={{ base: 12, md: 6, lg: 3 }}>{cardNumber(1)}</Grid.Col>
+          <Grid.Col span={{ base: 12, md: 6, lg: 3 }}>{cardNumber(2)}</Grid.Col>
+          <Grid.Col span={{ base: 12, md: 6, lg: 3 }}>{cardNumber(3)}</Grid.Col>
+        </Grid>
+      </Box>
+
+      <Footer />
     </ScrollArea>
   );
 };

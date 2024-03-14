@@ -49,11 +49,12 @@ const About = () => {
         radius="lg"
         className={classes.cardShadow}
         padding="xl"
-        style={{
-          border: "1px solid #ffa903",
-          boxShadow: "1px 12px 54px -15px rgba(0,0,0,0.54)",
-        }}
-        bg={"#FFA903"}
+        // style={{
+        //   border: "0.3px solid #ffa903",
+        //   // boxShadow: "1px 12px 54px -15px rgba(0,0,0,0.54)",
+        // }}
+
+        withBorder
       >
         <feature.icon
           style={{ width: rem(50), height: rem(50) }}
@@ -94,10 +95,6 @@ const About = () => {
 
   return (
     <Container size="lg" py="xl">
-      {/* <Title order={2} className={classes.title} ta="center" mt="sm">
-        Integrate effortlessly with any technology stack
-      </Title> */}
-
       <Group justify="center">
         <Box>
           <Title c="black" className={classes.description} mt="md">
@@ -111,7 +108,7 @@ const About = () => {
             </span>
           </Title>
 
-          <Text mt={"md"} c={"dimmed"} ta={"center"} w={"40rem"}>
+          <Text mt={"md"} c={"black"} ta={"center"}>
             Explore the World of Knowledge with OPAC: Your Passport to
             Empowerment. Connect, Learn, and Grow as You Navigate Our Extensive
             Resources, Fostering Lifelong Learning for All.

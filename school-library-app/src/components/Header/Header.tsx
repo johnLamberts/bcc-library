@@ -27,6 +27,7 @@ const links = [
   { link: "/home", label: "Home" },
   { link: "/library", label: "Library" },
   { link: "/announcement", label: "Announcement" },
+  { link: "/frequently-ask-questions", label: "FAQ" },
   { link: "/contact-us", label: "Contact Us" },
 ];
 
@@ -39,6 +40,8 @@ const Header = () => {
   const { logoutUser } = useLogout();
 
   const { pathname } = useLocation();
+
+  console.log(pathname);
   const items = links.map((link) => (
     <Link
       key={link.link}
@@ -73,10 +76,10 @@ const Header = () => {
           {user === null || user === undefined ? (
             <Button
               role="button"
-              variant="light"
+              variant="outline"
               onClick={() => navigate("login")}
               disabled={isLoading}
-              className={classes["button-background-move"]}
+              // className={classes["button-background-move"]}
               visibleFrom="md"
               style={{
                 fontSize: "0.8rem",
@@ -87,11 +90,9 @@ const Header = () => {
                 border: "1px solid #5c0505",
                 // cursor: "pointer",
                 position: "relative",
-                backgroundColor: "rgba(0, 0, 0, 0)",
-                color: "#000c",
               }}
             >
-              Login
+              Sign In
             </Button>
           ) : (
             <Menu
@@ -206,7 +207,7 @@ const Header = () => {
               variant="light"
               onClick={() => navigate("login")}
               disabled={isLoading}
-              className={classes["button-background-move"]}
+              // className={classes["button-background-move"]}
               style={{
                 fontSize: "0.8rem",
                 fontWeight: "200",

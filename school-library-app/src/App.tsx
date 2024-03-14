@@ -39,6 +39,8 @@ import Announcement from "@pages/Homepage/Announcement";
 import AcquisitionStock from "@features/AcquisitionStock/AcquisitionStock";
 import AdminRequired from "./routes/AdminRequired";
 import { Forbidden } from "@pages/Forbidden";
+import DetailsFAQ from "@pages/Homepage/DetailsFAQ";
+import { Footer } from "@pages/Homepage/Footer";
 
 function App() {
   // Will Refactor this after I finish the admin page with fully functionality
@@ -69,6 +71,7 @@ function App() {
             <Route index element={<Home />} />
             <Route path="home" element={<Home />} />
             <Route path="announcement" element={<Announcement />} />
+            <Route path="frequently-ask-questions" element={<DetailsFAQ />} />
             <Route path="library" element={<LibraryPage />} />
             <Route path="library/:bookId" element={<BookDetail />} />
             <Route path="profile/:manageProfileId" element={<ProfilePage />} />
