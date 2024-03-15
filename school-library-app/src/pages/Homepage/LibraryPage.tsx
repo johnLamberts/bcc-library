@@ -9,7 +9,7 @@ import { useSearchParams } from "react-router-dom";
 import { toast } from "sonner";
 import { index } from "src/shared/algolia/algolia";
 import { Footer } from "./Footer";
-
+import { Helmet } from "react-helmet";
 const LibraryPage = () => {
   const { booksData, count } = useBooks();
 
@@ -66,6 +66,13 @@ const LibraryPage = () => {
 
   return (
     <>
+      <Helmet>
+        <title>Binangonan Catholic College Library OPAC: Explore Books</title>
+        <meta
+          name="description"
+          content="Browse the collection of books available at the Binangonan Catholic College Library OPAC. Discover a wide range of titles to support your research and learning."
+        />
+      </Helmet>
       <ScrollArea
         scrollbars="y"
         style={{
