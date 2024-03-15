@@ -1,23 +1,16 @@
 import {
-  SimpleGrid,
   Card,
   Image,
   Text,
   Container,
-  AspectRatio,
   ScrollArea,
-  Group,
   Stack,
-  Container,
   Divider,
   Grid,
-  Skeleton,
   rem,
-  Box,
   CardSection,
   Box,
 } from "@mantine/core";
-import classes from "../styles/ArticlesCardsGrid.module.css";
 import { Footer } from "./Footer";
 const mockdata = [
   {
@@ -49,8 +42,6 @@ const mockdata = [
 const PRIMARY_COL_HEIGHT = rem(250);
 
 const Announcement = () => {
-  const SECONDARY_COL_HEIGHT = `calc(${PRIMARY_COL_HEIGHT} / 2 - var(--mantine-spacing-md) / 2)`;
-
   const cardNumber = (num: number) => {
     return mockdata.map((article) => (
       <Card key={article.title} p="md" radius="md" component="a" href="#">

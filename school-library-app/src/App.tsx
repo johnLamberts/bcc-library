@@ -40,12 +40,40 @@ import AcquisitionStock from "@features/AcquisitionStock/AcquisitionStock";
 import AdminRequired from "./routes/AdminRequired";
 import { Forbidden } from "@pages/Forbidden";
 import DetailsFAQ from "@pages/Homepage/DetailsFAQ";
-import { Footer } from "@pages/Homepage/Footer";
 
+import { Helmet } from "react-helmet";
 function App() {
   // Will Refactor this after I finish the admin page with fully functionality
   return (
     <>
+      <Helmet>
+        <meta charSet="utf-8" />
+        <title>
+          Binangonan Catholic Library OPAC: Explore Books, Journals, and More
+        </title>
+        <meta name="author" content="Your Name" />
+        <meta
+          property="og:title"
+          content="In-depth articles and guides on research techniques, recommended reading lists, and highlights from the library's collection, incorporating relevant keywords naturally throughout the content"
+        />
+        <meta
+          property="og:description"
+          content="Discover a wealth of knowledge at the Binangonan Catholic Library OPAC. Explore our extensive collection of books, journals, and academic resources to fuel your research and learning journey."
+        />
+        <meta property="og:image" content="https://example.com/image.jpg" />
+        <meta property="og:url" content="https://bcc-opac-library.site/home" />
+        <meta
+          name="twitter:title"
+          content="In-depth articles and guides on research techniques, recommended reading lists, and highlights from the library's collection, incorporating relevant keywords naturally throughout the content"
+        />
+        <meta
+          name="twitter:description"
+          content="Discover a wealth of knowledge at the Binangonan Catholic Library OPAC. Explore our extensive collection of books, journals, and academic resources to fuel your research and learning journey."
+        />
+        <meta name="twitter:image" content="https://example.com/image.jpg" />
+        <meta name="twitter:card" content="summary_large_image" />
+        {/* <link rel="canonical" href="http://mysite.com/example" /> */}
+      </Helmet>
       <Toaster richColors />
       <Suspense
         fallback={

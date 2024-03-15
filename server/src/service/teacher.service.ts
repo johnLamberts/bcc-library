@@ -14,6 +14,16 @@ const getAllTeachers = async () => {
 };
 
 const createTeacher = async (teacher: TTeacher) => {
+  const teacherNumberSnapshot = await admin
+    .firestore()
+    .collection("teachers")
+    .where("teacherNumber", "==", teacher.teacherNumber)
+    .get();
+
+  if (teacherNumberSnapshot.size) {
+    throw new Error("Teacher Number were already existed.");
+  }
+
   const userRef = await admin.auth().createUser({
     email: teacher.email,
     emailVerified: false,
