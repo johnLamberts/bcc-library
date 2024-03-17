@@ -1,0 +1,11 @@
+.ck-editor__editable_inline {
+  min-height: 20rem;
+}
+
+.editor-wrapper .ck-editor__toolbar {
+  position: sticky;
+  top: 2rem; /* Stick the toolbar at the top of the container */
+  z-index: 1000; /* Adjust z-index as needed */
+  background-color: #f8f9fa; /* Optional: Add background color */
+  padding: 5rem; /* Optional: Add padding */
+}
