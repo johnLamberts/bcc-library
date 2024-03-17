@@ -10,6 +10,12 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@ckeditor/ckeditor5-basic-styles": "^41.2.0",
+    "@ckeditor/ckeditor5-core": "^41.2.0",
+    "@ckeditor/ckeditor5-editor-classic": "^41.2.0",
+    "@ckeditor/ckeditor5-essentials": "^41.2.0",
+    "@ckeditor/ckeditor5-paragraph": "^41.2.0",
+    "@ckeditor/ckeditor5-react": "^6.2.0",
     "@hookform/resolvers": "^3.3.4",
     "@mantine/core": "^7.4.1",
     "@mantine/dates": "^7.4.1",

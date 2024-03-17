@@ -32,12 +32,10 @@ import BookConditionReport from "@pages/Reports/BookConditionReport";
 import InventoryReport from "@pages/Reports/InventoryReport";
 import FeeReport from "@pages/Reports/FeeReport";
 import TeacherReport from "@pages/Reports/TeacherReport";
-import ProtectedRoute from "./routes/ProtectedRoute";
 import { PageNotFound } from "@pages/PageNotFound";
 import ForgetPassword from "@pages/ForgetPassword";
 import Announcement from "@pages/Homepage/Announcement";
 import AcquisitionStock from "@features/AcquisitionStock/AcquisitionStock";
-import AdminRequired from "./routes/AdminRequired";
 import { Forbidden } from "@pages/Forbidden";
 import DetailsFAQ from "@pages/Homepage/DetailsFAQ";
 import AnnouncementManagement from "@pages/AnnouncementManagement";
@@ -78,11 +76,11 @@ function App() {
           </Route>
           <Route
             element={
-              <ProtectedRoute>
-                <AdminRequired>
-                  <AdminLayout />
-                </AdminRequired>
-              </ProtectedRoute>
+              // <ProtectedRoute>
+              //   <AdminRequired>
+              //   </AdminRequired>
+              // </ProtectedRoute>
+              <AdminLayout />
             }
           >
             <Route index element={<AdminDashboard />} />
