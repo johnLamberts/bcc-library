@@ -12,6 +12,7 @@ import {
   IconReport,
   IconSettingsAutomation,
   IconBrandStocktwits,
+  IconNews,
 } from "@tabler/icons-react";
 import { IconCategory2 } from "@tabler/icons-react";
 import LinkGroups from "./LinkGroups";
@@ -24,6 +25,11 @@ interface NavbarProps {
 }
 const mainFeatures = [
   { link: "/dashboard", label: "Admin Dashboard", icon: IconChartInfographic },
+  {
+    link: "/manage-announcement",
+    label: "Manage Announcement",
+    icon: IconNews,
+  },
   { link: "/user-management", label: "User Management", icon: IconUser },
   {
     link: "/teacher-management",

@@ -40,6 +40,7 @@ import AcquisitionStock from "@features/AcquisitionStock/AcquisitionStock";
 import AdminRequired from "./routes/AdminRequired";
 import { Forbidden } from "@pages/Forbidden";
 import DetailsFAQ from "@pages/Homepage/DetailsFAQ";
+import AnnouncementManagement from "@pages/AnnouncementManagement";
 
 function App() {
   // Will Refactor this after I finish the admin page with fully functionality
@@ -86,6 +87,10 @@ function App() {
           >
             <Route index element={<AdminDashboard />} />
             <Route path="/dashboard" element={<AdminDashboard />} />
+            <Route
+              path="/manage-announcement"
+              element={<AnnouncementManagement />}
+            />
             <Route path="/user-management" element={<UserManagement />} />
             <Route path="/student-management" element={<StudentManagement />} />
             <Route
