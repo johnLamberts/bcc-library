@@ -21,88 +21,81 @@ import { Box } from "@mantine/core";
 import { Alignment } from "@ckeditor/ckeditor5-alignment"; // Importing the package.
 import { TextTransformation } from "@ckeditor/ckeditor5-typing";
 
+import "./styles/ck-editor.css";
+
 export default function AnnouncementForm() {
   return (
     <>
-      <Box h={"60rem"}>
-        <CKEditorContext context={Context}>
-          <CKEditor
-            config={{
-              plugins: [
-                Base64UploadAdapter,
-                LinkPlugin,
-                ParagraphPlugin,
-                BlockquotePlugin,
-                Image,
-                ImageCaption,
-                ImageResize,
-                ImageStyle,
-                ImageToolbar,
-                ImageUploadPlugin,
-                Bold,
-                Italic,
-                Essentials,
-                Font,
-                Heading,
-                Alignment,
-                TextTransformation,
-              ],
-              image: {
-                toolbar: [
-                  "imageTextAlternative",
-                  "toggleImageCaption",
-                  "imageStyle:inline",
-                  "imageStyle:block",
-                  "imageStyle:side",
+      <Box pos={"relative"}>
+        <div className="editor-wrapper">
+          <CKEditorContext context={Context}>
+            <CKEditor
+              config={{
+                plugins: [
+                  Base64UploadAdapter,
+                  LinkPlugin,
+                  ParagraphPlugin,
+                  BlockquotePlugin,
+                  Image,
+                  ImageCaption,
+                  ImageResize,
+                  ImageStyle,
+                  ImageToolbar,
+                  ImageUploadPlugin,
+                  Bold,
+                  Italic,
+                  Essentials,
+                  Font,
+                  Heading,
+                  Alignment,
+                  TextTransformation,
                 ],
-              },
-              toolbar: {
-                items: [
-                  "undo",
-                  "redo",
-                  "|",
-                  "alignment", //
-                  "heading",
-                  "|",
-                  "fontfamily",
-                  "fontsize",
-                  "fontColor",
-                  "fontBackgroundColor",
-                  "|",
-                  "bold",
-                  "italic",
-                  "strikethrough",
-                  "subscript",
-                  "superscript",
-                  "code",
-                  "|",
-                  "link",
-                  "insertImage",
-                  "blockQuote",
-                  "codeBlock",
-                  "|",
-                  "bulletedList",
-                  "numberedList",
-                  "todoList",
-                  "outdent",
-                  "indent",
-                ],
-                shouldNotGroupWhenFull: false,
-              },
-            }}
-            editor={ClassicEditor}
-            onReady={() => {}}
-            onChange={(event, editor) => {
-              console.log("event: onChange", { event, editor });
-            }}
-            onBlur={(event, editor) => {
-              console.log("event: onBlur", { event, editor });
-            }}
-            onFocus={(event, editor) => {
-              console.log("event: onFocus", { event, editor });
-            }}
-          />
-        </CKEditorContext>{" "}
+                image: {
+                  toolbar: [
+                    "imageTextAlternative",
+                    "toggleImageCaption",
+                    "imageStyle:inline",
+                    "imageStyle:block",
+                    "imageStyle:side",
+                  ],
+                },
+                toolbar: {
+                  items: [
+                    "undo",
+                    "redo",
+                    "|",
+                    "alignment", //
+                    "heading",
+                    "|",
+                    "fontfamily",
+                    "fontsize",
+                    "fontColor",
+                    "fontBackgroundColor",
+                    "|",
+                    "bold",
+                    "italic",
+                    "|",
+                    "link",
+                    "insertImage",
+                    "blockQuote",
+                  ],
+                  shouldNotGroupWhenFull: false,
+                },
+              }}
+              editor={ClassicEditor}
+              onReady={() => {}}
+              onChange={(event, editor) => {
+                console.log("event: onChange", { event, editor });
+              }}
+              onBlur={(event, editor) => {
+                console.log("event: onBlur", { event, editor });
+              }}
+              onFocus={(event, editor) => {
+                console.log("event: onFocus", { event, editor });
+              }}
+            />
+          </CKEditorContext>{" "}
+        </div>
       </Box>
     </>
   );

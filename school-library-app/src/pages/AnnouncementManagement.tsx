@@ -1,4 +1,14 @@
-import { Box, Button, Divider, Grid, Group, Modal, Text } from "@mantine/core";
+import {
+  Box,
+  Button,
+  Divider,
+  Grid,
+  Group,
+  Modal,
+  ScrollArea,
+  ScrollArea,
+  Text,
+} from "@mantine/core";
 import classes from "./styles/user.module.css";
 import { IconPlus } from "@tabler/icons-react";
 import AnnouncementList from "@features/Announcement/AnnouncementList";
@@ -42,7 +52,13 @@ const AnnouncementManagement = () => {
       </Grid>
       <AnnouncementList />
 
-      <Modal.Root opened={opened} onClose={close} centered size={"xl"}>
+      <Modal.Root
+        opened={opened}
+        onClose={close}
+        centered
+        size={"xl"}
+        scrollAreaComponent={ScrollArea.Autosize}
+      >
         <Modal.Overlay />
         <Modal.Content>
           <Modal.Header>
