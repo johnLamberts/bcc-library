@@ -7,14 +7,8 @@ import Essentials from "@ckeditor/ckeditor5-essentials/src/essentials";
 import LinkPlugin from "@ckeditor/ckeditor5-link/src/link";
 import ParagraphPlugin from "@ckeditor/ckeditor5-paragraph/src/paragraph";
 import BlockquotePlugin from "@ckeditor/ckeditor5-block-quote/src/blockquote";
-import { useState } from "react";
-import {
-  Base64UploadAdapter,
-  SimpleUploadAdapter,
-} from "@ckeditor/ckeditor5-upload";
-import MyUploadAdapter, {
-  FirebaseDownloadAdapterPlugin,
-} from "./services/announcement.service";
+import { SimpleUploadAdapter } from "@ckeditor/ckeditor5-upload";
+import MyUploadAdapter from "./services/announcement.service";
 import {
   Image,
   ImageToolbar,
@@ -32,9 +26,6 @@ import { TextTransformation } from "@ckeditor/ckeditor5-typing";
 import "./styles/ck-editor.css";
 
 export default function AnnouncementForm() {
-  const [value, setValue] = useState("");
-
-  const handleEditorReady = (editor: any) => {};
   return (
     <>
       <Box pos={"relative"}>
@@ -101,7 +92,7 @@ export default function AnnouncementForm() {
                   return new MyUploadAdapter(loader);
                 });
               }}
-              onChange={handleEditorReady}
+              //   onChange={handleEditorReady}
             />
           </CKEditorContext>{" "}
         </div>
