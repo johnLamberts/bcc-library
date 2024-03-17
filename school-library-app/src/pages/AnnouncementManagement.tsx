@@ -6,7 +6,6 @@ import {
   Group,
   Modal,
   ScrollArea,
-  ScrollArea,
   Text,
 } from "@mantine/core";
 import classes from "./styles/user.module.css";
