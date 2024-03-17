@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { ClassicEditor } from "@ckeditor/ckeditor5-editor-classic";
 import { CKEditor, CKEditorContext } from "@ckeditor/ckeditor5-react";
 import { Context } from "@ckeditor/ckeditor5-core";
@@ -6,6 +7,8 @@ import Essentials from "@ckeditor/ckeditor5-essentials/src/essentials";
 import LinkPlugin from "@ckeditor/ckeditor5-link/src/link";
 import ParagraphPlugin from "@ckeditor/ckeditor5-paragraph/src/paragraph";
 import BlockquotePlugin from "@ckeditor/ckeditor5-block-quote/src/blockquote";
+import { SimpleUploadAdapter } from "@ckeditor/ckeditor5-upload";
+import MyUploadAdapter from "./services/announcement.service";
 import {
   Image,
   ImageToolbar,
@@ -14,7 +17,6 @@ import {
   ImageResize,
 } from "@ckeditor/ckeditor5-image";
 import ImageUploadPlugin from "@ckeditor/ckeditor5-image/src/imageupload";
-import Base64UploadAdapter from "@ckeditor/ckeditor5-upload/src/adapters/base64uploadadapter";
 import { Font } from "@ckeditor/ckeditor5-font";
 import { Heading } from "@ckeditor/ckeditor5-heading";
 import { Box } from "@mantine/core";
@@ -32,7 +34,7 @@ export default function AnnouncementForm() {
             <CKEditor
               config={{
                 plugins: [
-                  Base64UploadAdapter,
+                  SimpleUploadAdapter,
                   LinkPlugin,
                   ParagraphPlugin,
                   BlockquotePlugin,
@@ -83,16 +85,14 @@ export default function AnnouncementForm() {
                 },
               }}
               editor={ClassicEditor}
-              onReady={() => {}}
-              onChange={(event, editor) => {
-                console.log("event: onChange", { event, editor });
+              onReady={(editor) => {
+                return (editor.plugins.get(
+                  "FileRepository"
+                ).createUploadAdapter = (loader: any) => {
+                  return new MyUploadAdapter(loader);
+                });
               }}
-              onBlur={(event, editor) => {
-                console.log("event: onBlur", { event, editor });
-              }}
-              onFocus={(event, editor) => {
-                console.log("event: onFocus", { event, editor });
-              }}
+              //   onChange={handleEditorReady}
             />
           </CKEditorContext>{" "}
         </div>
