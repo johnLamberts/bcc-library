@@ -8,7 +8,6 @@ import LinkPlugin from "@ckeditor/ckeditor5-link/src/link";
 import ParagraphPlugin from "@ckeditor/ckeditor5-paragraph/src/paragraph";
 import BlockquotePlugin from "@ckeditor/ckeditor5-block-quote/src/blockquote";
 import { SimpleUploadAdapter } from "@ckeditor/ckeditor5-upload";
-import MyUploadAdapter from "./services/announcement.service";
 import {
   Image as CKImage,
   ImageToolbar,
@@ -25,6 +24,7 @@ import {
   FileInput,
   Flex,
   Image,
+  LoadingOverlay,
   Select,
   Text,
   TextInput,
@@ -36,9 +36,20 @@ import "./styles/ck-editor.css";
 import { Controller, useForm } from "react-hook-form";
 import Form from "@components/Form/Form";
 import { useEffect, useState } from "react";
+import MyUploadAdapter from "./services/customize-upload-adapter.service";
+import { useCreateAnnouncement } from "./hooks/useCreateAnnouncement";
+import useCurrentUser from "@pages/Authentication/hooks/useCurrentUser";
 
-export default function AnnouncementForm() {
+interface AnnouncementFormProps {
+  close?: () => void;
+}
+
+export default function AnnouncementForm({ close }: AnnouncementFormProps) {
   const form = useForm();
+
+  const { isCreatingNews, createNews } = useCreateAnnouncement();
+
+  const { user } = useCurrentUser();
 
   const [imgSrc, setImgSrc] =
     useState<Partial<null | undefined | string | File>>(null);
@@ -50,8 +61,17 @@ export default function AnnouncementForm() {
     }
   };
 
-  const handleSubmit = (payload: Record<string, any>) => {
-    console.log(payload);
+  const handleSubmit = async (payload: Record<string, any>) => {
+    const values = {
+      ...payload,
+      firstName: user?.firstName,
+      middleName: user?.middleName,
+      lastName: user?.lastName,
+      authorImage: user?.avatarImage,
+    };
+    await createNews(values);
+
+    close?.();
   };
 
   useEffect(() => {
@@ -60,6 +80,11 @@ export default function AnnouncementForm() {
 
   return (
     <>
+      <LoadingOverlay
+        visible={isCreatingNews}
+        zIndex={1000}
+        overlayProps={{ radius: "sm", blur: 2 }}
+      />
       <Box pos={"relative"}>
         <div className="editor-wrapper">
           <Form onSubmit={form.handleSubmit(handleSubmit)}>
@@ -95,7 +120,7 @@ export default function AnnouncementForm() {
 
                 <Form.Col>
                   <Controller
-                    name="newsThumbnail"
+                    name="thumbnail"
                     control={form.control}
                     render={({ field: { onChange, ...field } }) => {
                       return (
@@ -117,7 +142,7 @@ export default function AnnouncementForm() {
                       <Flex justify={"center"} align={"center"}>
                         <Image
                           src={URL.createObjectURL(
-                            form.getValues("newsThumbnail") || imgSrc
+                            form.getValues("thumbnail") || imgSrc
                           )}
                           h={"8rem"}
                           w={"10rem"}
