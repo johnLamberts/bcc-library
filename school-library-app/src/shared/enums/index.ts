@@ -78,4 +78,6 @@ export enum FIRESTORE_COLLECTION_QUERY_KEY {
   //
   BOOKS_CATALOGUE = "books",
   TRANSACTION_IF_EXIST = "books-borrowed-exist",
+
+  NEWS_ANNOUNCEMENT = "news-announcement",
 }

@@ -65,7 +65,7 @@ const AnnouncementManagement = () => {
             <Modal.CloseButton />
           </Modal.Header>
           <Modal.Body>
-            <AnnouncementForm />
+            <AnnouncementForm close={close} />
           </Modal.Body>
         </Modal.Content>
       </Modal.Root>

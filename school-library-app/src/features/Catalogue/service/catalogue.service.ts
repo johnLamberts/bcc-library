@@ -40,8 +40,6 @@ const addCatalogue = async (catalogue: Partial<IBooks>) => {
         "Oops! It seems that the Call Number you entered already exists in our library system."
       );
 
-    console.log(catalogue);
-
     if (isValidDate(catalogue.milliseconds!)) {
       const defaultImageUrl =
         "https://firebasestorage.googleapis.com/v0/b/zidel-posev.appspot.com/o/user.png?alt=media&token=883b6c53-4b75-4f60-a741-abe99f992fb7";
