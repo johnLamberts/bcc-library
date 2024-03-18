@@ -11,6 +11,7 @@ import {
   Title,
   rem,
   Grid,
+  Spoiler,
 } from "@mantine/core";
 import useReadAnnouncement from "./hooks/useReadAnnouncement";
 import { format } from "date-fns";
@@ -23,7 +24,11 @@ const AnnouncementList = () => {
   return (
     <>
       {isLoading ? (
-        <>Loading...</>
+        <>
+          <Grid.Col span={{ base: 12, md: 12, lg: 12 }}>
+            <Text ta={"center"}>Loading...</Text>
+          </Grid.Col>
+        </>
       ) : (
         news?.map((nw) => {
           return (
@@ -111,45 +116,48 @@ const AnnouncementList = () => {
                     </Group>
                   </Card.Section>
 
-                  <Flex
-                    direction={{ base: "column", sm: "row" }}
-                    gap={{ base: "sm", sm: "md" }}
-                    justify={{ sm: "center" }}
-                    mih={80}
-                  >
-                    {/* <Grid.Col span={4}> */}
-                    <Image
-                      m={"auto"}
-                      mt={"lg"}
-                      src={nw.authorImage}
-                      h={80}
-                      w={"auto"}
-                    />
-                    {/* </Grid.Col> */}
-                    {/* <Grid.Col span={"auto"}> */}
+                  <Card.Section>
+                    <Image src={nw.thumbnail} h={80} fit="cover" />
+                  </Card.Section>
 
-                    <Flex
-                      direction={{ base: "column", sm: "column" }}
-                      // gap={{ base: "sm", sm: "xs" }}
-                      justify={{ sm: "center" }}
-                      mih={80}
+                  {(nw.title?.length as number) > 15 ? (
+                    <Spoiler
+                      maxHeight={18}
+                      showLabel="Show more"
+                      hideLabel="Hide"
                     >
-                      <Title mt="sm" size="h6" fw={400}>
-                        {nw.firstName} {nw.middleName} {nw.lastName}
-                        <Text inherit c="dimmed">
-                          Name
-                        </Text>{" "}
+                      <Title ta={"center"} order={3} mt={"sm"}>
+                        {nw.title}
                       </Title>
-                      {/* <Title mt="sm" size="h6" fw={400}>
-                    {use}
-                    <Text inherit c="dimmed">
-                      Email
+                    </Spoiler>
+                  ) : (
+                    <Title ta={"center"} order={3} mt={"sm"}>
+                      {nw.title}
+                    </Title>
+                  )}
+
+                  <Text mt="sm" c="dimmed" size="sm">
+                    Posted on{" "}
+                    <Text span inherit c="var(--mantine-color-anchor)">
+                      {format(
+                        new Date(
+                          nw.createdAt!.seconds * 1000 +
+                            nw.createdAt!.nanoseconds / 1000
+                        ),
+                        "MMMM dd yyyy"
+                      )}
                     </Text>{" "}
-                  </Title> */}
-                    </Flex>
-                    {/* </Grid.Col> */}
-                    <Card.Section inheritPadding mt="sm" pb="md"></Card.Section>
-                  </Flex>
+                    by{" "}
+                    <Text span inherit c="var(--mantine-color-anchor)">
+                      {nw.firstName && (
+                        <>
+                          {nw.firstName} {nw.middleName} {nw.lastName}
+                        </>
+                      )}
+
+                      {!nw.firstName && <>Maria Chaves</>}
+                    </Text>
+                  </Text>
                 </Card>
               </Grid.Col>
             </>
