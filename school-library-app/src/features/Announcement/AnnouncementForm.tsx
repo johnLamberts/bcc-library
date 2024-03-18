@@ -77,7 +77,6 @@ export default function AnnouncementForm({
   const handleSubmit = async (payload: Record<string, any>) => {
     const values = {
       ...payload,
-      id,
       firstName: user?.firstName,
       middleName: user?.middleName,
       lastName: user?.lastName,
@@ -85,7 +84,10 @@ export default function AnnouncementForm({
     };
 
     if (isEditing) {
-      await modifyNews(values as any);
+      await modifyNews({
+        ...(values as any),
+        id,
+      });
       close?.();
     } else {
       await createNews(values);
