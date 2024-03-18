@@ -39,15 +39,28 @@ import { useEffect, useState } from "react";
 import MyUploadAdapter from "./services/customize-upload-adapter.service";
 import { useCreateAnnouncement } from "./hooks/useCreateAnnouncement";
 import useCurrentUser from "@pages/Authentication/hooks/useCurrentUser";
+import { useModifyAnnouncement } from "./hooks/useModifyAnnoucement";
 
 interface AnnouncementFormProps {
   close?: () => void;
+  news?: Record<string, any>;
 }
 
-export default function AnnouncementForm({ close }: AnnouncementFormProps) {
-  const form = useForm();
+export default function AnnouncementForm({
+  close,
+  news = {},
+}: AnnouncementFormProps) {
+  const { id, ...otherValues } = news;
+
+  const isEditing = Boolean(id);
+
+  const form = useForm({
+    defaultValues: isEditing ? otherValues : {},
+  });
 
   const { isCreatingNews, createNews } = useCreateAnnouncement();
+
+  const { isModifyingNews, modifyNews } = useModifyAnnouncement();
 
   const { user } = useCurrentUser();
 
@@ -64,14 +77,20 @@ export default function AnnouncementForm({ close }: AnnouncementFormProps) {
   const handleSubmit = async (payload: Record<string, any>) => {
     const values = {
       ...payload,
+      id,
       firstName: user?.firstName,
       middleName: user?.middleName,
       lastName: user?.lastName,
       authorImage: user?.avatarImage,
     };
-    await createNews(values);
 
-    close?.();
+    if (isEditing) {
+      await modifyNews(values as any);
+      close?.();
+    } else {
+      await createNews(values);
+      close?.();
+    }
   };
 
   useEffect(() => {
@@ -81,7 +100,7 @@ export default function AnnouncementForm({ close }: AnnouncementFormProps) {
   return (
     <>
       <LoadingOverlay
-        visible={isCreatingNews}
+        visible={isCreatingNews || isModifyingNews}
         zIndex={1000}
         overlayProps={{ radius: "sm", blur: 2 }}
       />
@@ -221,6 +240,9 @@ export default function AnnouncementForm({ close }: AnnouncementFormProps) {
                       }}
                       editor={ClassicEditor}
                       onReady={(editor) => {
+                        if (isEditing) {
+                          editor.setData(otherValues.content);
+                        }
                         return (editor.plugins.get(
                           "FileRepository"
                         ).createUploadAdapter = (loader: any) => {
@@ -234,13 +256,13 @@ export default function AnnouncementForm({ close }: AnnouncementFormProps) {
                         form.setValue("content", value);
                       }}
                     />
-                  </CKEditorContext>{" "}
+                  </CKEditorContext>
                 </Form.Col>
               </Form.Grid>
             </Form.Box>
 
             <Flex justify="flex-end" gap={"xs"} mt={"sm"}>
-              <Button type="submit">Save</Button>
+              <Button type="submit">{isEditing ? "Edit" : "Save"}</Button>
             </Flex>
           </Form>
         </div>
