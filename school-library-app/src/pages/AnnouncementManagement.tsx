@@ -17,6 +17,7 @@ import { useDisclosure } from "@mantine/hooks";
 import AnnouncementForm from "@features/Announcement/AnnouncementForm";
 import useReadAnnouncement from "@features/Announcement/hooks/useReadAnnouncement";
 import BookPagination from "@features/HomePage/Library/BookPagination";
+import { ANNOUNCEMENT_PAGE_SIZE } from "src/shared/constant";
 
 const AnnouncementManagement = () => {
   const { newsData, count, isLoading } = useReadAnnouncement();
@@ -52,7 +53,11 @@ const AnnouncementManagement = () => {
           <SelectAnnouncementCategory />
         </Grid.Col>
       </Grid>
-      <BookPagination count={count} isLoading={isLoading} />
+      <BookPagination
+        count={count}
+        isLoading={isLoading}
+        PAGE_SIZE={ANNOUNCEMENT_PAGE_SIZE}
+      />
       <Grid>
         <AnnouncementList newsData={newsData} />
       </Grid>

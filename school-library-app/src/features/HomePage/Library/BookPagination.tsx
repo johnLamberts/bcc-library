@@ -1,14 +1,18 @@
-import { Box, Button, Group, Text } from "@mantine/core";
+import { Button, Group, Text } from "@mantine/core";
 import { IconChevronLeft, IconChevronRight } from "@tabler/icons-react";
 import { useSearchParams } from "react-router-dom";
-import { PAGE_SIZE } from "src/shared/constant";
 
 interface BookPaginationProps {
   count?: number;
   isLoading: boolean;
+  PAGE_SIZE: number;
 }
 
-const BookPagination = ({ count, isLoading }: BookPaginationProps) => {
+const BookPagination = ({
+  count,
+  isLoading,
+  PAGE_SIZE = 9,
+}: BookPaginationProps) => {
   const [searchParams, setSearchParams] = useSearchParams();
 
   const currentPage = !searchParams.get("page")
@@ -44,22 +48,24 @@ const BookPagination = ({ count, isLoading }: BookPaginationProps) => {
             </span>{" "}
             of <span>{count}</span> results
           </Text>
-          <Box>
+          <Group gap={"xs"}>
             <Button
               leftSection={<IconChevronLeft />}
               onClick={prevPage}
               disabled={currentPage === 1}
+              variant="light"
             >
               <span>Previous</span>
             </Button>
             <Button
               leftSection={<IconChevronRight />}
+              variant="light"
               onClick={nextPage}
               disabled={currentPage === pageCount || count === 0}
             >
               <span>Next</span>
             </Button>
-          </Box>
+          </Group>
         </Group>
       )}
     </div>

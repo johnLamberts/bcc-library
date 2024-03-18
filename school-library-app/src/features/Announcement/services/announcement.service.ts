@@ -94,40 +94,28 @@ const getAnnouncement = async (
   filterByType?: string,
   filterByGenre?: string
 ) => {
-  const booksCollectionRef = collection(
+  const newsCollectionRef = collection(
     firestore,
     FIRESTORE_COLLECTION_QUERY_KEY.NEWS_ANNOUNCEMENT
   );
 
   let queryBooks = query(
-    booksCollectionRef,
+    newsCollectionRef,
     orderBy("createdAt", "desc"),
     limit(ANNOUNCEMENT_PAGE_SIZE)
   );
 
-  // if (filterByType) {
-  //   queryBooks = query(
-  //     booksCollectionRef,
-  //     where("bookType", "==", filterByType)
-  //   );
-  // }
-
-  // if (filterByGenre) {
-  //   queryBooks = query(
-  //     booksCollectionRef,
-  //     where("genres", "array-contains", filterByGenre)
-  //   );
-  // }
-
   if (page > 1) {
     for (let i = 0; i < page - 1; i++) {
       const booksSnapshot = await getDocs(queryBooks);
+
       if (booksSnapshot.empty) {
         return { booksData: [], count: 0, hasMore: false }; // No more documents
       }
+
       const lastVisible = booksSnapshot.docs[booksSnapshot.docs.length - 1];
       queryBooks = query(
-        booksCollectionRef,
+        newsCollectionRef,
         orderBy("createdAt", "desc"),
         startAfter(lastVisible),
         limit(ANNOUNCEMENT_PAGE_SIZE)
@@ -140,24 +128,12 @@ const getAnnouncement = async (
     (doc) => ({ id: doc.id, ...doc.data() } as IBooks)
   );
 
-  // Calculate accurate count from the initial query without limit
   const countSnapshot = await getDocs(
-    query(booksCollectionRef, orderBy("createdAt", "desc"))
+    query(newsCollectionRef, orderBy("createdAt", "desc"))
   );
-  const totalCount = countSnapshot.size;
+  const count = countSnapshot.size;
 
-  let count;
-  if (filterByType !== "" || filterByGenre !== "") {
-    count = booksSnapshot.size; // If filtered, use the count of filtered documents
-  } else {
-    count = totalCount; // If not filtered, use the total count of all documents
-  }
-
-  return {
-    newsData,
-    count,
-    hasMore: !booksSnapshot.empty,
-  };
+  return { newsData, count, hasMore: !booksSnapshot.empty };
 };
 export {
   addAnnouncement,
