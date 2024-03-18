@@ -4,6 +4,8 @@ import {
   addDoc,
   collection,
   getDocs,
+  orderBy,
+  query,
   serverTimestamp,
 } from "firebase/firestore";
 import { firestore } from "src/shared/firebase/firebase";
@@ -42,7 +44,10 @@ const addAnnouncement = async (payload: Partial<Record<string, unknown>>) => {
 
 const getAllNewsAnnouncement = async () => {
   const booksCatalogueSnapshot = await getDocs(
-    collection(firestore, FIRESTORE_COLLECTION_QUERY_KEY.NEWS_ANNOUNCEMENT)
+    query(
+      collection(firestore, FIRESTORE_COLLECTION_QUERY_KEY.NEWS_ANNOUNCEMENT),
+      orderBy("createdAt", "desc")
+    )
   );
 
   return booksCatalogueSnapshot.docs.map((doc) => ({

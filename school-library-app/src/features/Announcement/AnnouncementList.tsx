@@ -5,21 +5,27 @@ import {
   Text,
   ActionIcon,
   Badge,
-  Flex,
   Menu,
-  Modal,
   Title,
   rem,
   Grid,
   Spoiler,
+  Drawer,
 } from "@mantine/core";
 import useReadAnnouncement from "./hooks/useReadAnnouncement";
 import { format } from "date-fns";
-import UserView from "@features/Teachers/TeacherView";
-import { IconDots, IconFileZip, IconEye, IconTrash } from "@tabler/icons-react";
+import { IconDots, IconEye, IconFileZip, IconTrash } from "@tabler/icons-react";
+import AnnouncementCardView from "./AnnouncementView";
+import { useDisclosure } from "@mantine/hooks";
+import { useState } from "react";
 
 const AnnouncementList = () => {
   const { data: news, isLoading } = useReadAnnouncement();
+  const [opened, { open, close }] = useDisclosure(false);
+
+  const [id, setId] = useState<string | undefined>("");
+
+  const newsView = news?.filter((nw) => nw.id === id);
 
   return (
     <>
@@ -61,23 +67,20 @@ const AnnouncementList = () => {
                         </Menu.Target>
 
                         <Menu.Dropdown>
-                          {/* <Menu.Item
-                        disabled={
-                          user.userRole === "Teacher" ||
-                          user.userRole === "Student"
-                        }
-                        leftSection={
-                          <IconFileZip
-                            style={{ width: rem(14), height: rem(14) }}
-                          />
-                        }
-                      >
-                        Update Info
-                      </Menu.Item> */}
+                          <Menu.Item
+                            leftSection={
+                              <IconFileZip
+                                style={{ width: rem(14), height: rem(14) }}
+                              />
+                            }
+                          >
+                            Update Post
+                          </Menu.Item>
                           <Menu.Item
                             onClick={() => {
                               open();
 
+                              setId(nw.id);
                               // setGetId(user.id.toString());
                             }}
                             leftSection={
@@ -86,7 +89,7 @@ const AnnouncementList = () => {
                               />
                             }
                           >
-                            Preview all
+                            Preview
                           </Menu.Item>
 
                           <Menu.Item
@@ -160,6 +163,41 @@ const AnnouncementList = () => {
                   </Text>
                 </Card>
               </Grid.Col>
+
+              <Drawer
+                position="right"
+                size="xl"
+                opened={opened}
+                onClose={close}
+                title={
+                  <>
+                    <Title order={3} fw={"lighter"} ff={"Montserrat"}>
+                      {news
+                        ?.filter((nw) => nw.id === id)
+                        ?.map((nw) => nw.title) || "Not dedicated title..."}
+                    </Title>
+
+                    <Text mt="sm" c="dimmed" size="sm">
+                      Posted by{" "}
+                      <Text span inherit c="var(--mantine-color-anchor)">
+                        {newsView?.map((nw) => nw.firstName) && (
+                          <>
+                            {newsView?.map((nw) => nw.firstName)}{" "}
+                            {newsView?.map((nw) => nw.middleName)}{" "}
+                            {newsView?.map((nw) => nw.lastName)}
+                          </>
+                        )}
+
+                        {!nw.firstName && <>Maria Chaves</>}
+                      </Text>
+                    </Text>
+                  </>
+                }
+              >
+                <AnnouncementCardView
+                  inew={news.filter((nw) => nw.id === id)[0]}
+                />
+              </Drawer>
             </>
           );
         })
