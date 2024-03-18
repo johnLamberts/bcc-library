@@ -15,8 +15,11 @@ import { SearchAnnouncement } from "@features/Announcement/SearchAnnouncement";
 import SelectAnnouncementCategory from "@features/Announcement/SelectAnnouncementCategory";
 import { useDisclosure } from "@mantine/hooks";
 import AnnouncementForm from "@features/Announcement/AnnouncementForm";
+import useReadAnnouncement from "@features/Announcement/hooks/useReadAnnouncement";
+import BookPagination from "@features/HomePage/Library/BookPagination";
 
 const AnnouncementManagement = () => {
+  const { newsData, count, isLoading } = useReadAnnouncement();
   const [opened, { open, close }] = useDisclosure(false);
 
   return (
@@ -49,9 +52,9 @@ const AnnouncementManagement = () => {
           <SelectAnnouncementCategory />
         </Grid.Col>
       </Grid>
-
+      <BookPagination count={count} isLoading={isLoading} />
       <Grid>
-        <AnnouncementList />
+        <AnnouncementList newsData={newsData} />
       </Grid>
 
       <Modal.Root

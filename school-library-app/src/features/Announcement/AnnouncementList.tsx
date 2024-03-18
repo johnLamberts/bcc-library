@@ -11,6 +11,9 @@ import {
   Grid,
   Spoiler,
   Drawer,
+  Modal,
+  ScrollArea,
+  Divider,
 } from "@mantine/core";
 import useReadAnnouncement from "./hooks/useReadAnnouncement";
 import { format } from "date-fns";
@@ -18,10 +21,13 @@ import { IconDots, IconEye, IconFileZip, IconTrash } from "@tabler/icons-react";
 import AnnouncementCardView from "./AnnouncementView";
 import { useDisclosure } from "@mantine/hooks";
 import { useState } from "react";
+import AnnouncementForm from "./AnnouncementForm";
+import IPost from "./models/post.interface";
 
-const AnnouncementList = () => {
-  const { data: news, isLoading } = useReadAnnouncement();
+const AnnouncementList = ({ newsData: news }: { newsData?: IPost[] }) => {
+  const { isLoading } = useReadAnnouncement();
   const [opened, { open, close }] = useDisclosure(false);
+  const [open3d, { open: op3n, close: clos3 }] = useDisclosure(false);
 
   const [id, setId] = useState<string | undefined>("");
 
@@ -29,6 +35,7 @@ const AnnouncementList = () => {
 
   return (
     <>
+      <Divider my={"sm"} />
       {isLoading ? (
         <>
           <Grid.Col span={{ base: 12, md: 12, lg: 12 }}>
@@ -40,7 +47,7 @@ const AnnouncementList = () => {
           return (
             <>
               <Grid.Col span={{ base: 12, md: 8, lg: 4 }}>
-                <Card withBorder shadow="sm" radius="md" key={nw.id}>
+                <Card withBorder shadow="sm" radius="md" key={nw.id} mt={"xs"}>
                   <Card.Section withBorder inheritPadding py="xs">
                     <Group justify="space-between">
                       <Badge
@@ -68,6 +75,10 @@ const AnnouncementList = () => {
 
                         <Menu.Dropdown>
                           <Menu.Item
+                            onClick={() => {
+                              op3n();
+                              setId(nw.id);
+                            }}
                             leftSection={
                               <IconFileZip
                                 style={{ width: rem(14), height: rem(14) }}
@@ -198,6 +209,28 @@ const AnnouncementList = () => {
                   inew={news.filter((nw) => nw.id === id)[0]}
                 />
               </Drawer>
+
+              <Modal.Root
+                opened={open3d}
+                onClose={clos3}
+                centered
+                size={"xl"}
+                scrollAreaComponent={ScrollArea.Autosize}
+              >
+                <Modal.Overlay />
+                <Modal.Content>
+                  <Modal.Header>
+                    <Modal.Title>Edit Announcement</Modal.Title>
+                    <Modal.CloseButton />
+                  </Modal.Header>
+                  <Modal.Body>
+                    <AnnouncementForm
+                      news={news.filter((nw) => nw.id === id)[0]}
+                      close={close}
+                    />
+                  </Modal.Body>
+                </Modal.Content>
+              </Modal.Root>
             </>
           );
         })
