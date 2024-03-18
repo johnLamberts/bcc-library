@@ -1,6 +1,21 @@
-import { Card, Group, Avatar, Image, Text } from "@mantine/core";
+import {
+  Card,
+  Group,
+  Image,
+  Text,
+  ActionIcon,
+  Badge,
+  Flex,
+  Menu,
+  Modal,
+  Title,
+  rem,
+  Grid,
+} from "@mantine/core";
 import useReadAnnouncement from "./hooks/useReadAnnouncement";
 import { format } from "date-fns";
+import UserView from "@features/Teachers/TeacherView";
+import { IconDots, IconFileZip, IconEye, IconTrash } from "@tabler/icons-react";
 
 const AnnouncementList = () => {
   const { data: news, isLoading } = useReadAnnouncement();
@@ -12,74 +27,132 @@ const AnnouncementList = () => {
       ) : (
         news?.map((nw) => {
           return (
-            <Card
-              withBorder
-              radius="md"
-              my={"xs"}
-              p={0}
-              style={{
-                backgroundColor: "var(--mantine-color-body)",
-              }}
-            >
-              <Group wrap="nowrap" gap={0}>
-                <Image
-                  src={nw.thumbnail}
-                  height={160}
-                  style={{
-                    width: "15rem",
-                  }}
-                  fit="cover"
-                />
-                <div
-                  style={{
-                    padding: `var(--mantine-spacing-md)`,
-                  }}
-                >
-                  <Text tt="uppercase" c="dimmed" fw={700} size="xs">
-                    {nw.newsCategory}
-                  </Text>
-                  <Text
-                    style={{
-                      fontWeight: `bold`,
-                      fontFamily: `Greycliff CF,
-                var(--mantine-font-family)`,
-                      lineHeight: `1.2`,
-                    }}
-                    mt="xs"
-                    mb="md"
-                  >
-                    {nw.title}
-                  </Text>
-                  <Group wrap="nowrap" gap="xs">
-                    <Group gap="xs" wrap="nowrap">
-                      <Avatar
-                        size={20}
-                        src={
-                          nw.authorImage === undefined
-                            ? "https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/avatars/avatar-8.png"
-                            : nw.authorImage
+            <>
+              <Grid.Col span={{ base: 12, md: 8, lg: 4 }}>
+                <Card withBorder shadow="sm" radius="md" key={nw.id}>
+                  <Card.Section withBorder inheritPadding py="xs">
+                    <Group justify="space-between">
+                      <Badge
+                        radius={"sm"}
+                        bg={" var(--mantine-color-red-light)"}
+                        // color={""}
+                        key={nw.id}
+                      >
+                        <span
+                          style={{
+                            color: "var(--mantine-color-red-light-color)",
+                          }}
+                        >
+                          {nw.newsCategory}
+                        </span>
+                      </Badge>
+                      <Menu withinPortal position="bottom-end" shadow="sm">
+                        <Menu.Target>
+                          <ActionIcon variant="subtle" color="gray">
+                            <IconDots
+                              style={{ width: rem(16), height: rem(16) }}
+                            />
+                          </ActionIcon>
+                        </Menu.Target>
+
+                        <Menu.Dropdown>
+                          {/* <Menu.Item
+                        disabled={
+                          user.userRole === "Teacher" ||
+                          user.userRole === "Student"
                         }
-                      />
-                      <Text size="xs">
-                        {nw.firstName} {nw.middleName} {nw.lastName}
-                      </Text>
+                        leftSection={
+                          <IconFileZip
+                            style={{ width: rem(14), height: rem(14) }}
+                          />
+                        }
+                      >
+                        Update Info
+                      </Menu.Item> */}
+                          <Menu.Item
+                            onClick={() => {
+                              open();
+
+                              // setGetId(user.id.toString());
+                            }}
+                            leftSection={
+                              <IconEye
+                                style={{ width: rem(14), height: rem(14) }}
+                              />
+                            }
+                          >
+                            Preview all
+                          </Menu.Item>
+
+                          <Menu.Item
+                            leftSection={
+                              <IconTrash
+                                style={{ width: rem(14), height: rem(14) }}
+                              />
+                            }
+                            color="red"
+                          >
+                            Remove
+                          </Menu.Item>
+                        </Menu.Dropdown>
+                        {/* <Modal.Root
+                      // opened={opened}
+                      onClose={close}
+                      // key={user.id}
+                      size={"lg"}
+                      centered
+                    >
+                      <Modal.Overlay />
+                      <Modal.Content>
+                        <UserView user={filterUserData} key={user.id} />
+                      </Modal.Content>
+                    </Modal.Root> */}
+                      </Menu>
                     </Group>
-                    <Text size="xs" c="dimmed">
-                      •
-                    </Text>
-                    <Text size="xs" c="dimmed">
-                      {format(
-                        new Date(
-                          nw?.createdAt!.seconds * 1000 +
-                            nw?.createdAt!.nanoseconds / 1000
-                        ),
-                        "MMMM dd yyyy"
-                      )}
-                    </Text>
-                  </Group>
-                </div>
-              </Group>
-            </Card>
+                  </Card.Section>
+
+                  <Flex
+                    direction={{ base: "column", sm: "row" }}
+                    gap={{ base: "sm", sm: "md" }}
+                    justify={{ sm: "center" }}
+                    mih={80}
+                  >
+                    {/* <Grid.Col span={4}> */}
+                    <Image
+                      m={"auto"}
+                      mt={"lg"}
+                      src={nw.authorImage}
+                      h={80}
+                      w={"auto"}
+                    />
+                    {/* </Grid.Col> */}
+                    {/* <Grid.Col span={"auto"}> */}
+
+                    <Flex
+                      direction={{ base: "column", sm: "column" }}
+                      // gap={{ base: "sm", sm: "xs" }}
+                      justify={{ sm: "center" }}
+                      mih={80}
+                    >
+                      <Title mt="sm" size="h6" fw={400}>
+                        {nw.firstName} {nw.middleName} {nw.lastName}
+                        <Text inherit c="dimmed">
+                          Name
+                        </Text>{" "}
+                      </Title>
+                      {/* <Title mt="sm" size="h6" fw={400}>
+                    {use}
+                    <Text inherit c="dimmed">
+                      Email
+                    </Text>{" "}
+                  </Title> */}
+                    </Flex>
+                    {/* </Grid.Col> */}
+                    <Card.Section inheritPadding mt="sm" pb="md"></Card.Section>
+                  </Flex>
+                </Card>
+              </Grid.Col>
+            </>
           );
         })
       )}
