@@ -49,7 +49,10 @@ const AnnouncementManagement = () => {
           <SelectAnnouncementCategory />
         </Grid.Col>
       </Grid>
-      <AnnouncementList />
+
+      <Grid>
+        <AnnouncementList />
+      </Grid>
 
       <Modal.Root
         opened={opened}

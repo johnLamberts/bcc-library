@@ -1,6 +1,22 @@
-import { Card, Group, Avatar, Image, Text } from "@mantine/core";
+import {
+  Card,
+  Group,
+  Image,
+  Text,
+  ActionIcon,
+  Badge,
+  Flex,
+  Menu,
+  Modal,
+  Title,
+  rem,
+  Grid,
+  Spoiler,
+} from "@mantine/core";
 import useReadAnnouncement from "./hooks/useReadAnnouncement";
 import { format } from "date-fns";
+import UserView from "@features/Teachers/TeacherView";
+import { IconDots, IconFileZip, IconEye, IconTrash } from "@tabler/icons-react";
 
 const AnnouncementList = () => {
   const { data: news, isLoading } = useReadAnnouncement();
@@ -8,78 +24,143 @@ const AnnouncementList = () => {
   return (
     <>
       {isLoading ? (
-        <>Loading...</>
+        <>
+          <Grid.Col span={{ base: 12, md: 12, lg: 12 }}>
+            <Text ta={"center"}>Loading...</Text>
+          </Grid.Col>
+        </>
       ) : (
         news?.map((nw) => {
           return (
-            <Card
-              withBorder
-              radius="md"
-              my={"xs"}
-              p={0}
-              style={{
-                backgroundColor: "var(--mantine-color-body)",
-              }}
-            >
-              <Group wrap="nowrap" gap={0}>
-                <Image
-                  src={nw.thumbnail}
-                  height={160}
-                  style={{
-                    width: "15rem",
-                  }}
-                  fit="cover"
-                />
-                <div
-                  style={{
-                    padding: `var(--mantine-spacing-md)`,
-                  }}
-                >
-                  <Text tt="uppercase" c="dimmed" fw={700} size="xs">
-                    {nw.newsCategory}
-                  </Text>
-                  <Text
-                    style={{
-                      fontWeight: `bold`,
-                      fontFamily: `Greycliff CF,
-                var(--mantine-font-family)`,
-                      lineHeight: `1.2`,
-                    }}
-                    mt="xs"
-                    mb="md"
-                  >
-                    {nw.title}
-                  </Text>
-                  <Group wrap="nowrap" gap="xs">
-                    <Group gap="xs" wrap="nowrap">
-                      <Avatar
-                        size={20}
-                        src={
-                          nw.authorImage === undefined
-                            ? "https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/avatars/avatar-8.png"
-                            : nw.authorImage
+            <>
+              <Grid.Col span={{ base: 12, md: 8, lg: 4 }}>
+                <Card withBorder shadow="sm" radius="md" key={nw.id}>
+                  <Card.Section withBorder inheritPadding py="xs">
+                    <Group justify="space-between">
+                      <Badge
+                        radius={"sm"}
+                        bg={" var(--mantine-color-red-light)"}
+                        // color={""}
+                        key={nw.id}
+                      >
+                        <span
+                          style={{
+                            color: "var(--mantine-color-red-light-color)",
+                          }}
+                        >
+                          {nw.newsCategory}
+                        </span>
+                      </Badge>
+                      <Menu withinPortal position="bottom-end" shadow="sm">
+                        <Menu.Target>
+                          <ActionIcon variant="subtle" color="gray">
+                            <IconDots
+                              style={{ width: rem(16), height: rem(16) }}
+                            />
+                          </ActionIcon>
+                        </Menu.Target>
+
+                        <Menu.Dropdown>
+                          {/* <Menu.Item
+                        disabled={
+                          user.userRole === "Teacher" ||
+                          user.userRole === "Student"
                         }
-                      />
-                      <Text size="xs">
-                        {nw.firstName} {nw.middleName} {nw.lastName}
-                      </Text>
+                        leftSection={
+                          <IconFileZip
+                            style={{ width: rem(14), height: rem(14) }}
+                          />
+                        }
+                      >
+                        Update Info
+                      </Menu.Item> */}
+                          <Menu.Item
+                            onClick={() => {
+                              open();
+
+                              // setGetId(user.id.toString());
+                            }}
+                            leftSection={
+                              <IconEye
+                                style={{ width: rem(14), height: rem(14) }}
+                              />
+                            }
+                          >
+                            Preview all
+                          </Menu.Item>
+
+                          <Menu.Item
+                            leftSection={
+                              <IconTrash
+                                style={{ width: rem(14), height: rem(14) }}
+                              />
+                            }
+                            color="red"
+                          >
+                            Remove
+                          </Menu.Item>
+                        </Menu.Dropdown>
+                        {/* <Modal.Root
+                      // opened={opened}
+                      onClose={close}
+                      // key={user.id}
+                      size={"lg"}
+                      centered
+                    >
+                      <Modal.Overlay />
+                      <Modal.Content>
+                        <UserView user={filterUserData} key={user.id} />
+                      </Modal.Content>
+                    </Modal.Root> */}
+                      </Menu>
                     </Group>
-                    <Text size="xs" c="dimmed">
-                      •
-                    </Text>
-                    <Text size="xs" c="dimmed">
+                  </Card.Section>
+
+                  <Card.Section>
+                    <Image src={nw.thumbnail} h={80} fit="cover" />
+                  </Card.Section>
+
+                  {(nw.title?.length as number) > 15 ? (
+                    <Spoiler
+                      maxHeight={18}
+                      showLabel="Show more"
+                      hideLabel="Hide"
+                    >
+                      <Title ta={"center"} order={3} mt={"sm"}>
+                        {nw.title}
+                      </Title>
+                    </Spoiler>
+                  ) : (
+                    <Title ta={"center"} order={3} mt={"sm"}>
+                      {nw.title}
+                    </Title>
+                  )}
+
+                  <Text mt="sm" c="dimmed" size="sm">
+                    Posted on{" "}
+                    <Text span inherit c="var(--mantine-color-anchor)">
                       {format(
                         new Date(
-                          nw?.createdAt!.seconds * 1000 +
-                            nw?.createdAt!.nanoseconds / 1000
+                          nw.createdAt!.seconds * 1000 +
+                            nw.createdAt!.nanoseconds / 1000
                         ),
                         "MMMM dd yyyy"
                       )}
+                    </Text>{" "}
+                    by{" "}
+                    <Text span inherit c="var(--mantine-color-anchor)">
+                      {nw.firstName && (
+                        <>
+                          {nw.firstName} {nw.middleName} {nw.lastName}
+                        </>
+                      )}
+
+                      {!nw.firstName && <>Maria Chaves</>}
                     </Text>
-                  </Group>
-                </div>
-              </Group>
-            </Card>
+                  </Text>
+                </Card>
+              </Grid.Col>
+            </>
           );
         })
       )}
