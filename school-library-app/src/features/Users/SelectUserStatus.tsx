@@ -25,6 +25,7 @@ const SelectUserStatus = () => {
           { label: "Inactive", value: "false" },
         ]}
         onChange={handleChange}
+        value={searchParams.get("act") || ""}
         //   disabled={isLoading}
         radius="xl"
         size="md"
