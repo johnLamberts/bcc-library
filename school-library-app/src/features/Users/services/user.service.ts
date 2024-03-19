@@ -70,23 +70,38 @@ const getAllUsers = async () => {
   }
 };
 
-const getMemoizedAllUsers = async (page: number, usr?: string) => {
+const getMemoizedAllUsers = async (
+  page: number,
+  usr?: string,
+  q?: string,
+  act?: string
+) => {
   try {
-    const studentCollectionRef = collection(
+    const usersCollectionRef = collection(
       firestore,
       FIRESTORE_COLLECTION_QUERY_KEY.USERS
     );
 
     let queryBooks = query(
-      studentCollectionRef,
+      usersCollectionRef,
       orderBy("createdAt", "desc"),
       limit(PAGE_SIZE)
     );
 
     if (usr) {
       queryBooks = query(
-        studentCollectionRef,
+        usersCollectionRef,
         where("userRole", "==", usr.trim())
+      );
+    }
+
+    if (q) {
+      queryBooks = query(usersCollectionRef, where("email", "==", q.trim()));
+    }
+    if (act) {
+      queryBooks = query(
+        usersCollectionRef,
+        where("isEnabled", "==", act === "true" ? true : false)
       );
     }
 
@@ -98,7 +113,7 @@ const getMemoizedAllUsers = async (page: number, usr?: string) => {
         }
         const lastVisible = booksSnapshot.docs[booksSnapshot.docs.length - 1];
         queryBooks = query(
-          studentCollectionRef,
+          usersCollectionRef,
           orderBy("createdAt", "desc"),
           startAfter(lastVisible),
           limit(PAGE_SIZE)
@@ -112,12 +127,12 @@ const getMemoizedAllUsers = async (page: number, usr?: string) => {
     );
 
     const countSnapshot = await getDocs(
-      query(studentCollectionRef, orderBy("createdAt", "desc"))
+      query(usersCollectionRef, orderBy("createdAt", "desc"))
     );
     const totalCount = countSnapshot.size;
 
     let count;
-    if (usr !== "") {
+    if (act !== "" || q !== "" || usr !== "") {
       count = booksSnapshot.size; // If filtered, use the count of filtered documents
     } else {
       count = totalCount; // If not filtered, use the total count of all documents
