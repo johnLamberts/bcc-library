@@ -11,6 +11,7 @@ import {
   serverTimestamp,
   startAfter,
   updateDoc,
+  where,
 } from "firebase/firestore";
 import { firestore } from "src/shared/firebase/firebase";
 import { FIRESTORE_COLLECTION_QUERY_KEY } from "src/shared/enums";
@@ -89,7 +90,12 @@ const getAllNewsAnnouncement = async () => {
   })) as IPost[];
 };
 
-const getAnnouncement = async (page: number) => {
+const getAnnouncement = async (
+  page: number,
+  q?: string,
+  fq?: string,
+  act?: string
+) => {
   const newsCollectionRef = collection(
     firestore,
     FIRESTORE_COLLECTION_QUERY_KEY.NEWS_ANNOUNCEMENT
@@ -100,6 +106,18 @@ const getAnnouncement = async (page: number) => {
     orderBy("createdAt", "desc"),
     limit(ANNOUNCEMENT_PAGE_SIZE)
   );
+
+  if (q) {
+    queryBooks = query(newsCollectionRef, where("title", "==", q));
+  }
+
+  if (fq) {
+    queryBooks = query(newsCollectionRef, where("newsCategory", "==", fq));
+  }
+
+  if (act) {
+    queryBooks = query(newsCollectionRef, where("status", "==", act));
+  }
 
   if (page > 1) {
     for (let i = 0; i < page - 1; i++) {
@@ -125,7 +143,14 @@ const getAnnouncement = async (page: number) => {
   const countSnapshot = await getDocs(
     query(newsCollectionRef, orderBy("createdAt", "desc"))
   );
-  const count = countSnapshot.size;
+  const totalCount = countSnapshot.size;
+
+  let count;
+  if (q !== "" || fq !== "" || act !== "") {
+    count = booksSnapshot.size; // If filtered, use the count of filtered documents
+  } else {
+    count = totalCount; // If not filtered, use the total count of all documents
+  }
 
   return { newsData, count, hasMore: !booksSnapshot.empty };
 };

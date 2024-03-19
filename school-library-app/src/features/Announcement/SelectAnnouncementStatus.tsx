@@ -2,24 +2,29 @@ import { Select } from "@mantine/core";
 import { useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 
-const SelectAnnouncementCategory = () => {
+const SelectAnnouncementStatus = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const handleChange = (params: string | null) => {
-    searchParams.set("fq", params as string);
+    if (searchParams.get("act") === null || searchParams.get("act") === "") {
+      searchParams.set("act", params as string);
+    } else {
+      searchParams.delete("act");
+    }
+
     return setSearchParams(searchParams);
   };
 
   useEffect(() => {
-    if (searchParams.get("fq") === String(null)) {
-      searchParams.delete("fq");
+    if (searchParams.get("act") === String(null)) {
+      searchParams.delete("act");
       return setSearchParams(searchParams);
     }
   }, [searchParams, setSearchParams]);
   return (
     <>
       <Select
-        placeholder="Filter by Category"
-        data={["React", "Angular", "Vue", "Svelte"]}
+        placeholder="Filter by Status"
+        data={["Active", "Inactive"]}
         onChange={handleChange}
         radius="xl"
         size="md"
@@ -27,4 +32,4 @@ const SelectAnnouncementCategory = () => {
     </>
   );
 };
-export default SelectAnnouncementCategory;
+export default SelectAnnouncementStatus;
