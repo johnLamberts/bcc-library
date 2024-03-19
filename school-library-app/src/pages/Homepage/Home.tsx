@@ -1,9 +1,10 @@
-import { Box, Grid, Image, ScrollArea } from "@mantine/core";
+import { Box, Box, Grid, Image, ScrollArea } from "@mantine/core";
 import About from "./About";
 import Hero from "./Hero";
 import useCurrentUser from "@pages/Authentication/hooks/useCurrentUser";
 import FAQ from "./FAQ";
 import { Footer } from "./Footer";
+import NewsAnnouncement from "@pages/NewsAnnouncement/NewsAnnouncement";
 
 const Home = () => {
   const { user } = useCurrentUser();
@@ -23,6 +24,10 @@ const Home = () => {
             <Hero />
           </Box>
           <About />
+
+          {/* <Box mt={"5rem"}>
+            <NewsAnnouncement />
+          </Box> */}
 
           <Box mt={"5rem"} mb={"3rem"}>
             <FAQ />

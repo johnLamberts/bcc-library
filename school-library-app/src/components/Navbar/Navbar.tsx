@@ -93,7 +93,7 @@ const mainFeatures = [
       },
       {
         link: "/fee-report",
-        label: "Fee Report",
+        label: "Collection Report",
       },
     ],
   },

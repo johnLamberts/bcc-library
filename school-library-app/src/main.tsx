@@ -6,6 +6,7 @@ import "./styles/index.css";
 // Mantine Import
 import "@mantine/core/styles.css";
 import "@mantine/dates/styles.css";
+import "@mantine/carousel/styles.css";
 import "mantine-react-table/styles.css";
 
 import { MantineProvider, rem } from "@mantine/core";

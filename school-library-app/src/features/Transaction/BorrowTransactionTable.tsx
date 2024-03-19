@@ -88,10 +88,10 @@ const BorrowTransactionTable = () => {
         header: "Due Date",
         enableColumnFilter: false,
         Cell: ({ row }) => {
-          console.log(row.getValue("expiryTime"));
           if (row.getValue("expiryTime") === undefined) return <>-</>;
-          const time = new Date(row.getValue("expiryTime"));
+          const time = new Date(row.getValue("expiryTime")) || "Invalid Date";
 
+          console.log(time, row.getValue("id"));
           return isToday(time) ? (
             <>
               <Badge variant="light" color="#FFA903" tt={"inherit"}>
