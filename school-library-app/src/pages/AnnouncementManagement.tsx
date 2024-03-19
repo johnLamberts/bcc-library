@@ -11,7 +11,7 @@ import {
 import classes from "./styles/user.module.css";
 import { IconPlus } from "@tabler/icons-react";
 import AnnouncementList from "@features/Announcement/AnnouncementList";
-import { SearchAnnouncement } from "@features/Announcement/SearchAnnouncement";
+import { Search } from "@components/Search/Search";
 import SelectAnnouncementCategory from "@features/Announcement/SelectAnnouncementCategory";
 import { useDisclosure } from "@mantine/hooks";
 import AnnouncementForm from "@features/Announcement/AnnouncementForm";
@@ -48,7 +48,7 @@ const AnnouncementManagement = () => {
 
       <Grid my={"xs"}>
         <Grid.Col span={{ base: 12, md: 6, lg: 6 }}>
-          <SearchAnnouncement />
+          <Search keyWords="Search by title" />
         </Grid.Col>
         <Grid.Col span={{ base: 12, sm: 6, md: 6, lg: 3 }}>
           <SelectAnnouncementCategory />

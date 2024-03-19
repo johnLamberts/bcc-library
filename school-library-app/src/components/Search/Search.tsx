@@ -3,7 +3,7 @@ import { IconSearch, IconArrowRight, IconX } from "@tabler/icons-react";
 import { useState } from "react";
 import { useSearchParams } from "react-router-dom";
 
-export function SearchAnnouncement() {
+export function Search({ keyWords }: { keyWords: string }) {
   const [searchParams, setSearchParams] = useSearchParams();
   const [query, setQuery] = useState<string>("");
   const handleSearchParams = () => {
@@ -25,7 +25,7 @@ export function SearchAnnouncement() {
     <TextInput
       radius="xl"
       size="md"
-      placeholder="Search by title"
+      placeholder={keyWords}
       value={query}
       rightSectionWidth={42}
       leftSection={

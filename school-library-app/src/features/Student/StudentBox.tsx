@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import UserView from "@features/Teachers/TeacherView";
 import {
   Grid,
   Card,
@@ -32,7 +31,6 @@ export default function StudentBox({
 }: StudentListProps) {
   const [opened, { open, close }] = useDisclosure(false);
 
-  console.log(user);
   return (
     <>
       <Grid.Col span={{ base: 12, md: 8, lg: 4 }}>

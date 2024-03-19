@@ -108,15 +108,18 @@ const getAnnouncement = async (
   );
 
   if (q) {
-    queryBooks = query(newsCollectionRef, where("title", "==", q));
+    queryBooks = query(newsCollectionRef, where("title", "==", q.trim()));
   }
 
   if (fq) {
-    queryBooks = query(newsCollectionRef, where("newsCategory", "==", fq));
+    queryBooks = query(
+      newsCollectionRef,
+      where("newsCategory", "==", fq.trim())
+    );
   }
 
   if (act) {
-    queryBooks = query(newsCollectionRef, where("status", "==", act));
+    queryBooks = query(newsCollectionRef, where("status", "==", act.trim()));
   }
 
   if (page > 1) {
