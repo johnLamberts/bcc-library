@@ -11,7 +11,7 @@ interface BookPaginationProps {
 const BookPagination = ({
   count,
   isLoading,
-  PAGE_SIZE = 9,
+  PAGE_SIZE,
 }: BookPaginationProps) => {
   const [searchParams, setSearchParams] = useSearchParams();
 

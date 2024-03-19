@@ -89,11 +89,7 @@ const getAllNewsAnnouncement = async () => {
   })) as IPost[];
 };
 
-const getAnnouncement = async (
-  page: number,
-  filterByType?: string,
-  filterByGenre?: string
-) => {
+const getAnnouncement = async (page: number) => {
   const newsCollectionRef = collection(
     firestore,
     FIRESTORE_COLLECTION_QUERY_KEY.NEWS_ANNOUNCEMENT
@@ -108,11 +104,9 @@ const getAnnouncement = async (
   if (page > 1) {
     for (let i = 0; i < page - 1; i++) {
       const booksSnapshot = await getDocs(queryBooks);
-
       if (booksSnapshot.empty) {
         return { booksData: [], count: 0, hasMore: false }; // No more documents
       }
-
       const lastVisible = booksSnapshot.docs[booksSnapshot.docs.length - 1];
       queryBooks = query(
         newsCollectionRef,

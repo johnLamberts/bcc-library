@@ -25,6 +25,7 @@ import useBooks from "../hooks/useBooks";
 import BookPagination from "./BookPagination";
 import { IBooks } from "@features/Catalogue/models/books.interface";
 import { Link } from "react-router-dom";
+import { PAGE_SIZE } from "src/shared/constant";
 
 const BookList = ({
   booksData,
@@ -66,7 +67,11 @@ const BookList = ({
       </Group>
 
       <Divider my={"sm"} />
-      <BookPagination count={count} isLoading={isLoading} />
+      <BookPagination
+        count={count}
+        isLoading={isLoading}
+        PAGE_SIZE={PAGE_SIZE}
+      />
       {isLoading ? (
         <>
           <Flex justify={"center"} align={"center"} h="100%" pos="relative">
