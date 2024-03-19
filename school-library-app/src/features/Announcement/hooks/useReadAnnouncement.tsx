@@ -1,7 +1,6 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { FIRESTORE_COLLECTION_QUERY_KEY } from "src/shared/enums";
 import { getAnnouncement } from "../services/announcement.service";
-import { getAllBooks } from "@features/HomePage/services/books.service";
 import { useSearchParams } from "react-router-dom";
 import { ANNOUNCEMENT_PAGE_SIZE } from "src/shared/constant";
 
@@ -13,13 +12,18 @@ const useReadAnnouncement = () => {
 
   const q = !searchParams.get("q") ? "" : searchParams.get("q");
   const fq = !searchParams.get("fq") ? "" : searchParams.get("fq");
-  // const filterGenre = !searchParams.get("genre")
-  //   ? ""
-  //   : searchParams.get("genre");
+  const act = !searchParams.get("act") ? "" : searchParams.get("act");
 
   const { data: news, isLoading } = useQuery({
-    queryFn: () => getAnnouncement(page, q as string, fq as string),
-    queryKey: [FIRESTORE_COLLECTION_QUERY_KEY.NEWS_ANNOUNCEMENT, page, q, fq],
+    queryFn: () =>
+      getAnnouncement(page, q as string, fq as string, act as string),
+    queryKey: [
+      FIRESTORE_COLLECTION_QUERY_KEY.NEWS_ANNOUNCEMENT,
+      page,
+      q,
+      fq,
+      act,
+    ],
 
     refetchOnWindowFocus: false,
   });
@@ -33,8 +37,10 @@ const useReadAnnouncement = () => {
         page + 1,
         q,
         fq,
+        act,
       ],
-      queryFn: () => getAllBooks(page + 1, q as string, fq as string),
+      queryFn: () =>
+        getAnnouncement(page + 1, q as string, fq as string, act as string),
     });
 
   if (page > 1)
@@ -44,8 +50,10 @@ const useReadAnnouncement = () => {
         page - 1,
         q,
         fq,
+        act,
       ],
-      queryFn: () => getAllBooks(page - 1, q as string, fq as string),
+      queryFn: () =>
+        getAnnouncement(page - 1, q as string, fq as string, act as string),
     });
 
   //   const pageCount = Math.ceil(books!.count / ANNOUNCEMENT_PAGE_SIZE);

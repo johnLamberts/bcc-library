@@ -18,6 +18,7 @@ import AnnouncementForm from "@features/Announcement/AnnouncementForm";
 import useReadAnnouncement from "@features/Announcement/hooks/useReadAnnouncement";
 import BookPagination from "@features/HomePage/Library/BookPagination";
 import { ANNOUNCEMENT_PAGE_SIZE } from "src/shared/constant";
+import SelectAnnouncementStatus from "@features/Announcement/SelectAnnouncementStatus";
 
 const AnnouncementManagement = () => {
   const { newsData, count, isLoading } = useReadAnnouncement();
@@ -46,11 +47,15 @@ const AnnouncementManagement = () => {
       <Divider my={"sm"} />
 
       <Grid my={"xs"}>
-        <Grid.Col span={{ base: 12, md: 6, lg: 8 }}>
+        <Grid.Col span={{ base: 12, md: 6, lg: 6 }}>
           <SearchAnnouncement />
         </Grid.Col>
-        <Grid.Col span={{ base: 12, md: 6, lg: 4 }}>
+        <Grid.Col span={{ base: 12, sm: 6, md: 6, lg: 3 }}>
           <SelectAnnouncementCategory />
+        </Grid.Col>
+
+        <Grid.Col span={{ base: 12, sm: 6, md: 6, lg: 3 }}>
+          <SelectAnnouncementStatus />
         </Grid.Col>
       </Grid>
       <BookPagination
