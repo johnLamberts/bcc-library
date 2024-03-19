@@ -28,6 +28,7 @@ const SelectUserRole = () => {
       <Select
         placeholder="Filter by Role"
         data={sanitizeUserRole}
+        value={searchParams.get("usr") || ""}
         onChange={handleChange}
         disabled={isLoading}
         radius="xl"

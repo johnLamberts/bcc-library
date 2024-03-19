@@ -108,7 +108,7 @@ const UserList = ({ users }: { users?: Record<string, any>[] }) => {
                 <Image src={nw.avatarImage} h={80} fit="cover" />
               </Card.Section>
 
-              {(nw.email?.length as number) > 15 ? (
+              {(nw.email?.length as number) > 30 ? (
                 <Spoiler maxHeight={18} showLabel="Show more" hideLabel="Hide">
                   <Title ta={"center"} order={6} mt={"sm"}>
                     {nw.email}
