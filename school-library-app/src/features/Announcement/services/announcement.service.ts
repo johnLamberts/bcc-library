@@ -90,7 +90,7 @@ const getAllNewsAnnouncement = async () => {
   })) as IPost[];
 };
 
-const getAnnouncement = async (page: number, q?: string) => {
+const getAnnouncement = async (page: number, q?: string, fq?: string) => {
   const newsCollectionRef = collection(
     firestore,
     FIRESTORE_COLLECTION_QUERY_KEY.NEWS_ANNOUNCEMENT
@@ -105,6 +105,11 @@ const getAnnouncement = async (page: number, q?: string) => {
   if (q) {
     queryBooks = query(newsCollectionRef, where("title", "==", q));
   }
+
+  if (fq) {
+    queryBooks = query(newsCollectionRef, where("newsCategory", "==", fq));
+  }
+
   if (page > 1) {
     for (let i = 0; i < page - 1; i++) {
       const booksSnapshot = await getDocs(queryBooks);
@@ -132,7 +137,7 @@ const getAnnouncement = async (page: number, q?: string) => {
   const totalCount = countSnapshot.size;
 
   let count;
-  if (q !== "") {
+  if (q !== "" || fq !== "") {
     count = booksSnapshot.size; // If filtered, use the count of filtered documents
   } else {
     count = totalCount; // If not filtered, use the total count of all documents
