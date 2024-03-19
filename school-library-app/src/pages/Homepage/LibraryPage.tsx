@@ -86,7 +86,7 @@ const LibraryPage = () => {
           handleSearch={handleSearch}
           handleReset={handleReset}
         />
-        <Box p={"md"}>
+        <Box p={"md"} bg={"#FFFAFA"}>
           <Grid>
             <Grid.Col span={{ base: 12, md: 4, lg: 3 }}>
               <LibraryFilter />

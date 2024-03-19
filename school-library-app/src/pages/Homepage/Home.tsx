@@ -1,4 +1,4 @@
-import { Box, ScrollArea } from "@mantine/core";
+import { Box, Grid, Image, ScrollArea } from "@mantine/core";
 import About from "./About";
 import Hero from "./Hero";
 import useCurrentUser from "@pages/Authentication/hooks/useCurrentUser";
@@ -18,18 +18,33 @@ const Home = () => {
             "calc(100vh - var(--mantine-header-height, 0px) - var(--mantine-footer-height, 0px))", // viewport height - height of header - height of footer
         }}
       >
-        <Box bg={"white"}>
+        <Box bg={"#FFFAFA"}>
           <Box mt={"5rem"}>
             <Hero />
           </Box>
-          <Box mt={"3rem"}>
-            <About />
-          </Box>
+          <About />
 
           <Box mt={"5rem"} mb={"3rem"}>
             <FAQ />
           </Box>
 
+          <Grid gutter={{ base: 0, xs: "md", md: 0, xl: 0 }}>
+            <Grid.Col span={{ base: 12, sm: 6, md: 6, lg: 3 }}>
+              <Image fit={""} h={700} src="/attachments/1.jpg" />
+            </Grid.Col>
+            <Grid.Col span={{ base: 12, sm: 6, md: 6, lg: 3 }}>
+              {" "}
+              <Image fit={""} h={700} src="/attachments/7.jpg" />
+            </Grid.Col>
+            <Grid.Col span={{ base: 12, sm: 6, md: 6, lg: 3 }}>
+              {" "}
+              <Image fit={""} h={700} src="/attachments/5.jpg" />
+            </Grid.Col>
+            <Grid.Col span={{ base: 12, sm: 6, md: 6, lg: 3 }}>
+              {" "}
+              <Image fit={""} h={700} src="/attachments/3.jpg" />
+            </Grid.Col>
+          </Grid>
           <Footer />
         </Box>
       </ScrollArea>

@@ -18,6 +18,7 @@ const DetailsFAQ = () => {
     <ScrollArea
       scrollbars="y"
       style={{
+        backgroundColor: "#FFFAFA",
         height:
           "calc(100vh - var(--mantine-header-height, 0px) - var(--mantine-footer-height, 0px))", // viewport height - height of header - height of footer
       }}

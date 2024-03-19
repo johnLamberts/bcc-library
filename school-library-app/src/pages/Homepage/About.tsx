@@ -20,7 +20,7 @@ const mockdata = [
     title: "Accessibility",
     description: `Ensure the e-library is accessible to all users, following web accessibility standards.`,
     icon: IconGauge,
-    imageCapture: "./image1.png",
+    imageCapture: "/attachments/3.jpg",
   },
   {
     id: 2,
@@ -28,7 +28,7 @@ const mockdata = [
     description:
       "Enable easy navigation and intuitive search functionality for finding books.",
     icon: IconUser,
-    imageCapture: "./image2.png",
+    imageCapture: "/attachments/6.jpg",
   },
   {
     id: 3,
@@ -36,7 +36,7 @@ const mockdata = [
     description:
       "Experience that's effortless to navigate, catering to users of all levels.",
     icon: IconCookie,
-    imageCapture: "./image3.png",
+    imageCapture: "/attachments/8.jpg",
   },
 ];
 
@@ -48,7 +48,6 @@ const About = () => {
         shadow="lg"
         radius="lg"
         className={classes.cardShadow}
-        padding="xl"
         // style={{
         //   border: "0.3px solid #ffa903",
         //   // boxShadow: "1px 12px 54px -15px rgba(0,0,0,0.54)",
@@ -94,7 +93,7 @@ const About = () => {
   ));
 
   return (
-    <Container size="lg" py="xl">
+    <Container size="lg">
       <Group justify="center">
         <Box>
           <Title c="black" className={classes.description} mt="md">

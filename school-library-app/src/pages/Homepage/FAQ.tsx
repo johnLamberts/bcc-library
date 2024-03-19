@@ -1,4 +1,4 @@
-import { Grid, Title, Accordion, Image, Button } from "@mantine/core";
+import { Grid, Title, Accordion, Image, Button, Flex } from "@mantine/core";
 import classes from "./faq.module.css";
 import { useNavigate } from "react-router-dom";
 
@@ -68,13 +68,16 @@ const FAQ = () => {
               </Accordion.Panel>
             </Accordion.Item>
           </Accordion>
-          <Button
-            variant="light"
-            mt={"md"}
-            onClick={() => navigate("/frequently-ask-questions")}
-          >
-            Visit for more
-          </Button>
+          <Flex justify="center" align="center">
+            <Button
+              size="md"
+              variant="light"
+              mt={"xl"}
+              onClick={() => navigate("/frequently-ask-questions")}
+            >
+              Visit for more
+            </Button>
+          </Flex>
         </Grid.Col>
       </Grid>
     </div>

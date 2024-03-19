@@ -61,6 +61,10 @@ const Hero = () => {
           <h1 className={classes.header__one}>
             Binangonan Catholic College Library
           </h1>
+
+          <h1 style={{ color: "#fff" }} className={classes.header__two}>
+            Your online portal to boundless knowledge
+          </h1>
         </Box>
       </header>
     </div>

@@ -16,12 +16,51 @@
 
 .header {
   color: var(--white);
-  margin: 0;
   text-transform: uppercase;
   text-align: center;
   display: flex;
   justify-content: center;
-  align-items: end;
+  align-items: center;
+  background-image: url("/images/Headline3.png");
+  background-repeat: no-repeat;
+  background-size: 100%;
+  padding-bottom: 12rem;
+  /* box-shadow: ; */
+
+  @media (max-width: $mantine-breakpoint-md) {
+    /* height: 200rem; */
+    padding-bottom: 4rem;
+    background-position: center center;
+    margin-bottom: 2.8rem;
+  }
+
+  @media only screen and (max-width: $mantine-breakpoint-lg) {
+    background-size: 250rem;
+    padding-bottom: 1.8rem;
+  }
+}
+
+/* @media (max-width: $mantine-breakpoink-lg) {
+  .header  {
+    background-size: 240rem;
+    padding-bottom: 1.8rem;
+
+  }
+} */
+
+.header__two {
+  font-size: "2rem";
+  font-family: "Montserrat";
+  color: "#fffffff";
+  font-weight: "300";
+  font-style: "italic";
+  @media (max-width: $mantine-breakpoint-sm) {
+    font-size: 1.5rem;
+    /* font-weight: 900;
+    text-align: center;
+
+    width: 50%; */
+  }
 }
 
 .header__one {
@@ -36,11 +75,11 @@
 
   text-align: center;
 
-  padding-top: 5rem;
+  padding-top: 10rem;
   padding-bottom: 5rem;
 
   /* color: var(--secondary); */
-  color: #5c0505;
+  color: #fff;
 
   /* @media (max-width: $mantine-breakpoint-md) {
     font-size: 5rem;
@@ -50,7 +89,7 @@
   }
  */
   @media (max-width: $mantine-breakpoint-sm) {
-    font-size: 2rem;
+    font-size: 2.9rem;
     /* font-weight: 900;
     text-align: center;
 
