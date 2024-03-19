@@ -5,6 +5,7 @@ import useReadCardUsers from "./hooks/useReadCardUsers";
 import { PAGE_SIZE } from "src/shared/constant";
 import BookPagination from "@features/HomePage/Library/BookPagination";
 import SelectUserRole from "./SelectUserRole";
+import SelectUserStatus from "./SelectUserStatus";
 const UserCards = () => {
   const { usersData, isLoading, count } = useReadCardUsers();
   // const [getId, setGetId] = useState("");
@@ -46,9 +47,9 @@ const UserCards = () => {
           <SelectUserRole />
         </Grid.Col>
 
-        {/* <Grid.Col span={{ base: 12, sm: 6, md: 6, lg: 3 }}>
-          <SelectAnnouncementStatus />
-        </Grid.Col> */}
+        <Grid.Col span={{ base: 12, sm: 6, md: 6, lg: 3 }}>
+          <SelectUserStatus />
+        </Grid.Col>
       </Grid>
       <BookPagination
         count={count}
