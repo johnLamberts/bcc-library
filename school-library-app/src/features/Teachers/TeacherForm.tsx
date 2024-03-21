@@ -42,6 +42,7 @@ export default function TeacherForm<TData extends MRT_RowData>({
     (values: Partial<ITeacher>) => {
       if (isCreating) {
         // onSave?.(values);
+        console.log(values);
         onCreate?.(values);
       } else if (isEditing) {
         onSave?.(values);

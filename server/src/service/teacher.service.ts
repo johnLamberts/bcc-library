@@ -3,7 +3,11 @@ import { TStudents, TTeacher } from "../types/users";
 import { makeUserName, randomizeString } from "../helper/utils";
 
 const getAllTeachers = async () => {
-  const snapshot = await admin.firestore().collection("teachers").get();
+  const snapshot = await admin
+    .firestore()
+    .collection("teachers")
+    .orderBy("createdAt", "desc")
+    .get();
 
   return snapshot.docs.map((docs) => {
     return {
