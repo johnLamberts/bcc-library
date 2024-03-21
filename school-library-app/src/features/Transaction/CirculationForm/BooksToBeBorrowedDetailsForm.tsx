@@ -228,6 +228,7 @@ const BooksToBeBorrowedDetailsForm = ({ seeType, setSeeType }: FormProps) => {
                     seeType === null ||
                     filteredBook.length === 0
                   }
+                  searchable
                 />
               );
             }}

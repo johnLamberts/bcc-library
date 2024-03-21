@@ -57,7 +57,7 @@ export default function UserManagement() {
 
       {/* List of Users */}
 
-      <Box w={"100%"}>
+      <Box>
         {searchParams.get("viewBy") === "All" &&
           searchParams.get("viewOn") === "By Table" && (
             <>

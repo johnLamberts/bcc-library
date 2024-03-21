@@ -62,17 +62,15 @@ export default function AdminLayout() {
         {/* <------ END of NAVBAR -------> */}
 
         <AppShell.Main>
-          <ScrollArea
+          {/* <ScrollArea
             scrollbars="y"
             style={{
-              paddingTop: "var(--mantine-header-height, 1rem)",
-              paddingBottom: "var(--mantine-footer-height, 5rem)",
               height:
                 "calc(100vh - var(--mantine-header-height, 0px) - var(--mantine-footer-height, 0px))", // viewport height - height of header - height of footer
             }}
-          >
-            <Outlet />
-          </ScrollArea>
+          > */}
+          <Outlet />
+          {/* </ScrollArea> */}
         </AppShell.Main>
       </AppShell>
     </>
