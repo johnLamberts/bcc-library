@@ -1,8 +1,17 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import Form from "@components/Form/Form";
 import useReadStudents from "@features/Student/hooks/useReadStudents";
 import useReadTeachers from "@features/Teachers/hooks/useReadTeacher";
-import { List, Select, TextInput, rem } from "@mantine/core";
+import {
+  Avatar,
+  Group,
+  Select,
+  SelectProps,
+  Text,
+  TextInput,
+  rem,
+} from "@mantine/core";
 import { IconEye } from "@tabler/icons-react";
 
 import { MRT_Row, MRT_RowData, MRT_TableInstance } from "mantine-react-table";
@@ -14,6 +23,13 @@ interface BookInformationProps<TData extends MRT_RowData> {
   row?: MRT_Row<TData>;
   seeRole: string | null;
   setSeeRole: Dispatch<SetStateAction<string | null>>;
+}
+
+interface BorrowersData {
+  [name: string]: {
+    name: string;
+    image: string | File | undefined;
+  };
 }
 
 const BorrowersInformationForm = <TData extends MRT_RowData>({
@@ -66,6 +82,49 @@ const BorrowersInformationForm = <TData extends MRT_RowData>({
           .filter((student) => `${student.email}` === watch("borrowersName"))
           .map((user) => user.studentNumber)[0];
 
+  console.log(filteredOtherInfo);
+  const renderAutocompleteOption: SelectProps["renderOption"] = ({
+    option,
+  }) => {
+    const borrowersData: BorrowersData = {};
+
+    const filtered =
+      seeRole === "Teacher"
+        ? teacherData.map((teacher) => ({
+            ...teacher,
+            image: teacher.teacherImage,
+          }))
+        : studentData.map((teacher) => ({
+            ...teacher,
+            image: teacher.studentImage,
+          }));
+
+    filtered.forEach((info) => {
+      borrowersData[info.email] = {
+        name: `${info.firstName} ${info.middleName} ${info.lastName}`,
+        image: info.image,
+      };
+    });
+
+    return (
+      <Group gap={"xs"}>
+        <Avatar
+          size={36}
+          radius="xl"
+          src={borrowersData[option.value]?.image as string}
+        />
+        <div>
+          <Text size="sm">{option.value}</Text>
+
+          <Text size="xs" opacity={0.5}>
+            {/* {filteredOtherInfo[0]?.email} */}
+            {borrowersData[option.value]?.name}
+          </Text>
+        </div>
+      </Group>
+    );
+  };
+
   useEffect(() => {
     // if() {
 
@@ -89,24 +148,6 @@ const BorrowersInformationForm = <TData extends MRT_RowData>({
     filteredNumberInfo,
     name,
   ]);
-
-  // useEffect(() => {
-  //   if (
-  //     teacherData.some((teacher) => teacher.userRole !== seeRole) &&
-  //     studentData.some((student) => student.userRole !== seeRole) &&
-  //     seeRole !== null
-  //   ) {
-  //     setValue("borrowersName", null);
-  //     setValue("borrowersId", null);
-  //     setValue("borrowersNumber", null);
-  //     setValue("borrowersEmail", null);
-  //   } else if (seeRole === undefined || seeRole === null) {
-  //     setValue("borrowersName", null);
-  //     setValue("borrowersId", null);
-  //     setValue("borrowersNumber", null);
-  //     setValue("borrowersEmail", null);
-  //   }
-  // }, [setValue, getValues, teacherData, studentData, seeRole]);
 
   const handleChangeRole = (e: string | null) => {
     setValue("borrowersId", "");
@@ -178,8 +219,9 @@ const BorrowersInformationForm = <TData extends MRT_RowData>({
                   <Select
                     autoComplete="false"
                     label={`Borrower's Email`}
-                    placeholder={`Select borrower's name`}
+                    placeholder={`Select borrower's email`}
                     data={filteredBorrowersName}
+                    renderOption={renderAutocompleteOption}
                     description="Editable"
                     comboboxProps={{
                       transitionProps: { transition: "pop", duration: 200 },
