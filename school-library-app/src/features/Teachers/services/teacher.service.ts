@@ -45,7 +45,7 @@ const getLatestTeacher = async () => {
   const teacherNumberSnapshot = await getDocs(
     query(
       collection(firestore, FIRESTORE_COLLECTION_QUERY_KEY.TEACHER),
-      orderBy("createdAt", "asc")
+      orderBy("createdAt", "desc")
     )
   );
 

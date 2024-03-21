@@ -3,7 +3,11 @@ import { TUsers } from "../types/users";
 import { makeUserName } from "../helper/utils";
 
 const getAllUsers = async () => {
-  const snapshot = await admin.firestore().collection("users").get();
+  const snapshot = await admin
+    .firestore()
+    .collection("users")
+    .orderBy("createdAt", "desc")
+    .get();
 
   return snapshot.docs.map((docs) => {
     return {

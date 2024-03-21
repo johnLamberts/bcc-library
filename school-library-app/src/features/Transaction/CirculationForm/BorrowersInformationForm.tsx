@@ -2,7 +2,7 @@
 import Form from "@components/Form/Form";
 import useReadStudents from "@features/Student/hooks/useReadStudents";
 import useReadTeachers from "@features/Teachers/hooks/useReadTeacher";
-import { Select, TextInput, rem } from "@mantine/core";
+import { List, Select, TextInput, rem } from "@mantine/core";
 import { IconEye } from "@tabler/icons-react";
 
 import { MRT_Row, MRT_RowData, MRT_TableInstance } from "mantine-react-table";
@@ -20,7 +20,7 @@ const BorrowersInformationForm = <TData extends MRT_RowData>({
   seeRole,
   setSeeRole,
 }: BookInformationProps<TData>) => {
-  const [_, setName] = useState<string | null>("");
+  const [name, setName] = useState<string | null>("");
 
   const {
     control,
@@ -40,42 +40,30 @@ const BorrowersInformationForm = <TData extends MRT_RowData>({
   const filteredBorrowersName =
     seeRole === "Teacher"
       ? teacherData.map((teacher) => ({
-          label: `${teacher.firstName} ${teacher.middleName} ${teacher.lastName}`,
-          value: `${teacher.firstName} ${teacher.middleName} ${teacher.lastName}`,
+          label: `${teacher.email}`,
+          value: `${teacher.email}`,
         }))
       : studentData.map((student) => ({
-          label: `${student.firstName} ${student.middleName} ${student.lastName}`,
-          value: `${student.firstName} ${student.middleName} ${student.lastName}`,
+          label: `${student.email}`,
+          value: `${student.email}`,
         })) || [];
 
   const filteredOtherInfo =
     seeRole === "Teacher"
       ? teacherData.filter(
-          (teacher) =>
-            `${teacher.firstName} ${teacher.middleName} ${teacher.lastName}` ===
-            watch("borrowersName")
+          (teacher) => `${teacher.email}` === watch("borrowersName")
         )
       : studentData.filter(
-          (student) =>
-            `${student.firstName} ${student.middleName} ${student.lastName}` ===
-            watch("borrowersName")
+          (student) => `${student.email}` === watch("borrowersName")
         );
 
   const filteredNumberInfo =
     seeRole === "Teacher"
       ? teacherData
-          .filter(
-            (teacher) =>
-              `${teacher.firstName} ${teacher.middleName} ${teacher.lastName}` ===
-              watch("borrowersName")
-          )
+          .filter((teacher) => `${teacher.email}` === watch("borrowersName"))
           .map((user) => user.teacherNumber)[0]
       : studentData
-          .filter(
-            (student) =>
-              `${student.firstName} ${student.middleName} ${student.lastName}` ===
-              watch("borrowersName")
-          )
+          .filter((student) => `${student.email}` === watch("borrowersName"))
           .map((user) => user.studentNumber)[0];
 
   useEffect(() => {
@@ -99,6 +87,7 @@ const BorrowersInformationForm = <TData extends MRT_RowData>({
     studentData,
     teacherData,
     filteredNumberInfo,
+    name,
   ]);
 
   // useEffect(() => {
@@ -125,6 +114,9 @@ const BorrowersInformationForm = <TData extends MRT_RowData>({
 
     setValue("borrowersNumber", "");
     setValue("borrowersEmail", "");
+    setValue("firstName", "");
+    setValue("middleName", "");
+    setValue("lastName", "");
 
     setSeeRole(e);
   };
@@ -133,6 +125,9 @@ const BorrowersInformationForm = <TData extends MRT_RowData>({
     setValue("borrowersNumber", "");
     setValue("borrowersEmail", "");
     setValue("borrowersId", "");
+    setValue("firstName", "");
+    setValue("middleName", "");
+    setValue("lastName", "");
     setName(e);
   };
   return (
@@ -181,7 +176,8 @@ const BorrowersInformationForm = <TData extends MRT_RowData>({
               render={({ field: { onChange, ...field } }) => {
                 return (
                   <Select
-                    label={`Borrower's name`}
+                    autoComplete="false"
+                    label={`Borrower's Email`}
                     placeholder={`Select borrower's name`}
                     data={filteredBorrowersName}
                     description="Editable"
@@ -209,6 +205,7 @@ const BorrowersInformationForm = <TData extends MRT_RowData>({
             />
           </Form.Col>
         </Form.Grid>
+
         <Form.Grid p={"lg"}>
           <Form.Col span={{ base: 12, md: 6, lg: 6 }}>
             <TextInput
