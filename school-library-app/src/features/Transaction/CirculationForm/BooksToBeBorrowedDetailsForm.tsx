@@ -1,7 +1,15 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import Form from "@components/Form/Form";
 import { useReadBookType } from "@features/SysSettings/BookType/hooks/useReadBookType";
-import { Select, Text, TextInput, rem } from "@mantine/core";
+import {
+  Avatar,
+  Group,
+  Select,
+  SelectProps,
+  Text,
+  TextInput,
+  rem,
+} from "@mantine/core";
 import { IconEye } from "@tabler/icons-react";
 import { Dispatch, SetStateAction, useCallback, useEffect } from "react";
 import { Controller, useFormContext } from "react-hook-form";
@@ -12,6 +20,14 @@ interface FormProps {
   seeType: string | null;
   setSeeType: Dispatch<SetStateAction<string | null>>;
 }
+
+interface BooksDetailsData {
+  [name: string]: {
+    name: string;
+    image: string | File | null;
+  };
+}
+
 const BooksToBeBorrowedDetailsForm = ({ seeType, setSeeType }: FormProps) => {
   const {
     register,
@@ -51,6 +67,37 @@ const BooksToBeBorrowedDetailsForm = ({ seeType, setSeeType }: FormProps) => {
     },
     [setValue]
   );
+
+  const renderAutocompleteOption: SelectProps["renderOption"] = ({
+    option,
+  }) => {
+    const borrowersData: BooksDetailsData = {};
+
+    filteredBook.forEach((info) => {
+      borrowersData[info.title] = {
+        name: `${info.bookISBN} ${info.bookSection}`,
+        image: info.bookImageCover,
+      };
+    });
+
+    return (
+      <Group gap={"xs"}>
+        <Avatar
+          size={36}
+          radius="xl"
+          src={borrowersData[option.value]?.image as string}
+        />
+        <div>
+          <Text size="sm">{option.value}</Text>
+
+          <Text size="xs" opacity={0.5}>
+            {/* {filteredOtherInfo[0]?.email} */}
+            {borrowersData[option.value]?.name}
+          </Text>
+        </div>
+      </Group>
+    );
+  };
 
   useEffect(() => {
     if (filteredOtherBookInfo.length > 0) {
@@ -127,10 +174,9 @@ const BooksToBeBorrowedDetailsForm = ({ seeType, setSeeType }: FormProps) => {
                   {...field}
                   error={<>{errors.bookType?.message}</>}
                   disabled={
-                    isBookLoading ||
-                    isBookTypeLoading ||
-                    watch("borrowersName") === null ||
-                    watch("borrowersName") === undefined
+                    isBookLoading || isBookTypeLoading
+                    // watch("borrowersName") === null ||
+                    // watch("borrowersName") === undefined
                   }
                   onChange={(e) => {
                     onChange(e);
@@ -155,6 +201,7 @@ const BooksToBeBorrowedDetailsForm = ({ seeType, setSeeType }: FormProps) => {
                 <Select
                   label="Title"
                   description="Editable"
+                  renderOption={renderAutocompleteOption}
                   placeholder={`${
                     filteredBook.length === 0
                       ? "No available book assiociated with these book type"

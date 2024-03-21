@@ -97,8 +97,8 @@ export default function CirculationForm<TData extends MRT_RowData>({
         overlayProps={{ radius: "sm", blur: 2 }}
       />{" "}
       <Form onSubmit={form.handleSubmit(onSubmit)}>
-        <Divider mt={"xs"} mb={"xs"} />
-        <BorrowersInformationForm seeRole={seeRole} setSeeRole={setSeeRole} />
+        {/* <Divider mt={"xs"} mb={"xs"} /> */}
+        {/* <BorrowersInformationForm seeRole={seeRole} setSeeRole={setSeeRole} /> */}
         <Divider mt={"xs"} mb={"xs"} />
         <BooksToBeBorrowedDetailsForm
           setSeeType={setSeeType}

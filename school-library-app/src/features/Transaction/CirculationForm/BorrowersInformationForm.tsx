@@ -82,7 +82,6 @@ const BorrowersInformationForm = <TData extends MRT_RowData>({
           .filter((student) => `${student.email}` === watch("borrowersName"))
           .map((user) => user.studentNumber)[0];
 
-  console.log(filteredOtherInfo);
   const renderAutocompleteOption: SelectProps["renderOption"] = ({
     option,
   }) => {
