@@ -55,10 +55,8 @@ const BooksToBeBorrowedDetailsForm = ({ seeType, setSeeType }: FormProps) => {
   useEffect(() => {
     if (filteredOtherBookInfo.length > 0) {
       setBookValues(filteredOtherBookInfo[0]);
-    } else {
-      setBookValues(null);
     }
-  }, [filteredOtherBookInfo.length, setBookValues, setValue]);
+  }, [filteredOtherBookInfo, setBookValues]);
 
   useEffect(() => {
     if (
@@ -72,6 +70,21 @@ const BooksToBeBorrowedDetailsForm = ({ seeType, setSeeType }: FormProps) => {
       setValue("bookTitle", null);
     }
   }, [setValue, seeType, bookData]);
+
+  const handleChangeBookType = (e: string | null) => {
+    setValue("bookISBN", "");
+    setValue("callNumber", "");
+    setValue("bookSection", "");
+    setValue("bookLocation", "");
+    setValue("timeDuration", "");
+    setValue("numberOfBooksAvailable_QUANTITY", "");
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    setValue("bookPrice", "");
+    setValue("booksId", "");
+    setValue("bookTitle", null);
+    setSeeType(e);
+  };
 
   const handleChangeTitle = () => {
     setValue("bookISBN", "");
@@ -114,13 +127,14 @@ const BooksToBeBorrowedDetailsForm = ({ seeType, setSeeType }: FormProps) => {
                   {...field}
                   error={<>{errors.bookType?.message}</>}
                   disabled={
-                    isBookLoading || isBookTypeLoading
-                    // watch("borrowersName") === null ||
-                    // watch("borrowersName") === undefined
+                    isBookLoading ||
+                    isBookTypeLoading ||
+                    watch("borrowersName") === null ||
+                    watch("borrowersName") === undefined
                   }
                   onChange={(e) => {
                     onChange(e);
-                    setSeeType(e);
+                    handleChangeBookType(e);
                   }}
                 />
               );

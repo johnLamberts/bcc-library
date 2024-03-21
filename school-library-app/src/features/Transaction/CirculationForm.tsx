@@ -100,11 +100,11 @@ export default function CirculationForm<TData extends MRT_RowData>({
         <Divider mt={"xs"} mb={"xs"} />
         <BorrowersInformationForm seeRole={seeRole} setSeeRole={setSeeRole} />
         <Divider mt={"xs"} mb={"xs"} />
-        {/* <BooksToBeBorrowedDetailsForm
+        <BooksToBeBorrowedDetailsForm
           setSeeType={setSeeType}
           seeType={seeType}
         />
-        <Divider mt={"xs"} mb={"xs"} /> */}
+        <Divider mt={"xs"} mb={"xs"} />
         <Box
           style={{
             display: "flex",
