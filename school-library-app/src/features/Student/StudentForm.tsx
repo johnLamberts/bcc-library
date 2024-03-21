@@ -48,40 +48,21 @@ export default function StudentForm<TData extends MRT_RowData>({
 
   const onSubmit = useCallback(
     (values: Partial<IStudents>) => {
-      if (isCreating) {
-        onCreate?.({
-          ...values,
-          edit,
-        });
+      // if (isCreating) {
+      //   onCreate?.({
+      //     ...values,
+      //     edit,
+      //   });
 
-        form.reset();
-      } else if (isEditing) {
-        onSave?.(values);
-      }
+      //   form.reset();
+      // } else if (isEditing) {
+      //   onSave?.(values);
+      // }
+
+      console.log(values);
     },
     [isCreating, isEditing, onCreate, edit, form, onSave]
   );
-
-  // useEffect(() => {
-  //   if (studentEntryLatest.every((value) => value === undefined)) {
-  //     form.setValue("studentEntry", Number(1));
-  //   } else {
-  //     const filterValues = studentEntryLatest.filter(
-  //       (entry) => entry !== undefined
-  //     ) as number[];
-
-  //     if (filterValues.length > 0) {
-  //       form.setValue("studentEntry", Math.max(...studentEntryLatest) + 1);
-  //     } else {
-  //       form.setValue("studentEntry", Number(1));
-  //     }
-  //   }
-
-  //   if (isEditing) {
-  //     form.setValue("studentEntry", row.original.studentEntry);
-  //   }
-  // }, [studentEntryLatest, form, isEditing, row.original.studentEntry]);
-
   useEffect(() => {
     if (form.formState.errors) {
       const elements = Object.keys(form.formState.errors)
