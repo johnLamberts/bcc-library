@@ -10,8 +10,8 @@ export default function CatalogueManagement() {
 
   const { pathname } = useLocation();
 
-  const handleChange = (params: string | null) => {
-    searchParams.set("viewBy", params as string);
+  const handleChange = (params: string | null, paramName: string) => {
+    searchParams.set(paramName, params as string);
 
     return setSearchParams(searchParams);
   };
@@ -32,7 +32,18 @@ export default function CatalogueManagement() {
                 size="xs"
                 data={["All", "Archive"]}
                 value={searchParams.get("viewBy") || "All"}
-                onChange={handleChange}
+                onChange={(e) => handleChange(e, "viewBy")}
+              />
+            )}
+
+            {pathname.toLowerCase().includes("catalogue") && (
+              <Select
+                allowDeselect={false}
+                size="xs"
+                disabled={searchParams.get("viewBy") === "Archive"}
+                data={["By Table", "By Cards"]}
+                value={searchParams.get("viewOn") || "By Table"}
+                onChange={(e) => handleChange(e, "viewOn")}
               />
             )}
           </Flex>
@@ -42,21 +53,52 @@ export default function CatalogueManagement() {
       {/* List of Users */}
 
       <Box w={"100%"}>
-        {searchParams.get("viewBy") === "All" && (
-          <>
-            <Box my="xl">
-              <CatalogueTable />
-            </Box>
-          </>
-        )}
+        {searchParams.get("viewBy") === "All" &&
+          searchParams.get("viewOn") === "By Table" && (
+            <>
+              <Box my="xl">
+                <CatalogueTable />
+              </Box>
+            </>
+          )}
 
-        {searchParams.get("viewBy") === null && (
-          <>
-            <Box my="xl">
-              <CatalogueTable />
-            </Box>
-          </>
-        )}
+        {searchParams.get("viewBy") === null &&
+          searchParams.get("viewOn") === null && (
+            <>
+              <Box my="xl">
+                <CatalogueTable />
+              </Box>
+            </>
+          )}
+
+        {searchParams.get("viewBy") === null &&
+          searchParams.get("viewOn") === "By Table" && (
+            <>
+              <Box my="xl">
+                <CatalogueTable />
+              </Box>
+            </>
+          )}
+
+        {searchParams.get("viewBy") === "All" &&
+          searchParams.get("viewOn") === "By Cards" && (
+            <>
+              <Box my="xl">
+                {/* <UserCards /> */}
+                Card Catalogue
+              </Box>
+            </>
+          )}
+
+        {searchParams.get("viewBy") === null &&
+          searchParams.get("viewOn") === "By Cards" && (
+            <>
+              <Box my="xl">
+                {/* <UserTable /> */}
+                Card Catalogue
+              </Box>
+            </>
+          )}
 
         {searchParams.get("viewBy") === "Archive" && (
           <>

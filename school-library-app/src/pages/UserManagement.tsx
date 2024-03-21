@@ -80,7 +80,6 @@ export default function UserManagement() {
           searchParams.get("viewOn") === "By Cards" && (
             <>
               <Box my="xl">
-                {/* <UserTable /> */}
                 <UserCards />
               </Box>
             </>
