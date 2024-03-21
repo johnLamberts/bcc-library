@@ -48,18 +48,16 @@ export default function StudentForm<TData extends MRT_RowData>({
 
   const onSubmit = useCallback(
     (values: Partial<IStudents>) => {
-      // if (isCreating) {
-      //   onCreate?.({
-      //     ...values,
-      //     edit,
-      //   });
+      if (isCreating) {
+        onCreate?.({
+          ...values,
+          edit,
+        });
 
-      //   form.reset();
-      // } else if (isEditing) {
-      //   onSave?.(values);
-      // }
-
-      console.log(values);
+        form.reset();
+      } else if (isEditing) {
+        onSave?.(values);
+      }
     },
     [isCreating, isEditing, onCreate, edit, form, onSave]
   );
