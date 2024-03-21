@@ -17,7 +17,7 @@ const ReturnTransaction = () => {
     <>
       <Group justify="space-between">
         <SegmentedControl
-          data={["Return List", "Pending"]}
+          data={["Return List", "Returned with unpaid penalty"]}
           value={searchParams.get("rq") || "Return List"}
           onChange={handleParams}
         />
@@ -38,10 +38,10 @@ const ReturnTransaction = () => {
           </Box>
         )}
 
-        {searchParams.get("rq") === "Pending" && (
+        {searchParams.get("rq") === "Returned with unpaid penalty" && (
           <Box className={classes.highlight}>
             <Text fz={"xs"} fw={"bold"} c={"red"}>
-              Pending Transaction
+              Returned with unpaid penalty
             </Text>
           </Box>
         )}
@@ -60,7 +60,7 @@ const ReturnTransaction = () => {
         </Box>
       )}
 
-      {searchParams.get("rq") === "Pending" && (
+      {searchParams.get("rq") === "Returned with unpaid penalty" && (
         <Box>
           <PendingTable />
         </Box>
