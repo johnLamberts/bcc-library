@@ -57,7 +57,7 @@ export default function UserManagement() {
 
       {/* List of Users */}
 
-      <Box w={"100%"}>
+      <Box>
         {searchParams.get("viewBy") === "All" &&
           searchParams.get("viewOn") === "By Table" && (
             <>
@@ -80,7 +80,6 @@ export default function UserManagement() {
           searchParams.get("viewOn") === "By Cards" && (
             <>
               <Box my="xl">
-                {/* <UserTable /> */}
                 <UserCards />
               </Box>
             </>

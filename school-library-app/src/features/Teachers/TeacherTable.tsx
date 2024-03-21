@@ -31,8 +31,11 @@ import useReadTeachers from "./hooks/useReadTeacher";
 import useModifyTeacherStatus from "./hooks/useModifyTeacherStatus";
 import useModifyTeacher from "./hooks/useModifyTeacher";
 import { useCreateTeacher } from "./hooks/useCreateTeacher";
+import { useSearchParams } from "react-router-dom";
 
 const TeacherTable = () => {
+  const [searchParams] = useSearchParams();
+
   const { isCreatingTeacher, createTeacher } = useCreateTeacher();
 
   const {
@@ -180,6 +183,11 @@ const TeacherTable = () => {
         height: "100%",
       },
     },
+    mantineTableProps: {
+      withColumnBorders: true,
+      withRowBorders: true,
+      withTableBorder: true,
+    },
     mantineCreateRowModalProps: {
       centered: true,
       size: "xl",
@@ -286,12 +294,12 @@ const TeacherTable = () => {
 
   return (
     <>
-      <Box maw={"78.2vw"}>
+      <Box>
         <Group
           justify="end"
           pos={"absolute"}
-          top={"1rem"}
           right={"1rem"}
+          top={"5rem"}
           visibleFrom="md"
         >
           <Button
@@ -304,7 +312,7 @@ const TeacherTable = () => {
             Add Teacher
           </Button>
         </Group>
-        <Group hiddenFrom="sm">
+        <Group hiddenFrom="md">
           <Button
             variant="light"
             onClick={() => table.setCreatingRow(true)}
@@ -315,7 +323,17 @@ const TeacherTable = () => {
             Add Teacher
           </Button>
         </Group>
-
+        {searchParams.get("ctx") === "add_borrowers" && (
+          <Button
+            variant="light"
+            onClick={() => table.setCreatingRow(true)}
+            leftSection={<IconPlus size={14} />}
+            bg={" var(--mantine-color-red-light)"}
+            color={" var(--mantine-color-red-light-color)"}
+          >
+            Add Teacher
+          </Button>
+        )}
         <Box mt={"lg"}>
           <MantineReactTable table={table} />
         </Box>

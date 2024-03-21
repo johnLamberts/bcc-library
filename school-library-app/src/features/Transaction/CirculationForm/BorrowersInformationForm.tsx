@@ -1,10 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import Form from "@components/Form/Form";
+import CatalogueTable from "@features/Catalogue/CatalogueTable";
 import useReadStudents from "@features/Student/hooks/useReadStudents";
 import useReadTeachers from "@features/Teachers/hooks/useReadTeacher";
 import {
+  Anchor,
   Avatar,
+  Drawer,
   Group,
   Select,
   SelectProps,
@@ -12,11 +15,16 @@ import {
   TextInput,
   rem,
 } from "@mantine/core";
+import { useDisclosure } from "@mantine/hooks";
+import CatalogueManagement from "@pages/CatalogueManagement";
+import StudentManagement from "@pages/StudentManagement";
+import TeacherManagement from "@pages/TeacherManagement";
 import { IconEye } from "@tabler/icons-react";
 
 import { MRT_Row, MRT_RowData, MRT_TableInstance } from "mantine-react-table";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { Controller, useFormContext } from "react-hook-form";
+import { useSearchParams } from "react-router-dom";
 
 interface BookInformationProps<TData extends MRT_RowData> {
   table?: MRT_TableInstance<TData>;
@@ -37,6 +45,7 @@ const BorrowersInformationForm = <TData extends MRT_RowData>({
   setSeeRole,
 }: BookInformationProps<TData>) => {
   const [name, setName] = useState<string | null>("");
+  const [opened, { open, close }] = useDisclosure(false);
 
   const {
     control,
@@ -46,6 +55,7 @@ const BorrowersInformationForm = <TData extends MRT_RowData>({
     getValues,
     watch,
   } = useFormContext();
+  const [searchParams, setSearchParams] = useSearchParams();
 
   // student or teacher's data
   const { data: teacherData = [], isLoading: isTeacherLoading } =
@@ -82,7 +92,6 @@ const BorrowersInformationForm = <TData extends MRT_RowData>({
           .filter((student) => `${student.email}` === watch("borrowersName"))
           .map((user) => user.studentNumber)[0];
 
-  console.log(filteredOtherInfo);
   const renderAutocompleteOption: SelectProps["renderOption"] = ({
     option,
   }) => {
@@ -171,6 +180,25 @@ const BorrowersInformationForm = <TData extends MRT_RowData>({
     setValue("lastName", "");
     setName(e);
   };
+
+  const handleChange = (params: string | null) => {
+    searchParams.set("ctx", params as string);
+
+    return setSearchParams(searchParams);
+  };
+
+  const removeQueryParams = () => {
+    const param = searchParams.get("ctx");
+
+    if (param) {
+      // 👇️ delete each query param
+      searchParams.delete("ctx");
+
+      // 👇️ update state after
+      setSearchParams(searchParams);
+    }
+  };
+
   return (
     <>
       <Form.Box mt={"md"}>
@@ -241,6 +269,25 @@ const BorrowersInformationForm = <TData extends MRT_RowData>({
                       seeRole === null
                     }
                     searchable
+                    nothingFoundMessage={
+                      <>
+                        Nothing found...
+                        <br />
+                        Add Type{" "}
+                        <Anchor
+                          variant="gradient"
+                          gradient={{ from: "pink", to: "yellow" }}
+                          fw={500}
+                          underline="hover"
+                          onClick={() => {
+                            open();
+                            handleChange("add_borrowers");
+                          }}
+                        >
+                          here
+                        </Anchor>
+                      </>
+                    }
                   />
                 );
               }}
@@ -352,6 +399,31 @@ const BorrowersInformationForm = <TData extends MRT_RowData>({
           </Form.Col>
         </Form.Grid>
       </Form.Box>
+
+      <Drawer.Root
+        opened={opened}
+        onClose={() => {
+          close();
+          removeQueryParams();
+        }}
+        size={"3xl"}
+      >
+        <Drawer.Overlay />
+        <Drawer.Content>
+          <Drawer.Header>
+            <Drawer.CloseButton />
+          </Drawer.Header>
+          <Drawer.Body>
+            {/* {searchParams.get("ctx") === "add_genres" && <BookGenre />}
+            {searchParams.get("ctx") === "add_author" && <BookAuthor />} */}
+
+            {searchParams.get("ctx") === "add_borrowers" &&
+              seeRole === "Student" && <StudentManagement />}
+            {searchParams.get("ctx") === "add_borrowers" &&
+              seeRole === "Teacher" && <TeacherManagement />}
+          </Drawer.Body>
+        </Drawer.Content>
+      </Drawer.Root>
     </>
   );
 };
