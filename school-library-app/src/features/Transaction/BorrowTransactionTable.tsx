@@ -46,7 +46,6 @@ const BorrowTransactionTable = () => {
     isFetching: isTransactionFetching,
   } = useReadTransactionList();
 
-  console.log(transactionList.map((data) => data.expiryTime));
   const customColumns = useMemo<MRT_ColumnDef<ICirculation>[]>(
     () => [
       {
@@ -56,7 +55,6 @@ const BorrowTransactionTable = () => {
               originalRow.createdAt?.nanoseconds / 1000
           ),
         header: "Date Created",
-        filterVariant: "date-range",
         Cell: ({ row }) => {
           const date = format(
             new Date(
@@ -275,7 +273,7 @@ const BorrowTransactionTable = () => {
 
     initialState: {
       pagination: { pageIndex: 0, pageSize: 5 },
-      showColumnFilters: true,
+      showColumnFilters: false,
       columnVisibility: {
         id: false,
         bookType: false,

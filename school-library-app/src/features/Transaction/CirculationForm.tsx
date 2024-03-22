@@ -45,12 +45,10 @@ export default function CirculationForm<TData extends MRT_RowData>({
         //   ...values,
         // });
 
-        // onCreate?.({
-        //   ...values,
-        //   requesting,
-        // });
-
-        console.log(values);
+        onCreate?.({
+          ...values,
+          requesting,
+        });
       } else if (isEditing) {
         onSave?.(values);
       }

@@ -81,6 +81,7 @@ const addRequestTransaction = async (request: ICirculation) => {
     {
       ...request,
       status: "Request",
+      createdAt: serverTimestamp(),
     }
   );
 
@@ -943,12 +944,8 @@ const getBooksTransaction = async () => {
         firestore,
         FIRESTORE_COLLECTION_QUERY_KEY.ALL_BOOKS_TRANSACTION
       ),
-      or(
-        where("status", "==", "Active"),
-        where("status", "==", "Overdue"),
-        where("status", "==", "Request"),
-        where("status", "==", "Reserved")
-      )
+      where("status", "in", ["Active", "Overdue", "Request", "Reserved"])
+      // orderBy("createdAt", "desc")
     )
   );
 
