@@ -48,7 +48,7 @@ const useRecoverArchiveCategorySection = () => {
       );
 
       queryClient.invalidateQueries({
-        queryKey: [FIRESTORE_COLLECTION_QUERY_KEY.ARCHIVE_GENRE],
+        queryKey: [FIRESTORE_COLLECTION_QUERY_KEY.ARCHIVE_CATEGORY_SECTION],
       });
     },
   });
