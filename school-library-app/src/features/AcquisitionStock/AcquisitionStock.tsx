@@ -8,21 +8,19 @@ import {
   Avatar,
   Badge,
   ScrollArea,
-  Menu,
-  rem,
   Flex,
   Box,
   Text,
   TextInput,
+  Button,
+  Tooltip,
+  Code,
+  Group,
+  Grid,
+  Paper,
 } from "@mantine/core";
 import { modals } from "@mantine/modals";
-import {
-  IconDots,
-  IconEdit,
-  IconArchive,
-  IconLockOff,
-  IconLockOpen,
-} from "@tabler/icons-react";
+
 import {
   MRT_ColumnDef,
   MRT_Row,
@@ -33,12 +31,16 @@ import {
   MRT_ShowHideColumnsButton,
   MantineReactTable,
 } from "mantine-react-table";
-import { useMemo } from "react";
-
+import { useMemo, useState } from "react";
+import findKeyInObject from "src/utils/helpers/findKeyInObject";
+interface RowQuantity {
+  [key: string]: string;
+}
 const AcquisitionStock = () => {
   const { isCreatingCatalogue, createCatalogue } = useCreateCatalogue();
-
-  const { modifyBookAvailability, isPending } = useModifyBookAvailability();
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [quantityValues, setQuantityValues] = useState<RowQuantity>({});
+  const { isPending } = useModifyBookAvailability();
   const {
     data: booksCatalogueData = [],
     isLoading: isLoadingStudent,
@@ -130,31 +132,79 @@ const AcquisitionStock = () => {
       {
         header: "Quantity to be added",
         Cell: ({ row }) => {
-          return <TextInput placeholder="only accepts number" />;
+          return (
+            <TextInput
+              placeholder="only accepts number"
+              onChange={(e) => {
+                const updatedQuantityValues = { ...quantityValues };
+                updatedQuantityValues[row.original.id as string] =
+                  e.target.value;
+                setQuantityValues(updatedQuantityValues);
+              }}
+              value={quantityValues[row.original.id as string] || ""}
+            />
+          );
         },
       },
     ],
-    []
+    [quantityValues]
   );
 
   // STATUS action
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const openUpdateStatusConfirmModal = (row: MRT_Row<IBooks>) =>
+  const openQuantityModalConfirmation = (row: MRT_Row<IBooks>) =>
     modals.openConfirmModal({
-      title: (
-        <Text>
-          Are you sure you want to{" "}
-          <b>{row.original.bookStatus === "Active" ? "Disabled" : "Enable"}</b>{" "}
-          this book?
-        </Text>
-      ),
+      centered: true,
+      title: <Text>Add Stock/Quantity</Text>,
       children: (
         <Text>
-          Are you sure you want to disable{" "}
-          <b>
-            {row.original.bookISBN}: {row.original.title}
-          </b>
-          ? This action cannot be undone.
+          Please confirm adding stock/quantity for the book: <br />
+          <br />
+          <Paper withBorder shadow="sm" p="xl">
+            <Group gap={"xs"}>
+              <Avatar src={row.original.bookImageCover as string} h={40} />
+
+              <div>
+                <Text c="dimmed" size="sm">
+                  Title:{" "}
+                  <Text
+                    span
+                    fw={"bold"}
+                    inherit
+                    c="var(--mantine-color-anchor)"
+                  >
+                    {row.original.title}
+                  </Text>
+                </Text>
+                <Text c="dimmed" size="sm">
+                  ISBN:{" "}
+                  <Text
+                    span
+                    fw={"bold"}
+                    inherit
+                    c="var(--mantine-color-anchor)"
+                  >
+                    {row.original.bookISBN}
+                  </Text>
+                </Text>
+
+                <Text c="dimmed" size="sm">
+                  Book Type:{" "}
+                  <Text
+                    span
+                    fw={"bold"}
+                    inherit
+                    c="var(--mantine-color-anchor)"
+                  >
+                    {row.original.bookType}
+                  </Text>
+                </Text>
+              </div>
+            </Group>
+          </Paper>
+          <br />
+          <b>NOTE:</b> Please review the information carefully before
+          proceeding.
         </Text>
       ),
       labels: {
@@ -166,8 +216,17 @@ const AcquisitionStock = () => {
       confirmProps: { color: "red" },
       onConfirm: () => {
         // modifyUserStatus(row.original);
+        console.log({
+          ...row.original,
+          // numberOfBooksAvailable_QUANTITY: quantityValues[row.original.id] === row.original.id
+        });
 
-        modifyBookAvailability(row.original);
+        const value = findKeyInObject(
+          quantityValues,
+          row.original.id as string
+        );
+
+        console.log(value);
       },
     });
 
@@ -187,6 +246,8 @@ const AcquisitionStock = () => {
     await modifyCatalogue(values);
     table.setEditingRow(null);
   };
+
+  console.log(quantityValues);
 
   const table = useMantineReactTable({
     data: optimizedCatalogueData.sort((a, b) => {
@@ -251,45 +312,29 @@ const AcquisitionStock = () => {
 
     renderRowActions: ({ row }) => (
       <>
-        <Menu shadow="md">
-          <Menu.Target>
-            <IconDots size={24} />
-          </Menu.Target>
+        <Flex gap="md">
+          <Tooltip label="Add Stock handler">
+            <Button
+              variant="light"
+              color="blue"
+              size="sm"
+              onClick={() => openQuantityModalConfirmation(row)}
+              disabled={
+                quantityValues[row.original.id as string] === "" ||
+                !quantityValues[row.original.id]
+              }
+              // disabled={
+              //   bookCondition === "" ||
+              //   bookCondition === null ||
+              //   selectedRow[row.index] !== row.index
+              // }
 
-          <Menu.Dropdown>
-            <Menu.Item
-              leftSection={
-                <IconEdit style={{ width: rem(18), height: rem(18) }} />
-              }
-              onClick={() => table.setEditingRow(row)}
+              // disabled={quantity === ""}
             >
-              Edit
-            </Menu.Item>
-
-            <Menu.Item
-              leftSection={
-                <IconArchive style={{ width: rem(18), height: rem(18) }} />
-              }
-              onClick={() => table.setEditingRow(row)}
-            >
-              Archive
-            </Menu.Item>
-            <Menu.Item
-              onClick={() => {
-                openUpdateStatusConfirmModal(row);
-              }}
-              leftSection={
-                row.original.bookStatus === "Disabled" ? (
-                  <IconLockOff style={{ width: rem(18), height: rem(18) }} />
-                ) : (
-                  <IconLockOpen style={{ width: rem(18), height: rem(18) }} />
-                )
-              }
-            >
-              {row.original.bookStatus === "Inactive" ? "Disabled" : "Enable"}
-            </Menu.Item>
-          </Menu.Dropdown>
-        </Menu>
+              Add Stock
+            </Button>
+          </Tooltip>
+        </Flex>
       </>
     ),
 
@@ -305,41 +350,13 @@ const AcquisitionStock = () => {
     },
   });
 
+  if (isLoadingStudentError)
+    return <>Encountered error while fetching the data...</>;
+
   return (
     <>
       <Box>
-        {/* <Group
-          justify="end"
-          pos={"absolute"}
-          right={"1rem"}
-          top={"5rem"}
-          visibleFrom="md"
-        >
-          <Button
-            variant="light"
-            onClick={() => table.setCreatingRow(true)}
-            leftSection={<IconPlus size={14} />}
-            bg={" var(--mantine-color-red-light)"}
-            color={" var(--mantine-color-red-light-color)"}
-          >
-            Add Book Catalogue
-          </Button>
-        </Group>
-        <Group hiddenFrom="md">
-          <Button
-            variant="light"
-            onClick={() => table.setCreatingRow(true)}
-            leftSection={<IconPlus size={14} />}
-            bg={" var(--mantine-color-red-light)"}
-            color={" var(--mantine-color-red-light-color)"}
-          >
-            Add Book Catalogue
-          </Button>
-        </Group> */}
-
-        <Box>
-          <MantineReactTable table={table} />
-        </Box>
+        <MantineReactTable table={table} />
       </Box>
     </>
   );

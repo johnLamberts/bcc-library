@@ -9,13 +9,10 @@ import {
   Highlight,
   Button,
   Group,
-  LoadingOverlay,
-  Title,
 } from "@mantine/core";
 import { IconEdit, IconPlus, IconTrash } from "@tabler/icons-react";
 import {
   MRT_ColumnDef,
-  MRT_EditActionButtons,
   MRT_Row,
   MRT_ShowHideColumnsButton,
   MRT_TableOptions,
@@ -32,6 +29,7 @@ import useModifyGenre from "@features/SysSettings/BookGenre/hooks/useModifyGenre
 import { modals } from "@mantine/modals";
 import { useReadGenre } from "@features/SysSettings/BookGenre/hooks/useReadGenre";
 import { useArchiveGenre } from "@features/SysSettings/BookGenre/hooks/useArchiveGenre";
+import BookGenreForm from "./BookGenreForm";
 
 const BookGenreTable = () => {
   const { createGenre, isPending: isCreating } = useCreateGenre();
@@ -142,40 +140,40 @@ const BookGenreTable = () => {
       columnVisibility: { id: false },
     },
 
-    renderEditRowModalContent: ({ internalEditComponents, row, table }) => (
+    renderEditRowModalContent: ({ row, table }) => (
       <>
-        <LoadingOverlay
-          visible={table.getState().isSaving}
-          zIndex={1000}
-          overlayProps={{ radius: "sm", blur: 2 }}
-        />
         <Stack>
-          <Title order={5}>Edit Genres</Title>
-          {internalEditComponents}{" "}
-          {/*or map over row.getAllCells() and render your own components */}
-          <Flex justify="flex-end">
-            <MRT_EditActionButtons row={row} table={table} variant="text" />{" "}
-            {/*or render your own buttons */}
-          </Flex>
+          <BookGenreForm
+            table={table}
+            row={row}
+            onSave={(data) =>
+              handleSaveLevel({
+                values: data,
+                table: table,
+                row: row,
+                exitEditingMode: () => null,
+              })
+            }
+          />
         </Stack>
       </>
     ),
 
-    renderCreateRowModalContent: ({ internalEditComponents, row, table }) => (
+    renderCreateRowModalContent: ({ row, table }) => (
       <>
-        <LoadingOverlay
-          visible={table.getState().isSaving}
-          zIndex={1000}
-          overlayProps={{ radius: "sm", blur: 2 }}
-        />
         <Stack>
-          <Title order={5}>Add Genres</Title>
-          {internalEditComponents}{" "}
-          {/*or map over row.getAllCells() and render your own components */}
-          <Flex justify="flex-end">
-            <MRT_EditActionButtons row={row} table={table} variant="text" />{" "}
-            {/*or render your own buttons */}
-          </Flex>
+          <BookGenreForm
+            table={table}
+            row={row}
+            onSave={(data) =>
+              handleCreateLevel({
+                values: data,
+                table: table,
+                row: row,
+                exitCreatingMode: () => null,
+              })
+            }
+          />
         </Stack>
       </>
     ),
@@ -268,8 +266,8 @@ const BookGenreTable = () => {
         <Group
           justify="end"
           pos={"absolute"}
-          top={"1rem"}
           right={"1rem"}
+          top={"5rem"}
           visibleFrom="md"
         >
           <Button

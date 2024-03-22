@@ -35,16 +35,24 @@ function BookGenreForm<TData extends MRT_RowData>({
 
   const isEditing = table.getState().editingRow?.id === row.id;
 
-  const { control, handleSubmit, register } = useForm<IGenre>({
+  const { control, handleSubmit, register, watch } = useForm<IGenre>({
     defaultValues: isEditing ? row.original : {},
   });
+
+  console.log(bookTypeData);
 
   const isCreating = table.getState().creatingRow?.id === row.id;
   const [genresName, setGenresName] = useState("");
 
   const onSubmit = useCallback(
     (data: IGenre) => {
-      if (!data.genres) {
+      if (!data.genres.trim()) {
+        toast.error(
+          "Uh-oh! It seems like you forgot to fill in some required information. Please make sure all fields are filled out before submitting."
+        );
+        return;
+      }
+      if (watch("bookType") === "") {
         toast.error(
           "Uh-oh! It seems like you forgot to fill in some required information. Please make sure all fields are filled out before submitting."
         );
@@ -60,7 +68,7 @@ function BookGenreForm<TData extends MRT_RowData>({
         onCreate?.(data);
       }
     },
-    [isEditing, isCreating, onSave, genresName, onCreate]
+    [watch, isEditing, isCreating, onSave, genresName, onCreate]
   );
 
   useEffect(() => {
@@ -97,12 +105,10 @@ function BookGenreForm<TData extends MRT_RowData>({
                       data={bookTypeData
                         .filter(
                           (type) =>
-                            type.bookType === "Fiction Book" ||
-                            type.bookType === "fiction Book" ||
-                            type.bookType === "Non-Fiction Book" ||
-                            type.bookType === "NonFiction Book" ||
-                            type.bookType === "Non Fiction Book" ||
-                            type.bookType === "non fiction Book"
+                            type.bookType
+                              .toLowerCase()
+                              .includes("non fiction") ||
+                            type.bookType.toLowerCase().includes("fiction")
                         )
                         .map((type) => ({
                           label: type.bookType,

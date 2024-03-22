@@ -148,6 +148,7 @@ const Availability = <TData extends MRT_RowData>({
                       ? true
                       : false
                   }
+                  disabled={isEditing}
                   leftSection={<IconStackBack size={14} />}
                 />
               );

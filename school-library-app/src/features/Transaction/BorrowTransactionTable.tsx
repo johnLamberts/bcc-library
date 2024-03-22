@@ -46,8 +46,29 @@ const BorrowTransactionTable = () => {
     isFetching: isTransactionFetching,
   } = useReadTransactionList();
 
+  console.log(transactionList.map((data) => data.expiryTime));
   const customColumns = useMemo<MRT_ColumnDef<ICirculation>[]>(
     () => [
+      {
+        accessorFn: (originalRow) =>
+          new Date(
+            originalRow.createdAt?.seconds * 1000 +
+              originalRow.createdAt?.nanoseconds / 1000
+          ),
+        header: "Date Created",
+        filterVariant: "date-range",
+        Cell: ({ row }) => {
+          const date = format(
+            new Date(
+              row.original.createdAt?.seconds * 1000 +
+                row.original.createdAt?.nanoseconds / 1000
+            ),
+            "MMMM dd yyyy"
+          );
+
+          return <Text>{date}</Text>;
+        },
+      },
       {
         accessorKey: "id",
         header: "Id",
@@ -88,10 +109,13 @@ const BorrowTransactionTable = () => {
         header: "Due Date",
         enableColumnFilter: false,
         Cell: ({ row }) => {
-          if (row.getValue("expiryTime") === undefined) return <>-</>;
+          if (
+            row.getValue("expiryTime") === undefined ||
+            typeof row.getValue("expiryTime") === "string"
+          )
+            return <>-</>;
           const time = new Date(row.getValue("expiryTime")) || "Invalid Date";
 
-          console.log(time, row.getValue("id"));
           return isToday(time) ? (
             <>
               <Badge variant="light" color="#FFA903" tt={"inherit"}>

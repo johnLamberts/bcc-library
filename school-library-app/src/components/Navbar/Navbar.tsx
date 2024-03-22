@@ -63,10 +63,6 @@ const mainFeatures = [
         link: "/return-transaction",
         label: "Return Transaction",
       },
-      {
-        link: "/transaction-management",
-        label: "Transaction List",
-      },
     ],
   },
   {

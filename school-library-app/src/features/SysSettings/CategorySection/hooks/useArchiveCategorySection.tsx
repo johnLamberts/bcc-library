@@ -22,7 +22,7 @@ const useArchiveCategorySection = () => {
       );
 
       queryClient.invalidateQueries({
-        queryKey: [FIRESTORE_COLLECTION_QUERY_KEY.GENRE],
+        queryKey: [FIRESTORE_COLLECTION_QUERY_KEY.CATEGORY_SECTION],
       });
     },
   });

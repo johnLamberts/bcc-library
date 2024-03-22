@@ -53,6 +53,8 @@ const ReturnTransactionTable = () => {
 
   const { isPaymentPartialPending, createPartialPayment } =
     useCreatePartialPayment();
+
+  console.log(returnsTransaction.map((dit) => dit.expiryTime));
   // CREATE action
   const confirmSaveReturnModal = (row: Partial<ICirculation>) =>
     modals.openConfirmModal({
@@ -260,7 +262,14 @@ const ReturnTransactionTable = () => {
         header: "Due Date",
         enableColumnFilter: false,
         Cell: ({ row }) => {
+          if (typeof row.getValue("expiryTime") === "string")
+            return (
+              <>
+                <Badge variant="light">Invalid date || Contact your IT</Badge>
+              </>
+            );
           const time = new Date(row.getValue("expiryTime"));
+
           return isToday(time) ? (
             <>
               <Badge variant="light" color="#FFA903" tt={"inherit"}>
