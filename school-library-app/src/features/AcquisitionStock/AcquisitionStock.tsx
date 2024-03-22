@@ -14,12 +14,12 @@ import {
   TextInput,
   Button,
   Tooltip,
-  Code,
   Group,
-  Grid,
   Paper,
+  NumberInput,
 } from "@mantine/core";
 import { modals } from "@mantine/modals";
+import { IconArrowRight } from "@tabler/icons-react";
 
 import {
   MRT_ColumnDef,
@@ -133,12 +133,12 @@ const AcquisitionStock = () => {
         header: "Quantity to be added",
         Cell: ({ row }) => {
           return (
-            <TextInput
-              placeholder="only accepts number"
+            <NumberInput
+              allowNegative={false}
+              allowDecimal={false}
               onChange={(e) => {
                 const updatedQuantityValues = { ...quantityValues };
-                updatedQuantityValues[row.original.id as string] =
-                  e.target.value;
+                updatedQuantityValues[row.original.id as string] = e.toString();
                 setQuantityValues(updatedQuantityValues);
               }}
               value={quantityValues[row.original.id as string] || ""}
@@ -152,8 +152,9 @@ const AcquisitionStock = () => {
 
   // STATUS action
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const openQuantityModalConfirmation = (row: MRT_Row<IBooks>) =>
-    modals.openConfirmModal({
+  const openQuantityModalConfirmation = (row: MRT_Row<IBooks>) => {
+    const value = findKeyInObject(quantityValues, row.original.id as string);
+    return modals.openConfirmModal({
       centered: true,
       title: <Text>Add Stock/Quantity</Text>,
       children: (
@@ -161,46 +162,61 @@ const AcquisitionStock = () => {
           Please confirm adding stock/quantity for the book: <br />
           <br />
           <Paper withBorder shadow="sm" p="xl">
-            <Group gap={"xs"}>
-              <Avatar src={row.original.bookImageCover as string} h={40} />
+            <Flex justify={"center"} align={"center"}>
+              <Group gap={"xs"}>
+                <Avatar src={row.original.bookImageCover as string} h={40} />
 
-              <div>
-                <Text c="dimmed" size="sm">
-                  Title:{" "}
-                  <Text
-                    span
-                    fw={"bold"}
-                    inherit
-                    c="var(--mantine-color-anchor)"
-                  >
-                    {row.original.title}
+                <div>
+                  <Text c="dimmed" size="sm">
+                    Title:{" "}
+                    <Text
+                      span
+                      fw={"bold"}
+                      inherit
+                      c="var(--mantine-color-anchor)"
+                    >
+                      {row.original.title}
+                    </Text>
                   </Text>
-                </Text>
-                <Text c="dimmed" size="sm">
-                  ISBN:{" "}
-                  <Text
-                    span
-                    fw={"bold"}
-                    inherit
-                    c="var(--mantine-color-anchor)"
-                  >
-                    {row.original.bookISBN}
+                  <Text c="dimmed" size="sm">
+                    ISBN:{" "}
+                    <Text
+                      span
+                      fw={"bold"}
+                      inherit
+                      c="var(--mantine-color-anchor)"
+                    >
+                      {row.original.bookISBN}
+                    </Text>
                   </Text>
-                </Text>
 
-                <Text c="dimmed" size="sm">
-                  Book Type:{" "}
-                  <Text
-                    span
-                    fw={"bold"}
-                    inherit
-                    c="var(--mantine-color-anchor)"
-                  >
-                    {row.original.bookType}
+                  <Text c="dimmed" size="sm">
+                    Book Type:{" "}
+                    <Text
+                      span
+                      fw={"bold"}
+                      inherit
+                      c="var(--mantine-color-anchor)"
+                    >
+                      {row.original.bookType}
+                    </Text>
                   </Text>
-                </Text>
-              </div>
-            </Group>
+
+                  <Text c="dimmed" size="sm">
+                    Stock to be added:{" "}
+                    <Text
+                      span
+                      fw={"bold"}
+                      inherit
+                      c="var(--mantine-color-anchor)"
+                    >
+                      {row.original.numberOfBooksAvailable_QUANTITY} &rarr;{" "}
+                      {value}
+                    </Text>
+                  </Text>
+                </div>
+              </Group>
+            </Flex>
           </Paper>
           <br />
           <b>NOTE:</b> Please review the information carefully before
@@ -208,27 +224,16 @@ const AcquisitionStock = () => {
         </Text>
       ),
       labels: {
-        confirm: `${
-          row.original.bookStatus === "Active" ? "Disabled" : "Enabled"
-        }`,
+        confirm: `Confirm`,
         cancel: "Cancel",
       },
       confirmProps: { color: "red" },
       onConfirm: () => {
         // modifyUserStatus(row.original);
-        console.log({
-          ...row.original,
-          // numberOfBooksAvailable_QUANTITY: quantityValues[row.original.id] === row.original.id
-        });
-
-        const value = findKeyInObject(
-          quantityValues,
-          row.original.id as string
-        );
-
         console.log(value);
       },
     });
+  };
 
   // CREATE action
   const handleCreateLevel: MRT_TableOptions<IBooks>["onCreatingRowSave"] =
@@ -246,8 +251,6 @@ const AcquisitionStock = () => {
     await modifyCatalogue(values);
     table.setEditingRow(null);
   };
-
-  console.log(quantityValues);
 
   const table = useMantineReactTable({
     data: optimizedCatalogueData.sort((a, b) => {
@@ -321,7 +324,7 @@ const AcquisitionStock = () => {
               onClick={() => openQuantityModalConfirmation(row)}
               disabled={
                 quantityValues[row.original.id as string] === "" ||
-                !quantityValues[row.original.id]
+                !quantityValues[row.original.id as string]
               }
               // disabled={
               //   bookCondition === "" ||

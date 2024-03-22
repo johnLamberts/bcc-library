@@ -261,7 +261,7 @@ const LevelEducationTable = () => {
             bg={" var(--mantine-color-red-light)"}
             color={" var(--mantine-color-red-light-color)"}
           >
-            Add Book Genre
+            Add Level
           </Button>
         </Group>
         <Group hiddenFrom="sm">
