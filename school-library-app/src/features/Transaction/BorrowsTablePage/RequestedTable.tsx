@@ -22,6 +22,8 @@ import { ICirculation } from "../models/circulation.interface";
 import useReadRequest from "../hooks/useReadRequest";
 import { modals } from "@mantine/modals";
 import { useCreateApproveRequest } from "../hooks/useApproveRequest";
+import { isToday, isAfter, format, formatDistance, isAfter } from "date-fns";
+import { formatDistanceFromNow } from "src/utils/helpers/formatDistanceFromNow";
 
 const BookRequestedTable = () => {
   const {
@@ -43,6 +45,27 @@ const BookRequestedTable = () => {
         enableEditing: false,
         enableColumnFilter: false,
         size: 80,
+      },
+      {
+        accessorKey: "createdAt",
+        header: "Date Created",
+        Cell: ({ row }) => {
+          console.log(row.original);
+          if (
+            row.getValue("createdAt") === undefined ||
+            typeof row.getValue("createdAt") === "string"
+          )
+            return <>-</>;
+          const date = format(
+            new Date(
+              row.original.createdAt?.seconds * 1000 +
+                row.original.createdAt?.nanoseconds / 1000
+            ),
+            "MMMM dd yyyy"
+          );
+
+          return <Text>{date}</Text>;
+        },
       },
       {
         accessorKey: "bookType",

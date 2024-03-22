@@ -109,13 +109,12 @@ const getAllBooks = async (
 };
 
 const borrowersRequestBook = async (request: Partial<ICirculation>) => {
-  console.log(request);
-
   const requestRef = await addDoc(
     collection(firestore, FIRESTORE_COLLECTION_QUERY_KEY.REQUEST_BOOK),
     {
       ...request,
       status: "Request",
+      createdAt: serverTimestamp(),
     }
   );
 

@@ -104,6 +104,7 @@ const GradeLevel = () => {
 
     initialState: {
       pagination: { pageIndex: 0, pageSize: 5 },
+      columnVisibility: { id: false },
     },
 
     renderRowActions: ({ row }) => (

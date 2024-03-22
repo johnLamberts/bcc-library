@@ -17,7 +17,7 @@ export function useCreateWalkinReservedBook() {
         `
       );
       queryClient.invalidateQueries({
-        queryKey: [FIRESTORE_COLLECTION_QUERY_KEY.RESERVED_BOOK],
+        queryKey: [FIRESTORE_COLLECTION_QUERY_KEY.ALL_BOOKS_TRANSACTION],
       });
     },
     onError: (err) => toast.error(err.message),

@@ -22,6 +22,7 @@ import { ICirculation } from "../models/circulation.interface";
 import { modals } from "@mantine/modals";
 import useReadReserved from "../hooks/useReadReserved";
 import { useCreateClaimedRequest } from "../hooks/useClaimedReservedBook";
+import { format } from "date-fns";
 
 const BookRequestedTable = () => {
   const {
@@ -40,6 +41,26 @@ const BookRequestedTable = () => {
         enableEditing: false,
         enableColumnFilter: false,
         size: 80,
+      },
+      {
+        accessorFn: (originalRow) =>
+          new Date(
+            originalRow.createdAt?.seconds * 1000 +
+              originalRow.createdAt?.nanoseconds / 1000
+          ),
+        header: "Date Created",
+        filterVariant: "date-range",
+        Cell: ({ row }) => {
+          const date = format(
+            new Date(
+              row.original.createdAt?.seconds * 1000 +
+                row.original.createdAt?.nanoseconds / 1000
+            ),
+            "MMMM dd yyyy"
+          );
+
+          return <Text>{date}</Text>;
+        },
       },
       {
         accessorKey: "bookType",
