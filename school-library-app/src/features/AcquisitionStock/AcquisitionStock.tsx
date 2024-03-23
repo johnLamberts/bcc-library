@@ -11,7 +11,6 @@ import {
   Flex,
   Box,
   Text,
-  TextInput,
   Button,
   Tooltip,
   Group,
@@ -19,7 +18,6 @@ import {
   NumberInput,
 } from "@mantine/core";
 import { modals } from "@mantine/modals";
-import { IconArrowRight } from "@tabler/icons-react";
 
 import {
   MRT_ColumnDef,
