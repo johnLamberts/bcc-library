@@ -12,7 +12,6 @@ import {
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import CategorySection from "@pages/SystemSettings/CategorySection";
-import { ref } from "firebase/storage";
 import { useRef, useState } from "react";
 import { Controller, useFormContext } from "react-hook-form";
 import { IMaskInput } from "react-imask";
@@ -57,7 +56,6 @@ const BookLocationAndDetailsForm = () => {
 
     return setSearchParams(searchParams);
   };
-  const inputRef = useRef(null);
 
   const removeQueryParams = () => {
     const param = searchParams.get("ctx");
