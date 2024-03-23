@@ -58,12 +58,10 @@ export default function CatalogueForm<TData extends MRT_RowData>({
       );
 
       if (isCreating) {
-        // onCreate?.({
-        //   ...values,
-        //   milliseconds,
-        // });
-
-        console.log(values);
+        onCreate?.({
+          ...values,
+          milliseconds,
+        });
       } else if (isEditing) {
         onSave?.({
           ...values,
