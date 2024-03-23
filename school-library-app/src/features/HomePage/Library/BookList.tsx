@@ -96,7 +96,13 @@ const BookList = ({
             <>
               <Grid>
                 {booksData?.map((book) => (
-                  <Grid.Col span={{ base: 12, md: 6, lg: 4 }}>
+                  <Grid.Col
+                    span={{
+                      base: 12,
+                      md: 6,
+                      lg: searchParams.get("viewBy") === "by-cards" ? 4 : 12,
+                    }}
+                  >
                     <Link
                       to={`/library/${book.id}`}
                       style={{
@@ -136,17 +142,6 @@ const BookList = ({
 
                           <Card.Section className={classes.footer}>
                             <Group justify="space-between">
-                              {/* <List>
-   <Flex px={"xs"} gap={"xs"}>
-     {book.genres?.[0] && (
-       <List.Item>{book.genres[0]}</List.Item>
-     )}
-
-     {book.genres?.[1] && (
-       <List.Item>{book.genres[1]}</List.Item>
-     )}
-   </Flex>
- </List> */}
                               <Code px={"xs"}>
                                 <Group>
                                   Available Copies:
@@ -253,7 +248,100 @@ const BookList = ({
                         </Card>
                       )}
 
-                      {searchParams.get("viewBy") === "by-list" && <>By list</>}
+                      {searchParams.get("viewBy") === "by-list" && (
+                        <Card
+                          withBorder
+                          padding="lg"
+                          radius="md"
+                          className={classes.card}
+                          mt={"xs"}
+                          mah={"25rem"}
+                        >
+                          <Grid gutter={"xs"}>
+                            <Grid.Col
+                              span={{
+                                base: 12,
+                                md: 6,
+                                lg: 6,
+                              }}
+                            >
+                              {/* <Card.Section mb="sm"> */}
+                              <Image
+                                src={book.bookImageCover}
+                                alt="Top 50 underrated plants for house decoration"
+                                height={180}
+                              />
+                              {/* </Card.Section> */}
+                            </Grid.Col>
+
+                            <Grid.Col
+                              span={{
+                                base: 12,
+                                md: 6,
+                                lg: 6,
+                              }}
+                            >
+                              <Badge w="fit-content" variant="light">
+                                {book.bookType}
+                              </Badge>
+
+                              {(book.title.length as number) > 15 ? (
+                                <Spoiler
+                                  maxHeight={50}
+                                  showLabel="Show more"
+                                  hideLabel="Hide"
+                                >
+                                  <Text
+                                    fw={700}
+                                    className={classes.title}
+                                    mt="xs"
+                                  >
+                                    {book.title}
+                                  </Text>
+                                </Spoiler>
+                              ) : (
+                                <Text fw={700} mt="xs">
+                                  {book.title}
+                                </Text>
+                              )}
+
+                              <Card.Section>
+                                <Group justify="space-between">
+                                  <Code px={"xs"}>
+                                    <Group>
+                                      Available Copies:
+                                      {book.bookStatus === "Out of Stock" ? (
+                                        <Badge
+                                          variant="light"
+                                          color="red"
+                                          size="xs"
+                                        >
+                                          {book.bookStatus}
+                                        </Badge>
+                                      ) : (
+                                        <Badge variant="light" color="yellow">
+                                          {book.numberOfBooksAvailable_QUANTITY}
+                                        </Badge>
+                                      )}
+                                    </Group>
+                                  </Code>
+                                  <Group gap={0}>
+                                    <ActionIcon variant="subtle" color="gray">
+                                      <IconBookmark
+                                        style={{
+                                          width: rem(20),
+                                          height: rem(20),
+                                        }}
+                                        stroke={1.5}
+                                      />
+                                    </ActionIcon>
+                                  </Group>
+                                </Group>
+                              </Card.Section>
+                            </Grid.Col>
+                          </Grid>
+                        </Card>
+                      )}
                     </Link>
                   </Grid.Col>
                 ))}
