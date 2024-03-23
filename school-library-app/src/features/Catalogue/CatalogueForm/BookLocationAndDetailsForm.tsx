@@ -12,7 +12,7 @@ import {
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import CategorySection from "@pages/SystemSettings/CategorySection";
-import { useRef, useState } from "react";
+import { useState } from "react";
 import { Controller, useFormContext } from "react-hook-form";
 import { IMaskInput } from "react-imask";
 import { useSearchParams } from "react-router-dom";
