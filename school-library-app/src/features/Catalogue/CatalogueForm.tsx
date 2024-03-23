@@ -58,12 +58,12 @@ export default function CatalogueForm<TData extends MRT_RowData>({
       );
 
       if (isCreating) {
-        onCreate?.({
-          ...values,
-          milliseconds,
-        });
+        // onCreate?.({
+        //   ...values,
+        //   milliseconds,
+        // });
 
-        // console.log(values);
+        console.log(values);
       } else if (isEditing) {
         onSave?.({
           ...values,
@@ -121,7 +121,7 @@ export default function CatalogueForm<TData extends MRT_RowData>({
         <Availability table={table} row={row} />
 
         <BookImageForm table={table} row={row} />
-
+        {/*  */}
         <Box
           style={{
             display: "flex",

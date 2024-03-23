@@ -30,10 +30,6 @@ export function FacetedFilter<TData extends MRT_RowData>({
 }: FacetedFilterProps<TData>) {
   const facets = column?.getFacetedUniqueValues();
 
-  console.log(
-    column?.getFacetedRowModel().rows.map((row) => row.original.academicCourse)
-  );
-
   const selectedValues = new Set(column?.getFilterValue() as string[]);
   const filteredData = options?.filter(
     (item) => item.label !== "" || item.value !== ""

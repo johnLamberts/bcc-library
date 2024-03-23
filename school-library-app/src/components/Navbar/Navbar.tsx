@@ -25,11 +25,7 @@ interface NavbarProps {
 }
 const mainFeatures = [
   { link: "/dashboard", label: "Admin Dashboard", icon: IconChartInfographic },
-  {
-    link: "/manage-announcement",
-    label: "Manage Announcement",
-    icon: IconNews,
-  },
+
   { link: "/user-management", label: "User Management", icon: IconUser },
   {
     link: "/teacher-management",
@@ -50,6 +46,11 @@ const mainFeatures = [
     link: "/acquisition-and-stock-management",
     label: "Acquisition and Stock Management",
     icon: IconBrandStocktwits,
+  },
+  {
+    link: "/manage-announcement",
+    label: "Manage Announcement",
+    icon: IconNews,
   },
   {
     label: "Transaction",
