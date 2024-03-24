@@ -10,6 +10,7 @@ import {
   RingProgress,
   Image,
   Tabs,
+  Box,
 } from "@mantine/core";
 import {
   IconChevronDown,
@@ -135,8 +136,8 @@ export default function UserMenu() {
             <Modal.CloseButton />
           </Modal.Header>
           <Modal.Body>
-            <Tabs>
-              <Tabs.List defaultValue={"gallery"}>
+            <Tabs defaultValue={"gallery"}>
+              <Tabs.List>
                 <Tabs.Tab
                   value="gallery"
                   leftSection={<IconPhoto style={iconStyle} />}
@@ -157,7 +158,7 @@ export default function UserMenu() {
                 </Tabs.Tab>
               </Tabs.List>
               <Tabs.Panel value="gallery">
-                <div>
+                <Box mt="xs">
                   <Group wrap="nowrap">
                     <Avatar
                       src="https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/avatars/avatar-2.png"
@@ -196,7 +197,7 @@ export default function UserMenu() {
                       </Group>
                     </div>
                   </Group>
-                </div>
+                </Box>
               </Tabs.Panel>
 
               <Tabs.Panel value="messages">Edit profile</Tabs.Panel>
