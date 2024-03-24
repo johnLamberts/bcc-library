@@ -1,3 +1,4 @@
+import Form from "@components/Form/Form";
 import CatalogueToolbar from "@features/Catalogue/CatalogueToolbar/CatalogueToolbar";
 import { useCreateCatalogue } from "@features/Catalogue/hooks/useCreateCatalogue";
 import useModifyBookAvailability from "@features/Catalogue/hooks/useModifyBookAvailability";
@@ -16,6 +17,10 @@ import {
   Group,
   Paper,
   NumberInput,
+  Select,
+  Divider,
+  Grid,
+  Stack,
 } from "@mantine/core";
 import { modals } from "@mantine/modals";
 
@@ -31,6 +36,8 @@ import {
 } from "mantine-react-table";
 import { useMemo, useState } from "react";
 import findKeyInObject from "src/utils/helpers/findKeyInObject";
+import AcquisitionForm from "./AcquisitionForm";
+import { useCreateStockAcquisition } from "./hooks/useStock";
 interface RowQuantity {
   [key: string]: string;
 }
@@ -38,6 +45,7 @@ const AcquisitionStock = () => {
   const { isCreatingCatalogue, createCatalogue } = useCreateCatalogue();
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [quantityValues, setQuantityValues] = useState<RowQuantity>({});
+
   const { isPending } = useModifyBookAvailability();
   const {
     data: booksCatalogueData = [],
@@ -86,6 +94,7 @@ const AcquisitionStock = () => {
       {
         accessorKey: "bookStatus",
         header: "Status",
+        size: 40,
 
         Cell: ({ row }) => {
           const status = row.getValue("bookStatus");
@@ -153,89 +162,28 @@ const AcquisitionStock = () => {
 
   // STATUS action
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const openQuantityModalConfirmation = (row: MRT_Row<IBooks>) => {
-    const value = findKeyInObject(quantityValues, row.original.id as string);
-    return modals.openConfirmModal({
-      centered: true,
-      title: <Text>Add Stock/Quantity</Text>,
-      children: (
-        <Text>
-          Please confirm adding stock/quantity for the book: <br />
-          <br />
-          <Paper withBorder shadow="sm" p="xl">
-            <Flex justify={"center"} align={"center"}>
-              <Group gap={"xs"}>
-                <Avatar src={row.original.bookImageCover as string} h={40} />
+  // const openQuantityModalConfirmation = (row: MRT_Row<IBooks>) => {
+  //   const value = findKeyInObject(quantityValues, row.original.id as string);
+  //   return modals.openConfirmModal({
+  //     centered: true,
+  //     size: "xl",
+  //     title: <Text>Add Stock/Quantity</Text>,
+  //     children: (
 
-                <div>
-                  <Text c="dimmed" size="sm">
-                    Title:{" "}
-                    <Text
-                      span
-                      fw={"bold"}
-                      inherit
-                      c="var(--mantine-color-anchor)"
-                    >
-                      {row.original.title}
-                    </Text>
-                  </Text>
-                  <Text c="dimmed" size="sm">
-                    ISBN:{" "}
-                    <Text
-                      span
-                      fw={"bold"}
-                      inherit
-                      c="var(--mantine-color-anchor)"
-                    >
-                      {row.original.bookISBN}
-                    </Text>
-                  </Text>
+  //     ),
+  //     labels: {
+  //       confirm: `Confirm`,
+  //       cancel: "Cancel",
+  //     },
+  //     confirmProps: { color: "red" },
+  //     onConfirm: () => {
+  //       // modifyUserStatus(row.original);
+  //       setQuantityValues({});
+  //     },
+  //   });
+  // };
 
-                  <Text c="dimmed" size="sm">
-                    Book Type:{" "}
-                    <Text
-                      span
-                      fw={"bold"}
-                      inherit
-                      c="var(--mantine-color-anchor)"
-                    >
-                      {row.original.bookType}
-                    </Text>
-                  </Text>
-
-                  <Text c="dimmed" size="sm">
-                    Stock to be added:{" "}
-                    <Text
-                      span
-                      fw={"bold"}
-                      inherit
-                      c="var(--mantine-color-anchor)"
-                    >
-                      {row.original.numberOfBooksAvailable_QUANTITY} &rarr;{" "}
-                      {value}
-                    </Text>
-                  </Text>
-                </div>
-              </Group>
-            </Flex>
-          </Paper>
-          <br />
-          <b>NOTE:</b> Please review the information carefully before
-          proceeding.
-        </Text>
-      ),
-      labels: {
-        confirm: `Confirm`,
-        cancel: "Cancel",
-      },
-      confirmProps: { color: "red" },
-      onConfirm: () => {
-        // modifyUserStatus(row.original);
-        console.log(value);
-      },
-    });
-  };
-
+  const { isCreatingStock, createStock } = useCreateStockAcquisition();
   // CREATE action
   const handleCreateLevel: MRT_TableOptions<IBooks>["onCreatingRowSave"] =
     async ({ values, table }) => {
@@ -249,8 +197,9 @@ const AcquisitionStock = () => {
     values,
     table,
   }) => {
-    await modifyCatalogue(values);
-    table.setEditingRow(null);
+    // await modifyCatalogue(values);
+    // table.setEditingRow(null);
+    createStock(values);
   };
 
   const table = useMantineReactTable({
@@ -322,7 +271,7 @@ const AcquisitionStock = () => {
               variant="light"
               color="blue"
               size="sm"
-              onClick={() => openQuantityModalConfirmation(row)}
+              onClick={() => table.setEditingRow(row)}
               disabled={
                 quantityValues[row.original.id as string] === "" ||
                 !quantityValues[row.original.id as string]
@@ -341,6 +290,28 @@ const AcquisitionStock = () => {
         </Flex>
       </>
     ),
+
+    renderEditRowModalContent: ({ table, row }) => {
+      return (
+        <>
+          <Stack>
+            <AcquisitionForm
+              table={table}
+              quantityValues={quantityValues}
+              row={row}
+              onSave={(data) =>
+                handleSaveLevel({
+                  values: data,
+                  table: table,
+                  row: row,
+                  exitEditingMode: () => null,
+                })
+              }
+            />
+          </Stack>
+        </>
+      );
+    },
 
     renderToolbarInternalActions: ({ table }) => {
       return (
