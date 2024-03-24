@@ -205,6 +205,7 @@ async function getTotalTransactionsByDateRange(startDate: Date, endDate: Date) {
   // Create an object to store total transactions for each day
   const totalTransactionsByDay = [];
 
+  console.log(startDate, endDate);
   // Iterate over each day in the date range
   const currentDate = new Date(startDate);
 

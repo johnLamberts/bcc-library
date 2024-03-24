@@ -7,9 +7,8 @@ export function Overview() {
     getInitialValueInEffect: true,
   });
 
-  const { data: weeklyData, isLoading } = useReadWeeklyReports();
+  const { weekly, isLoading } = useReadWeeklyReports();
 
-  console.log(weeklyData);
   return (
     <>
       <LoadingOverlay
@@ -18,7 +17,7 @@ export function Overview() {
         overlayProps={{ radius: "sm", blur: 2 }}
       />
       <ResponsiveContainer width="100%" height={350}>
-        <BarChart data={weeklyData}>
+        <BarChart data={weekly}>
           <XAxis
             dataKey="name"
             stroke="#888888"

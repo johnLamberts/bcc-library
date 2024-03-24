@@ -37,6 +37,7 @@ import useCountBooks from "@features/AdminDashboard/hooks/useCountBooks";
 import useCountUsers from "@features/AdminDashboard/hooks/useCountUsers";
 import TodayTransaction from "@features/AdminDashboard/TodayTransaction";
 import useReadRecentOverdue from "@features/AdminDashboard/hooks/useReadRecentOverdue";
+import WeeklyDatePicker from "@features/AdminDashboard/WeeklyDatePicker";
 
 export default function AdminDashboard() {
   const theme = useMantineTheme();
@@ -138,9 +139,12 @@ export default function AdminDashboard() {
           <Grid.Col span={{ base: 12, sm: 12, md: 8, lg: 8 }}>
             <Card shadow="sm" padding="lg" radius="md" withBorder>
               <CardSection withBorder inheritPadding py="xs">
-                <Badge color={"yellow.8"}>
-                  Weekly Reports - All Transactions
-                </Badge>
+                <Group justify="space-between">
+                  <Badge color={"yellow.8"}>
+                    Weekly Reports - All Transactions
+                  </Badge>
+                  <WeeklyDatePicker />
+                </Group>
               </CardSection>
 
               <CardSection p={"md"}>
