@@ -9,12 +9,17 @@ import {
   Card,
   RingProgress,
   Image,
+  Tabs,
+  Box,
 } from "@mantine/core";
 import {
   IconChevronDown,
   IconSettings,
-  IconSwitchHorizontal,
   IconLogout,
+  IconAt,
+  IconPhoneCall,
+  IconMessageCircle,
+  IconPhoto,
 } from "@tabler/icons-react";
 import { useState } from "react";
 import classes from "./user-menu.module.css";
@@ -50,6 +55,7 @@ export default function UserMenu() {
       </Text>
     </div>
   ));
+  const iconStyle = { width: rem(12), height: rem(12) };
   return (
     <>
       <Menu
@@ -92,6 +98,17 @@ export default function UserMenu() {
                 stroke={1.5}
               />
             }
+            onClick={open}
+          >
+            Profile
+          </Menu.Item>
+          <Menu.Item
+            leftSection={
+              <IconSettings
+                style={{ width: rem(16), height: rem(16) }}
+                stroke={1.5}
+              />
+            }
             onClick={() => navigate("/library")}
           >
             Go to Library Page
@@ -111,7 +128,7 @@ export default function UserMenu() {
         </Menu.Dropdown>
       </Menu>
 
-      <Modal.Root opened={opened} onClose={close} centered>
+      <Modal.Root opened={opened} onClose={close} centered size={"xl"}>
         <Modal.Overlay />
         <Modal.Content>
           <Modal.Header>
@@ -119,36 +136,72 @@ export default function UserMenu() {
             <Modal.CloseButton />
           </Modal.Header>
           <Modal.Body>
-            <Card withBorder padding="lg" className={classe.card}>
-              <Card.Section>
-                <Image
-                  src="https://images.unsplash.com/photo-1581889470536-467bdbe30cd0?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=720&q=80"
-                  alt="Running challenge"
-                  height={100}
-                />
-              </Card.Section>
+            <Tabs defaultValue={"gallery"}>
+              <Tabs.List>
+                <Tabs.Tab
+                  value="gallery"
+                  leftSection={<IconPhoto style={iconStyle} />}
+                >
+                  My profile
+                </Tabs.Tab>
+                <Tabs.Tab
+                  value="messages"
+                  leftSection={<IconMessageCircle style={iconStyle} />}
+                >
+                  Edit Profile
+                </Tabs.Tab>
+                <Tabs.Tab
+                  value="settings"
+                  leftSection={<IconSettings style={iconStyle} />}
+                >
+                  Change Password
+                </Tabs.Tab>
+              </Tabs.List>
+              <Tabs.Panel value="gallery">
+                <Box mt="xs">
+                  <Group wrap="nowrap">
+                    <Avatar
+                      src="https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/avatars/avatar-2.png"
+                      size={94}
+                      radius="md"
+                    />
+                    <div>
+                      <Text fz="xs" tt="uppercase" fw={700} c="dimmed">
+                        Software engineer
+                      </Text>
 
-              <Group justify="space-between" mt="xl">
-                <Text fz="sm" fw={700} className={classe.title}>
-                  Running challenge
-                </Text>
-                <Group gap={5}>
-                  <Text fz="xs" c="dimmed">
-                    80% completed
-                  </Text>
-                  <RingProgress
-                    size={18}
-                    thickness={2}
-                    sections={[{ value: 80, color: "blue" }]}
-                  />
-                </Group>
-              </Group>
-              <Text mt="sm" mb="md" c="dimmed" fz="xs">
-                56 km this month • 17% improvement compared to last month • 443
-                place in global scoreboard
-              </Text>
-              <Card.Section className={classe.footer}>{items}</Card.Section>
-            </Card>
+                      <Text fz="lg" fw={500} className={classes.name}>
+                        Robert Glassbreaker
+                      </Text>
+
+                      <Group wrap="nowrap" gap={10} mt={3}>
+                        <IconAt
+                          stroke={1.5}
+                          size="1rem"
+                          className={classes.icon}
+                        />
+                        <Text fz="xs" c="dimmed">
+                          robert@glassbreaker.io
+                        </Text>
+                      </Group>
+
+                      <Group wrap="nowrap" gap={10} mt={5}>
+                        <IconPhoneCall
+                          stroke={1.5}
+                          size="1rem"
+                          className={classes.icon}
+                        />
+                        <Text fz="xs" c="dimmed">
+                          +11 (876) 890 56 23
+                        </Text>
+                      </Group>
+                    </div>
+                  </Group>
+                </Box>
+              </Tabs.Panel>
+
+              <Tabs.Panel value="messages">Edit profile</Tabs.Panel>
+            </Tabs>
           </Modal.Body>
         </Modal.Content>
       </Modal.Root>
