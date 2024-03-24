@@ -80,6 +80,7 @@ const AcquisitionStock = () => {
       },
       {
         accessorKey: "numberOfBooksAvailable_QUANTITY",
+        size: 5,
         header: "Number of Copy",
       },
       {
@@ -128,10 +129,12 @@ const AcquisitionStock = () => {
         },
       },
       {
-        header: "Quantity to be added",
+        header: "Stock Qty",
+        size: 10,
         Cell: ({ row }) => {
           return (
             <NumberInput
+              width={30}
               allowNegative={false}
               allowDecimal={false}
               onChange={(e) => {
