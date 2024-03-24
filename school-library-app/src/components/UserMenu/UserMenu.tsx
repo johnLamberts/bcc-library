@@ -9,6 +9,7 @@ import {
   Card,
   RingProgress,
   Image,
+  Tabs,
 } from "@mantine/core";
 import {
   IconChevronDown,
@@ -16,6 +17,8 @@ import {
   IconLogout,
   IconAt,
   IconPhoneCall,
+  IconMessageCircle,
+  IconPhoto,
 } from "@tabler/icons-react";
 import { useState } from "react";
 import classes from "./user-menu.module.css";
@@ -51,6 +54,7 @@ export default function UserMenu() {
       </Text>
     </div>
   ));
+  const iconStyle = { width: rem(12), height: rem(12) };
   return (
     <>
       <Menu
@@ -131,42 +135,72 @@ export default function UserMenu() {
             <Modal.CloseButton />
           </Modal.Header>
           <Modal.Body>
-            <div>
-              <Group wrap="nowrap">
-                <Avatar
-                  src="https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/avatars/avatar-2.png"
-                  size={94}
-                  radius="md"
-                />
+            <Tabs>
+              <Tabs.List defaultValue={"gallery"}>
+                <Tabs.Tab
+                  value="gallery"
+                  leftSection={<IconPhoto style={iconStyle} />}
+                >
+                  My profile
+                </Tabs.Tab>
+                <Tabs.Tab
+                  value="messages"
+                  leftSection={<IconMessageCircle style={iconStyle} />}
+                >
+                  Edit Profile
+                </Tabs.Tab>
+                <Tabs.Tab
+                  value="settings"
+                  leftSection={<IconSettings style={iconStyle} />}
+                >
+                  Change Password
+                </Tabs.Tab>
+              </Tabs.List>
+              <Tabs.Panel value="gallery">
                 <div>
-                  <Text fz="xs" tt="uppercase" fw={700} c="dimmed">
-                    Software engineer
-                  </Text>
-
-                  <Text fz="lg" fw={500} className={classes.name}>
-                    Robert Glassbreaker
-                  </Text>
-
-                  <Group wrap="nowrap" gap={10} mt={3}>
-                    <IconAt stroke={1.5} size="1rem" className={classes.icon} />
-                    <Text fz="xs" c="dimmed">
-                      robert@glassbreaker.io
-                    </Text>
-                  </Group>
-
-                  <Group wrap="nowrap" gap={10} mt={5}>
-                    <IconPhoneCall
-                      stroke={1.5}
-                      size="1rem"
-                      className={classes.icon}
+                  <Group wrap="nowrap">
+                    <Avatar
+                      src="https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/avatars/avatar-2.png"
+                      size={94}
+                      radius="md"
                     />
-                    <Text fz="xs" c="dimmed">
-                      +11 (876) 890 56 23
-                    </Text>
+                    <div>
+                      <Text fz="xs" tt="uppercase" fw={700} c="dimmed">
+                        Software engineer
+                      </Text>
+
+                      <Text fz="lg" fw={500} className={classes.name}>
+                        Robert Glassbreaker
+                      </Text>
+
+                      <Group wrap="nowrap" gap={10} mt={3}>
+                        <IconAt
+                          stroke={1.5}
+                          size="1rem"
+                          className={classes.icon}
+                        />
+                        <Text fz="xs" c="dimmed">
+                          robert@glassbreaker.io
+                        </Text>
+                      </Group>
+
+                      <Group wrap="nowrap" gap={10} mt={5}>
+                        <IconPhoneCall
+                          stroke={1.5}
+                          size="1rem"
+                          className={classes.icon}
+                        />
+                        <Text fz="xs" c="dimmed">
+                          +11 (876) 890 56 23
+                        </Text>
+                      </Group>
+                    </div>
                   </Group>
                 </div>
-              </Group>
-            </div>
+              </Tabs.Panel>
+
+              <Tabs.Panel value="messages">Edit profile</Tabs.Panel>
+            </Tabs>
           </Modal.Body>
         </Modal.Content>
       </Modal.Root>
