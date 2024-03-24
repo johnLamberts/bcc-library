@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { startOfWeek, addDays, format } from "date-fns";
 import { useSearchParams } from "react-router-dom";
+import { Box, Button, Flex, Group, Text } from "@mantine/core";
+import { IconArrowLeft, IconArrowRight } from "@tabler/icons-react";
 
 const WeeklyDatePicker = () => {
   const [currentDate, setCurrentDate] = useState<Date>(new Date());
@@ -41,19 +43,43 @@ const WeeklyDatePicker = () => {
   };
 
   return (
-    <div>
-      <p>
-        {searchParams.get("start") === null
-          ? format(start, "MMMM dd, yyyy")
-          : searchParams.get("start")}{" "}
-        -{" "}
-        {searchParams.get("end") === null
-          ? format(end, "MMMM dd, yyyy")
-          : searchParams.get("end")}
-      </p>
-      <button onClick={handlePreviousWeek}>Previous Week</button>
-      <button onClick={handleNextWeek}>Next Week</button>
-    </div>
+    <Box>
+      <Flex direction={"column"} align={"left"} justify={"center"}>
+        <Box>
+          <Text ff={"Montserrat"}>
+            {searchParams.get("start") === null
+              ? format(start, "MMMM dd, yyyy")
+              : searchParams.get("start")}{" "}
+            -{" "}
+            {searchParams.get("end") === null
+              ? format(end, "MMMM dd, yyyy")
+              : searchParams.get("end")}
+          </Text>
+        </Box>
+        <Group gap={"xs"}>
+          <Button
+            variant="outline"
+            onClick={handlePreviousWeek}
+            style={{
+              height: "1.8rem",
+            }}
+            leftSection={<IconArrowLeft stroke={1} size={"1.3rem"} />}
+          >
+            Previous Week
+          </Button>{" "}
+          <Button
+            variant="outline"
+            style={{
+              height: "1.8rem",
+            }}
+            rightSection={<IconArrowRight stroke={1} size={"1.3rem"} />}
+            onClick={handleNextWeek}
+          >
+            Next Week
+          </Button>
+        </Group>
+      </Flex>
+    </Box>
   );
 };
 export default WeeklyDatePicker;
