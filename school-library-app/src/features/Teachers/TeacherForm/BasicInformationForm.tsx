@@ -22,9 +22,7 @@ const BasicInformationForm = () => {
               render={({ field }) => {
                 return (
                   <InputBase
-                    component={IMaskInput}
                     withAsterisk
-                    mask={/^[a-zA-Z]+$/}
                     label="First Name"
                     placeholder="John Doe..."
                     withErrorStyles={errors.firstName?.message ? true : false}
@@ -42,9 +40,7 @@ const BasicInformationForm = () => {
               render={({ field }) => {
                 return (
                   <InputBase
-                    component={IMaskInput}
                     withAsterisk
-                    mask={/^[a-zA-Z]+$/}
                     label="Middle Name"
                     placeholder="Dela Fuena..."
                     withErrorStyles={errors.middleName?.message ? true : false}
@@ -63,9 +59,7 @@ const BasicInformationForm = () => {
               render={({ field }) => {
                 return (
                   <InputBase
-                    component={IMaskInput}
                     withAsterisk
-                    mask={/^[a-zA-Z]+$/}
                     label="Last Name"
                     placeholder="Fuentes Strange..."
                     withErrorStyles={errors.lastName?.message ? true : false}

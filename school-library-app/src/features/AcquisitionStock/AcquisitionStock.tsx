@@ -1,8 +1,5 @@
-import Form from "@components/Form/Form";
 import CatalogueToolbar from "@features/Catalogue/CatalogueToolbar/CatalogueToolbar";
 import { useCreateCatalogue } from "@features/Catalogue/hooks/useCreateCatalogue";
-import useModifyBookAvailability from "@features/Catalogue/hooks/useModifyBookAvailability";
-import useModifyCatalogue from "@features/Catalogue/hooks/useModifyCatalogue";
 import useReadCatalogue from "@features/Catalogue/hooks/useReadCatalogue";
 import { IBooks } from "@features/Catalogue/models/books.interface";
 import {
@@ -11,22 +8,14 @@ import {
   ScrollArea,
   Flex,
   Box,
-  Text,
   Button,
   Tooltip,
-  Group,
-  Paper,
   NumberInput,
-  Select,
-  Divider,
-  Grid,
   Stack,
 } from "@mantine/core";
-import { modals } from "@mantine/modals";
 
 import {
   MRT_ColumnDef,
-  MRT_Row,
   MRT_TableOptions,
   useMantineReactTable,
   MRT_ToggleGlobalFilterButton,
@@ -156,29 +145,6 @@ const AcquisitionStock = () => {
     [quantityValues]
   );
 
-  // STATUS action
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  // const openQuantityModalConfirmation = (row: MRT_Row<IBooks>) => {
-  //   const value = findKeyInObject(quantityValues, row.original.id as string);
-  //   return modals.openConfirmModal({
-  //     centered: true,
-  //     size: "xl",
-  //     title: <Text>Add Stock/Quantity</Text>,
-  //     children: (
-
-  //     ),
-  //     labels: {
-  //       confirm: `Confirm`,
-  //       cancel: "Cancel",
-  //     },
-  //     confirmProps: { color: "red" },
-  //     onConfirm: () => {
-  //       // modifyUserStatus(row.original);
-  //       setQuantityValues({});
-  //     },
-  //   });
-  // };
-
   const { isCreatingStock, createStock } = useCreateStockAcquisition();
   // CREATE action
   const handleCreateLevel: MRT_TableOptions<IBooks>["onCreatingRowSave"] =
@@ -273,13 +239,6 @@ const AcquisitionStock = () => {
                 quantityValues[row.original.id as string] === "" ||
                 !quantityValues[row.original.id as string]
               }
-              // disabled={
-              //   bookCondition === "" ||
-              //   bookCondition === null ||
-              //   selectedRow[row.index] !== row.index
-              // }
-
-              // disabled={quantity === ""}
             >
               Add Stock
             </Button>
