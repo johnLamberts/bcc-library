@@ -92,6 +92,10 @@ const mainFeatures = [
         link: "/fee-report",
         label: "Collection Report",
       },
+      {
+        link: "/stock-report",
+        label: "Stock Report",
+      },
     ],
   },
   {
