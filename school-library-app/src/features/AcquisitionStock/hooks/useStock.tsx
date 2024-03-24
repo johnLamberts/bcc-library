@@ -12,7 +12,7 @@ export function useCreateStockAcquisition() {
         `Success! The ${data.title} requested stock has been added successfully. `
       );
       queryClient.invalidateQueries({
-        queryKey: [FIRESTORE_COLLECTION_QUERY_KEY.STOCK_QTY_ACQUISITION],
+        queryKey: [FIRESTORE_COLLECTION_QUERY_KEY.CATALOGUE],
       });
     },
     onError: (err) => toast.error(err.message),

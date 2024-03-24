@@ -9,6 +9,7 @@ import {
   Text,
   Title,
   Box,
+  LoadingOverlay,
 } from "@mantine/core";
 import { MRT_RowData, MRT_TableInstance, MRT_Row } from "mantine-react-table";
 import { Controller, useForm } from "react-hook-form";
@@ -43,93 +44,99 @@ const AcquisitionForm = <TData extends MRT_RowData>({
   };
 
   return (
-    <Form onSubmit={form.handleSubmit(handleSubmit)}>
-      <Form.Box>
-        <Text>
-          Please confirm adding stock/quantity for the book: <br />
-        </Text>
-        <br />
-        <Paper withBorder shadow="sm" p="xl">
-          <Flex justify={"center"} align={"center"}>
-            <Group gap={"xs"}>
-              <Avatar src={row.original.bookImageCover as string} h={40} />
+    <>
+      <Form onSubmit={form.handleSubmit(handleSubmit)}>
+        <LoadingOverlay
+          visible={table.getState().isSaving}
+          zIndex={1000}
+          overlayProps={{ radius: "sm", blur: 2 }}
+        />
+        <Form.Box>
+          <Text>
+            Please confirm adding stock/quantity for the book: <br />
+          </Text>
+          <br />
+          <Paper withBorder shadow="sm" p="xl">
+            <Flex justify={"center"} align={"center"}>
+              <Group gap={"xs"}>
+                <Avatar src={row.original.bookImageCover as string} h={40} />
 
-              <div>
-                <Title order={6} c="dimmed" size="sm">
-                  Title:{" "}
-                  <Text
-                    span
-                    fw={"bold"}
-                    inherit
-                    c="var(--mantine-color-anchor)"
-                  >
-                    {row.original.title}
-                  </Text>
-                </Title>
-                <Title order={6} c="dimmed" size="sm">
-                  ISBN:{" "}
-                  <Text
-                    span
-                    fw={"bold"}
-                    inherit
-                    c="var(--mantine-color-anchor)"
-                  >
-                    {row.original.bookISBN}
-                  </Text>
-                </Title>
+                <div>
+                  <Title order={6} c="dimmed" size="sm">
+                    Title:{" "}
+                    <Text
+                      span
+                      fw={"bold"}
+                      inherit
+                      c="var(--mantine-color-anchor)"
+                    >
+                      {row.original.title}
+                    </Text>
+                  </Title>
+                  <Title order={6} c="dimmed" size="sm">
+                    ISBN:{" "}
+                    <Text
+                      span
+                      fw={"bold"}
+                      inherit
+                      c="var(--mantine-color-anchor)"
+                    >
+                      {row.original.bookISBN}
+                    </Text>
+                  </Title>
 
-                <Text c="dimmed" size="sm">
-                  Book Type:{" "}
-                  <Text
-                    span
-                    fw={"bold"}
-                    inherit
-                    c="var(--mantine-color-anchor)"
-                  >
-                    {row.original.bookType}
+                  <Text c="dimmed" size="sm">
+                    Book Type:{" "}
+                    <Text
+                      span
+                      fw={"bold"}
+                      inherit
+                      c="var(--mantine-color-anchor)"
+                    >
+                      {row.original.bookType}
+                    </Text>
                   </Text>
-                </Text>
 
-                <Title order={6} c="dimmed" size="sm">
-                  Stock to be added:{" "}
-                  <Text
-                    span
-                    fw={"bold"}
-                    inherit
-                    c="var(--mantine-color-anchor)"
-                  >
-                    {row.original.numberOfBooksAvailable_QUANTITY} &rarr;{" "}
-                    {value}
-                  </Text>
-                </Title>
-              </div>
-            </Group>
-          </Flex>
-        </Paper>
-        <Divider my={"xs"} />
-        <Form.Grid>
-          <Form.Col span={{ base: 12, lg: 12, md: 6 }}>
-            <Controller
-              rules={{
-                required: "This field is required",
-              }}
-              render={({ field }) => (
-                <Select
-                  data={["Replace", "Donate", "Other"]}
-                  placeholder="Select options"
-                  label="Reason"
-                  {...field}
-                  error={<>{form.formState.errors.reason?.message}</>}
-                  withErrorStyles={
-                    form.formState.errors.reason?.message ? true : false
-                  }
-                />
-              )}
-              control={form.control}
-              name="reason"
-            />
-          </Form.Col>
-          {/* {reasons === "Replace" && (
+                  <Title order={6} c="dimmed" size="sm">
+                    Stock to be added:{" "}
+                    <Text
+                      span
+                      fw={"bold"}
+                      inherit
+                      c="var(--mantine-color-anchor)"
+                    >
+                      {row.original.numberOfBooksAvailable_QUANTITY} &rarr;{" "}
+                      {value}
+                    </Text>
+                  </Title>
+                </div>
+              </Group>
+            </Flex>
+          </Paper>
+          <Divider my={"xs"} />
+          <Form.Grid>
+            <Form.Col span={{ base: 12, lg: 12, md: 6 }}>
+              <Controller
+                rules={{
+                  required: "This field is required",
+                }}
+                render={({ field }) => (
+                  <Select
+                    data={["Replace", "Donate", "Other"]}
+                    placeholder="Select options"
+                    label="Reason"
+                    {...field}
+                    error={<>{form.formState.errors.reason?.message}</>}
+                    withErrorStyles={
+                      form.formState.errors.reason?.message ? true : false
+                    }
+                  />
+                )}
+                control={form.control}
+                name="reason"
+              />
+            </Form.Col>
+            {/* {reasons === "Replace" && (
       <Grid.Col span={{ base: 12, lg: 12, md: 6 }}>
         <Select
           data={["Replace", "Donate", "Other"]}
@@ -139,22 +146,24 @@ const AcquisitionForm = <TData extends MRT_RowData>({
        
       </Grid.Col>
     )} */}
-        </Form.Grid>
-        <br />
-        <b>NOTE:</b> Please review the information carefully before proceeding.
-        <Box
-          style={{
-            display: "flex",
-            justifyContent: "end",
-          }}
-        >
-          <Form.SubmitButton
-            loading={table.getState().isSaving}
-            color="red.8"
-          />
-        </Box>
-      </Form.Box>
-    </Form>
+          </Form.Grid>
+          <br />
+          <b>NOTE:</b> Please review the information carefully before
+          proceeding.
+          <Box
+            style={{
+              display: "flex",
+              justifyContent: "end",
+            }}
+          >
+            <Form.SubmitButton
+              loading={table.getState().isSaving}
+              color="red.8"
+            />
+          </Box>
+        </Form.Box>
+      </Form>
+    </>
   );
 };
 export default AcquisitionForm;

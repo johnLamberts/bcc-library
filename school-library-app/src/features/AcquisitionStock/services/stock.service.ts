@@ -1,4 +1,3 @@
-import { IBooks } from "@features/Catalogue/models/books.interface";
 import {
   FirestoreError,
   addDoc,
@@ -10,12 +9,19 @@ import {
 import { FIRESTORE_COLLECTION_QUERY_KEY } from "src/shared/enums";
 import { firestore } from "src/shared/firebase/firebase";
 
-const addStockCatalogueBook = async (
-  books: Partial<Record<string, unknown>>
-) => {
-  const { title, callNumber, bookISBN } = books;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const addStockCatalogueBook = async (books: Partial<Record<string, any>>) => {
+  console.log(books);
+  const {
+    title,
+    callNumber,
+    bookISBN,
+    qty,
+    reason,
+    bookStatus,
+    numberOfBooksAvailable_QUANTITY,
+  } = books;
 
-  console.log(books.id);
   try {
     await addDoc(
       collection(
@@ -23,10 +29,10 @@ const addStockCatalogueBook = async (
         FIRESTORE_COLLECTION_QUERY_KEY.STOCK_QTY_ACQUISITION
       ),
       {
-        reasons: books.reasons,
+        reason: reason,
         title,
         bookISBN,
-        stockAdded: books.qty,
+        stockAdded: qty,
         callNumber,
         createdAt: serverTimestamp(),
       }
@@ -39,16 +45,12 @@ const addStockCatalogueBook = async (
         books.id as string
       ),
       {
-        numberOfBooksAvailable_QUANTITY: books.qty,
+        numberOfBooksAvailable_QUANTITY:
+          numberOfBooksAvailable_QUANTITY + Number(qty),
 
-        status:
-          books.bookStatus === "Out of stock" ? "Active" : books.bookStatus,
+        bookStatus: bookStatus === "Out of Stock" ? "Active" : bookStatus,
       }
     );
-
-    console.log({
-      status: books.bookStatus === "Out of stock" ? "Active" : books.bookStatus,
-    });
   } catch (err) {
     if (err instanceof FirestoreError) {
       throw new Error(err.message);

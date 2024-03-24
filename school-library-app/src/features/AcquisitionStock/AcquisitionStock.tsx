@@ -35,7 +35,6 @@ import {
   MantineReactTable,
 } from "mantine-react-table";
 import { useMemo, useState } from "react";
-import findKeyInObject from "src/utils/helpers/findKeyInObject";
 import AcquisitionForm from "./AcquisitionForm";
 import { useCreateStockAcquisition } from "./hooks/useStock";
 interface RowQuantity {
@@ -46,15 +45,12 @@ const AcquisitionStock = () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [quantityValues, setQuantityValues] = useState<RowQuantity>({});
 
-  const { isPending } = useModifyBookAvailability();
   const {
     data: booksCatalogueData = [],
     isLoading: isLoadingStudent,
     isError: isLoadingStudentError,
     isFetching: isFetchingStudent,
   } = useReadCatalogue();
-
-  const { modifyCatalogue, isPending: isUpdating } = useModifyCatalogue();
 
   const optimizedCatalogueData = useMemo(
     () => booksCatalogueData,
@@ -198,8 +194,9 @@ const AcquisitionStock = () => {
     table,
   }) => {
     // await modifyCatalogue(values);
-    // table.setEditingRow(null);
-    createStock(values);
+    await createStock(values);
+    setQuantityValues({});
+    table.setEditingRow(null);
   };
 
   const table = useMantineReactTable({
@@ -250,10 +247,10 @@ const AcquisitionStock = () => {
     },
     state: {
       isLoading: isLoadingStudent,
-      isSaving: isCreatingCatalogue || isUpdating,
+      isSaving: isCreatingCatalogue || isCreatingStock,
       showAlertBanner: isLoadingStudentError,
       showProgressBars: isFetchingStudent,
-      showLoadingOverlay: isPending || isCreatingCatalogue || isUpdating,
+      showLoadingOverlay: isCreatingStock || isCreatingCatalogue,
     },
 
     initialState: {
