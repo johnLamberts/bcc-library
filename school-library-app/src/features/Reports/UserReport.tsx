@@ -12,13 +12,12 @@ import {
 import { IconFileTypeCsv, IconFileTypePdf } from "@tabler/icons-react";
 import {
   MRT_ColumnDef,
-  MRT_FilterRangeSlider,
   MRT_ToggleDensePaddingButton,
   MRT_ToggleGlobalFilterButton,
   MantineReactTable,
   useMantineReactTable,
 } from "mantine-react-table";
-import { useMemo, useState, useState } from "react";
+import { useMemo, useState } from "react";
 
 import classes from "@pages/styles/user.module.css";
 import { IUser } from "@features/Users/models/user.interface";
@@ -318,6 +317,7 @@ const UserReportTable = () => {
 
     const doc = new jsPDF("p", "mm", "a4");
 
+    const totalPagesExp = "{total_pages_count_string}";
     const extractingValues = formatData.map((doc) => Object.values(doc));
 
     (doc as jsPDF & { autoTable: autoTable }).autoTable({
@@ -325,7 +325,7 @@ const UserReportTable = () => {
         fillColor: "#77050a",
         textColor: "#fff",
       },
-      didDrawCell: () => {
+      willDrawPage: () => {
         const image = new Image();
         const logoImage = new Image();
 
@@ -335,122 +335,110 @@ const UserReportTable = () => {
 
         doc.addImage(bccLogoPng, "PNG", 50, 15 - 1, 12, 12);
         doc.addImage(image.src, "PNG", 160, 15 - 1, 15, 15);
+
+        doc.internal.scaleFactor = 3.75;
+        const docWidth = doc.internal.pageSize.width;
+        // const docHeight = doc.internal.pageSize.height;
+
+        const colorBlack = "#000000";
+        const colorGray = "#1c1c1d";
+        //starting at 15mm
+        let currentHeight = 15;
+        //var startPointRectPanel1 = currentHeight + 6;
+
+        const pdfConfig = {
+          headerTextSize: 8,
+          labelTextSize: 12,
+          fieldTextSize: 10,
+          lineHeight: 6,
+          subLineHeight: 4,
+        };
+
+        doc.setFontSize(pdfConfig.headerTextSize);
+        doc.setTextColor(colorBlack);
+
+        doc.setFontSize(pdfConfig.fieldTextSize);
+        doc.setTextColor(colorGray);
+        currentHeight += pdfConfig.subLineHeight;
+
+        doc.text(
+          `Republic of the Philippnes`,
+          docWidth / 2,
+          currentHeight - 5,
+          {
+            align: "center",
+          }
+        );
+
+        currentHeight += pdfConfig.subLineHeight;
+
+        doc.setFont("", "", "bold");
+
+        doc.text(
+          `Binangonan Catholic College`,
+          docWidth / 2,
+          currentHeight - 5,
+          {
+            align: "center",
+          }
+        );
+
+        currentHeight += pdfConfig.subLineHeight;
+
+        doc.text(`Binangonan, Rizal`, docWidth / 2, currentHeight - 5, {
+          align: "center",
+        });
+
+        currentHeight += pdfConfig.subLineHeight;
+        currentHeight += pdfConfig.subLineHeight;
+        currentHeight += pdfConfig.subLineHeight;
+        currentHeight += 2;
+        doc.setFont("", "", "bold");
+        doc.setFontSize(16);
+        doc.text(
+          `Binangonan Catholic College User Report `,
+          docWidth / 2,
+          currentHeight - 5,
+          {
+            align: "center",
+          }
+        );
+
+        currentHeight += pdfConfig.subLineHeight;
+        doc.setFontSize(pdfConfig.fieldTextSize);
+        doc.setFont("", "", "normal");
+        doc.text(
+          `${format(new Date(), "MMMM dd, yyyy")}`,
+          docWidth / 2,
+          currentHeight - 5,
+          {
+            align: "center",
+          }
+        );
       },
+
       head: [headerNames],
       body: extractingValues as RowInput[],
+      startY: 50,
+      showHead: "firstPage",
       margin: { top: 50 },
-      // bodyStyles: {
-      //   textColor: "#333333",
-      //   cellPadding: 1,
-      //   minCellHeight: 9,
-      //   halign: "left",
-      //   valign: "middle",
-      //   fontSize: 11,
-      // },
+      didDrawPage: function (data) {
+        // Footer
+        let str = "Page " + doc.getNumberOfPages();
+        // Total page number plugin only available in jspdf v1.0+
+        if (typeof doc.putTotalPages === "function") {
+          str = str + " of " + totalPagesExp;
+        }
+        doc.setFontSize(10);
+
+        // jsPDF 1.4+ uses getHeight, <1.4 uses .height
+        const pageSize = doc.internal.pageSize;
+        const pageHeight = pageSize.height
+          ? pageSize.height
+          : pageSize.getHeight();
+        doc.text(str, data.settings.margin.left, pageHeight - 10);
+      },
     });
-
-    doc.internal.scaleFactor = 3.75;
-    const docWidth = doc.internal.pageSize.width;
-    // const docHeight = doc.internal.pageSize.height;
-
-    const colorBlack = "#000000";
-    const colorGray = "#1c1c1d";
-    //starting at 15mm
-    let currentHeight = 15;
-    //var startPointRectPanel1 = currentHeight + 6;
-
-    const pdfConfig = {
-      headerTextSize: 8,
-      labelTextSize: 12,
-      fieldTextSize: 10,
-      lineHeight: 6,
-      subLineHeight: 4,
-    };
-
-    doc.setFontSize(pdfConfig.headerTextSize);
-    doc.setTextColor(colorBlack);
-
-    doc.setFontSize(pdfConfig.fieldTextSize);
-    doc.setTextColor(colorGray);
-    currentHeight += pdfConfig.subLineHeight;
-
-    doc.text(`Republic of the Philippnes`, docWidth / 2, currentHeight - 5, {
-      align: "center",
-    });
-
-    currentHeight += pdfConfig.subLineHeight;
-
-    doc.setFont("", "", "bold");
-    // doc.text(
-    //   `${(contentSettings as any)[0].libraryName.toUpperCase()}`,
-    //   docWidth / 2,
-    //   currentHeight - 5,
-    //   {
-    //     align: "center",
-    //   }
-    // );
-
-    doc.text(`Binangonan Catholic College`, docWidth / 2, currentHeight - 5, {
-      align: "center",
-    });
-
-    currentHeight += pdfConfig.subLineHeight;
-
-    // doc.setFont("", "", "normal");
-    // doc.text(
-    //   `${(contentSettings as any)[0].libraryLocation}`,
-    //   docWidth / 2,
-    //   currentHeight - 5,
-    //   {
-    //     align: "center",
-    //   }
-    // );
-
-    doc.text(`Binangonan, Rizal`, docWidth / 2, currentHeight - 5, {
-      align: "center",
-    });
-
-    currentHeight += pdfConfig.subLineHeight;
-    currentHeight += pdfConfig.subLineHeight;
-    currentHeight += pdfConfig.subLineHeight;
-    currentHeight += 2;
-    doc.setFont("", "", "bold");
-    doc.setFontSize(16);
-    // if (pathname === "/reports/user-report") {
-    //   doc.text(
-    //     `${reportsName.toUpperCase()}`,
-    //     docWidth / 2,
-    //     currentHeight - 5,
-    //     {
-    //       align: "center",
-    //     }
-    //   );
-    // } else if (pathname === "/reports/students-report") {
-    //   doc.text(`${reportsName}`, docWidth / 2, currentHeight - 5, {
-    //     align: "center",
-    //   });
-    // }
-
-    doc.text(
-      `Binangonan Catholic College User Report `,
-      docWidth / 2,
-      currentHeight - 5,
-      {
-        align: "center",
-      }
-    );
-
-    currentHeight += pdfConfig.subLineHeight;
-    doc.setFontSize(pdfConfig.fieldTextSize);
-    doc.setFont("", "", "normal");
-    doc.text(
-      `${format(new Date(), "MMMM dd, yyyy")}`,
-      docWidth / 2,
-      currentHeight - 5,
-      {
-        align: "center",
-      }
-    );
 
     // let tdWidth = (docWidth - 20) / headerNames.length;
 
@@ -484,13 +472,13 @@ const UserReportTable = () => {
     //     { year: "numeric", month: "long", day: "numeric" }
     //   )}.pdf`
     // );
-
+    if (typeof doc.putTotalPages === "function") {
+      doc.putTotalPages(totalPagesExp);
+    }
     setViewPdf(doc.output("datauristring"));
 
     open?.();
   };
-
-  console.log(viewPdf);
 
   // Your render function
   return (
@@ -512,15 +500,15 @@ const UserReportTable = () => {
       <Modal
         opened={opened}
         onClose={close}
-        title="Authentication"
-        h={"90rem"}
-        w={"90rem"}
-        size={"xl"}
+        title="User Report"
+        size="calc(100vw - 3rem)"
       >
-        <Viewer
-          plugins={[defaultLayoutPluginInstance]}
-          fileUrl={viewPdf as string}
-        />{" "}
+        <Box>
+          <Viewer
+            plugins={[defaultLayoutPluginInstance]}
+            fileUrl={viewPdf as string}
+          />{" "}
+        </Box>
         {/* Modal content */}
       </Modal>
     </>
