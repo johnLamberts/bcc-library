@@ -79,7 +79,6 @@ export function FacetedFilter<TData extends MRT_RowData>({
                   }}
                 >
                   <Checkbox
-                    //   className="mr-2 flex h-4 w-4 items-center justify-center rounded-sm border border-primary"
                     key={option.value}
                     checked={isSelected}
                     label={option.label}
@@ -90,7 +89,7 @@ export function FacetedFilter<TData extends MRT_RowData>({
                       selectedValues.add(option.value);
 
                       const filterValues = Array.from(selectedValues);
-                      console.log(selectedValues);
+
                       column?.setFilterValue(
                         filterValues.length ? filterValues : undefined
                       );

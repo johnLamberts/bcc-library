@@ -6,9 +6,6 @@ import {
   rem,
   Text,
   Modal,
-  Card,
-  RingProgress,
-  Image,
   Tabs,
   Box,
 } from "@mantine/core";
@@ -23,7 +20,6 @@ import {
 } from "@tabler/icons-react";
 import { useState } from "react";
 import classes from "./user-menu.module.css";
-import classe from "./user-card.module.css";
 
 import cn from "clsx";
 import useLogout from "@pages/Authentication/hooks/useLogout";

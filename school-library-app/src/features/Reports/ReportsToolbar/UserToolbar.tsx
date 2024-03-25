@@ -1,21 +1,20 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { FacetedFilter } from "@components/FacetedFilter/FacetedFilter";
 import useReadUserRole from "@features/SysSettings/UserRole/hooks/useReadUserRole";
-import { MRT_RowData, MRT_TableInstance } from "mantine-react-table";
+import { Button } from "@mantine/core";
+import { DatePickerInput } from "@mantine/dates";
+import { format } from "date-fns";
+import {
+  MRT_Column,
+  MRT_RowData,
+  MRT_TableInstance,
+} from "mantine-react-table";
 
 interface UserToolbarProps<TData extends MRT_RowData> {
   table: MRT_TableInstance<TData>;
+  // column: MRT_Column<any, unknown>;
+  column?: MRT_Column<TData>;
 }
-
-const status = [
-  {
-    label: "Enable",
-    value: "Enable",
-  },
-  {
-    label: "Disable",
-    value: "Disable",
-  },
-];
 
 const borrowers = [
   {
@@ -40,8 +39,15 @@ const UserToolbar = <TData extends MRT_RowData>({
       value: item.userRole,
     })),
   ];
+
   return (
     <>
+      {/* {table.getColumn("Date Created") && (
+        <UserDateRangeReport
+          table={table}
+          column={table.getColumn("Date Created")}
+        />
+      )} */}
       {table.getColumn("userRole") && (
         <FacetedFilter
           column={table.getColumn("userRole")}
