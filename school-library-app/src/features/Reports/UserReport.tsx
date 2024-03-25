@@ -1,14 +1,24 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Group, Box, Button, Text, Flex, Avatar, Badge } from "@mantine/core";
+import {
+  Group,
+  Box,
+  Button,
+  Text,
+  Flex,
+  Avatar,
+  Badge,
+  Modal,
+} from "@mantine/core";
 import { IconFileTypeCsv, IconFileTypePdf } from "@tabler/icons-react";
 import {
   MRT_ColumnDef,
+  MRT_FilterRangeSlider,
   MRT_ToggleDensePaddingButton,
   MRT_ToggleGlobalFilterButton,
   MantineReactTable,
   useMantineReactTable,
 } from "mantine-react-table";
-import { useMemo } from "react";
+import { useMemo, useState, useState } from "react";
 
 import classes from "@pages/styles/user.module.css";
 import { IUser } from "@features/Users/models/user.interface";
@@ -25,7 +35,10 @@ import bccLogo from "src/assets/logo 1.svg";
 import bccLogoPng from "src/assets/bccLogo3.png";
 import { Row } from "@tanstack/react-table";
 import UserToolbar from "./ReportsToolbar/UserToolbar";
+import { useDisclosure } from "@mantine/hooks";
+import { Viewer } from "@react-pdf-viewer/core";
 
+import { defaultLayoutPlugin } from "@react-pdf-viewer/default-layout";
 const UserReportTable = () => {
   const {
     data: usersData,
@@ -33,7 +46,10 @@ const UserReportTable = () => {
     isError: isLoadingUsersError,
     isFetching: isFetchingUsers,
   } = useReadUsers();
+  const [opened, { open, close }] = useDisclosure(false);
 
+  const [viewPdf, setViewPdf] = useState<string>();
+  const defaultLayoutPluginInstance = defaultLayoutPlugin();
   const optimizedUsersData: IUser[] =
     useMemo(() => {
       const { data } = usersData?.data || [];
@@ -107,6 +123,8 @@ const UserReportTable = () => {
 
           return <Text>{date}</Text>;
         },
+
+        size: 40,
       },
 
       {
@@ -211,7 +229,7 @@ const UserReportTable = () => {
     renderToolbarInternalActions: ({ table }) => {
       return (
         <Flex gap="xs" align="center">
-          <UserToolbar table={table} />{" "}
+          <UserToolbar table={table} column={table.getColumn("Date Created")} />{" "}
           <MRT_ToggleGlobalFilterButton table={table} />{" "}
           <MRT_ToggleDensePaddingButton table={table} />
         </Flex>
@@ -460,17 +478,24 @@ const UserReportTable = () => {
     //   }
     //   currentHeight -= 2;
     // };
-    doc.save(
-      `Binangonan Catholic College User Report - ${new Date().toLocaleDateString(
-        "en-us",
-        { year: "numeric", month: "long", day: "numeric" }
-      )}.pdf`
-    );
+    // doc.save(
+    //   `Binangonan Catholic College User Report - ${new Date().toLocaleDateString(
+    //     "en-us",
+    //     { year: "numeric", month: "long", day: "numeric" }
+    //   )}.pdf`
+    // );
+
+    setViewPdf(doc.output("datauristring"));
+
+    open?.();
   };
 
+  console.log(viewPdf);
+
+  // Your render function
   return (
     <>
-      <Box maw={"78vw"}>
+      <Box>
         <Group justify="space-between">
           <Box className={classes.highlight}>
             <Text fz={"xl"} fw={"bold"} c={"red"}>
@@ -483,6 +508,21 @@ const UserReportTable = () => {
           <MantineReactTable table={table} />
         </Box>
       </Box>
+
+      <Modal
+        opened={opened}
+        onClose={close}
+        title="Authentication"
+        h={"90rem"}
+        w={"90rem"}
+        size={"xl"}
+      >
+        <Viewer
+          plugins={[defaultLayoutPluginInstance]}
+          fileUrl={viewPdf as string}
+        />{" "}
+        {/* Modal content */}
+      </Modal>
     </>
   );
 };
