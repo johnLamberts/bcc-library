@@ -62,7 +62,7 @@ const TeacherReportTable = () => {
                   color: "var(--mantine-color-yellow-light-color)",
                 }}
               >
-                {row.getValue("studentNumber")}
+                {row.getValue("teacherNumber")}
               </span>
             </Badge>
           );
