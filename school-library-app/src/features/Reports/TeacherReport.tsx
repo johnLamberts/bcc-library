@@ -243,6 +243,9 @@ const TeacherReportTable = () => {
         id: false,
       },
       showColumnFilters: true,
+      columnPinning: {
+        left: ["Date Created"],
+      },
     },
 
     renderToolbarInternalActions: ({ table }) => {

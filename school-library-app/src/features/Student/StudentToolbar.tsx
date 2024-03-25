@@ -29,6 +29,7 @@ const StudentToolbar = <TData extends MRT_RowData>({
       )}
       {table.getColumn("academicCourse") && (
         <FacetedFilter
+          height="10rem"
           column={table.getColumn("academicCourse")}
           title="Academic Course"
           options={academicCourse.map((course) => ({
@@ -40,6 +41,7 @@ const StudentToolbar = <TData extends MRT_RowData>({
 
       {table.getColumn("gradeLevel") && (
         <FacetedFilter
+          height="10rem"
           column={table.getColumn("gradeLevel")}
           title="Grade Level"
           options={gradeLevel.map((course) => ({
