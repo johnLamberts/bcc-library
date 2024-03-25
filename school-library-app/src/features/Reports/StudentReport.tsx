@@ -8,6 +8,7 @@ import {
   ScrollArea,
   Avatar,
   Badge,
+  Modal,
 } from "@mantine/core";
 import { IconFileTypeCsv, IconFileTypePdf } from "@tabler/icons-react";
 import {
@@ -17,7 +18,7 @@ import {
   MantineReactTable,
   useMantineReactTable,
 } from "mantine-react-table";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 
 import classes from "@pages/styles/user.module.css";
 import { flatten } from "src/utils/helpers/flatten";
@@ -34,6 +35,9 @@ import { Row } from "@tanstack/react-table";
 import useReadStudents from "@features/Student/hooks/useReadStudents";
 import { IStudents } from "@features/Student/models/student.interface";
 import StudentToolbar from "@features/Student/StudentToolbar";
+import { defaultLayoutPlugin } from "@react-pdf-viewer/default-layout";
+import { useDisclosure } from "@mantine/hooks";
+import { Viewer } from "@react-pdf-viewer/core";
 
 const StudentReportTable = () => {
   const {
@@ -42,6 +46,10 @@ const StudentReportTable = () => {
     isError: isLoadingUsersError,
     isFetching: isFetchingUsers,
   } = useReadStudents();
+
+  const [opened, { open, close }] = useDisclosure(false);
+
+  const [viewPdf, setViewPdf] = useState<string>();
 
   const customColumns = useMemo<MRT_ColumnDef<IStudents>[]>(
     () => [
@@ -302,15 +310,15 @@ const StudentReportTable = () => {
 
   const exportToPDF = async (data: Row<IStudents>[]) => {
     const headerNamesMapping: Record<string, string> = {
-      studentNumber: "Student Number",
+      studentNumber: "Student No.",
       firstName: "First Name",
       middleName: "Middle Name",
       lastName: "Last Name",
       email: "Email",
-      levelOfEducation: "Level of Education",
-      academicCourse: "Academic Course",
+      levelOfEducation: "Education",
+      academicCourse: "Course",
       gradeLevel: "Grade Level",
-      gradeSection: "Grade Section",
+      gradeSection: "Section",
       createdAt: "Created At",
     };
 
@@ -326,7 +334,6 @@ const StudentReportTable = () => {
           col.id === "middleName" ||
           col.id === "lastName" ||
           col.id === "email" ||
-          col.id === "firstName" ||
           col.id === "levelOfEducation" ||
           col.id === "academicCourse" ||
           col.id === "gradeLevel" ||
@@ -343,15 +350,15 @@ const StudentReportTable = () => {
         lastName,
         middleName,
         email,
+        createdAt,
         levelOfEducation,
         academicCourse,
         gradeLevel,
         gradeSection,
-        createdAt,
       } = user.original;
 
       const date = format(
-        new Date(createdAt?.seconds * 1000 + createdAt?.nanoseconds / 1000),
+        new Date(createdAt.seconds * 1000 + createdAt.nanoseconds / 1000),
         "MMMM dd yyyy"
       );
 
@@ -369,19 +376,17 @@ const StudentReportTable = () => {
         createdAt: date,
       };
     });
-
     const doc = new jsPDF("l", "mm", "a4");
 
+    const totalPagesExp = "{total_pages_count_string}";
     const extractingValues = formatData.map((doc) => Object.values(doc));
-
-    console.log(extractingValues);
 
     (doc as jsPDF & { autoTable: autoTable }).autoTable({
       headStyles: {
         fillColor: "#77050a",
         textColor: "#fff",
       },
-      didDrawCell: () => {
+      willDrawPage: () => {
         const image = new Image();
         const logoImage = new Image();
 
@@ -391,114 +396,151 @@ const StudentReportTable = () => {
 
         doc.addImage(bccLogoPng, "PNG", 50, 15 - 1, 12, 12);
         doc.addImage(image.src, "PNG", 160, 15 - 1, 15, 15);
+
+        doc.internal.scaleFactor = 3.75;
+        const docWidth = doc.internal.pageSize.width;
+        // const docHeight = doc.internal.pageSize.height;
+
+        const colorBlack = "#000000";
+        const colorGray = "#1c1c1d";
+        //starting at 15mm
+        let currentHeight = 15;
+        //var startPointRectPanel1 = currentHeight + 6;
+
+        const pdfConfig = {
+          headerTextSize: 8,
+          labelTextSize: 12,
+          fieldTextSize: 10,
+          lineHeight: 6,
+          subLineHeight: 4,
+        };
+
+        doc.setFontSize(pdfConfig.headerTextSize);
+        doc.setTextColor(colorBlack);
+
+        doc.setFontSize(pdfConfig.fieldTextSize);
+        doc.setTextColor(colorGray);
+        currentHeight += pdfConfig.subLineHeight;
+
+        doc.text(
+          `Republic of the Philippnes`,
+          docWidth / 2,
+          currentHeight - 5,
+          {
+            align: "center",
+          }
+        );
+
+        currentHeight += pdfConfig.subLineHeight;
+
+        doc.setFont("", "", "bold");
+
+        doc.text(
+          `Binangonan Catholic College`,
+          docWidth / 2,
+          currentHeight - 5,
+          {
+            align: "center",
+          }
+        );
+
+        currentHeight += pdfConfig.subLineHeight;
+
+        doc.text(`Binangonan, Rizal`, docWidth / 2, currentHeight - 5, {
+          align: "center",
+        });
+
+        currentHeight += pdfConfig.subLineHeight;
+        currentHeight += pdfConfig.subLineHeight;
+        currentHeight += pdfConfig.subLineHeight;
+        currentHeight += 2;
+        doc.setFont("", "", "bold");
+        doc.setFontSize(16);
+        doc.text(
+          `Binangonan Catholic College Teacher Report `,
+          docWidth / 2,
+          currentHeight - 5,
+          {
+            align: "center",
+          }
+        );
+
+        currentHeight += pdfConfig.subLineHeight;
+        doc.setFontSize(pdfConfig.fieldTextSize);
+        doc.setFont("", "", "normal");
+        doc.text(
+          `${format(new Date(), "MMMM dd, yyyy")}`,
+          docWidth / 2,
+          currentHeight - 5,
+          {
+            align: "center",
+          }
+        );
       },
+
       head: [headerNames],
       body: extractingValues as RowInput[],
+      startY: 50,
+      showHead: "firstPage",
       margin: { top: 50 },
-      // bodyStyles: {
-      //   textColor: "#333333",
-      //   cellPadding: 1,
-      //   minCellHeight: 9,
-      //   halign: "left",
-      //   valign: "middle",
-      //   fontSize: 11,
-      // },
+      didDrawPage: function (data) {
+        // Footer
+        let str = "Page " + doc.getNumberOfPages();
+        // Total page number plugin only available in jspdf v1.0+
+        if (typeof doc.putTotalPages === "function") {
+          str = str + " of " + totalPagesExp;
+        }
+        doc.setFontSize(10);
+
+        // jsPDF 1.4+ uses getHeight, <1.4 uses .height
+        const pageSize = doc.internal.pageSize;
+        const pageHeight = pageSize.height
+          ? pageSize.height
+          : pageSize.getHeight();
+        doc.text(str, data.settings.margin.left, pageHeight - 10);
+      },
     });
 
-    doc.internal.scaleFactor = 3.75;
-    const docWidth = doc.internal.pageSize.width;
-    // const docHeight = doc.internal.pageSize.height;
+    // let tdWidth = (docWidth - 20) / headerNames.length;
 
-    const colorBlack = "#000000";
-    const colorGray = "#1c1c1d";
-    //starting at 15mm
-    let currentHeight = 15;
-    //var startPointRectPanel1 = currentHeight + 6;
+    // if (headerNames.length > 2) {
+    //   tdWidth = (docWidth - 20) / headerNames.length;
+    // }
 
-    const pdfConfig = {
-      headerTextSize: 8,
-      labelTextSize: 12,
-      fieldTextSize: 10,
-      lineHeight: 6,
-      subLineHeight: 4,
-    };
-
-    doc.setFontSize(pdfConfig.headerTextSize);
-    doc.setTextColor(colorBlack);
-
-    doc.setFontSize(pdfConfig.fieldTextSize);
-    doc.setTextColor(colorGray);
-    currentHeight += pdfConfig.subLineHeight;
-
-    doc.text(`Republic of the Philippnes`, docWidth / 2, currentHeight - 5, {
-      align: "center",
-    });
-
-    currentHeight += pdfConfig.subLineHeight;
-
-    doc.setFont("", "", "bold");
-    // doc.text(
-    //   `${(contentSettings as any)[0].libraryName.toUpperCase()}`,
-    //   docWidth / 2,
-    //   currentHeight - 5,
-    //   {
-    //     align: "center",
+    // const addTableHeaderBorder = () => {
+    //   currentHeight += 2;
+    //   const lineHeight = 7;
+    //   let startWidth = 0;
+    //   for (let i = 0; i < headerNames.length; i++) {
+    //     const currentTdWidth = (headerNames[i] as any)?.style?.width || tdWidth;
+    //     if (i === 0) doc.rect(10, currentHeight, currentTdWidth, lineHeight);
+    //     else {
+    //       const previousTdWidth =
+    //         (headerNames[i - 1] as any)?.style?.width || tdWidth;
+    //       const widthToUse =
+    //         currentTdWidth == previousTdWidth
+    //           ? currentTdWidth
+    //           : previousTdWidth;
+    //       startWidth += widthToUse;
+    //       doc.rect(startWidth + 10, currentHeight, currentTdWidth, lineHeight);
+    //     }
     //   }
+    //   currentHeight -= 2;
+    // };
+    // doc.save(
+    //   `Binangonan Catholic College User Report - ${new Date().toLocaleDateString(
+    //     "en-us",
+    //     { year: "numeric", month: "long", day: "numeric" }
+    //   )}.pdf`
     // );
+    if (typeof doc.putTotalPages === "function") {
+      doc.putTotalPages(totalPagesExp);
+    }
+    setViewPdf(doc.output("datauristring"));
 
-    doc.text(`Binangonan Catholic College`, docWidth / 2, currentHeight - 5, {
-      align: "center",
-    });
-
-    currentHeight += pdfConfig.subLineHeight;
-
-    // doc.setFont("", "", "normal");
-    // doc.text(
-    //   `${(contentSettings as any)[0].libraryLocation}`,
-    //   docWidth / 2,
-    //   currentHeight - 5,
-    //   {
-    //     align: "center",
-    //   }
-    // );
-
-    doc.text(`Binangonan, Rizal`, docWidth / 2, currentHeight - 5, {
-      align: "center",
-    });
-
-    currentHeight += pdfConfig.subLineHeight;
-    currentHeight += pdfConfig.subLineHeight;
-    currentHeight += pdfConfig.subLineHeight;
-    currentHeight += 2;
-    doc.setFont("", "", "bold");
-    doc.setFontSize(16);
-    doc.text(
-      `Binangonan Catholic College Student Report `,
-      docWidth / 2,
-      currentHeight - 5,
-      {
-        align: "center",
-      }
-    );
-
-    currentHeight += pdfConfig.subLineHeight;
-    doc.setFontSize(pdfConfig.fieldTextSize);
-    doc.setFont("", "", "normal");
-    doc.text(
-      `${format(new Date(), "MMMM dd, yyyy")}`,
-      docWidth / 2,
-      currentHeight - 5,
-      {
-        align: "center",
-      }
-    );
-    doc.save(
-      `Binangonan Catholic College Student Report - ${new Date().toLocaleDateString(
-        "en-us",
-        { year: "numeric", month: "long", day: "numeric" }
-      )}.pdf`
-    );
+    open?.();
   };
+  const defaultLayoutPluginInstance = defaultLayoutPlugin();
 
   return (
     <>
@@ -515,6 +557,21 @@ const StudentReportTable = () => {
           <MantineReactTable table={table} />
         </Box>
       </Box>
+
+      <Modal
+        opened={opened}
+        onClose={close}
+        title="Teacher Report"
+        size="calc(100vw - 3rem)"
+      >
+        <Box>
+          <Viewer
+            plugins={[defaultLayoutPluginInstance]}
+            fileUrl={viewPdf as string}
+          />{" "}
+        </Box>
+        {/* Modal content */}
+      </Modal>
     </>
   );
 };
