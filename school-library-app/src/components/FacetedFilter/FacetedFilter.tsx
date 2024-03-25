@@ -10,6 +10,8 @@ import {
 } from "@mantine/core";
 import { IconCirclePlus } from "@tabler/icons-react";
 import { MRT_Column, MRT_RowData } from "mantine-react-table";
+import { ChangeEvent } from "react";
+import { useSearchParams } from "react-router-dom";
 
 interface FacetedFilterProps<TData extends MRT_RowData> {
   column?: MRT_Column<TData>;
@@ -20,6 +22,9 @@ interface FacetedFilterProps<TData extends MRT_RowData> {
   }[];
 
   height?: string;
+
+  paramsName?: string;
+  enableParams?: boolean;
 }
 
 export function FacetedFilter<TData extends MRT_RowData>({
@@ -27,6 +32,8 @@ export function FacetedFilter<TData extends MRT_RowData>({
   title,
   options,
   height,
+  paramsName = "",
+  enableParams = false,
 }: FacetedFilterProps<TData>) {
   const facets = column?.getFacetedUniqueValues();
 
@@ -34,6 +41,20 @@ export function FacetedFilter<TData extends MRT_RowData>({
   const filteredData = options?.filter(
     (item) => item.label !== "" || item.value !== ""
   );
+
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const handleChange = (
+    event: ChangeEvent<HTMLInputElement>,
+    value: string
+  ) => {
+    if (event.currentTarget.checked) {
+      searchParams.set(paramsName, value);
+    } else {
+      searchParams.delete(paramsName);
+    }
+    return setSearchParams(searchParams);
+  };
 
   return (
     <Popover width={200} position="bottom" withArrow shadow="md">
@@ -80,9 +101,11 @@ export function FacetedFilter<TData extends MRT_RowData>({
                 >
                   <Checkbox
                     key={option.value}
-                    checked={isSelected}
+                    checked={
+                      isSelected || searchParams.get("lovey") === option.value
+                    }
                     label={option.label}
-                    onChange={() => {
+                    onChange={(e) => {
                       selectedValues.clear();
 
                       // Add the new value to the selectedValues set
@@ -93,6 +116,8 @@ export function FacetedFilter<TData extends MRT_RowData>({
                       column?.setFilterValue(
                         filterValues.length ? filterValues : undefined
                       );
+
+                      enableParams && handleChange(e, option.value);
                     }}
                   />
 
@@ -113,7 +138,11 @@ export function FacetedFilter<TData extends MRT_RowData>({
               <Button
                 size="sm"
                 variant="outline"
-                onClick={() => column?.setFilterValue(undefined)}
+                onClick={() => {
+                  column?.setFilterValue(undefined);
+                  searchParams.delete(paramsName);
+                  setSearchParams(searchParams);
+                }}
               >
                 Clear Filter
               </Button>
