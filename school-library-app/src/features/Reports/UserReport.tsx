@@ -486,8 +486,8 @@ const UserReportTable = () => {
       <Box>
         <Group justify="space-between">
           <Box className={classes.highlight}>
-            <Text fz={"xl"} fw={"bold"} c={"red"}>
-              User Account Report
+            <Text fz={"xs"} fw={"bold"} c={"red"}>
+              User Management
             </Text>
           </Box>
         </Group>

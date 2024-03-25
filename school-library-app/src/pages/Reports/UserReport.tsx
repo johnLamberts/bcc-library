@@ -1,16 +1,12 @@
-import { Box, Group } from "@mantine/core";
+import { Box } from "@mantine/core";
 import UserReportTable from "@features/Reports/UserReport";
 
 export default function UserReport() {
   return (
     <>
-      <Group justify="space-between"></Group>
-
       {/* List of Users */}
       <Box w={"100%"}>
-        <Box my="xl">
-          <UserReportTable />
-        </Box>
+        <UserReportTable />
       </Box>
     </>
   );
