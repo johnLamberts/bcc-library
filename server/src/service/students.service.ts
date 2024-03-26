@@ -79,12 +79,12 @@ const createStudent = async (student: TStudents) => {
 };
 
 const importStudents = async (students: TStudents[]) => {
-  let defaultPassword = "LMS2023";
+  // User Default Photo
+  // "https://firebasestorage.googleapis.com/v0/b/library-management-syste-fb3e9.appspot.com/o/def_user.png?alt=media&token=b3ea39b4-cba7-4095-8e6c-6996848f0391"
 
+  // Book Cover Photo
+  // "https://firebasestorage.googleapis.com/v0/b/library-management-syste-fb3e9.appspot.com/o/def_cover.png?alt=media&token=7062b5d5-b452-47a3-9304-f4a52fd1d772"
   for (const student of students) {
-    if (student.password === "" || !student.password) {
-      student.password = defaultPassword;
-    }
     const studentNumberSnapshot = await admin
       .firestore()
       .collection("students")
