@@ -4,7 +4,7 @@ import StudentManagement from "@pages/StudentManagement";
 import LevelEducation from "@pages/SystemSettings/LevelEducation";
 import TeacherManagement from "@pages/TeacherManagement";
 import UserManagement from "@pages/UserManagement";
-import { Suspense, Suspense } from "react";
+import { Suspense } from "react";
 import { Route, Routes } from "react-router-dom";
 import { Toaster } from "sonner";
 import { GradeSection, GradeLevel, AcademicCourse } from "./routes";

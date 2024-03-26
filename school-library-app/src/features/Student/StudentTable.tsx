@@ -17,6 +17,7 @@ import {
   IconArchive,
   IconDots,
   IconEdit,
+  IconFileDatabase,
   IconLockOff,
   IconLockOpen,
   IconPlus,
@@ -46,7 +47,7 @@ import StudentToolbar from "./StudentToolbar";
 import { useSearchParams } from "react-router-dom";
 
 const StudentTable = () => {
-  const [opened, { close }] = useDisclosure(false);
+  const [opened, { open, close }] = useDisclosure(false);
   const [searchParams] = useSearchParams();
 
   const { isCreatingUser, createUsers } = useCreateStudent();
@@ -363,6 +364,16 @@ const StudentTable = () => {
           >
             Add Student
           </Button>
+
+          <Button
+            variant="light"
+            onClick={open}
+            leftSection={<IconFileDatabase size={14} />}
+            bg={" var(--mantine-color-red-light)"}
+            color={" var(--mantine-color-red-light-color)"}
+          >
+            Import Student
+          </Button>
         </Group>
         <Group hiddenFrom="md">
           <Button
@@ -373,6 +384,16 @@ const StudentTable = () => {
             color={" var(--mantine-color-red-light-color)"}
           >
             Add Student
+          </Button>
+
+          <Button
+            variant="light"
+            onClick={open}
+            leftSection={<IconFileDatabase size={14} />}
+            bg={" var(--mantine-color-red-light)"}
+            color={" var(--mantine-color-red-light-color)"}
+          >
+            Import Student
           </Button>
         </Group>
 

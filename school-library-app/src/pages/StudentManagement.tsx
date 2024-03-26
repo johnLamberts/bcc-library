@@ -4,34 +4,6 @@ import { useLocation, useSearchParams } from "react-router-dom";
 import classes from "./styles/user.module.css";
 
 export default function StudentManagement() {
-  // const [getId, setGetId] = useState("");
-
-  // const { data: studentData, isLoading } = useReadStudents();
-
-  // const filterStudentData = studentData?.filter(
-  //   (user: IStudents) => user.id === getId
-  // )[0];
-
-  // const memoizedCards = useMemo(() => {
-  //   return (
-  //     searchParams.get("view") === "by-cards" && (
-  //       <Box my={"xl"}>
-  //         {/* gutter={{ base: 12, xs: "md", md: "lg", xl: 5 }} */}
-  //         <Grid>
-  //           {isLoading && <>Loading...</>}
-  //           {studentData?.map((user, index) => (
-  //             <StudentBox
-  //               key={index}
-  //               user={user}
-  //               filterStudentData={filterStudentData}
-  //               setGetId={setGetId}
-  //             />
-  //           ))}
-  //         </Grid>
-  //       </Box>
-  //     )
-  //   );
-  // }, [studentData, isLoading, searchParams, filterStudentData]);
   const [searchParams, setSearchParams] = useSearchParams();
 
   const { pathname } = useLocation();
