@@ -24,8 +24,8 @@ initializeApp({
     "https://library-management-syste-fb3e9.asia-southeast1.firebasedatabase.app",
 });
 
-server.use(express.json({ limit: "10kb" }));
-server.use(bodyParser.json());
+server.use(express.json({ limit: "100mb" }));
+server.use(bodyParser.json({ limit: "100mb" }));
 server.use(express.urlencoded({ extended: true })); // Returns middleware that only parses urlencoded bodies
 
 /** ROUTES */

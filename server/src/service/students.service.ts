@@ -1,10 +1,6 @@
 import * as admin from "firebase-admin";
 import { TStudents } from "../types/users";
-import {
-  generateStudentNumber,
-  makeUserName,
-  randomizeString,
-} from "../helper/utils";
+import { randomizeString } from "../helper/utils";
 
 const getAllStudents = async () => {
   const snapshot = await admin.firestore().collection("students").get();
@@ -78,68 +74,161 @@ const createStudent = async (student: TStudents) => {
     });
 };
 
-const importStudents = async (students: TStudents[]) => {
-  // User Default Photo
-  // "https://firebasestorage.googleapis.com/v0/b/library-management-syste-fb3e9.appspot.com/o/def_user.png?alt=media&token=b3ea39b4-cba7-4095-8e6c-6996848f0391"
+// Book Cover Photo
+// "https://firebasestorage.googleapis.com/v0/b/library-management-syste-fb3e9.appspot.com/o/def_cover.png?alt=media&token=7062b5d5-b452-47a3-9304-f4a52fd1d772"
 
-  // Book Cover Photo
-  // "https://firebasestorage.googleapis.com/v0/b/library-management-syste-fb3e9.appspot.com/o/def_cover.png?alt=media&token=7062b5d5-b452-47a3-9304-f4a52fd1d772"
-  // for (const student of students) {
-  //   const studentNumberSnapshot = await admin
-  //     .firestore()
-  //     .collection("students")
-  //     .where("studentNumber", "==", student.studentNumber)
-  //     .get();
+// for (const student of students) {
+//   const studentNumberSnapshot = await admin
+//     .firestore()
+//     .collection("students")
+//     .where("studentNumber", "==", student.studentNumber)
+//     .get();
 
-  //   if (studentNumberSnapshot.size) {
-  //     throw new Error("Student Number were already existed.");
-  //   }
+//   if (studentNumberSnapshot.size) {
+//     throw new Error("Student Number were already existed.");
+//   }
 
-  //   const userRef = await admin.auth().createUser({
-  //     email: student.email,
-  //     emailVerified: false,
-  //     displayName: makeUserName(7),
-  //     password: student.password,
-  //     photoURL: student.studentImage,
-  //     disabled: false,
-  //   });
+//   const userRef = await admin.auth().createUser({
+//     email: student.email,
+//     emailVerified: false,
+//     displayName: randomizeString(
+//       `${student.firstName} ${student.middleName} ${student.lastName}`
+//     ),
+//     password: student.password,
+//     photoURL: student.studentImage,
+//     disabled: false,
+//   });
 
-  //   const usersDoc = await admin
-  //     .firestore()
-  //     .collection("users")
-  //     .add({
-  //       firstName: student.firstName,
-  //       lastName: student.lastName,
-  //       middleName: student.middleName,
+//   const usersDoc = await admin
+//     .firestore()
+//     .collection("users")
+//     .add({
+//       firstName: student.firstName,
+//       lastName: student.lastName,
+//       middleName: student.middleName,
 
-  //       email: student.email,
-  //       password: student.password,
-  //       displayName: makeUserName(7),
+//       email: student.email,
+//       password: student.password,
+//       displayName: randomizeString(
+//         `${student.firstName} ${student.middleName} ${student.lastName}`
+//       ),
 
-  //       avatarImage: student.studentImage,
-  //       userRole: "Student",
-  //       userUID: userRef.uid,
-  //       createdAt: admin.firestore.FieldValue.serverTimestamp(),
-  //       isArchived: false,
-  //       isEnabled: true,
-  //     });
+//       avatarImage: student.studentImage,
+//       userRole: "Student",
+//       userUID: userRef.uid,
+//       createdAt: admin.firestore.FieldValue.serverTimestamp(),
+//       isArchived: false,
+//       isEnabled: true,
+//     });
 
-  //   await admin
-  //     .firestore()
-  //     .collection("students")
-  //     .add({
-  //       ...student,
-  //       // studentEntry: Number(student.studentEntry),
-  //       studentImage: student.studentImage,
-  //       userUID: userRef.uid,
-  //       userDocID: usersDoc.id,
-  //       createdAt: admin.firestore.FieldValue.serverTimestamp(),
-  //       isArchived: false,
-  //       isEnabled: true,
-  //     });
-  // }
+//   await admin
+//     .firestore()
+//     .collection("students")
+//     .add({
+//       ...student,
+//       // studentEntry: Number(student.studentEntry),
+//       displayName: randomizeString(
+//         `${student.firstName} ${student.middleName} ${student.lastName}`
+//       ),
+//       studentImage: student.studentImage,
+//       contactNumber: student.contactNumber,
+//       userUID: userRef.uid,
+//       userDocID: usersDoc.id,
+//       createdAt: admin.firestore.FieldValue.serverTimestamp(),
+//       isArchived: false,
+//       isEnabled: true,
+//     });
+// }
+const importStudents = async (student: TStudents) => {
+  // return new Promise<void>((resolve, reject) => {
+  //   const totalStudents = students.length;
+  //   let processedStudents = 0;
 
-  console.log(students);
+  //   const processNextStudent = () => {
+  //     if (processedStudents >= totalStudents) {
+  //       resolve(); // Resolve the promise when all students are processed
+  //       return;
+  //     }
+
+  //     const student = students[processedStudents];
+
+  //     // Simulate processing student data
+  //     console.log("Processing student:", student);
+
+  //     // Increment processed students count
+  //     processedStudents++;
+
+  //     // Schedule processing of next student after 1000ms
+  //     setTimeout(processNextStudent, 1000);
+
+  //     const progress = Math.round((processedStudents / totalStudents) * 100);
+  //     progressCallback(progress);
+  //   };
+
+  //   // Start processing first student
+  //   processNextStudent();
+  // });
+
+  const studentNumberSnapshot = await admin
+    .firestore()
+    .collection("students")
+    .where("studentNumber", "==", student.studentNumber)
+    .get();
+
+  if (studentNumberSnapshot.size) {
+    throw new Error("Student Number were already existed.");
+  }
+
+  const userRef = await admin.auth().createUser({
+    email: student.email,
+    emailVerified: false,
+    displayName: randomizeString(
+      `${student.firstName} ${student.middleName} ${student.lastName}`
+    ),
+    password: student.password,
+    photoURL: student.studentImage,
+    disabled: false,
+  });
+
+  const usersDoc = await admin
+    .firestore()
+    .collection("users")
+    .add({
+      firstName: student.firstName,
+      lastName: student.lastName,
+      middleName: student.middleName,
+
+      email: student.email,
+      password: student.password,
+      displayName: randomizeString(
+        `${student.firstName} ${student.middleName} ${student.lastName}`
+      ),
+
+      avatarImage: student.studentImage,
+      userRole: "Student",
+      userUID: userRef.uid,
+      createdAt: admin.firestore.FieldValue.serverTimestamp(),
+      isArchived: false,
+      isEnabled: true,
+    });
+
+  await admin
+    .firestore()
+    .collection("students")
+    .add({
+      ...student,
+      // studentEntry: Number(student.studentEntry),
+      displayName: randomizeString(
+        `${student.firstName} ${student.middleName} ${student.lastName}`
+      ),
+      studentImage: student.studentImage,
+      contactNumber: student.contactNumber,
+      userUID: userRef.uid,
+      userDocID: usersDoc.id,
+      createdAt: admin.firestore.FieldValue.serverTimestamp(),
+      isArchived: false,
+      isEnabled: true,
+    });
 };
 
 const updateStudent = async ({
@@ -148,7 +237,6 @@ const updateStudent = async ({
   id: docId,
   ...student
 }: TStudents) => {
-  console.log(student.password);
   await admin.auth().updateUser(userUID as string, {
     email: student.email,
     emailVerified: false,
