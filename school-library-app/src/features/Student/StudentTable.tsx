@@ -45,12 +45,16 @@ import StudentImportForm from "./StudentImportForm/StudentImportForm";
 import { useDisclosure } from "@mantine/hooks";
 import StudentToolbar from "./StudentToolbar";
 import { useSearchParams } from "react-router-dom";
+import { useImportStudents } from "./hooks/useImportStudent";
 
 const StudentTable = () => {
   const [opened, { open, close }] = useDisclosure(false);
   const [searchParams] = useSearchParams();
 
   const { isCreatingUser, createUsers } = useCreateStudent();
+
+  const { createImportStudents, isImportingStudents, progressTracker } =
+    useImportStudents();
 
   const {
     data: studentData = [],
@@ -192,7 +196,9 @@ const StudentTable = () => {
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleImportLevel = async (values: any) => {
-    console.log(values);
+    createImportStudents(values);
+
+    close();
   };
 
   const table = useMantineReactTable({
@@ -229,9 +235,11 @@ const StudentTable = () => {
     },
     state: {
       isLoading: isLoadingStudent,
-      isSaving: isCreatingUser || isUpdatingStatus || isUpdating,
+      isSaving:
+        isCreatingUser || isUpdatingStatus || isUpdating || isImportingStudents,
       showAlertBanner: isLoadingStudentError,
       showProgressBars: isFetchingStudent,
+      showLoadingOverlay: isImportingStudents,
     },
 
     initialState: {
@@ -423,7 +431,11 @@ const StudentTable = () => {
           </Modal.Header>
           <Divider />
           <Modal.Body my={"md"} p={"md"}>
-            <StudentImportForm onSave={handleImportLevel} />
+            <StudentImportForm
+              progressTracker={progressTracker}
+              table={table}
+              onSave={handleImportLevel}
+            />
           </Modal.Body>
         </Modal.Content>
       </Modal.Root>

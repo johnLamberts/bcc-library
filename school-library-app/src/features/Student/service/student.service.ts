@@ -151,10 +151,33 @@ const updateStudent = async ({
   }
 };
 
+const importStudents = async (students: Partial<IStudents[]>) => {
+  try {
+    return await axios({
+      method: "POST",
+      url: `${import.meta.env.VITE_SERVER_URL}api/v1/students/import-students`,
+      data: students,
+      onUploadProgress: function (progressEvent) {
+        const percentCompleted = Math.round(
+          (progressEvent.loaded * 100) / (progressEvent.total as number)
+        );
+
+        console.log(percentCompleted);
+      },
+    });
+  } catch (err) {
+    if (err instanceof axios.AxiosError) {
+      console.log(err.response?.data.error);
+      throw new Error(`${err.response?.data.error}`);
+    }
+  }
+};
+
 export {
   addStudent,
   getLatestStudent,
   getStudents,
   updateStudentStatus,
   updateStudent,
+  importStudents,
 };

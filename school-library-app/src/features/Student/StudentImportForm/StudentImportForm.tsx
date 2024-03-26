@@ -1,11 +1,15 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import Form from "@components/Form/Form";
-import { Box, Divider, FileInput } from "@mantine/core";
+import { Box, Divider, FileInput, LoadingOverlay } from "@mantine/core";
+import { MRT_RowData, MRT_TableInstance } from "mantine-react-table";
 import { Controller, FormProvider, useForm } from "react-hook-form";
 import * as XLSX from "xlsx";
-interface StudentImportFormProps {
+import generateRandomPassword from "src/utils/helpers/generateRandomPassword";
+interface StudentImportFormProps<TData extends MRT_RowData> {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onSave: (values: any) => void;
+  table: MRT_TableInstance<TData>;
+  progressTracker?: number;
 }
 
 function camelCase(str: string): string {
@@ -16,23 +20,15 @@ function camelCase(str: string): string {
     .replace(/\s+/g, "");
 }
 
-const StudentImportForm = ({ onSave }: StudentImportFormProps) => {
+const StudentImportForm = <TData extends MRT_RowData>({
+  onSave,
+  table,
+  progressTracker,
+}: StudentImportFormProps<TData>) => {
   const form = useForm();
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const onSubmit = (value: any) => {
-    // Papa.parse(value.import, {
-    //   skipEmptyLines: true,
-    //   header: true,
-    //   complete: function (result) {
-    //     const { data } = result;
-
-    //     onSave(data);
-    //   },
-    // });
-
-    // onSave(value);
-
     const file = value.import;
 
     if (!file) return;
@@ -60,19 +56,40 @@ const StudentImportForm = ({ onSave }: StudentImportFormProps) => {
       const convertedData = parsedData.slice(1).map((row: any[]) => {
         const obj: { [key: string]: any } = {};
         headers.forEach((header: string, index: number) => {
-          obj[header] = row[index];
+          // Exclude the timestamp column by skipping it
+          if (header.toLowerCase() !== "timestamp") {
+            obj[header] = row[index];
+          }
         });
         return obj;
       });
-      onSave(convertedData);
+
+      const studentParsedData = convertedData.map((entry: any) => ({
+        ...entry,
+        password: generateRandomPassword(8), // You should replace generatePassword() with your own logic to generate passwords
+        studentImage:
+          "https://firebasestorage.googleapis.com/v0/b/library-management-syste-fb3e9.appspot.com/o/def_user.png?alt=media&token=b3ea39b4-cba7-4095-8e6c-6996848f0391", // Replace "default_image_url" with the URL of the default image
+      }));
+
+      // console.log(studentParsedData);
+      onSave(studentParsedData);
     };
 
     reader.readAsBinaryString(file);
   };
 
+  // studentImage:
+
   return (
     <div>
       <FormProvider {...form}>
+        <LoadingOverlay
+          visible={table.getState().isSaving}
+          zIndex={1000}
+          overlayProps={{ radius: "sm", blur: 2 }}
+          loaderProps={{ children: `${progressTracker}%` }}
+        />
+
         <Form onSubmit={form.handleSubmit(onSubmit)}>
           <Form.Box>
             <Form.Grid>
