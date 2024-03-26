@@ -42,7 +42,7 @@ const addCatalogue = async (catalogue: Partial<IBooks>) => {
 
     if (isValidDate(catalogue.milliseconds!)) {
       const defaultImageUrl =
-        "https://firebasestorage.googleapis.com/v0/b/zidel-posev.appspot.com/o/user.png?alt=media&token=883b6c53-4b75-4f60-a741-abe99f992fb7";
+        "https://firebasestorage.googleapis.com/v0/b/library-management-syste-fb3e9.appspot.com/o/def_cover.png?alt=media&token=7062b5d5-b452-47a3-9304-f4a52fd1d772";
 
       // Set default values if bookImageCover or bookFile is null or undefined
       catalogue.bookImageCover = catalogue.bookImageCover || defaultImageUrl;
