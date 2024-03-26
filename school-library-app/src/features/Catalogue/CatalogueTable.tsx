@@ -201,6 +201,11 @@ const CatalogueTable = () => {
     positionActionsColumn: "last",
     onCreatingRowSave: handleCreateLevel,
     onEditingRowSave: handleSaveLevel,
+    mantineTableProps: {
+      withColumnBorders: true,
+      withRowBorders: true,
+      withTableBorder: true,
+    },
     mantineTableContainerProps: {
       style: {
         height: "100%",
@@ -356,12 +361,12 @@ const CatalogueTable = () => {
           <MantineReactTable table={table} />
         </Box>
       </Box> */}
-      <Box maw={"78.2vw"}>
+      <Box>
         <Group
           justify="end"
           pos={"absolute"}
-          top={"1rem"}
           right={"1rem"}
+          top={"5rem"}
           visibleFrom="md"
         >
           <Button
@@ -374,7 +379,7 @@ const CatalogueTable = () => {
             Add Book Catalogue
           </Button>
         </Group>
-        <Group hiddenFrom="sm">
+        <Group hiddenFrom="md">
           <Button
             variant="light"
             onClick={() => table.setCreatingRow(true)}

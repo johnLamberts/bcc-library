@@ -11,13 +11,14 @@ import {
 import classes from "./styles/user.module.css";
 import { IconPlus } from "@tabler/icons-react";
 import AnnouncementList from "@features/Announcement/AnnouncementList";
-import { SearchAnnouncement } from "@features/Announcement/SearchAnnouncement";
+import { Search } from "@components/Search/Search";
 import SelectAnnouncementCategory from "@features/Announcement/SelectAnnouncementCategory";
 import { useDisclosure } from "@mantine/hooks";
 import AnnouncementForm from "@features/Announcement/AnnouncementForm";
 import useReadAnnouncement from "@features/Announcement/hooks/useReadAnnouncement";
 import BookPagination from "@features/HomePage/Library/BookPagination";
 import { ANNOUNCEMENT_PAGE_SIZE } from "src/shared/constant";
+import SelectAnnouncementStatus from "@features/Announcement/SelectAnnouncementStatus";
 
 const AnnouncementManagement = () => {
   const { newsData, count, isLoading } = useReadAnnouncement();
@@ -46,11 +47,15 @@ const AnnouncementManagement = () => {
       <Divider my={"sm"} />
 
       <Grid my={"xs"}>
-        <Grid.Col span={{ base: 12, md: 6, lg: 8 }}>
-          <SearchAnnouncement />
+        <Grid.Col span={{ base: 12, md: 6, lg: 6 }}>
+          <Search keyWords="Search by title" />
         </Grid.Col>
-        <Grid.Col span={{ base: 12, md: 6, lg: 4 }}>
+        <Grid.Col span={{ base: 12, sm: 6, md: 6, lg: 3 }}>
           <SelectAnnouncementCategory />
+        </Grid.Col>
+
+        <Grid.Col span={{ base: 12, sm: 6, md: 6, lg: 3 }}>
+          <SelectAnnouncementStatus />
         </Grid.Col>
       </Grid>
       <BookPagination

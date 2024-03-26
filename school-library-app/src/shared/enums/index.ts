@@ -80,4 +80,6 @@ export enum FIRESTORE_COLLECTION_QUERY_KEY {
   TRANSACTION_IF_EXIST = "books-borrowed-exist",
 
   NEWS_ANNOUNCEMENT = "news-announcement",
+
+  STOCK_QTY_ACQUISITION = "stock-acquisition",
 }

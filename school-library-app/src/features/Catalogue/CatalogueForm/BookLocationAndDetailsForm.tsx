@@ -17,11 +17,30 @@ import { Controller, useFormContext } from "react-hook-form";
 import { IMaskInput } from "react-imask";
 import { useSearchParams } from "react-router-dom";
 
+const removeHyphens = (value: string) => {
+  return value.replace(/-/g, "");
+};
+
+const isValidISBN10 = (isbn: string) => {
+  // Validation logic for ISBN-10 format
+  // You can replace this with your own validation logic
+  return isbn.length === 10;
+};
+
+// Validation logic for ISBN-13 format
+// You can replace this with your own validation logic
+const isValidISBN13 = (isbn: string) => {
+  // Validation logic for ISBN-13 format
+  // You can replace this with your own validation logic
+  return isbn.length === 13;
+};
+
 const BookLocationAndDetailsForm = () => {
   const {
     register,
     formState: { errors },
     control,
+    setValue,
   } = useFormContext();
 
   const [opened, { open, close }] = useDisclosure(false);
@@ -49,6 +68,14 @@ const BookLocationAndDetailsForm = () => {
       setSearchParams(searchParams);
     }
   };
+
+  const handleFormatISBN = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setIsFormatISBN13(e.currentTarget.checked);
+    const isChecked = e.currentTarget.checked;
+    const newValue = isChecked ? "" : ""; // Set the new value based on checkbox state, you can provide any default value you want here
+    setValue("bookISBN", newValue); // Update the value of the input field with the new value
+  };
+
   return (
     <>
       <Form.Box mt={"md"}>
@@ -60,21 +87,38 @@ const BookLocationAndDetailsForm = () => {
               control={control}
               rules={{
                 required: "This field is required",
+                validate: (value) => {
+                  const cleaned = removeHyphens(value);
+                  if (!isFormatISBN13) {
+                    if (!isValidISBN13(cleaned)) {
+                      return "Badly formatted ISBN-13";
+                    }
+                  } else {
+                    if (!isValidISBN10(cleaned)) {
+                      return "Badly formatted ISBN-10";
+                    }
+                  }
+
+                  return true;
+                },
               }}
-              render={({ field }) => {
+              render={({
+                field: { onChange, onBlur, ref, value },
+                fieldState: { error },
+              }) => {
                 return (
                   <InputBase
                     component={IMaskInput}
-                    mask={
-                      isFormatISBN13 ? "0-000-00000-0" : "000-0-000-00000-0"
-                    }
+                    mask={isFormatISBN13 ? "0-000-000000" : "000-0-000-000000"}
                     label={isFormatISBN13 ? "ISBN-10" : "ISBN-13"}
+                    onChange={onChange}
+                    value={value}
+                    onBlur={onBlur}
+                    inputRef={ref}
                     description={
                       <Checkbox
                         label={"Use ISBN-10 instead"}
-                        onChange={(e) =>
-                          setIsFormatISBN13(e.currentTarget.checked)
-                        }
+                        onChange={handleFormatISBN}
                         style={{
                           transform: "scale(1)",
                         }}
@@ -86,8 +130,7 @@ const BookLocationAndDetailsForm = () => {
                       isFormatISBN13 ? "0-000-00000-0" : "000-0-000-00000-0"
                     }
                     withErrorStyles={errors.bookISBN?.message ? true : false}
-                    {...field}
-                    error={<>{errors.bookISBN?.message}</>}
+                    error={<>{errors.bookISBN?.message}</> || error}
                   />
                 );
               }}

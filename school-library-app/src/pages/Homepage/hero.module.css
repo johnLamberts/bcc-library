@@ -34,32 +34,24 @@
     margin-bottom: 2.8rem;
   }
 
+  ._header__two_1e0y6_37 {
+    font-size: "2rem";
+    font-family: "Montserrat";
+    color: "#fffffff";
+    font-weight: "300";
+    font-style: "italic";
+    @media (max-width: $mantine-breakpoint-sm) {
+      font-size: 1.5rem;
+      /* font-weight: 900;
+      text-align: center;
+  
+      width: 50%; */
+    }
+  }
+
   @media only screen and (max-width: $mantine-breakpoint-lg) {
     background-size: 250rem;
     padding-bottom: 1.8rem;
-  }
-}
-
-/* @media (max-width: $mantine-breakpoink-lg) {
-  .header  {
-    background-size: 240rem;
-    padding-bottom: 1.8rem;
-
-  }
-} */
-
-.header__two {
-  font-size: "2rem";
-  font-family: "Montserrat";
-  color: "#fffffff";
-  font-weight: "300";
-  font-style: "italic";
-  @media (max-width: $mantine-breakpoint-sm) {
-    font-size: 1.5rem;
-    /* font-weight: 900;
-    text-align: center;
-
-    width: 50%; */
   }
 }
 
@@ -76,7 +68,6 @@
   text-align: center;
 
   padding-top: 10rem;
-  padding-bottom: 5rem;
 
   /* color: var(--secondary); */
   color: #fff;

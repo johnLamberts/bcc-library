@@ -1,13 +1,30 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import Form from "@components/Form/Form";
+import CatalogueTable from "@features/Catalogue/CatalogueTable";
 import useReadStudents from "@features/Student/hooks/useReadStudents";
 import useReadTeachers from "@features/Teachers/hooks/useReadTeacher";
-import { Select, TextInput, rem } from "@mantine/core";
+import {
+  Anchor,
+  Avatar,
+  Drawer,
+  Group,
+  Select,
+  SelectProps,
+  Text,
+  TextInput,
+  rem,
+} from "@mantine/core";
+import { useDisclosure } from "@mantine/hooks";
+import CatalogueManagement from "@pages/CatalogueManagement";
+import StudentManagement from "@pages/StudentManagement";
+import TeacherManagement from "@pages/TeacherManagement";
 import { IconEye } from "@tabler/icons-react";
 
 import { MRT_Row, MRT_RowData, MRT_TableInstance } from "mantine-react-table";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { Controller, useFormContext } from "react-hook-form";
+import { useSearchParams } from "react-router-dom";
 
 interface BookInformationProps<TData extends MRT_RowData> {
   table?: MRT_TableInstance<TData>;
@@ -16,11 +33,19 @@ interface BookInformationProps<TData extends MRT_RowData> {
   setSeeRole: Dispatch<SetStateAction<string | null>>;
 }
 
+interface BorrowersData {
+  [name: string]: {
+    name: string;
+    image: string | File | undefined;
+  };
+}
+
 const BorrowersInformationForm = <TData extends MRT_RowData>({
   seeRole,
   setSeeRole,
 }: BookInformationProps<TData>) => {
-  const [_, setName] = useState<string | null>("");
+  const [name, setName] = useState<string | null>("");
+  const [opened, { open, close }] = useDisclosure(false);
 
   const {
     control,
@@ -30,6 +55,7 @@ const BorrowersInformationForm = <TData extends MRT_RowData>({
     getValues,
     watch,
   } = useFormContext();
+  const [searchParams, setSearchParams] = useSearchParams();
 
   // student or teacher's data
   const { data: teacherData = [], isLoading: isTeacherLoading } =
@@ -40,43 +66,73 @@ const BorrowersInformationForm = <TData extends MRT_RowData>({
   const filteredBorrowersName =
     seeRole === "Teacher"
       ? teacherData.map((teacher) => ({
-          label: `${teacher.firstName} ${teacher.middleName} ${teacher.lastName}`,
-          value: `${teacher.firstName} ${teacher.middleName} ${teacher.lastName}`,
+          label: `${teacher.email}`,
+          value: `${teacher.email}`,
         }))
       : studentData.map((student) => ({
-          label: `${student.firstName} ${student.middleName} ${student.lastName}`,
-          value: `${student.firstName} ${student.middleName} ${student.lastName}`,
+          label: `${student.email}`,
+          value: `${student.email}`,
         })) || [];
 
   const filteredOtherInfo =
     seeRole === "Teacher"
       ? teacherData.filter(
-          (teacher) =>
-            `${teacher.firstName} ${teacher.middleName} ${teacher.lastName}` ===
-            watch("borrowersName")
+          (teacher) => `${teacher.email}` === watch("borrowersName")
         )
       : studentData.filter(
-          (student) =>
-            `${student.firstName} ${student.middleName} ${student.lastName}` ===
-            watch("borrowersName")
+          (student) => `${student.email}` === watch("borrowersName")
         );
 
   const filteredNumberInfo =
     seeRole === "Teacher"
       ? teacherData
-          .filter(
-            (teacher) =>
-              `${teacher.firstName} ${teacher.middleName} ${teacher.lastName}` ===
-              watch("borrowersName")
-          )
+          .filter((teacher) => `${teacher.email}` === watch("borrowersName"))
           .map((user) => user.teacherNumber)[0]
       : studentData
-          .filter(
-            (student) =>
-              `${student.firstName} ${student.middleName} ${student.lastName}` ===
-              watch("borrowersName")
-          )
+          .filter((student) => `${student.email}` === watch("borrowersName"))
           .map((user) => user.studentNumber)[0];
+
+  const renderAutocompleteOption: SelectProps["renderOption"] = ({
+    option,
+  }) => {
+    const borrowersData: BorrowersData = {};
+
+    const filtered =
+      seeRole === "Teacher"
+        ? teacherData.map((teacher) => ({
+            ...teacher,
+            image: teacher.teacherImage,
+          }))
+        : studentData.map((teacher) => ({
+            ...teacher,
+            image: teacher.studentImage,
+          }));
+
+    filtered.forEach((info) => {
+      borrowersData[info.email] = {
+        name: `${info.firstName} ${info.middleName} ${info.lastName}`,
+        image: info.image,
+      };
+    });
+
+    return (
+      <Group gap={"xs"}>
+        <Avatar
+          size={36}
+          radius="xl"
+          src={borrowersData[option.value]?.image as string}
+        />
+        <div>
+          <Text size="sm">{option.value}</Text>
+
+          <Text size="xs" opacity={0.5}>
+            {/* {filteredOtherInfo[0]?.email} */}
+            {borrowersData[option.value]?.name}
+          </Text>
+        </div>
+      </Group>
+    );
+  };
 
   useEffect(() => {
     // if() {
@@ -99,25 +155,8 @@ const BorrowersInformationForm = <TData extends MRT_RowData>({
     studentData,
     teacherData,
     filteredNumberInfo,
+    name,
   ]);
-
-  // useEffect(() => {
-  //   if (
-  //     teacherData.some((teacher) => teacher.userRole !== seeRole) &&
-  //     studentData.some((student) => student.userRole !== seeRole) &&
-  //     seeRole !== null
-  //   ) {
-  //     setValue("borrowersName", null);
-  //     setValue("borrowersId", null);
-  //     setValue("borrowersNumber", null);
-  //     setValue("borrowersEmail", null);
-  //   } else if (seeRole === undefined || seeRole === null) {
-  //     setValue("borrowersName", null);
-  //     setValue("borrowersId", null);
-  //     setValue("borrowersNumber", null);
-  //     setValue("borrowersEmail", null);
-  //   }
-  // }, [setValue, getValues, teacherData, studentData, seeRole]);
 
   const handleChangeRole = (e: string | null) => {
     setValue("borrowersId", "");
@@ -125,6 +164,9 @@ const BorrowersInformationForm = <TData extends MRT_RowData>({
 
     setValue("borrowersNumber", "");
     setValue("borrowersEmail", "");
+    setValue("firstName", "");
+    setValue("middleName", "");
+    setValue("lastName", "");
 
     setSeeRole(e);
   };
@@ -133,8 +175,30 @@ const BorrowersInformationForm = <TData extends MRT_RowData>({
     setValue("borrowersNumber", "");
     setValue("borrowersEmail", "");
     setValue("borrowersId", "");
+    setValue("firstName", "");
+    setValue("middleName", "");
+    setValue("lastName", "");
     setName(e);
   };
+
+  const handleChange = (params: string | null) => {
+    searchParams.set("ctx", params as string);
+
+    return setSearchParams(searchParams);
+  };
+
+  const removeQueryParams = () => {
+    const param = searchParams.get("ctx");
+
+    if (param) {
+      // 👇️ delete each query param
+      searchParams.delete("ctx");
+
+      // 👇️ update state after
+      setSearchParams(searchParams);
+    }
+  };
+
   return (
     <>
       <Form.Box mt={"md"}>
@@ -181,9 +245,11 @@ const BorrowersInformationForm = <TData extends MRT_RowData>({
               render={({ field: { onChange, ...field } }) => {
                 return (
                   <Select
-                    label={`Borrower's name`}
-                    placeholder={`Select borrower's name`}
+                    autoComplete="false"
+                    label={`Borrower's Email`}
+                    placeholder={`Select borrower's email`}
                     data={filteredBorrowersName}
+                    renderOption={renderAutocompleteOption}
                     description="Editable"
                     comboboxProps={{
                       transitionProps: { transition: "pop", duration: 200 },
@@ -203,12 +269,32 @@ const BorrowersInformationForm = <TData extends MRT_RowData>({
                       seeRole === null
                     }
                     searchable
+                    nothingFoundMessage={
+                      <>
+                        Nothing found...
+                        <br />
+                        Add Type{" "}
+                        <Anchor
+                          variant="gradient"
+                          gradient={{ from: "pink", to: "yellow" }}
+                          fw={500}
+                          underline="hover"
+                          onClick={() => {
+                            open();
+                            handleChange("add_borrowers");
+                          }}
+                        >
+                          here
+                        </Anchor>
+                      </>
+                    }
                   />
                 );
               }}
             />
           </Form.Col>
         </Form.Grid>
+
         <Form.Grid p={"lg"}>
           <Form.Col span={{ base: 12, md: 6, lg: 6 }}>
             <TextInput
@@ -313,6 +399,31 @@ const BorrowersInformationForm = <TData extends MRT_RowData>({
           </Form.Col>
         </Form.Grid>
       </Form.Box>
+
+      <Drawer.Root
+        opened={opened}
+        onClose={() => {
+          close();
+          removeQueryParams();
+        }}
+        size={"3xl"}
+      >
+        <Drawer.Overlay />
+        <Drawer.Content>
+          <Drawer.Header>
+            <Drawer.CloseButton />
+          </Drawer.Header>
+          <Drawer.Body>
+            {/* {searchParams.get("ctx") === "add_genres" && <BookGenre />}
+            {searchParams.get("ctx") === "add_author" && <BookAuthor />} */}
+
+            {searchParams.get("ctx") === "add_borrowers" &&
+              seeRole === "Student" && <StudentManagement />}
+            {searchParams.get("ctx") === "add_borrowers" &&
+              seeRole === "Teacher" && <TeacherManagement />}
+          </Drawer.Body>
+        </Drawer.Content>
+      </Drawer.Root>
     </>
   );
 };

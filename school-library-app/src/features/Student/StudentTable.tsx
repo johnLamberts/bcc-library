@@ -43,9 +43,12 @@ import useModifyStudent from "./hooks/useModifyStudent";
 import StudentImportForm from "./StudentImportForm/StudentImportForm";
 import { useDisclosure } from "@mantine/hooks";
 import StudentToolbar from "./StudentToolbar";
+import { useSearchParams } from "react-router-dom";
 
 const StudentTable = () => {
   const [opened, { close }] = useDisclosure(false);
+  const [searchParams] = useSearchParams();
+
   const { isCreatingUser, createUsers } = useCreateStudent();
 
   const {
@@ -343,12 +346,12 @@ const StudentTable = () => {
 
   return (
     <>
-      <Box maw={"78.2vw"}>
+      <Box>
         <Group
           justify="end"
           pos={"absolute"}
-          top={"1rem"}
           right={"1rem"}
+          top={"5rem"}
           visibleFrom="md"
         >
           <Button
@@ -361,7 +364,7 @@ const StudentTable = () => {
             Add Student
           </Button>
         </Group>
-        <Group hiddenFrom="sm">
+        <Group hiddenFrom="md">
           <Button
             variant="light"
             onClick={() => table.setCreatingRow(true)}
@@ -372,6 +375,18 @@ const StudentTable = () => {
             Add Student
           </Button>
         </Group>
+
+        {searchParams.get("ctx") === "add_borrowers" && (
+          <Button
+            variant="light"
+            onClick={() => table.setCreatingRow(true)}
+            leftSection={<IconPlus size={14} />}
+            bg={" var(--mantine-color-red-light)"}
+            color={" var(--mantine-color-red-light-color)"}
+          >
+            Add Student
+          </Button>
+        )}
 
         <Box>
           <MantineReactTable table={table} />

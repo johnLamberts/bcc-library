@@ -16,7 +16,6 @@ import {
 } from "@mantine/core";
 import { IconTimeDurationOff } from "@tabler/icons-react";
 import { format } from "date-fns";
-import { useNavigate } from "react-router-dom";
 import useTodayTransaction from "./hooks/useTodayTransaction";
 import { useDisclosure } from "@mantine/hooks";
 

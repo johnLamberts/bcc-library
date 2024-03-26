@@ -233,8 +233,8 @@ const CategorySectionTable = () => {
         <Group
           justify="end"
           pos={"absolute"}
-          top={"1rem"}
           right={"1rem"}
+          top={"5rem"}
           visibleFrom="md"
         >
           <Button

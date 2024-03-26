@@ -1,17 +1,20 @@
 import { Select } from "@mantine/core";
+import { useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 
 const SelectAnnouncementCategory = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const handleChange = (params: string | null) => {
-    if (searchParams.get("fq") === null || searchParams.get("fq") === "") {
-      searchParams.set("fq", params as string);
-    } else {
-      searchParams.delete("fq");
-    }
-
+    searchParams.set("fq", params as string);
     return setSearchParams(searchParams);
   };
+
+  useEffect(() => {
+    if (searchParams.get("fq") === String(null)) {
+      searchParams.delete("fq");
+      return setSearchParams(searchParams);
+    }
+  }, [searchParams, setSearchParams]);
   return (
     <>
       <Select

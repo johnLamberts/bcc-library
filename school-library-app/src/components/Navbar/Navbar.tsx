@@ -25,11 +25,7 @@ interface NavbarProps {
 }
 const mainFeatures = [
   { link: "/dashboard", label: "Admin Dashboard", icon: IconChartInfographic },
-  {
-    link: "/manage-announcement",
-    label: "Manage Announcement",
-    icon: IconNews,
-  },
+
   { link: "/user-management", label: "User Management", icon: IconUser },
   {
     link: "/teacher-management",
@@ -52,6 +48,11 @@ const mainFeatures = [
     icon: IconBrandStocktwits,
   },
   {
+    link: "/manage-announcement",
+    label: "Manage Announcement",
+    icon: IconNews,
+  },
+  {
     label: "Transaction",
     icon: IconAlignBoxBottomLeft,
     links: [
@@ -62,10 +63,6 @@ const mainFeatures = [
       {
         link: "/return-transaction",
         label: "Return Transaction",
-      },
-      {
-        link: "/transaction-management",
-        label: "Transaction List",
       },
     ],
   },
@@ -94,6 +91,10 @@ const mainFeatures = [
       {
         link: "/fee-report",
         label: "Collection Report",
+      },
+      {
+        link: "/stock-report",
+        label: "Stock Report",
       },
     ],
   },

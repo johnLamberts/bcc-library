@@ -15,7 +15,7 @@ export function useCreateRequestTransaction() {
         `
         );
         queryClient.invalidateQueries({
-          queryKey: [FIRESTORE_COLLECTION_QUERY_KEY.REQUEST_BOOK],
+          queryKey: [FIRESTORE_COLLECTION_QUERY_KEY.ALL_BOOKS_TRANSACTION],
         });
       },
       onError: (err) => toast.error(err.message),

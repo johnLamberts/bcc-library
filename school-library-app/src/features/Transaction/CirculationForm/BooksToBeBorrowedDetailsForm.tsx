@@ -1,7 +1,15 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import Form from "@components/Form/Form";
 import { useReadBookType } from "@features/SysSettings/BookType/hooks/useReadBookType";
-import { Select, Text, TextInput, rem } from "@mantine/core";
+import {
+  Avatar,
+  Group,
+  Select,
+  SelectProps,
+  Text,
+  TextInput,
+  rem,
+} from "@mantine/core";
 import { IconEye } from "@tabler/icons-react";
 import { Dispatch, SetStateAction, useCallback, useEffect } from "react";
 import { Controller, useFormContext } from "react-hook-form";
@@ -12,6 +20,14 @@ interface FormProps {
   seeType: string | null;
   setSeeType: Dispatch<SetStateAction<string | null>>;
 }
+
+interface BooksDetailsData {
+  [name: string]: {
+    name: string;
+    image: string | File | null;
+  };
+}
+
 const BooksToBeBorrowedDetailsForm = ({ seeType, setSeeType }: FormProps) => {
   const {
     register,
@@ -52,13 +68,42 @@ const BooksToBeBorrowedDetailsForm = ({ seeType, setSeeType }: FormProps) => {
     [setValue]
   );
 
+  const renderAutocompleteOption: SelectProps["renderOption"] = ({
+    option,
+  }) => {
+    const borrowersData: BooksDetailsData = {};
+
+    filteredBook.forEach((info) => {
+      borrowersData[info.title] = {
+        name: `${info.bookISBN} ${info.bookSection}`,
+        image: info.bookImageCover,
+      };
+    });
+
+    return (
+      <Group gap={"xs"}>
+        <Avatar
+          size={36}
+          radius="xl"
+          src={borrowersData[option.value]?.image as string}
+        />
+        <div>
+          <Text size="sm">{option.value}</Text>
+
+          <Text size="xs" opacity={0.5}>
+            {/* {filteredOtherInfo[0]?.email} */}
+            {borrowersData[option.value]?.name}
+          </Text>
+        </div>
+      </Group>
+    );
+  };
+
   useEffect(() => {
     if (filteredOtherBookInfo.length > 0) {
       setBookValues(filteredOtherBookInfo[0]);
-    } else {
-      setBookValues(null);
     }
-  }, [filteredOtherBookInfo.length, setBookValues, setValue]);
+  }, [filteredOtherBookInfo, setBookValues]);
 
   useEffect(() => {
     if (
@@ -72,6 +117,21 @@ const BooksToBeBorrowedDetailsForm = ({ seeType, setSeeType }: FormProps) => {
       setValue("bookTitle", null);
     }
   }, [setValue, seeType, bookData]);
+
+  const handleChangeBookType = (e: string | null) => {
+    setValue("bookISBN", "");
+    setValue("callNumber", "");
+    setValue("bookSection", "");
+    setValue("bookLocation", "");
+    setValue("timeDuration", "");
+    setValue("numberOfBooksAvailable_QUANTITY", "");
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    setValue("bookPrice", "");
+    setValue("booksId", "");
+    setValue("bookTitle", null);
+    setSeeType(e);
+  };
 
   const handleChangeTitle = () => {
     setValue("bookISBN", "");
@@ -120,7 +180,7 @@ const BooksToBeBorrowedDetailsForm = ({ seeType, setSeeType }: FormProps) => {
                   }
                   onChange={(e) => {
                     onChange(e);
-                    setSeeType(e);
+                    handleChangeBookType(e);
                   }}
                 />
               );
@@ -141,6 +201,7 @@ const BooksToBeBorrowedDetailsForm = ({ seeType, setSeeType }: FormProps) => {
                 <Select
                   label="Title"
                   description="Editable"
+                  renderOption={renderAutocompleteOption}
                   placeholder={`${
                     filteredBook.length === 0
                       ? "No available book assiociated with these book type"
@@ -167,6 +228,7 @@ const BooksToBeBorrowedDetailsForm = ({ seeType, setSeeType }: FormProps) => {
                     seeType === null ||
                     filteredBook.length === 0
                   }
+                  searchable
                 />
               );
             }}

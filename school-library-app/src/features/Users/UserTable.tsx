@@ -405,12 +405,12 @@ const UserTable = () => {
 
   return (
     <>
-      <Box maw={"78.2vw"}>
+      <Box>
         <Group
           justify="end"
           pos={"absolute"}
-          top={"1rem"}
           right={"1rem"}
+          top={"5rem"}
           visibleFrom="md"
         >
           <Button
@@ -420,10 +420,10 @@ const UserTable = () => {
             bg={" var(--mantine-color-red-light)"}
             color={" var(--mantine-color-red-light-color)"}
           >
-            Add User
+            Add User Test
           </Button>
         </Group>
-        <Group hiddenFrom="sm">
+        <Group hiddenFrom="md">
           <Button
             variant="light"
             onClick={() => table.setCreatingRow(true)}

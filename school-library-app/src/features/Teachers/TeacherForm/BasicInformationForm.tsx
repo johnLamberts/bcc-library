@@ -16,46 +16,58 @@ const BasicInformationForm = () => {
         <Form.Title>Basic Information</Form.Title>
         <Form.Grid p={"lg"}>
           <Form.Col span={{ base: 12, md: 3, lg: 6 }}>
-            <TextInput
-              label="First Name"
-              placeholder="Your First Name..."
-              withAsterisk
-              withErrorStyles={errors.firstName?.message ? true : false}
-              error={<>{errors.firstName && errors.firstName?.message}</>}
-              {...register("firstName", { required: `This field is required` })}
+            <Controller
+              name="firstName"
+              control={control}
+              render={({ field }) => {
+                return (
+                  <InputBase
+                    withAsterisk
+                    label="First Name"
+                    placeholder="John Doe..."
+                    withErrorStyles={errors.firstName?.message ? true : false}
+                    {...field}
+                    error={<>{errors.firstName?.message}</>}
+                  />
+                );
+              }}
             />
-            {/* <Input.Wrapper label="First Name" withAsterisk>
-              <Input
-                {...register("firstName", {
-                  required: "This field is required",
-                })}
-              />
-              {errors?.firstName && (
-                <Input.Error>{<>{errors.firstName?.message}</>}</Input.Error>
-              )}
-            </Input.Wrapper> */}
           </Form.Col>
           <Form.Col span={{ base: 12, md: 3, lg: 6 }}>
-            <TextInput
-              label="Middle Name"
-              placeholder="Your Middle Name..."
-              withAsterisk
-              withErrorStyles={errors.middleName?.message ? true : false}
-              {...register("middleName", {
-                required: `This field is required`,
-              })}
-              error={<>{errors && errors.middleName?.message}</>}
+            <Controller
+              name="middleName"
+              control={control}
+              render={({ field }) => {
+                return (
+                  <InputBase
+                    withAsterisk
+                    label="Middle Name"
+                    placeholder="Dela Fuena..."
+                    withErrorStyles={errors.middleName?.message ? true : false}
+                    {...field}
+                    error={<>{errors.middleName?.message}</>}
+                  />
+                );
+              }}
             />
           </Form.Col>
 
           <Form.Col span={{ base: 12, md: 3, lg: 12 }}>
-            <TextInput
-              label="Last Name"
-              placeholder="Your Last Name..."
-              withAsterisk
-              withErrorStyles={errors.lastName?.message ? true : false}
-              {...register("lastName", { required: `This field is required` })}
-              error={<>{errors.lastName?.message}</>}
+            <Controller
+              name="lastName"
+              control={control}
+              render={({ field }) => {
+                return (
+                  <InputBase
+                    withAsterisk
+                    label="Last Name"
+                    placeholder="Fuentes Strange..."
+                    withErrorStyles={errors.lastName?.message ? true : false}
+                    {...field}
+                    error={<>{errors.lastName?.message}</>}
+                  />
+                );
+              }}
             />
           </Form.Col>
 
@@ -68,7 +80,7 @@ const BasicInformationForm = () => {
                   <InputBase
                     component={IMaskInput}
                     withAsterisk
-                    mask="+63 (000) 000 000"
+                    mask="+63 (000) 0000 000"
                     label="Contact Number"
                     placeholder="Your Contact Number..."
                     withErrorStyles={

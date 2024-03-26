@@ -4,7 +4,7 @@ import StudentManagement from "@pages/StudentManagement";
 import LevelEducation from "@pages/SystemSettings/LevelEducation";
 import TeacherManagement from "@pages/TeacherManagement";
 import UserManagement from "@pages/UserManagement";
-import { Suspense } from "react";
+import { Suspense, Suspense } from "react";
 import { Route, Routes } from "react-router-dom";
 import { Toaster } from "sonner";
 import { GradeSection, GradeLevel, AcademicCourse } from "./routes";
@@ -35,10 +35,11 @@ import TeacherReport from "@pages/Reports/TeacherReport";
 import { PageNotFound } from "@pages/PageNotFound";
 import ForgetPassword from "@pages/ForgetPassword";
 import Announcement from "@pages/Homepage/Announcement";
-import AcquisitionStock from "@features/AcquisitionStock/AcquisitionStock";
 import { Forbidden } from "@pages/Forbidden";
 import DetailsFAQ from "@pages/Homepage/DetailsFAQ";
 import AnnouncementManagement from "@pages/AnnouncementManagement";
+import ManageAcquisationStock from "@pages/ManageAcquisationStock";
+import StockReport from "@pages/Reports/StockReport";
 
 function App() {
   // Will Refactor this after I finish the admin page with fully functionality
@@ -93,7 +94,7 @@ function App() {
             <Route path="/student-management" element={<StudentManagement />} />
             <Route
               path="/acquisition-and-stock-management"
-              element={<AcquisitionStock />}
+              element={<ManageAcquisationStock />}
             />
             <Route path="/teacher-management" element={<TeacherManagement />} />
             <Route
@@ -141,6 +142,7 @@ function App() {
             />
             <Route path="/inventory-report" element={<InventoryReport />} />
             <Route path="/fee-report" element={<FeeReport />} />
+            <Route path="/stock-report" element={<StockReport />} />
           </Route>
         </Routes>
       </Suspense>
