@@ -84,60 +84,62 @@ const importStudents = async (students: TStudents[]) => {
 
   // Book Cover Photo
   // "https://firebasestorage.googleapis.com/v0/b/library-management-syste-fb3e9.appspot.com/o/def_cover.png?alt=media&token=7062b5d5-b452-47a3-9304-f4a52fd1d772"
-  for (const student of students) {
-    const studentNumberSnapshot = await admin
-      .firestore()
-      .collection("students")
-      .where("studentNumber", "==", student.studentNumber)
-      .get();
+  // for (const student of students) {
+  //   const studentNumberSnapshot = await admin
+  //     .firestore()
+  //     .collection("students")
+  //     .where("studentNumber", "==", student.studentNumber)
+  //     .get();
 
-    if (studentNumberSnapshot.size) {
-      throw new Error("Student Number were already existed.");
-    }
+  //   if (studentNumberSnapshot.size) {
+  //     throw new Error("Student Number were already existed.");
+  //   }
 
-    const userRef = await admin.auth().createUser({
-      email: student.email,
-      emailVerified: false,
-      displayName: makeUserName(7),
-      password: student.password,
-      photoURL: student.studentImage,
-      disabled: false,
-    });
+  //   const userRef = await admin.auth().createUser({
+  //     email: student.email,
+  //     emailVerified: false,
+  //     displayName: makeUserName(7),
+  //     password: student.password,
+  //     photoURL: student.studentImage,
+  //     disabled: false,
+  //   });
 
-    const usersDoc = await admin
-      .firestore()
-      .collection("users")
-      .add({
-        firstName: student.firstName,
-        lastName: student.lastName,
-        middleName: student.middleName,
+  //   const usersDoc = await admin
+  //     .firestore()
+  //     .collection("users")
+  //     .add({
+  //       firstName: student.firstName,
+  //       lastName: student.lastName,
+  //       middleName: student.middleName,
 
-        email: student.email,
-        password: student.password,
-        displayName: makeUserName(7),
+  //       email: student.email,
+  //       password: student.password,
+  //       displayName: makeUserName(7),
 
-        avatarImage: student.studentImage,
-        userRole: "Student",
-        userUID: userRef.uid,
-        createdAt: admin.firestore.FieldValue.serverTimestamp(),
-        isArchived: false,
-        isEnabled: true,
-      });
+  //       avatarImage: student.studentImage,
+  //       userRole: "Student",
+  //       userUID: userRef.uid,
+  //       createdAt: admin.firestore.FieldValue.serverTimestamp(),
+  //       isArchived: false,
+  //       isEnabled: true,
+  //     });
 
-    await admin
-      .firestore()
-      .collection("students")
-      .add({
-        ...student,
-        // studentEntry: Number(student.studentEntry),
-        studentImage: student.studentImage,
-        userUID: userRef.uid,
-        userDocID: usersDoc.id,
-        createdAt: admin.firestore.FieldValue.serverTimestamp(),
-        isArchived: false,
-        isEnabled: true,
-      });
-  }
+  //   await admin
+  //     .firestore()
+  //     .collection("students")
+  //     .add({
+  //       ...student,
+  //       // studentEntry: Number(student.studentEntry),
+  //       studentImage: student.studentImage,
+  //       userUID: userRef.uid,
+  //       userDocID: usersDoc.id,
+  //       createdAt: admin.firestore.FieldValue.serverTimestamp(),
+  //       isArchived: false,
+  //       isEnabled: true,
+  //     });
+  // }
+
+  console.log(students);
 };
 
 const updateStudent = async ({
