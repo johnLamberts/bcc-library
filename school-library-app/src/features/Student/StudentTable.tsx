@@ -196,9 +196,9 @@ const StudentTable = () => {
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleImportLevel = async (values: any) => {
-    createImportStudents(values);
+    await createImportStudents(values);
 
-    close();
+    close?.();
   };
 
   const table = useMantineReactTable({
@@ -369,6 +369,12 @@ const StudentTable = () => {
             leftSection={<IconPlus size={14} />}
             bg={" var(--mantine-color-red-light)"}
             color={" var(--mantine-color-red-light-color)"}
+            disabled={
+              isImportingStudents ||
+              isCreatingUser ||
+              isUpdatingStatus ||
+              isUpdating
+            }
           >
             Add Student
           </Button>
@@ -379,6 +385,12 @@ const StudentTable = () => {
             leftSection={<IconFileDatabase size={14} />}
             bg={" var(--mantine-color-red-light)"}
             color={" var(--mantine-color-red-light-color)"}
+            disabled={
+              isImportingStudents ||
+              isCreatingUser ||
+              isUpdatingStatus ||
+              isUpdating
+            }
           >
             Import Student
           </Button>
@@ -390,6 +402,12 @@ const StudentTable = () => {
             leftSection={<IconPlus size={14} />}
             bg={" var(--mantine-color-red-light)"}
             color={" var(--mantine-color-red-light-color)"}
+            disabled={
+              isImportingStudents ||
+              isCreatingUser ||
+              isUpdatingStatus ||
+              isUpdating
+            }
           >
             Add Student
           </Button>
@@ -400,6 +418,12 @@ const StudentTable = () => {
             leftSection={<IconFileDatabase size={14} />}
             bg={" var(--mantine-color-red-light)"}
             color={" var(--mantine-color-red-light-color)"}
+            disabled={
+              isImportingStudents ||
+              isCreatingUser ||
+              isUpdatingStatus ||
+              isUpdating
+            }
           >
             Import Student
           </Button>
@@ -412,6 +436,12 @@ const StudentTable = () => {
             leftSection={<IconPlus size={14} />}
             bg={" var(--mantine-color-red-light)"}
             color={" var(--mantine-color-red-light-color)"}
+            disabled={
+              isImportingStudents ||
+              isCreatingUser ||
+              isUpdatingStatus ||
+              isUpdating
+            }
           >
             Add Student
           </Button>

@@ -2,14 +2,14 @@
 import { useQueryClient, useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { FIRESTORE_COLLECTION_QUERY_KEY } from "src/shared/enums";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { useState } from "react";
 
 export function useImportStudents() {
   const queryClient = useQueryClient();
   const [progressTracker, setProgressTracker] = useState(0);
 
-  const { isPending: isImportingStudents, mutate: createImportStudents } =
+  const { isPending: isImportingStudents, mutateAsync: createImportStudents } =
     useMutation({
       mutationFn: async (students: any[]) => {
         const totalStudents = students.length;
@@ -39,7 +39,12 @@ export function useImportStudents() {
           queryKey: [FIRESTORE_COLLECTION_QUERY_KEY.STUDENT],
         });
       },
-      onError: (err) => toast(`Error occured: ${err.message}`),
+      onError: (err) => {
+        if (err instanceof AxiosError) {
+          toast(`Error occured: ${err.response?.data.error}`);
+          console.log(err.response?.data.error);
+        }
+      },
     });
 
   return { isImportingStudents, createImportStudents, progressTracker };

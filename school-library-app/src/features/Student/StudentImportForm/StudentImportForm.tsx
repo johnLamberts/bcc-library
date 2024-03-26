@@ -1,6 +1,14 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import Form from "@components/Form/Form";
-import { Box, Divider, FileInput, LoadingOverlay } from "@mantine/core";
+import {
+  Box,
+  Divider,
+  FileInput,
+  Group,
+  LoadingOverlay,
+  Progress,
+  Text,
+} from "@mantine/core";
 import { MRT_RowData, MRT_TableInstance } from "mantine-react-table";
 import { Controller, FormProvider, useForm } from "react-hook-form";
 import * as XLSX from "xlsx";
@@ -87,7 +95,40 @@ const StudentImportForm = <TData extends MRT_RowData>({
           visible={table.getState().isSaving}
           zIndex={1000}
           overlayProps={{ radius: "sm", blur: 2 }}
-          loaderProps={{ children: `${progressTracker}%` }}
+          loaderProps={{
+            width: "80vw",
+            children: (
+              <>
+                <Progress
+                  value={progressTracker as number}
+                  w="20rem"
+                  transitionDuration={200}
+                />
+                <Group justify="space-between" mt={"xs"}>
+                  <Text ff="Montserrat" size={"0.5rem"}>
+                    {(progressTracker as number) >= 0 &&
+                      (progressTracker as number) < 25 &&
+                      "Preparing for your documents"}
+                    {(progressTracker as number) >= 26 &&
+                      (progressTracker as number) < 48 &&
+                      "Checking all data"}
+                    {(progressTracker as number) >= 49 &&
+                      (progressTracker as number) < 79 &&
+                      "Processing data"}
+                    {(progressTracker as number) >= 80 &&
+                      (progressTracker as number) < 99 &&
+                      "Almost there..."}
+                    {(progressTracker as number) === 100 &&
+                      "Processing completed. Data imported successfully!"}
+                    {/* {progressTracker ===  && "Preparing for your documents"} */}
+                  </Text>
+                  <Text ff="Montserrat" size={"0.5rem"}>
+                    {progressTracker}%
+                  </Text>
+                </Group>
+              </>
+            ),
+          }}
         />
 
         <Form onSubmit={form.handleSubmit(onSubmit)}>
