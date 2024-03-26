@@ -32,7 +32,7 @@ const addUser = async (user: Partial<IUser>) => {
         data: {
           ...user,
           avatarImage:
-            "https://firebasestorage.googleapis.com/v0/b/zidel-posev.appspot.com/o/user.png?alt=media&token=883b6c53-4b75-4f60-a741-abe99f992fb7",
+            "https://firebasestorage.googleapis.com/v0/b/library-management-syste-fb3e9.appspot.com/o/def_user.png?alt=media&token=b3ea39b4-cba7-4095-8e6c-6996848f0391",
         },
       });
     } else {
