@@ -65,6 +65,17 @@ const importStudents = async (req: Request, res: Response) => {
   try {
     const data = req.body;
 
+    let progress = 0;
+
+    // Function to emit progress updates
+    const progressCallback = (currentProgress: number) => {
+      if (currentProgress > progress) {
+        progress = currentProgress;
+        // Emit progress update to the client (optional)
+        console.log(`Progress: ${progress}%`);
+      }
+    };
+
     const students = await StudentService.importStudents(data);
 
     res.send({
