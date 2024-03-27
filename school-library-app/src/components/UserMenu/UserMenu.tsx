@@ -36,31 +36,28 @@ export default function UserMenu() {
   const navigate = useNavigate();
 
   const { user } = useCurrentUser();
-  const stats = [
-    { title: "Distance", value: "27.4 km" },
-    { title: "Avg. speed", value: "9.6 km/h" },
-    { title: "Score", value: "88/100" },
-  ];
-  const items = stats.map((stat) => (
-    <div key={stat.title}>
-      <Text size="xs" color="dimmed">
-        {stat.title}
-      </Text>
-      <Text fw={500} size="sm">
-        {stat.value}
-      </Text>
-    </div>
-  ));
+  // const stats = [
+  //   { title: "Distance", value: "27.4 km" },
+  //   { title: "Avg. speed", value: "9.6 km/h" },
+  //   { title: "Score", value: "88/100" },
+  // ];
+  // const items = stats.map((stat) => (
+  //   <div key={stat.title}>
+  //     <Text size="xs" color="dimmed">
+  //       {stat.title}
+  //     </Text>
+  //     <Text fw={500} size="sm">
+  //       {stat.value}
+  //     </Text>
+  //   </div>
+  // ));
   const iconStyle = { width: rem(12), height: rem(12) };
   return (
     <>
       <Menu
-        width={260}
-        position="bottom-end"
         transitionProps={{ transition: "pop-top-right" }}
         onClose={() => setUserMenuOpened(false)}
         onOpen={() => setUserMenuOpened(true)}
-        withinPortal
       >
         <Menu.Target>
           <UnstyledButton
