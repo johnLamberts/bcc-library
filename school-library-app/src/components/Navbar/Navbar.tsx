@@ -18,6 +18,7 @@ import { IconCategory2 } from "@tabler/icons-react";
 import LinkGroups from "./LinkGroups";
 import classes from "./Navbar.module.css";
 import Logo from "@components/Logo/Logo";
+import { useMediaQuery } from "@mantine/hooks";
 
 interface NavbarProps {
   opened: boolean;
@@ -169,30 +170,40 @@ const mainFeatures = [
 ];
 
 export default function Navbar({ opened, toggle }: NavbarProps) {
+  // const matches = useMediaQuery("(min-width: $mantine-breakpoint-xs)");
+
+  // console.log(matches);
   return (
-    <nav className={classes.navbar}>
-      <Box className={classes.header}>
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "flex-end",
-            alignItems: "end",
-          }}
-        >
-          <Burger opened={opened} onClick={toggle} hiddenFrom="sm" size="sm" />
-        </div>
-        <Logo />
-      </Box>
+    <>
+      <nav className={classes.navbar}>
+        <Box className={classes.header}>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "flex-end",
+              alignItems: "end",
+            }}
+          >
+            <Burger
+              opened={opened}
+              onClick={toggle}
+              hiddenFrom="sm"
+              size="sm"
+            />
+          </div>
+          <Logo />
+        </Box>
 
-      <ScrollArea className={classes.links}>
-        <div className={classes.linksInner}>
-          <LinkGroups items={mainFeatures} />
-        </div>
-      </ScrollArea>
+        <ScrollArea className={classes.links}>
+          <div className={classes.linksInner}>
+            <LinkGroups items={mainFeatures} />
+          </div>
+        </ScrollArea>
 
-      <div className={classes.footer}>
-        <Button />
-      </div>
-    </nav>
+        <div className={classes.footer}>
+          <Button />
+        </div>
+      </nav>
+    </>
   );
 }
