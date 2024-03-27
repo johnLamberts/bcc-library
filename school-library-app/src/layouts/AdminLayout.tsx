@@ -1,6 +1,7 @@
 import ModeToggle from "@components/ModeToggle/ModeToggle";
 import Navbar from "@components/Navbar/Navbar";
 import UserMenu from "@components/UserMenu/UserMenu";
+import WrapperUserMode from "@components/WrapperUserMode";
 import { AppShell, Burger, Group, ScrollArea } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { Outlet } from "react-router-dom";
@@ -38,9 +39,10 @@ export default function AdminLayout() {
               />
             </div>
 
-            <Group>
-              <UserMenu />
-              <ModeToggle />
+            <Group h="100%" px="md" justify="space-between">
+              <WrapperUserMode />
+              {/* <div>1</div>
+              <div>2</div> */}
             </Group>
           </Group>
         </AppShell.Header>
@@ -69,8 +71,8 @@ export default function AdminLayout() {
                 "calc(100vh - var(--mantine-header-height, 0px) - var(--mantine-footer-height, 0px))", // viewport height - height of header - height of footer
             }}
           > */}
-          <Outlet />
           {/* </ScrollArea> */}
+          <Outlet />
         </AppShell.Main>
       </AppShell>
     </>

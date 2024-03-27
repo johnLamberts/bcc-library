@@ -1,125 +1,130 @@
 import {
-  Group,
-  Menu,
   UnstyledButton,
+  Group,
   Avatar,
-  rem,
+  Menu,
   Text,
+  rem,
+  Box,
+  Box,
   Modal,
   Tabs,
-  Box,
 } from "@mantine/core";
 import {
-  IconChevronDown,
-  IconSettings,
-  IconLogout,
   IconAt,
-  IconPhoneCall,
+  IconChevronRight,
+  IconLogout,
   IconMessageCircle,
+  IconPhoneCall,
   IconPhoto,
+  IconSettings,
 } from "@tabler/icons-react";
-import { useState } from "react";
-import classes from "./user-menu.module.css";
-
-import cn from "clsx";
-import useLogout from "@pages/Authentication/hooks/useLogout";
+import { forwardRef } from "react";
+import ModeToggle from "./ModeToggle/ModeToggle";
+import UserMenu from "./UserMenu/UserMenu";
 import useCurrentUser from "@pages/Authentication/hooks/useCurrentUser";
-import { useDisclosure } from "@mantine/hooks";
+import useLogout from "@pages/Authentication/hooks/useLogout";
 import { useNavigate } from "react-router-dom";
+import { useDisclosure } from "@mantine/hooks";
+import classes from "./UserMenu/user-menu.module.css";
 
-export default function UserMenu() {
-  const [userMenuOpened, setUserMenuOpened] = useState(false);
+interface UserButtonProps extends React.ComponentPropsWithoutRef<"button"> {
+  image: string;
+  name: string;
+  email: string;
+  icon?: React.ReactNode;
+}
+const UserButton = forwardRef<HTMLButtonElement, UserButtonProps>(
+  ({ image, name, email, icon, ...others }: UserButtonProps, ref) => (
+    <UnstyledButton
+      ref={ref}
+      style={{
+        color: "var(--mantine-color-text)",
+        borderRadius: "var(--mantine-radius-sm)",
+      }}
+      {...others}
+    >
+      <Group>
+        <Avatar src={image} radius="xl" />
+
+        <div style={{ flex: 1 }}>
+          <Text size="sm" fw={500}>
+            {name}
+          </Text>
+
+          <Text c="dimmed" size="xs">
+            {email}
+          </Text>
+        </div>
+
+        {icon || <IconChevronRight size="1rem" />}
+      </Group>
+    </UnstyledButton>
+  )
+);
+
+const WrapperUserMode = () => {
+  const { user } = useCurrentUser();
   const [opened, { open, close }] = useDisclosure(false);
 
   const { logoutUser } = useLogout();
 
   const navigate = useNavigate();
-
-  const { user } = useCurrentUser();
-  // const stats = [
-  //   { title: "Distance", value: "27.4 km" },
-  //   { title: "Avg. speed", value: "9.6 km/h" },
-  //   { title: "Score", value: "88/100" },
-  // ];
-  // const items = stats.map((stat) => (
-  //   <div key={stat.title}>
-  //     <Text size="xs" color="dimmed">
-  //       {stat.title}
-  //     </Text>
-  //     <Text fw={500} size="sm">
-  //       {stat.value}
-  //     </Text>
-  //   </div>
-  // ));
   const iconStyle = { width: rem(12), height: rem(12) };
   return (
     <>
-      <Menu
-        transitionProps={{ transition: "pop-top-right" }}
-        onClose={() => setUserMenuOpened(false)}
-        onOpen={() => setUserMenuOpened(true)}
-      >
-        <Menu.Target>
-          <UnstyledButton
-            className={cn(classes.user, {
-              [classes.userActive]: userMenuOpened,
-            })}
-          >
-            <Group gap={7}>
-              <Avatar
-                src={user?.avatarImage as string}
-                alt={user?.email}
-                radius="xl"
-                size={36}
-              />
-              <Text fw={500} size="sm" lh={1} mr={3}>
-                {user?.firstName} {user?.middleName} {user?.lastName}
-              </Text>
-              <IconChevronDown
-                style={{ width: rem(12), height: rem(12) }}
-                stroke={1.5}
-              />
-            </Group>
-          </UnstyledButton>
-        </Menu.Target>
-        <Menu.Dropdown>
-          <Menu.Label>Settings</Menu.Label>
-          <Menu.Item
-            leftSection={
-              <IconSettings
-                style={{ width: rem(16), height: rem(16) }}
-                stroke={1.5}
-              />
-            }
-            onClick={open}
-          >
-            Profile
-          </Menu.Item>
-          <Menu.Item
-            leftSection={
-              <IconSettings
-                style={{ width: rem(16), height: rem(16) }}
-                stroke={1.5}
-              />
-            }
-            onClick={() => navigate("/library")}
-          >
-            Go to Library Page
-          </Menu.Item>
+      <UserMenu />
+      <Box hiddenFrom="xs">
+        <Menu withArrow>
+          <Menu.Target>
+            <UserButton
+              image={user?.avatarImage as string}
+              name={`${user?.firstName} ${user?.middleName} ${user?.lastName}`}
+              email={user?.email as string}
+            />
+          </Menu.Target>
+          {/* ... menu items */}
 
-          <Menu.Item
-            leftSection={
-              <IconLogout
-                style={{ width: rem(16), height: rem(16) }}
-                stroke={1.5}
-              />
-            }
-            onClick={() => logoutUser()}
-          >
-            Logout
-          </Menu.Item>
-        </Menu.Dropdown>
-      </Menu>
+          <Menu.Dropdown>
+            <Menu.Label>Settings</Menu.Label>
+            <Menu.Item
+              leftSection={
+                <IconSettings
+                  style={{ width: rem(16), height: rem(16) }}
+                  stroke={1.5}
+                />
+              }
+              onClick={open}
+            >
+              Profile
+            </Menu.Item>
+            <Menu.Item
+              leftSection={
+                <IconSettings
+                  style={{ width: rem(16), height: rem(16) }}
+                  stroke={1.5}
+                />
+              }
+              onClick={() => navigate("/library")}
+            >
+              Go to Library Page
+            </Menu.Item>
+
+            <Menu.Item
+              leftSection={
+                <IconLogout
+                  style={{ width: rem(16), height: rem(16) }}
+                  stroke={1.5}
+                />
+              }
+              onClick={() => logoutUser()}
+            >
+              Logout
+            </Menu.Item>
+          </Menu.Dropdown>
+        </Menu>
+      </Box>
+      <ModeToggle />
 
       <Modal.Root opened={opened} onClose={close} centered size={"xl"}>
         <Modal.Overlay />
@@ -200,4 +205,5 @@ export default function UserMenu() {
       </Modal.Root>
     </>
   );
-}
+};
+export default WrapperUserMode;
