@@ -264,7 +264,7 @@ const LevelEducationTable = () => {
             Add Level
           </Button>
         </Group>
-        <Group hiddenFrom="sm">
+        <Group hiddenFrom="md">
           <Button
             variant="light"
             onClick={() => table.setCreatingRow(true)}

@@ -214,6 +214,8 @@ const addApproveRequestedBook = async (approve: ICirculation) => {
 const addClaimedReservedBook = async (reserved: ICirculation) => {
   const { id: reservedId, ...otherValues } = reserved;
 
+  console.log(otherValues);
+
   const borrowTransactionRef = await addDoc(
     collection(firestore, FIRESTORE_COLLECTION_QUERY_KEY.BORROW_TRANSACTION),
     {
@@ -239,7 +241,6 @@ const addClaimedReservedBook = async (reserved: ICirculation) => {
       firstName: otherValues.firstName,
       middleName: otherValues.middleName,
       lastName: otherValues.lastName,
-      borrowersNumber: otherValues.borrowersNumber,
       booksPrice: otherValues.bookPrice,
       status: "Active",
       createdAt: serverTimestamp(),
@@ -359,7 +360,7 @@ const addReturnedBook = async (returns: Partial<ICirculation>) => {
     firstName,
     middleName,
     lastName,
-    borrowersNumber,
+
     borrowersId,
     status,
     booksBorrowedId,
@@ -438,7 +439,7 @@ const addReturnedBook = async (returns: Partial<ICirculation>) => {
         firstName,
         middleName,
         lastName,
-        borrowersNumber,
+
         booksBorrowedId,
         bookType,
         status: "Returned",
@@ -483,7 +484,6 @@ const addReturnedBook = async (returns: Partial<ICirculation>) => {
       firstName,
       middleName,
       lastName,
-      borrowersNumber,
 
       status,
       createdAt: serverTimestamp(),

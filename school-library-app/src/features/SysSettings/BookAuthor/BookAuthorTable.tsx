@@ -230,8 +230,8 @@ const BookAuthorTable = () => {
       <Group
         justify="end"
         pos={"absolute"}
-        top={"1rem"}
         right={"1rem"}
+        top={"5rem"}
         visibleFrom="md"
       >
         <Button
@@ -244,7 +244,7 @@ const BookAuthorTable = () => {
           Add Author
         </Button>
       </Group>
-      <Group hiddenFrom="sm">
+      <Group hiddenFrom="md">
         <Button
           variant="light"
           onClick={() => table.setCreatingRow(true)}
