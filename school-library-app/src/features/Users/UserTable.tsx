@@ -420,7 +420,7 @@ const UserTable = () => {
             bg={" var(--mantine-color-red-light)"}
             color={" var(--mantine-color-red-light-color)"}
           >
-            Add User Test
+            Add User
           </Button>
         </Group>
         <Group hiddenFrom="md">

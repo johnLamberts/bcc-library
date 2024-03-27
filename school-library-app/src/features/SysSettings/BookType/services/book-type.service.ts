@@ -144,9 +144,13 @@ const updateBookType = async (
           FIRESTORE_COLLECTION_QUERY_KEY.ALL_BOOKS_TRANSACTION
         ),
         where("bookType", "==", payload.types),
-        where("status", "==", "Returned")
+        where("status", "==", "Returned"),
+        where("status", "in", ["Returned", "Cancelled"])
       )
     );
+
+    console.log(allTransactionRef.docs.map(console.log));
+
     const completePaymentRef = await getDocs(
       query(
         collection(firestore, FIRESTORE_COLLECTION_QUERY_KEY.COMPLETE_PAYMENT),
@@ -173,16 +177,8 @@ const updateBookType = async (
         where("bookType", "==", payload.types)
       )
     );
-    console.log(
-      allTransactionRef.size,
-      bookConditionRef.size,
-      completePaymentRef.size,
-      booksRef.size
-    );
 
-    const batch = writeBatch(firestore);
-
-    batch.update(
+    await updateDoc(
       doc(firestore, FIRESTORE_COLLECTION_QUERY_KEY.BOOK_TYPE, docId as string),
       {
         ...payload,
@@ -190,68 +186,71 @@ const updateBookType = async (
       }
     );
 
-    allTransactionRef.docs.forEach((docsId) =>
-      batch.update(
-        doc(
-          firestore,
-          FIRESTORE_COLLECTION_QUERY_KEY.ALL_BOOKS_TRANSACTION,
-          docsId.id
-        ),
-        {
-          bookType: payload.bookType,
-        }
-      )
+    allTransactionRef.docs.forEach(
+      async (docsId) =>
+        await updateDoc(
+          doc(
+            firestore,
+            FIRESTORE_COLLECTION_QUERY_KEY.ALL_BOOKS_TRANSACTION,
+            docsId.id
+          ),
+          {
+            bookType: payload.bookType,
+          }
+        )
     );
 
-    completePaymentRef.docs.forEach((docsId) =>
-      batch.update(
-        doc(
-          firestore,
-          FIRESTORE_COLLECTION_QUERY_KEY.COMPLETE_PAYMENT,
-          docsId.id
-        ),
-        {
-          bookType: payload.bookType,
-        }
-      )
+    completePaymentRef.docs.forEach(
+      async (docsId) =>
+        await updateDoc(
+          doc(
+            firestore,
+            FIRESTORE_COLLECTION_QUERY_KEY.COMPLETE_PAYMENT,
+            docsId.id
+          ),
+          {
+            bookType: payload.bookType,
+          }
+        )
     );
 
-    bookConditionRef.docs.forEach((docsId) =>
-      batch.update(
-        doc(
-          firestore,
-          FIRESTORE_COLLECTION_QUERY_KEY.BOOKS_RETURN_CONDITION,
-          docsId.id
-        ),
-        {
-          bookType: payload.bookType,
-        }
-      )
+    bookConditionRef.docs.forEach(
+      async (docsId) =>
+        await updateDoc(
+          doc(
+            firestore,
+            FIRESTORE_COLLECTION_QUERY_KEY.BOOKS_RETURN_CONDITION,
+            docsId.id
+          ),
+          {
+            bookType: payload.bookType,
+          }
+        )
     );
 
-    borowwersRef.docs.forEach((docsId) =>
-      batch.update(
-        doc(
-          firestore,
-          FIRESTORE_COLLECTION_QUERY_KEY.BORROWERS_HISTORY_TRANSACTION,
-          docsId.id
-        ),
-        {
-          bookType: payload.bookType,
-        }
-      )
+    borowwersRef.docs.forEach(
+      async (docsId) =>
+        await updateDoc(
+          doc(
+            firestore,
+            FIRESTORE_COLLECTION_QUERY_KEY.BORROWERS_HISTORY_TRANSACTION,
+            docsId.id
+          ),
+          {
+            bookType: payload.bookType,
+          }
+        )
     );
 
-    booksRef.docs.forEach((docsId) =>
-      batch.update(
-        doc(firestore, FIRESTORE_COLLECTION_QUERY_KEY.CATALOGUE, docsId.id),
-        {
-          bookType: payload.bookType,
-        }
-      )
+    booksRef.docs.forEach(
+      async (docsId) =>
+        await updateDoc(
+          doc(firestore, FIRESTORE_COLLECTION_QUERY_KEY.CATALOGUE, docsId.id),
+          {
+            bookType: payload.bookType,
+          }
+        )
     );
-
-    batch.commit();
   } catch (err) {
     throw new Error(`${err}`);
   }

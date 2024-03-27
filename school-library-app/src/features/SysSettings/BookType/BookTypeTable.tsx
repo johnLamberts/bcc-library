@@ -245,7 +245,7 @@ const BookTypeTable = () => {
             Add Book Genre
           </Button>
         </Group>
-        <Group hiddenFrom="sm">
+        <Group hiddenFrom="md">
           <Button
             variant="light"
             onClick={() => table.setCreatingRow(true)}
