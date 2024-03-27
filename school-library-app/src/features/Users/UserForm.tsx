@@ -78,7 +78,7 @@ export default function UserForm<TData extends MRT_RowData>({
         <Form onSubmit={form.handleSubmit(onSubmit)}>
           <BasicInformationForm />
 
-          <UserSettingsInfoForm />
+          <UserSettingsInfoForm table={table} row={row} />
 
           <UserImageForm table={table} row={row} />
 
