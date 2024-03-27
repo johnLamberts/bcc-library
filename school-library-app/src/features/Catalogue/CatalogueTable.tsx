@@ -15,6 +15,7 @@ import {
   IconArchive,
   IconDots,
   IconEdit,
+  IconFileDatabase,
   IconLockOff,
   IconLockOpen,
   IconPlus,
@@ -337,30 +338,6 @@ const CatalogueTable = () => {
 
   return (
     <>
-      {/* <Box maw={"75.2vw"}>
-        <Group justify="space-between">
-          <Box className={classes.highlight}>
-            <Text fz={"xl"} fw={"bold"} c={"red"}>
-              Catalogue Management
-            </Text>
-          </Box>
-          <Group>
-            <Button
-              variant="light"
-              onClick={() => table.setCreatingRow(true)}
-              leftSection={<IconPlus size={14} />}
-              bg={" var(--mantine-color-red-light)"}
-              color={" var(--mantine-color-red-light-color)"}
-            >
-              Add Catalogue
-            </Button>
-          </Group>
-        </Group>
-
-        <Box mt={"lg"}>
-          <MantineReactTable table={table} />
-        </Box>
-      </Box> */}
       <Box>
         <Group
           justify="end"
@@ -376,7 +353,17 @@ const CatalogueTable = () => {
             bg={" var(--mantine-color-red-light)"}
             color={" var(--mantine-color-red-light-color)"}
           >
-            Add Book Catalogue
+            Add Book
+          </Button>
+
+          <Button
+            variant="light"
+            onClick={() => table.setCreatingRow(true)}
+            leftSection={<IconFileDatabase size={14} />}
+            bg={" var(--mantine-color-yellow-light)"}
+            color={" var(--mantine-color-yellow-light-color)"}
+          >
+            Import Book
           </Button>
         </Group>
         <Group hiddenFrom="md">
@@ -387,7 +374,17 @@ const CatalogueTable = () => {
             bg={" var(--mantine-color-red-light)"}
             color={" var(--mantine-color-red-light-color)"}
           >
-            Add Book Catalogue
+            Add Book
+          </Button>
+
+          <Button
+            variant="light"
+            onClick={() => table.setCreatingRow(true)}
+            leftSection={<IconFileDatabase size={14} />}
+            bg={" var(--mantine-color-yellow-light)"}
+            color={" var(--mantine-color-yellow-light-color)"}
+          >
+            Import Book
           </Button>
         </Group>
 

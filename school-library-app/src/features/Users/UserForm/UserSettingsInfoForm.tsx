@@ -1,11 +1,20 @@
 import Form from "@components/Form/Form";
 import useReadUserRole from "@features/SysSettings/UserRole/hooks/useReadUserRole";
 import { PasswordInput, Select, TextInput } from "@mantine/core";
+import { MRT_RowData, MRT_TableInstance, MRT_Row } from "mantine-react-table";
 import { useEffect } from "react";
 import { Controller, useFormContext } from "react-hook-form";
 import generateRandomPassword from "src/utils/helpers/generateRandomPassword";
+interface UserImageProps<TData extends MRT_RowData> {
+  table?: MRT_TableInstance<TData>;
+  row?: MRT_Row<TData>;
+}
 
-const UserSettingsInfoForm = () => {
+const UserSettingsInfoForm = <TData extends MRT_RowData>({
+  table,
+  row,
+}: UserImageProps<TData>) => {
+  const isEditing = table.getState().editingRow?.id === row.id;
   const {
     register,
     control,
@@ -17,11 +26,11 @@ const UserSettingsInfoForm = () => {
   const { data: userRole = [], isLoading } = useReadUserRole();
 
   useEffect(() => {
-    if (watch("password") === "") {
+    if (!isEditing) {
       setValue("password", generateRandomPassword(8));
       return;
     }
-  }, [setValue, watch]);
+  }, [isEditing, setValue, watch]);
 
   return (
     <>

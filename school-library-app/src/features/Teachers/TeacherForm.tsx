@@ -131,6 +131,7 @@ export default function TeacherForm<TData extends MRT_RowData>({
             <Form.SubmitButton
               loading={table.getState().isSaving}
               color="red.8"
+              alias="Save Teacher"
             />
           </Box>
         </Form>
