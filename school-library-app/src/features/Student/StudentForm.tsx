@@ -44,6 +44,8 @@ export default function StudentForm<TData extends MRT_RowData>({
         },
   });
 
+  console.log(row.original);
+
   const [edit, setEdit] = useState<boolean>(true);
 
   const onSubmit = useCallback(
@@ -127,7 +129,7 @@ export default function StudentForm<TData extends MRT_RowData>({
         </Form.Grid>
         <BasicInformationForm table={table} row={row} />
 
-        <EducationForm />
+        <EducationForm table={table} row={row} />
 
         <StudentImageForm table={table} row={row} />
 
