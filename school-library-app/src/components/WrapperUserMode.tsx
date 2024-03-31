@@ -6,7 +6,6 @@ import {
   Text,
   rem,
   Box,
-  Box,
   Modal,
   Tabs,
 } from "@mantine/core";
