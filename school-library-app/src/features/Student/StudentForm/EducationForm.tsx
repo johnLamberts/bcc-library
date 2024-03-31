@@ -4,10 +4,21 @@ import useReadGradeLevel from "@features/SysSettings/GradeLevel/useReadGradeLeve
 import useReadGradeSection from "@features/SysSettings/GradeSection/useReadGradeSection";
 import useReadEducation from "@features/SysSettings/LevelEducation/useReadEducation";
 import { Select } from "@mantine/core";
+import { MRT_RowData, MRT_TableInstance, MRT_Row } from "mantine-react-table";
 import { Controller, useFormContext } from "react-hook-form";
 
-const EducationForm = () => {
+interface EducationFormProps<TData extends MRT_RowData> {
+  table: MRT_TableInstance<TData>;
+  row: MRT_Row<TData>;
+}
+
+const EducationForm = <TData extends MRT_RowData>({
+  table,
+  row,
+}: EducationFormProps<TData>) => {
   const { control, watch, setValue } = useFormContext();
+
+  const isEditing = table.getState().editingRow?.id === row.id;
 
   const {
     data: levelOfEducationData = [],
@@ -23,7 +34,12 @@ const EducationForm = () => {
   const { data: gradeSectionData = [], isFetching: isFetchingSectionevel } =
     useReadGradeSection();
 
-  const selectedLevelOfEducation = watch("levelOfEducation");
+  const selectedLevelOfEducation = isEditing
+    ? row.original.levelOfEducation
+    : watch("levelOfEducation");
+  const selectedGradeLevel = isEditing
+    ? row.original.gradeLevel
+    : watch("gradeLevel");
   const filteredCourses = courseData
     .filter((item) => item?.levelOfEducation === selectedLevelOfEducation)
     .map((item) => item?.academicCourse || "");
@@ -35,7 +51,7 @@ const EducationForm = () => {
     .map((level) => level.gradeLevel || "");
 
   const filterGradeSection = gradeSectionData
-    .filter((gradeLevel) => gradeLevel.gradeLevel === watch("gradeLevel"))
+    .filter((gradeLevel) => gradeLevel.gradeLevel === selectedGradeLevel)
     .map((level) => level.gradeSection || "");
 
   const handleChangeLevel = (e: string | null) => {
