@@ -9,7 +9,7 @@ const sendEmailReturned = async (snapshot: Record<string, any>) => {
   const msg = {
     to: snapshot.borrowersEmail,
     subject: "",
-    from: "librsystem.e@gmail.com",
+    from: "kuwago@bcc-opac-library.site",
     templateId: process.env.VITE_RETURNED_TEMPLATE_ID,
     dynamic_template_data: {
       fullName: snapshot.fullName,
@@ -25,7 +25,7 @@ const sendEmailReturnedWithPendingPayment = async (
   const msg = {
     to: snapshot.borrowersEmail,
     subject: "",
-    from: "librsystem.e@gmail.com",
+    from: "kuwago@bcc-opac-library.site",
     templateId: process.env.VITE_RETURNED_WITH_PENDING_PAYMENT,
     dynamic_template_data: {
       fullName: snapshot.fullName,
@@ -41,7 +41,7 @@ const sendEmailCompletedTransaction = async (snapshot: Record<string, any>) => {
   const msg = {
     to: snapshot.borrowersEmail,
     subject: "",
-    from: "librsystem.e@gmail.com",
+    from: "kuwago@bcc-opac-library.site",
     templateId: process.env.VITE_COMPLETED_TRANSACTION,
     dynamic_template_data: {
       fullName: snapshot.fullName,
@@ -56,7 +56,7 @@ const sendOverdueEmailReturned = async (snapshot: Record<string, any>) => {
   const expiryDate = new Date(snapshot.expiryTime).toLocaleString();
   const msg = {
     to: snapshot.borrowersEmail,
-    from: "librsystem.e@gmail.com",
+    from: "kuwago@bcc-opac-library.site",
     templateId: process.env.VITE_RETURNED_OVERDUE_TEMPLATE_ID,
     dynamic_template_data: {
       fullName: snapshot.fullName,
@@ -74,7 +74,7 @@ const sendRequestedEmail = async (snapshot: Record<string, any>) => {
   const msg = {
     to: snapshot.borrowersEmail,
     subject: "",
-    from: "librsystem.e@gmail.com",
+    from: "kuwago@bcc-opac-library.site",
     templateId: process.env.VITE_REQUESTED_BOOK,
     dynamic_template_data: {
       fullName: snapshot.fullName,
@@ -89,7 +89,7 @@ const sendRequestedBook = async (snapshot: Record<string, any>) => {
   const msg = {
     to: snapshot.borrowersEmail,
     subject: "",
-    from: "librsystem.e@gmail.com",
+    from: "kuwago@bcc-opac-library.site",
     templateId: process.env.VITE_REQUEST_BOOK,
     dynamic_template_data: {
       fullName: snapshot.fullName,
