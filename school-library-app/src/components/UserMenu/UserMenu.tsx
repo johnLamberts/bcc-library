@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   Group,
   Menu,
@@ -14,9 +15,9 @@ import {
   IconSettings,
   IconLogout,
   IconAt,
-  IconPhoneCall,
   IconMessageCircle,
   IconPhoto,
+  IconCalendarDot,
 } from "@tabler/icons-react";
 import { useState } from "react";
 import classes from "./user-menu.module.css";
@@ -140,44 +141,62 @@ export default function UserMenu() {
               </Tabs.List>
               <Tabs.Panel value="gallery">
                 <Box mt="xs">
-                  <Group wrap="nowrap">
-                    <Avatar
-                      src="https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/avatars/avatar-2.png"
-                      size={94}
-                      radius="md"
-                    />
-                    <div>
-                      <Text fz="xs" tt="uppercase" fw={700} c="dimmed">
-                        Software engineer
-                      </Text>
-
-                      <Text fz="lg" fw={500} className={classes.name}>
-                        Robert Glassbreaker
-                      </Text>
-
-                      <Group wrap="nowrap" gap={10} mt={3}>
-                        <IconAt
-                          stroke={1.5}
-                          size="1rem"
-                          className={classes.icon}
+                  <Tabs.Panel value="gallery">
+                    <Box mt="xs">
+                      <Group wrap="nowrap">
+                        <Avatar
+                          src={user?.avatarImage as string}
+                          size={94}
+                          radius="md"
                         />
-                        <Text fz="xs" c="dimmed">
-                          robert@glassbreaker.io
-                        </Text>
-                      </Group>
+                        <div>
+                          <Text
+                            fz="xs"
+                            tt="uppercase"
+                            fw={700}
+                            c="dimmed"
+                            ff="Montserrat"
+                          >
+                            {user?.userRole}
+                          </Text>
 
-                      <Group wrap="nowrap" gap={10} mt={5}>
-                        <IconPhoneCall
-                          stroke={1.5}
-                          size="1rem"
-                          className={classes.icon}
-                        />
-                        <Text fz="xs" c="dimmed">
-                          +11 (876) 890 56 23
-                        </Text>
+                          <Text
+                            fz="lg"
+                            fw={500}
+                            className={classes.name}
+                            ff="Montserrat"
+                          >
+                            {user?.firstName} {user?.lastName}
+                          </Text>
+
+                          <Group wrap="nowrap" gap={10} mt={3}>
+                            <IconAt
+                              stroke={1.5}
+                              size="1rem"
+                              className={classes.icon}
+                            />
+                            <Text fz="sm" ff="Montserrat">
+                              {user?.email}
+                            </Text>
+                          </Group>
+
+                          <Group wrap="nowrap" gap={10} mt={5}>
+                            <IconCalendarDot
+                              stroke={1.5}
+                              size="1rem"
+                              className={classes.icon}
+                            />
+                            <Text fz="sm" ff="Montserrat">
+                              {new Date(
+                                (user as any)?.createdAt.seconds * 1000 +
+                                  (user as any)?.createdAt.nanoseconds / 1000
+                              ).toLocaleString()}
+                            </Text>
+                          </Group>
+                        </div>
                       </Group>
-                    </div>
-                  </Group>
+                    </Box>
+                  </Tabs.Panel>
                 </Box>
               </Tabs.Panel>
 
