@@ -27,10 +27,6 @@ const currentUserProfile = async (
         )
         .at(0);
     }
-
-    if (userRole === "Teacher") {
-      console.log("Teacher");
-    }
   } catch (err) {
     throw new Error(`${(err as FirebaseError).message}`);
   }
