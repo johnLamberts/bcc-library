@@ -40,7 +40,7 @@ exports.welcomeEmailv2 = functions.firestore
 
     const msg = {
       to: result.email,
-      from: "librsystem.e@gmail.com",
+      from: "kuwago@bcc-opac-library.site",
       fullName: `${result.firstName} ${result.middleName} ${result.lastName}`,
       templateId: TEMPLATE_ID,
       dynamic_template_data: {
@@ -70,7 +70,7 @@ exports.taskRunner = functions
 
           const msg = {
             to: snapshot.borrowersEmail,
-            from: "librsystem.e@gmail.com",
+            from: "kuwago@bcc-opac-library.site",
             fullName: snapshot.borrowersName,
             templateId: OVERDUE_TEMPLATE_ID,
             dynamic_template_data: {
@@ -154,7 +154,7 @@ exports.documentReservedChecker = functions
 
           const msg = {
             to: snapshot.borrowersEmail,
-            from: "librsystem.e@gmail.com",
+            from: "kuwago@bcc-opac-library.site",
             fullName: snapshot.borrowersName,
             templateId: AUTOMATE_CANCELLED_RESERVE,
             dynamic_template_data: {
