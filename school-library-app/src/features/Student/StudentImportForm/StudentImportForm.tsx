@@ -13,6 +13,7 @@ import { MRT_RowData, MRT_TableInstance } from "mantine-react-table";
 import { Controller, FormProvider, useForm } from "react-hook-form";
 import * as XLSX from "xlsx";
 import generateRandomPassword from "src/utils/helpers/generateRandomPassword";
+import { IStudents } from "../models/student.interface";
 interface StudentImportFormProps<TData extends MRT_RowData> {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onSave: (values: any) => void;
@@ -74,13 +75,23 @@ const StudentImportForm = <TData extends MRT_RowData>({
 
       const studentParsedData = convertedData.map((entry: any) => ({
         ...entry,
+        gradeSection: entry.gradeSection,
+        gradeLevel:
+          typeof entry.gradeLevel === "number"
+            ? String(entry.gradeLevel)
+            : entry.gradeLevel,
         password: generateRandomPassword(8), // You should replace generatePassword() with your own logic to generate passwords
         studentImage:
           "https://firebasestorage.googleapis.com/v0/b/library-management-syste-fb3e9.appspot.com/o/def_user.png?alt=media&token=b3ea39b4-cba7-4095-8e6c-6996848f0391", // Replace "default_image_url" with the URL of the default image
       }));
 
-      // console.log(studentParsedData);
-      onSave(studentParsedData);
+      const studentParsed = studentParsedData.filter(
+        (student: IStudents) => student.studentNumber !== undefined
+      );
+
+      console.log(studentParsed);
+
+      onSave(studentParsed);
     };
 
     reader.readAsBinaryString(file);
