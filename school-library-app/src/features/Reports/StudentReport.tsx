@@ -6,7 +6,6 @@ import {
   Text,
   Flex,
   ScrollArea,
-  Avatar,
   Badge,
   Modal,
 } from "@mantine/core";
@@ -58,16 +57,6 @@ const StudentReportTable = () => {
         header: "Id",
         enableEditing: false,
         size: 80,
-      },
-      {
-        accessorKey: "studentImage",
-        header: "Student Picture",
-        enableColumnFilter: false,
-        Cell: ({ row }) => {
-          return (
-            <Avatar src={`${row.getValue("studentImage")}`} alt="it's me" />
-          );
-        },
       },
       {
         accessorKey: "studentNumber",

@@ -19,12 +19,12 @@ const BorrowTransactionPage = () => {
     <>
       <Group justify="space-between">
         <SegmentedControl
-          data={["Borrow List", "Request", "Reserved"]}
+          data={["Borrow List", "Pending Request", "Reserved"]}
           value={searchParams.get("bq") || "Borrow List"}
           onChange={handleParams}
         />
 
-        {searchParams.get("bq") === "Request" && (
+        {searchParams.get("bq") === "Pending Request" && (
           <Box className={classes.highlight}>
             <Text fz={"xs"} fw={"bold"} c={"red"}>
               Request Transaction
@@ -53,7 +53,7 @@ const BorrowTransactionPage = () => {
         </Box>
       )}
 
-      {searchParams.get("bq") === "Request" && (
+      {searchParams.get("bq") === "Pending Request" && (
         <Box>
           {/* <BorrowTransactionTable /> */}
           <BookRequestedTable />
