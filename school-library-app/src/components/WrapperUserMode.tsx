@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   UnstyledButton,
   Group,
@@ -154,21 +155,23 @@ const WrapperUserMode = () => {
                   Change Password
                 </Tabs.Tab>
               </Tabs.List>
+
+              {/*  */}
               <Tabs.Panel value="gallery">
                 <Box mt="xs">
                   <Group wrap="nowrap">
                     <Avatar
-                      src="https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/avatars/avatar-2.png"
+                      src={user?.avatarImage as string}
                       size={94}
                       radius="md"
                     />
                     <div>
                       <Text fz="xs" tt="uppercase" fw={700} c="dimmed">
-                        Software engineer
+                        {user?.userRole}
                       </Text>
 
                       <Text fz="lg" fw={500} className={classes.name}>
-                        Robert Glassbreaker
+                        {user?.firstName} {user?.lastName}
                       </Text>
 
                       <Group wrap="nowrap" gap={10} mt={3}>
@@ -178,7 +181,7 @@ const WrapperUserMode = () => {
                           className={classes.icon}
                         />
                         <Text fz="xs" c="dimmed">
-                          robert@glassbreaker.io
+                          {user?.email}
                         </Text>
                       </Group>
 
@@ -189,7 +192,10 @@ const WrapperUserMode = () => {
                           className={classes.icon}
                         />
                         <Text fz="xs" c="dimmed">
-                          +11 (876) 890 56 23
+                          {new Date(
+                            (user as any)?.createdAt.seconds * 1000 +
+                              (user as any)?.createdAt.nanoseconds / 1000
+                          ).toLocaleString()}
                         </Text>
                       </Group>
                     </div>

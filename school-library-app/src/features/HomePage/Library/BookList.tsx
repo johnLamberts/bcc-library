@@ -100,7 +100,11 @@ const BookList = ({
                     span={{
                       base: 12,
                       md: 6,
-                      lg: searchParams.get("viewBy") === "by-cards" ? 4 : 12,
+                      lg:
+                        searchParams.get("viewBy") === "by-cards" ||
+                        searchParams.get("viewBy") === null
+                          ? 4
+                          : 12,
                     }}
                   >
                     <Link
@@ -206,17 +210,6 @@ const BookList = ({
 
                           <Card.Section className={classes.footer}>
                             <Group justify="space-between">
-                              {/* <List>
-                           <Flex px={"xs"} gap={"xs"}>
-                             {book.genres?.[0] && (
-                               <List.Item>{book.genres[0]}</List.Item>
-                             )}
- 
-                             {book.genres?.[1] && (
-                               <List.Item>{book.genres[1]}</List.Item>
-                             )}
-                           </Flex>
-                         </List> */}
                               <Code px={"xs"}>
                                 <Group>
                                   Available Copies:
