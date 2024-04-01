@@ -383,8 +383,8 @@ const StudentTable = () => {
             variant="light"
             onClick={open}
             leftSection={<IconFileDatabase size={14} />}
-            bg={" var(--mantine-color-red-light)"}
-            color={" var(--mantine-color-red-light-color)"}
+            bg={" var(--mantine-color-yellow-light)"}
+            color={" var(--mantine-color-yellow-light-color)"}
             disabled={
               isImportingStudents ||
               isCreatingUser ||
@@ -416,8 +416,8 @@ const StudentTable = () => {
             variant="light"
             onClick={open}
             leftSection={<IconFileDatabase size={14} />}
-            bg={" var(--mantine-color-red-light)"}
-            color={" var(--mantine-color-red-light-color)"}
+            bg={" var(--mantine-color-yellow-light)"}
+            color={" var(--mantine-color-yellow-light-color)"}
             disabled={
               isImportingStudents ||
               isCreatingUser ||

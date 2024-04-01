@@ -221,8 +221,8 @@ const importStudents = async (student: TStudents) => {
       displayName: randomizeString(
         `${student.firstName} ${student.middleName} ${student.lastName}`
       ),
-      gradeSection: student.gradeSection.toString(),
-      gradeLevel: student.gradeLevel.toString(),
+      gradeSection: student.gradeSection,
+      gradeLevel: student.gradeLevel,
       studentImage: student.studentImage,
       contactNumber: student.contactNumber,
       userUID: userRef.uid,
