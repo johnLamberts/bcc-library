@@ -13,28 +13,7 @@ import {
 import classes from "@pages/ProfilePage/profile-page.module.css";
 import { IconAt, IconUser, IconNumber } from "@tabler/icons-react";
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const UserProfile = ({ user }: { user: IStudents | ITeacher | undefined }) => {
-  // const items = features.map((feature) => (
-  //   <div key={feature.title}>
-  //     <Group>
-  //       <ThemeIcon size={28} radius="md" variant="light" color="#5C0505">
-  //         <feature.icon
-  //           style={{ width: rem(24), height: rem(24) }}
-  //           stroke={1.5}
-  //         />
-  //       </ThemeIcon>
-  //       <Box>
-  //         <Text fz="lg" mt="sm" fw={500}>
-  //           {feature.title}
-  //         </Text>
-  //         <Text c="dimmed" fz="sm">
-  //           {feature.description}
-  //         </Text>
-  //       </Box>
-  //     </Group>
-  //   </div>
-  // ));
   return (
     <div className={classes.wrapper}>
       <Grid align="center">
