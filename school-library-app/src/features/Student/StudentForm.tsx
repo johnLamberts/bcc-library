@@ -34,7 +34,14 @@ export default function StudentForm<TData extends MRT_RowData>({
 
   const form = useForm<IStudents>({
     defaultValues: isEditing
-      ? row.original
+      ? {
+          ...row.original,
+          academicCourse: row.original.academicCourse,
+          gradeLevel: row.original.gradeLevel,
+          gradeSection: row.original.gradeSection,
+          levelOfEducation: row.original.levelOfEducation,
+          sex: row.original.sex,
+        }
       : {
           academicCourse: null,
           gradeLevel: null,

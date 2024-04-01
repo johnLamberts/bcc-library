@@ -222,7 +222,10 @@ const importStudents = async (student: TStudents) => {
         `${student.firstName} ${student.middleName} ${student.lastName}`
       ),
       gradeSection: student.gradeSection,
-      gradeLevel: student.gradeLevel,
+      gradeLevel:
+        typeof student.gradeLevel === "number"
+          ? String(student.gradeLevel)
+          : student.gradeLevel,
       studentImage: student.studentImage,
       contactNumber: student.contactNumber,
       userUID: userRef.uid,
