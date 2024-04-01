@@ -27,6 +27,7 @@ import {
   IconClock,
   IconCopy,
   IconSection,
+  IconUserShare,
 } from "@tabler/icons-react";
 import classes from "./book-details.module.css";
 import { IconAddressBook } from "@tabler/icons-react";
@@ -101,50 +102,6 @@ const BookDetail = () => {
       >
         <Paper withBorder p={"lg"} mt={"5rem"}>
           <>
-            {/* <Group justify="space-between">
-            <Image
-              // src={book?.bookImageCover}
-              src={
-                "https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/images/bg-10.png"
-              }
-              loading="lazy"
-              style={{
-                filter: "drop-shadow(0 0 0.75rem #ffa903)",
-              }}
-            />
-
-            <Box>
-              <Title c={"#5C0505"} fz={"5rem"}>
-                {books?.title}
-              </Title>
-              <Text>
-                {books?.authors.length === 1
-                  ? books.authors[0]
-                  : books.authors.map((author, index) =>
-                      index === books.authors.length - 1
-                        ? author
-                        : `${author}, `
-                    )}
-              </Text>
-
-              <Badge variant="dot">
-                {new Date(books.dateCreated).toLocaleString()}
-              </Badge>
-
-              <Text>{books.bookType}</Text>
-
-              <Text mt={"md"}>{books.isbn}</Text>
-              <Divider my={"lg"} />
-              <Button
-                color="#ffa903"
-                radius="md"
-                size="md"
-                rightSection={<IconBrowserCheck size={14} />}
-              >
-                Borrow Book
-              </Button>
-            </Box>
-          </Group> */}
             <Grid>
               <Grid.Col span={{ base: 12, md: 6, lg: 4 }}>
                 <Image
@@ -262,6 +219,22 @@ const BookDetail = () => {
                             {book.bookStatus}
                           </Badge>
                         )}
+                      </List.Item>
+
+                      <List.Item
+                        icon={
+                          <ThemeIcon size={20} radius="xl" color="yellow">
+                            <IconUserShare
+                              style={{ width: rem(12), height: rem(12) }}
+                              stroke={1.5}
+                            />
+                          </ThemeIcon>
+                        }
+                      >
+                        <b>Authors</b> –{" "}
+                        {book?.authors.map((author) => (
+                          <>{author},</>
+                        ))}
                       </List.Item>
 
                       <Box my={"sm"}>
