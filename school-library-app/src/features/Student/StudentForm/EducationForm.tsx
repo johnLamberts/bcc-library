@@ -47,7 +47,8 @@ const EducationForm = <TData extends MRT_RowData>({
   const { data: gradeSectionData = [], isFetching: isFetchingSectionevel } =
     useReadGradeSection();
 
-  const selectedLevelOfEducation = watch("levelOfEducation");
+  const selectedLevelOfEducation =
+    row.original.levelOfEducation || watch("levelOfEducation");
   const selectedGradeLevel = row.original.gradeLevel || watch("gradeLevel");
 
   console.log(selectedGradeLevel, selectedLevelOfEducation);
