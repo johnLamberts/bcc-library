@@ -250,6 +250,8 @@ const updateStudent = async ({
     .doc(`students/${docId}`)
     .update({
       ...student,
+      gradeSection: student.gradeSection.toString(),
+      gradeLevel: student.gradeLevel.toString(),
       studentImage: student.studentImage,
       modifiedAt: admin.firestore.FieldValue.serverTimestamp(),
       isArchived: false,
