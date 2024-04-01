@@ -26,6 +26,7 @@ import {
   IconCategory,
   IconClock,
   IconCopy,
+  IconPlus,
   IconSection,
   IconUserShare,
 } from "@tabler/icons-react";
@@ -280,9 +281,17 @@ const BookDetail = () => {
                         )}
                       </>
                     )}
-                    {/* (
-                      
-                    ) */}
+                    <Button
+                      color="yellow.9"
+                      // onClick={() => {
+                      //   open();
+                      //   handleChange("borrow_book");
+                      // }}
+                      // disabled={isRequestingBook}
+                      leftSection={<IconPlus />}
+                    >
+                      Add to favorite
+                    </Button>
                   </Flex>
                 </Container>
               </Grid.Col>
