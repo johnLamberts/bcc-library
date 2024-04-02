@@ -27,7 +27,7 @@ const CatalogueToolbar = <TData extends MRT_RowData>({
 
       {table.getColumn("bookType") && (
         <FacetedFilter
-          height="5rem"
+          height="10rem"
           column={table.getColumn("bookType")}
           title="Book Type"
           options={bookType.map((type) => ({

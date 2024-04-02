@@ -88,7 +88,7 @@ export function FacetedFilter<TData extends MRT_RowData>({
       </Popover.Target>
       <Popover.Dropdown>
         <List spacing={"xs"} size="sm">
-          <ScrollArea scrollbars="y" h={height || "100%"}>
+          <ScrollArea scrollbars="y" h={height === "" ? "100%" : height}>
             {filteredData?.map((option) => {
               const isSelected = selectedValues.has(option.value);
               return (

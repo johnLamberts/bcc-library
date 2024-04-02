@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Group, Box, Button, Text, Flex, Badge } from "@mantine/core";
+import { Group, Box, Button, Text, Flex, Badge, Modal } from "@mantine/core";
 import { IconFileTypeCsv, IconFileTypePdf } from "@tabler/icons-react";
 import {
   MRT_ColumnDef,
@@ -8,7 +8,7 @@ import {
   MantineReactTable,
   useMantineReactTable,
 } from "mantine-react-table";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 
 import classes from "@pages/styles/user.module.css";
 import { flatten } from "src/utils/helpers/flatten";
@@ -25,14 +25,30 @@ import { Row } from "@tanstack/react-table";
 import { ICirculation } from "@features/Transaction/models/circulation.interface";
 import useReadTransactionReport from "./hooks/useTransactionReport";
 import TransactionToolbar from "./ReportsToolbar/TransactionToolbar";
+import { useDisclosure } from "@mantine/hooks";
+import { Viewer } from "@react-pdf-viewer/core";
+import { defaultLayoutPlugin } from "@react-pdf-viewer/default-layout";
 
 const TransactionReportTable = () => {
+  const [opened, { open, close }] = useDisclosure(false);
+
+  const [viewPdf, setViewPdf] = useState<string>();
+
   const {
     data: transactionList = [],
     isLoading: isLoadingUsers,
     isError: isLoadingUsersError,
     isFetching: isFetchingUsers,
   } = useReadTransactionReport();
+
+  const transaction = useMemo(
+    () =>
+      transactionList.map((tran) => ({
+        ...tran,
+        borrowersName: `${tran.firstName} ${tran.middleName} ${tran.lastName}`,
+      })),
+    [transactionList]
+  );
 
   const customColumns = useMemo<MRT_ColumnDef<ICirculation>[]>(
     () => [
@@ -50,10 +66,6 @@ const TransactionReportTable = () => {
         accessorKey: "borrowers",
         header: "Borrower",
         enableColumnFilter: false,
-      },
-      {
-        accessorKey: "borrowersNumber",
-        header: "Borrower Number",
       },
       {
         accessorKey: "borrowersEmail",
@@ -214,7 +226,7 @@ const TransactionReportTable = () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
 
   const table = useMantineReactTable({
-    data: transactionList,
+    data: transaction,
     columns: customColumns,
     mantineTableContainerProps: {
       style: {
@@ -261,7 +273,9 @@ const TransactionReportTable = () => {
         >
           <Button
             color="yellow.7"
-            onClick={() => exportCSVFile(table.getFilteredRowModel().rows)}
+            onClick={() =>
+              exportCSVFile(table.getFilteredRowModel().rows as any)
+            }
             leftSection={<IconFileTypeCsv />}
             variant="outline"
           >
@@ -273,7 +287,7 @@ const TransactionReportTable = () => {
             //export all data that is currently in the table (ignore pagination, sorting, filtering, etc.)
             onClick={() => {
               //   console.log(table.getFilteredRowModel().rows);
-              exportToPDF(table.getFilteredRowModel().rows);
+              exportToPDF(table.getFilteredRowModel().rows as any);
             }}
             leftSection={<IconFileTypePdf />}
             variant="outline"
@@ -289,11 +303,10 @@ const TransactionReportTable = () => {
     const headerNamesMapping: Record<string, string> = {
       borrowersName: "Name",
       borrowers: "Borrower",
-      borrowersNumber: "Borrowers Number",
       borrowersEmail: "Email",
       status: "Status",
       bookTitle: "Title",
-      createdAt: "Date created",
+      "Date Created": "Date created",
     };
 
     const headerNames = table
@@ -302,16 +315,15 @@ const TransactionReportTable = () => {
         (col) => col.id !== "select" && col.id !== "actions" && col.id !== "id"
       )
       .filter((col) => {
-        console.log(col);
+        console.log(col.id);
         return (
           col.id === "borrowersName" ||
           col.id === "borrowers" ||
           col.id === "middleName" ||
-          col.id === "borrowersNumber" ||
           col.id === "borrowersEmail" ||
           col.id === "status" ||
           col.id === "bookTitle" ||
-          col.id === "createdAt"
+          col.id === "Date Created"
         );
       })
       .map((col) => headerNamesMapping[col.id]);
@@ -320,7 +332,6 @@ const TransactionReportTable = () => {
       const {
         borrowersName,
         borrowers,
-        borrowersNumber,
         borrowersEmail,
         status,
         bookTitle,
@@ -336,7 +347,6 @@ const TransactionReportTable = () => {
       return {
         borrowersName,
         borrowers,
-        borrowersNumber,
         borrowersEmail,
         status,
         bookTitle,
@@ -346,109 +356,139 @@ const TransactionReportTable = () => {
 
     const doc = new jsPDF("l", "mm", "a4");
 
+    const totalPagesExp = "{total_pages_count_string}";
     const extractingValues = formatData.map((doc) => Object.values(doc));
-
-    console.log(extractingValues);
 
     (doc as jsPDF & { autoTable: autoTable }).autoTable({
       headStyles: {
         fillColor: "#77050a",
         textColor: "#fff",
       },
-      didDrawCell: () => {
+      willDrawPage: () => {
         const image = new Image();
         const logoImage = new Image();
 
         image.src = depedLogo;
         logoImage.src = bccLogo;
-        // doc.addImage(imageRef.current, "PNG", 50, 15 - 1, 12, 12);
 
         doc.addImage(bccLogoPng, "PNG", 50, 15 - 1, 12, 12);
         doc.addImage(image.src, "PNG", 160, 15 - 1, 15, 15);
+
+        doc.internal.scaleFactor = 3.75;
+        const docWidth = doc.internal.pageSize.width;
+
+        const colorBlack = "#000000";
+        const colorGray = "#1c1c1d";
+        let currentHeight = 15;
+
+        const pdfConfig = {
+          headerTextSize: 8,
+          labelTextSize: 12,
+          fieldTextSize: 10,
+          lineHeight: 6,
+          subLineHeight: 4,
+        };
+
+        doc.setFontSize(pdfConfig.headerTextSize);
+        doc.setTextColor(colorBlack);
+
+        doc.setFontSize(pdfConfig.fieldTextSize);
+        doc.setTextColor(colorGray);
+        currentHeight += pdfConfig.subLineHeight;
+
+        doc.text(
+          `Republic of the Philippnes`,
+          docWidth / 2,
+          currentHeight - 5,
+          {
+            align: "center",
+          }
+        );
+
+        currentHeight += pdfConfig.subLineHeight;
+
+        doc.setFont("", "", "bold");
+
+        doc.text(
+          `Binangonan Catholic College`,
+          docWidth / 2,
+          currentHeight - 5,
+          {
+            align: "center",
+          }
+        );
+
+        currentHeight += pdfConfig.subLineHeight;
+
+        doc.text(`Binangonan, Rizal`, docWidth / 2, currentHeight - 5, {
+          align: "center",
+        });
+
+        currentHeight += pdfConfig.subLineHeight;
+        currentHeight += pdfConfig.subLineHeight;
+        currentHeight += pdfConfig.subLineHeight;
+        currentHeight += 2;
+        doc.setFont("", "", "bold");
+        doc.setFontSize(16);
+        doc.text(
+          `Binangonan Catholic College Transaction Report `,
+          docWidth / 2,
+          currentHeight - 5,
+          {
+            align: "center",
+          }
+        );
+
+        currentHeight += pdfConfig.subLineHeight;
+        doc.setFontSize(pdfConfig.fieldTextSize);
+        doc.setFont("", "", "normal");
+        doc.text(
+          `${format(new Date(), "MMMM dd, yyyy")}`,
+          docWidth / 2,
+          currentHeight - 5,
+          {
+            align: "center",
+          }
+        );
       },
+
       head: [headerNames],
       body: extractingValues as RowInput[],
+      startY: 50,
+      showHead: "firstPage",
       margin: { top: 50 },
+      didDrawPage: function (data) {
+        // Footer
+        let str = "Page " + doc.getNumberOfPages();
+        // Total page number plugin only available in jspdf v1.0+
+        if (typeof doc.putTotalPages === "function") {
+          str = str + " of " + totalPagesExp;
+        }
+        doc.setFontSize(10);
+
+        // jsPDF 1.4+ uses getHeight, <1.4 uses .height
+        const pageSize = doc.internal.pageSize;
+        const pageHeight = pageSize.height
+          ? pageSize.height
+          : pageSize.getHeight();
+        doc.text(str, data.settings.margin.left, pageHeight - 10);
+      },
     });
 
-    doc.internal.scaleFactor = 3.75;
-    const docWidth = doc.internal.pageSize.width;
+    if (typeof doc.putTotalPages === "function") {
+      doc.putTotalPages(totalPagesExp);
+    }
 
-    const colorBlack = "#000000";
-    const colorGray = "#1c1c1d";
-    let currentHeight = 15;
+    console.log(headerNames, formatData);
+    setViewPdf(doc.output("datauristring"));
 
-    const pdfConfig = {
-      headerTextSize: 8,
-      labelTextSize: 12,
-      fieldTextSize: 10,
-      lineHeight: 6,
-      subLineHeight: 4,
-    };
-
-    doc.setFontSize(pdfConfig.headerTextSize);
-    doc.setTextColor(colorBlack);
-
-    doc.setFontSize(pdfConfig.fieldTextSize);
-    doc.setTextColor(colorGray);
-    currentHeight += pdfConfig.subLineHeight;
-
-    doc.text(`Republic of the Philippnes`, docWidth / 2, currentHeight - 5, {
-      align: "center",
-    });
-
-    currentHeight += pdfConfig.subLineHeight;
-
-    doc.setFont("", "", "bold");
-    // doc.text(
-
-    doc.text(`Binangonan Catholic College`, docWidth / 2, currentHeight - 5, {
-      align: "center",
-    });
-
-    currentHeight += pdfConfig.subLineHeight;
-
-    doc.text(`Binangonan, Rizal`, docWidth / 2, currentHeight - 5, {
-      align: "center",
-    });
-
-    currentHeight += pdfConfig.subLineHeight;
-    currentHeight += pdfConfig.subLineHeight;
-    currentHeight += pdfConfig.subLineHeight;
-    currentHeight += 2;
-    doc.setFont("", "", "bold");
-    doc.setFontSize(16);
-    doc.text(
-      `Binangonan Catholic College Transaction Report`,
-      docWidth / 2,
-      currentHeight - 5,
-      {
-        align: "center",
-      }
-    );
-
-    currentHeight += pdfConfig.subLineHeight;
-    doc.setFontSize(pdfConfig.fieldTextSize);
-    doc.setFont("", "", "normal");
-    doc.text(
-      `${format(new Date(), "MMMM dd, yyyy")}`,
-      docWidth / 2,
-      currentHeight - 5,
-      {
-        align: "center",
-      }
-    );
-    doc.save(
-      `Binangonan Catholic College Transaction Report - ${new Date().toLocaleDateString(
-        "en-us",
-        { year: "numeric", month: "long", day: "numeric" }
-      )}.pdf`
-    );
+    open?.();
   };
+  const defaultLayoutPluginInstance = defaultLayoutPlugin();
 
   return (
     <>
-      <Box maw={"78vw"}>
+      <Box>
         <Group justify="space-between">
           <Box className={classes.highlight}>
             <Text fz={"xl"} fw={"bold"} c={"red"}>
@@ -461,6 +501,20 @@ const TransactionReportTable = () => {
           <MantineReactTable table={table} />
         </Box>
       </Box>
+
+      <Modal
+        opened={opened}
+        onClose={close}
+        title="Transaction Report"
+        size="calc(100vw - 3rem)"
+      >
+        <Box>
+          <Viewer
+            plugins={[defaultLayoutPluginInstance]}
+            fileUrl={viewPdf as string}
+          />
+        </Box>
+      </Modal>
     </>
   );
 };

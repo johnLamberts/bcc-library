@@ -67,6 +67,7 @@ export default function UserForm<TData extends MRT_RowData>({
       }
     }
   }, [form.formState.errors]);
+
   return (
     <>
       <FormProvider {...form}>
