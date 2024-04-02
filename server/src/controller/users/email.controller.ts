@@ -123,7 +123,7 @@ const createEmailCancelledRequestedBookTransaction = async (
   res: Response
 ) => {
   try {
-    const newUsers = await EmailReturnedService.sendEmailCompletedTransaction(
+    const newUsers = await EmailReturnedService.sendCancelledRequestedBook(
       req.body
     );
 
