@@ -123,13 +123,12 @@ const createEmailCancelledRequestedBookTransaction = async (
   res: Response
 ) => {
   try {
-    // const newUsers = await EmailReturnedService.sendEmailCompletedTransaction({
-    //   ...req.body,
-    // });
+    const newUsers = await EmailReturnedService.sendEmailCompletedTransaction(
+      req.body
+    );
 
-    console.log(req.body);
     return res.json({
-      // data: newUsers,
+      data: newUsers,
       status: "You have send an email already!",
     });
   } catch (err) {
