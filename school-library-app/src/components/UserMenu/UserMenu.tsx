@@ -27,6 +27,7 @@ import useLogout from "@pages/Authentication/hooks/useLogout";
 import useCurrentUser from "@pages/Authentication/hooks/useCurrentUser";
 import { useDisclosure } from "@mantine/hooks";
 import { useNavigate } from "react-router-dom";
+import EditProfile from "./EditProfile";
 
 export default function UserMenu() {
   const [userMenuOpened, setUserMenuOpened] = useState(false);
@@ -200,7 +201,9 @@ export default function UserMenu() {
                 </Box>
               </Tabs.Panel>
 
-              <Tabs.Panel value="messages">Edit profile</Tabs.Panel>
+              <Tabs.Panel value="messages">
+                <EditProfile />
+              </Tabs.Panel>
             </Tabs>
           </Modal.Body>
         </Modal.Content>
