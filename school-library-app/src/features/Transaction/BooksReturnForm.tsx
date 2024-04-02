@@ -6,6 +6,7 @@ import {
   Code,
   ComboboxData,
   Divider,
+  LoadingOverlay,
   NumberInput,
   Select,
   TextInput,
@@ -101,6 +102,11 @@ function BooksReturnForm<TData extends MRT_RowData>({
 
   return (
     <Form onSubmit={form.handleSubmit(onSubmit)}>
+      <LoadingOverlay
+        visible={table.getState().isSaving}
+        zIndex={1000}
+        overlayProps={{ radius: "sm", blur: 2 }}
+      />
       <Code block>
         <Form.Box>
           <Form.Grid>
@@ -274,7 +280,7 @@ function BooksReturnForm<TData extends MRT_RowData>({
         }}
       >
         <Form.SubmitButton
-          alias="Save"
+          alias="Complete Transaction Return"
           loading={table.getState().isSaving}
           disabled={isLoadingDamageCategory || isLoadingMissingCategory}
           onClick={() => setIsSave(true)}
@@ -284,7 +290,7 @@ function BooksReturnForm<TData extends MRT_RowData>({
           <Form.SubmitButton
             color="yellow"
             loading={table.getState().isSaving}
-            alias="Partial Save"
+            alias="Processed Fee"
             onClick={() => setIsSave(false)}
             disabled={isLoadingDamageCategory || isLoadingMissingCategory}
           />
