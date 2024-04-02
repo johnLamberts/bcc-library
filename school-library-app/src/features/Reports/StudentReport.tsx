@@ -273,7 +273,9 @@ const StudentReportTable = () => {
         >
           <Button
             color="yellow.7"
-            onClick={() => exportCSVFile(table.getFilteredRowModel().rows)}
+            onClick={() =>
+              exportCSVFile(table.getFilteredRowModel().rows as any)
+            }
             leftSection={<IconFileTypeCsv />}
             variant="outline"
           >
@@ -285,7 +287,7 @@ const StudentReportTable = () => {
             //export all data that is currently in the table (ignore pagination, sorting, filtering, etc.)
             onClick={() => {
               //   console.log(table.getFilteredRowModel().rows);
-              exportToPDF(table.getFilteredRowModel().rows);
+              exportToPDF(table.getFilteredRowModel().rows as any);
             }}
             leftSection={<IconFileTypePdf />}
             variant="outline"
@@ -533,11 +535,11 @@ const StudentReportTable = () => {
 
   return (
     <>
-      <Box maw={"78vw"}>
+      <Box>
         <Group justify="space-between">
           <Box className={classes.highlight}>
             <Text fz={"xl"} fw={"bold"} c={"red"}>
-              User Report
+              Student Report
             </Text>
           </Box>
         </Group>
