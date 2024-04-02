@@ -163,6 +163,8 @@ const BookRequestedTable = () => {
       isSaving: isCreatingApproveRequestTransaction,
       isLoading: isRequestLoading,
       showProgressBars: isRequestFetching,
+      showLoadingOverlay:
+        isCreatingApproveRequestTransaction || isRequestLoading,
     },
 
     initialState: {
