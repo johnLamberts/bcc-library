@@ -17,7 +17,7 @@ export function useCreatePartialPayment() {
         `
       );
       queryClient.invalidateQueries({
-        queryKey: [FIRESTORE_COLLECTION_QUERY_KEY.COMPLETE_PAYMENT],
+        queryKey: [FIRESTORE_COLLECTION_QUERY_KEY.RETURNED_TRANSACTION],
       });
     },
     onError: (err) => toast.error(err.message),
