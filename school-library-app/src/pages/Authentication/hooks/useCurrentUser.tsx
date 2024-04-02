@@ -6,6 +6,7 @@ const useCurrentUser = () => {
   const { isLoading, data: user } = useQuery({
     queryKey: [FIRESTORE_COLLECTION_QUERY_KEY.CURRENT_USER],
     queryFn: getCurrentUser,
+    refetchOnWindowFocus: false,
   });
 
   return { isLoading, user };

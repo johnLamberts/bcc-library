@@ -100,6 +100,22 @@ const sendRequestedBook = async (snapshot: Record<string, any>) => {
   return await sgMail.send(msg as any);
 };
 
+const sendCancelledRequestedBook = async (snapshot: Record<string, any>) => {
+  const msg = {
+    to: snapshot.borrowersEmail,
+    subject: "",
+    from: "kuwago@bcc-opac-library.site",
+    templateId: process.env.VITE_CANCELLED_REQUESTED_BOOK,
+    dynamic_template_data: {
+      fullName: snapshot.fullName,
+      bookTitle: snapshot.bookTitle,
+      reasons: snapshot.reasons,
+    },
+  };
+
+  return await sgMail.send(msg as any);
+};
+
 export const EmailReturnedService = {
   sendEmailReturned,
   sendOverdueEmailReturned,
@@ -107,4 +123,5 @@ export const EmailReturnedService = {
   sendEmailCompletedTransaction,
   sendRequestedBook,
   sendEmailReturnedWithPendingPayment,
+  sendCancelledRequestedBook,
 };
