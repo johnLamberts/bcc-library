@@ -5,6 +5,10 @@ const router = express.Router();
 
 router.post("/return-email", EmailReturnedController.createReturnEmail);
 router.post("/requested-email", EmailReturnedController.createRequestedEmail);
+router.post(
+  "/cancelled-requested-book-email",
+  EmailReturnedController.createEmailCancelledRequestedBookTransaction
+);
 router.post("/request-email", EmailReturnedController.createRequestedBook);
 router.post(
   "/completed-transaction",
