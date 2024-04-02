@@ -9,6 +9,7 @@ import {
   Box,
   Modal,
   Tabs,
+  Tabs,
 } from "@mantine/core";
 import {
   IconAt,
@@ -27,6 +28,7 @@ import useLogout from "@pages/Authentication/hooks/useLogout";
 import { useNavigate } from "react-router-dom";
 import { useDisclosure } from "@mantine/hooks";
 import classes from "./UserMenu/user-menu.module.css";
+import EditProfile from "./UserMenu/EditProfile";
 
 interface UserButtonProps extends React.ComponentPropsWithoutRef<"button"> {
   image: string;
@@ -48,7 +50,7 @@ const UserButton = forwardRef<HTMLButtonElement, UserButtonProps>(
         <Avatar src={image} radius="xl" />
 
         <div style={{ flex: 1 }}>
-          <Text size="sm" fw={500}>
+          <Text size="xs" fw={500}>
             {name}
           </Text>
 
@@ -203,7 +205,9 @@ const WrapperUserMode = () => {
                 </Box>
               </Tabs.Panel>
 
-              <Tabs.Panel value="messages">Edit profile</Tabs.Panel>
+              <Tabs.Panel value="messages">
+                <EditProfile />
+              </Tabs.Panel>
             </Tabs>
           </Modal.Body>
         </Modal.Content>
