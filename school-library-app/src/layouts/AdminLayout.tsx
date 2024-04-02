@@ -39,7 +39,7 @@ export default function AdminLayout() {
               />
             </div>
 
-            <Group h="100%" px="md" justify="space-between">
+            <Group h="100%" justify="space-between" align="center">
               <WrapperUserMode />
               {/* <div>1</div>
               <div>2</div> */}
