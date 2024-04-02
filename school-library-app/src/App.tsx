@@ -40,9 +40,17 @@ import DetailsFAQ from "@pages/Homepage/DetailsFAQ";
 import AnnouncementManagement from "@pages/AnnouncementManagement";
 import ManageAcquisationStock from "@pages/ManageAcquisationStock";
 import StockReport from "@pages/Reports/StockReport";
+import { NewsCategory } from "@pages/SystemSettings/NewsCategory";
+import useCurrentUser from "@pages/Authentication/hooks/useCurrentUser";
+import AdminRequired from "./routes/AdminRequired";
+import ProtectedRoute from "./routes/ProtectedRoute";
 
 function App() {
+  const { user } = useCurrentUser();
+
   // Will Refactor this after I finish the admin page with fully functionality
+
+  console.log(user?.userRole);
   return (
     <>
       <Toaster richColors />
@@ -73,24 +81,64 @@ function App() {
             <Route path="frequently-ask-questions" element={<DetailsFAQ />} />
             <Route path="library" element={<LibraryPage />} />
             <Route path="library/:bookId" element={<BookDetail />} />
-            <Route path="profile/:manageProfileId" element={<ProfilePage />} />
+            <Route
+              path="profile/:manageProfileId"
+              element={
+                <ProtectedRoute>
+                  <ProfilePage />
+                </ProtectedRoute>
+              }
+            />
           </Route>
           <Route
             element={
-              // <ProtectedRoute>
-              //   <AdminRequired>
-              //   </AdminRequired>
-              // </ProtectedRoute>
-              <AdminLayout />
+              <ProtectedRoute>
+                <AdminLayout />
+              </ProtectedRoute>
             }
           >
-            <Route index element={<AdminDashboard />} />
-            <Route path="/dashboard" element={<AdminDashboard />} />
+            <Route
+              index
+              element={
+                <>
+                  {user?.userRole.toLowerCase().includes("admin") && (
+                    <AdminDashboard />
+                  )}
+                  {user?.userRole.toLowerCase().includes("librarian") && (
+                    <>Librarian</>
+                  )}
+
+                  {user?.userRole.toLowerCase().includes("staff") && <>staff</>}
+                </>
+              }
+            />
+            <Route
+              path="/dashboard"
+              element={
+                <>
+                  {user?.userRole.toLowerCase().includes("admin") && (
+                    <AdminDashboard />
+                  )}
+                  {user?.userRole.toLowerCase().includes("librarian") && (
+                    <>Librarian</>
+                  )}
+
+                  {user?.userRole.toLowerCase().includes("staff") && <>staff</>}
+                </>
+              }
+            />
             <Route
               path="/manage-announcement"
               element={<AnnouncementManagement />}
             />
-            <Route path="/user-management" element={<UserManagement />} />
+            <Route
+              path="/user-management"
+              element={
+                <AdminRequired>
+                  <UserManagement />
+                </AdminRequired>
+              }
+            />
             <Route path="/student-management" element={<StudentManagement />} />
             <Route
               path="/acquisition-and-stock-management"
@@ -130,6 +178,7 @@ function App() {
             <Route path="/category-section" element={<CategorySection />} />
             <Route path="/book-genre" element={<BookGenre />} />
             <Route path="/book-author" element={<BookAuthor />} />
+            <Route path="/news-category" element={<NewsCategory />} />
             <Route path="/return-condition" element={<ReturnCondition />} />
             {/* reports */}
             <Route path="/user-report" element={<UserReport />} />
