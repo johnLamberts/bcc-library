@@ -577,7 +577,7 @@ const addPatrialPaymentTransaction = async (partial: Partial<ICirculation>) => {
     bookISBN,
     booksId,
     borrowers,
-    borrowersNumber,
+
     status,
   } = partial;
 
@@ -698,7 +698,7 @@ const addPatrialPaymentTransaction = async (partial: Partial<ICirculation>) => {
         firstName,
         middleName,
         lastName,
-        borrowersNumber,
+
         booksBorrowedId,
         bookType,
         status: "Returned",
@@ -744,7 +744,6 @@ const addPatrialPaymentTransaction = async (partial: Partial<ICirculation>) => {
       firstName,
       middleName,
       lastName,
-      borrowersNumber,
 
       status,
       createdAt: serverTimestamp(),
