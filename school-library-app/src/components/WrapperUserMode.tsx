@@ -9,7 +9,6 @@ import {
   Box,
   Modal,
   Tabs,
-  Tabs,
 } from "@mantine/core";
 import {
   IconAt,
@@ -20,7 +19,7 @@ import {
   IconPhoto,
   IconSettings,
 } from "@tabler/icons-react";
-import { forwardRef } from "react";
+import { forwardRef, useMemo } from "react";
 import ModeToggle from "./ModeToggle/ModeToggle";
 import UserMenu from "./UserMenu/UserMenu";
 import useCurrentUser from "@pages/Authentication/hooks/useCurrentUser";
@@ -29,6 +28,7 @@ import { useNavigate } from "react-router-dom";
 import { useDisclosure } from "@mantine/hooks";
 import classes from "./UserMenu/user-menu.module.css";
 import EditProfile from "./UserMenu/EditProfile";
+import ChangePassword from "./UserMenu/ChangePassword";
 
 interface UserButtonProps extends React.ComponentPropsWithoutRef<"button"> {
   image: string;
@@ -66,13 +66,15 @@ const UserButton = forwardRef<HTMLButtonElement, UserButtonProps>(
 );
 
 const WrapperUserMode = () => {
-  const { user } = useCurrentUser();
+  const { user, isLoading } = useCurrentUser();
   const [opened, { open, close }] = useDisclosure(false);
 
   const { logoutUser } = useLogout();
 
   const navigate = useNavigate();
   const iconStyle = { width: rem(12), height: rem(12) };
+
+  const memoizedUser = useMemo(() => user, [user]);
   return (
     <>
       <UserMenu />
@@ -80,9 +82,10 @@ const WrapperUserMode = () => {
         <Menu withArrow>
           <Menu.Target>
             <UserButton
-              image={user?.avatarImage as string}
-              name={`${user?.firstName} ${user?.middleName} ${user?.lastName}`}
-              email={user?.email as string}
+              image={memoizedUser?.avatarImage as string}
+              name={`${memoizedUser?.firstName} ${memoizedUser?.middleName} ${memoizedUser?.lastName}`}
+              email={memoizedUser?.email as string}
+              disabled={isLoading}
             />
           </Menu.Target>
           {/* ... menu items */}
@@ -163,17 +166,17 @@ const WrapperUserMode = () => {
                 <Box mt="xs">
                   <Group wrap="nowrap">
                     <Avatar
-                      src={user?.avatarImage as string}
+                      src={memoizedUser?.avatarImage as string}
                       size={94}
                       radius="md"
                     />
                     <div>
                       <Text fz="xs" tt="uppercase" fw={700} c="dimmed">
-                        {user?.userRole}
+                        {memoizedUser?.userRole}
                       </Text>
 
                       <Text fz="lg" fw={500} className={classes.name}>
-                        {user?.firstName} {user?.lastName}
+                        {memoizedUser?.firstName} {memoizedUser?.lastName}
                       </Text>
 
                       <Group wrap="nowrap" gap={10} mt={3}>
@@ -183,7 +186,7 @@ const WrapperUserMode = () => {
                           className={classes.icon}
                         />
                         <Text fz="xs" c="dimmed">
-                          {user?.email}
+                          {memoizedUser?.email}
                         </Text>
                       </Group>
 
@@ -195,8 +198,9 @@ const WrapperUserMode = () => {
                         />
                         <Text fz="xs" c="dimmed">
                           {new Date(
-                            (user as any)?.createdAt.seconds * 1000 +
-                              (user as any)?.createdAt.nanoseconds / 1000
+                            (memoizedUser as any)?.createdAt.seconds * 1000 +
+                              (memoizedUser as any)?.createdAt.nanoseconds /
+                                1000
                           ).toLocaleString()}
                         </Text>
                       </Group>
@@ -206,7 +210,11 @@ const WrapperUserMode = () => {
               </Tabs.Panel>
 
               <Tabs.Panel value="messages">
-                <EditProfile />
+                <EditProfile user={memoizedUser} />
+              </Tabs.Panel>
+
+              <Tabs.Panel value="settings">
+                <ChangePassword user={memoizedUser} />
               </Tabs.Panel>
             </Tabs>
           </Modal.Body>
