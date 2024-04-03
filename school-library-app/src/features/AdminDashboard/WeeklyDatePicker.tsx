@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { startOfWeek, addDays, format } from "date-fns";
 import { useSearchParams } from "react-router-dom";
 import { Box, Button, Flex, Group, Text } from "@mantine/core";
@@ -18,7 +18,7 @@ const WeeklyDatePicker = () => {
 
   const { start, end } = getWeekRange(currentDate);
 
-  const handleNextWeek = () => {
+  const handleNextWeek = useCallback(() => {
     const nextDate = addDays(currentDate, 7);
     const { start: nextStart, end: nextEnd } = getWeekRange(nextDate);
 
@@ -28,9 +28,9 @@ const WeeklyDatePicker = () => {
     searchParams.set("end", format(nextEnd, "MM-dd-yyyy"));
 
     setSearchParams(searchParams);
-  };
+  }, [currentDate, searchParams, setSearchParams]);
 
-  const handlePreviousWeek = () => {
+  const handlePreviousWeek = useCallback(() => {
     const prevDate = addDays(currentDate, -7);
     const { start: prevStart, end: prevEnd } = getWeekRange(prevDate);
 
@@ -40,7 +40,7 @@ const WeeklyDatePicker = () => {
     searchParams.set("end", format(prevEnd, "MM-dd-yyyy"));
 
     setSearchParams(searchParams);
-  };
+  }, [currentDate, searchParams, setSearchParams]);
 
   return (
     <Box>
