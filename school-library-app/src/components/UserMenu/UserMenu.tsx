@@ -9,6 +9,7 @@ import {
   Modal,
   Tabs,
   Box,
+  Tabs,
 } from "@mantine/core";
 import {
   IconChevronDown,
@@ -19,7 +20,7 @@ import {
   IconPhoto,
   IconCalendarDot,
 } from "@tabler/icons-react";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import classes from "./user-menu.module.css";
 
 import cn from "clsx";
@@ -28,6 +29,8 @@ import useCurrentUser from "@pages/Authentication/hooks/useCurrentUser";
 import { useDisclosure } from "@mantine/hooks";
 import { useNavigate } from "react-router-dom";
 import EditProfile from "./EditProfile";
+import ChangeProfile from "./ChangePassword";
+import ChangePassword from "./ChangePassword";
 
 export default function UserMenu() {
   const [userMenuOpened, setUserMenuOpened] = useState(false);
@@ -37,9 +40,11 @@ export default function UserMenu() {
 
   const navigate = useNavigate();
 
-  const { user } = useCurrentUser();
+  const { user, isLoading } = useCurrentUser();
 
   const iconStyle = { width: rem(12), height: rem(12) };
+
+  const memoizedUser = useMemo(() => user, [user]);
   return (
     <>
       <Menu
@@ -54,16 +59,18 @@ export default function UserMenu() {
             className={cn(classes.user, {
               [classes.userActive]: userMenuOpened,
             })}
+            disabled={isLoading}
           >
             <Group gap={7}>
               <Avatar
-                src={user?.avatarImage as string}
-                alt={user?.email}
+                src={memoizedUser?.avatarImage as string}
+                alt={memoizedUser?.email}
                 radius="xl"
                 size={36}
               />
               <Text fw={500} size="sm" lh={1} mr={3}>
-                {user?.firstName} {user?.middleName} {user?.lastName}
+                {memoizedUser?.firstName} {memoizedUser?.middleName}{" "}
+                {memoizedUser?.lastName}
               </Text>
               <IconChevronDown
                 style={{ width: rem(12), height: rem(12) }}
@@ -146,7 +153,7 @@ export default function UserMenu() {
                     <Box mt="xs">
                       <Group wrap="nowrap">
                         <Avatar
-                          src={user?.avatarImage as string}
+                          src={memoizedUser?.avatarImage as string}
                           size={94}
                           radius="md"
                         />
@@ -158,7 +165,7 @@ export default function UserMenu() {
                             c="dimmed"
                             ff="Montserrat"
                           >
-                            {user?.userRole}
+                            {memoizedUser?.userRole}
                           </Text>
 
                           <Text
@@ -167,7 +174,7 @@ export default function UserMenu() {
                             className={classes.name}
                             ff="Montserrat"
                           >
-                            {user?.firstName} {user?.lastName}
+                            {memoizedUser?.firstName} {memoizedUser?.lastName}
                           </Text>
 
                           <Group wrap="nowrap" gap={10} mt={3}>
@@ -177,7 +184,7 @@ export default function UserMenu() {
                               className={classes.icon}
                             />
                             <Text fz="sm" ff="Montserrat">
-                              {user?.email}
+                              {memoizedUser?.email}
                             </Text>
                           </Group>
 
@@ -189,8 +196,10 @@ export default function UserMenu() {
                             />
                             <Text fz="sm" ff="Montserrat">
                               {new Date(
-                                (user as any)?.createdAt.seconds * 1000 +
-                                  (user as any)?.createdAt.nanoseconds / 1000
+                                (memoizedUser as any)?.createdAt.seconds *
+                                  1000 +
+                                  (memoizedUser as any)?.createdAt.nanoseconds /
+                                    1000
                               ).toLocaleString()}
                             </Text>
                           </Group>
@@ -202,7 +211,11 @@ export default function UserMenu() {
               </Tabs.Panel>
 
               <Tabs.Panel value="messages">
-                <EditProfile />
+                <EditProfile user={memoizedUser} />
+              </Tabs.Panel>
+
+              <Tabs.Panel value="settings">
+                <ChangePassword user={memoizedUser} />
               </Tabs.Panel>
             </Tabs>
           </Modal.Body>
