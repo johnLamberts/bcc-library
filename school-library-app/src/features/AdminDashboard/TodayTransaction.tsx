@@ -18,12 +18,13 @@ import { IconTimeDurationOff } from "@tabler/icons-react";
 import { format } from "date-fns";
 import useTodayTransaction from "./hooks/useTodayTransaction";
 import { useDisclosure } from "@mantine/hooks";
+import { useMemo } from "react";
 
 const TodayTransaction = () => {
   const { data: recentOverdue = [], isLoading: isRecentOverdueLoading } =
     useTodayTransaction();
 
-  const topLatest = recentOverdue.slice(0, 5);
+  const topLatest = useMemo(() => recentOverdue.slice(0, 5), [recentOverdue]);
   const [opened, { open, close }] = useDisclosure(false);
 
   return (
