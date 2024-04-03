@@ -104,23 +104,65 @@ const UserReportTable = () => {
         header: "Email",
       },
       {
-        accessorFn: (originalRow) =>
-          new Date(
-            originalRow.createdAt?._seconds * 1000 +
-              originalRow.createdAt?._nanoseconds / 1000
-          ),
+        accessorFn: (originalRow) => {
+          const seconds =
+            originalRow.createdAt?._seconds ||
+            (originalRow as any).createdAt?.seconds;
+          const nanoseconds =
+            originalRow.createdAt?._nanoseconds ||
+            (originalRow as any).createdAt?.nanoseconds;
+
+          if (seconds !== undefined && nanoseconds !== undefined) {
+            // Remove underscore if it exists
+            const secondsWithoutUnderscore = seconds
+              .toString()
+              .replace("_", "");
+            const nanosecondsWithoutUnderscore = nanoseconds
+              .toString()
+              .replace("_", "");
+
+            const milliseconds =
+              Number(secondsWithoutUnderscore) * 1000 +
+              Number(nanosecondsWithoutUnderscore) / 1000;
+
+            const date = new Date(milliseconds);
+
+            return new Date(date);
+          }
+
+          return null;
+        },
         header: "Date Created",
         filterVariant: "date-range",
         Cell: ({ row }) => {
-          const date = format(
-            new Date(
-              row.original.createdAt._seconds * 1000 +
-                row.original.createdAt._nanoseconds / 1000
-            ),
-            "MMMM dd yyyy"
-          );
+          const seconds =
+            row.original.createdAt?._seconds ||
+            (row as any).original.createdAt?.seconds;
+          const nanoseconds =
+            row.original.createdAt?._nanoseconds ||
+            (row as any).original.createdAt?.nanoseconds;
 
-          return <Text>{date}</Text>;
+          if (seconds !== undefined && nanoseconds !== undefined) {
+            // Remove underscore if it exists
+            const secondsWithoutUnderscore = seconds
+              .toString()
+              .replace("_", "");
+            const nanosecondsWithoutUnderscore = nanoseconds
+              .toString()
+              .replace("_", "");
+
+            const milliseconds =
+              Number(secondsWithoutUnderscore) * 1000 +
+              Number(nanosecondsWithoutUnderscore) / 1000;
+
+            const date = new Date(milliseconds);
+
+            return <Text>{format(new Date(date), "MMMM dd yyyy")}</Text>;
+          }
+
+          return null;
+          // return <Text>{date}</Text>;
+          // return <Text>{date}</Text>;
         },
 
         size: 40,
@@ -144,6 +186,8 @@ const UserReportTable = () => {
     ],
     []
   );
+
+  console.log(optimizedUsersData);
 
   const exportCSVFile = (csvData: Row<IUser>[]) => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -274,7 +318,7 @@ const UserReportTable = () => {
       lastName: "Last Name",
       email: "Email",
       userRole: "User Role",
-      createdAt: "Created At",
+      "Date Created": "Date Created",
     };
 
     const headerNames = table
@@ -290,7 +334,7 @@ const UserReportTable = () => {
           col.id === "email" ||
           col.id === "firstName" ||
           col.id === "userRole" ||
-          col.id === "createdAt"
+          col.id === "Date Created"
         );
       })
       .map((col) => headerNamesMapping[col.id]);
@@ -299,10 +343,26 @@ const UserReportTable = () => {
       const { firstName, lastName, middleName, email, createdAt, userRole } =
         user.original;
 
-      const date = format(
-        new Date(createdAt._seconds * 1000 + createdAt._nanoseconds / 1000),
-        "MMMM dd yyyy"
-      );
+      const seconds = createdAt?._seconds || createdAt?.seconds;
+      const nanoseconds = createdAt?._nanoseconds || createdAt?.nanoseconds;
+
+      let date = new Date();
+
+      if (seconds !== undefined && nanoseconds !== undefined) {
+        // Remove underscore if it exists
+        const secondsWithoutUnderscore = seconds.toString().replace("_", "");
+        const nanosecondsWithoutUnderscore = nanoseconds
+          .toString()
+          .replace("_", "");
+
+        const milliseconds =
+          Number(secondsWithoutUnderscore) * 1000 +
+          Number(nanosecondsWithoutUnderscore) / 1000;
+
+        date = new Date(milliseconds);
+      }
+
+      const formatDate = format(new Date(date), "MMMM dd yyyy");
 
       // const createdAt = format();
       return {
@@ -311,7 +371,7 @@ const UserReportTable = () => {
         middleName,
         lastName,
         email,
-        createdAt: date,
+        createdAt: formatDate,
       };
     });
 
