@@ -44,6 +44,7 @@ import { NewsCategory } from "@pages/SystemSettings/NewsCategory";
 import useCurrentUser from "@pages/Authentication/hooks/useCurrentUser";
 import AdminRequired from "./routes/AdminRequired";
 import ProtectedRoute from "./routes/ProtectedRoute";
+import AnnouncementDetails from "@pages/Homepage/AnnouncementDetails";
 
 function App() {
   const { user } = useCurrentUser();
@@ -78,6 +79,10 @@ function App() {
             <Route index element={<Home />} />
             <Route path="home" element={<Home />} />
             <Route path="announcement" element={<Announcement />} />
+            <Route
+              path="announcement/:postId"
+              element={<AnnouncementDetails />}
+            />
             <Route path="frequently-ask-questions" element={<DetailsFAQ />} />
             <Route path="library" element={<LibraryPage />} />
             <Route path="library/:bookId" element={<BookDetail />} />

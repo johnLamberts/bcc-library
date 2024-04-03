@@ -1,6 +1,7 @@
 import { LoadingOverlay, useComputedColorScheme } from "@mantine/core";
 import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis } from "recharts";
 import useReadWeeklyReports from "./hooks/useReadWeeklyReports";
+import { useMemo } from "react";
 
 export function Overview() {
   const computedColorScheme = useComputedColorScheme("light", {
@@ -9,6 +10,7 @@ export function Overview() {
 
   const { weekly, isLoading } = useReadWeeklyReports();
 
+  const week = useMemo(() => weekly, [weekly]);
   return (
     <>
       <LoadingOverlay
@@ -17,7 +19,7 @@ export function Overview() {
         overlayProps={{ radius: "sm", blur: 2 }}
       />
       <ResponsiveContainer width="100%" height={350}>
-        <BarChart data={weekly}>
+        <BarChart data={week}>
           <XAxis
             dataKey="name"
             stroke="#888888"

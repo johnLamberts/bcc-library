@@ -22,6 +22,7 @@ import useCurrentUser from "@pages/Authentication/hooks/useCurrentUser";
 import useLogout from "@pages/Authentication/hooks/useLogout";
 import classes from "./header.module.css";
 import { useDisclosure } from "@mantine/hooks";
+import ModeToggle from "@components/ModeToggle/ModeToggle";
 
 const links = [
   { link: "/home", label: "Home" },
@@ -95,85 +96,93 @@ const Header = () => {
               Sign In
             </Button>
           ) : (
-            <Menu
-              width={260}
-              position="bottom-end"
-              transitionProps={{ transition: "pop-top-right" }}
-              onClose={() => setUserMenuOpened(false)}
-              onOpen={() => setUserMenuOpened(true)}
-              withinPortal
-            >
-              <Menu.Target>
-                <UnstyledButton
-                  className={cn(classNamees.user, {
-                    [classNamees.userActive]: userMenuOpened,
-                  })}
-                >
-                  <Group gap={7}>
-                    <Avatar
-                      src={user?.avatarImage as string}
-                      alt={user?.lastName}
-                      radius="xl"
-                      size={20}
-                    />
-                    <Text fw={500} size="sm" lh={1} mr={3} c={"black"}>
-                      {user?.firstName} {user?.middleName} {user?.lastName}
-                    </Text>
-                    <IconChevronDown
-                      style={{ width: rem(12), height: rem(12) }}
-                      stroke={1.5}
-                      color={"white"}
-                    />
-                  </Group>
-                </UnstyledButton>
-              </Menu.Target>
-
-              <Menu.Dropdown>
-                <Menu.Label>Application</Menu.Label>
-                {user.userRole?.toLowerCase()!.includes("student") ||
-                user.userRole?.toLowerCase()!.includes("teacher") ? (
-                  <Menu.Item
-                    leftSection={
-                      <IconSettings
-                        style={{ width: rem(14), height: rem(14) }}
-                      />
-                    }
-                    onClick={() =>
-                      navigate(`profile/${user?.userUID}_${user?.userRole}`)
-                    }
+            <>
+              <Menu
+                width={260}
+                position="bottom-end"
+                transitionProps={{ transition: "pop-top-right" }}
+                onClose={() => setUserMenuOpened(false)}
+                onOpen={() => setUserMenuOpened(true)}
+                withinPortal
+              >
+                <Menu.Target>
+                  <UnstyledButton
+                    className={cn(classNamees.user, {
+                      [classNamees.userActive]: userMenuOpened,
+                    })}
                   >
-                    Settings
-                  </Menu.Item>
-                ) : null}
-
-                {user.userRole?.toLowerCase()!.includes("admin") && (
-                  <Menu.Item
-                    leftSection={
-                      <IconSettings
-                        style={{ width: rem(14), height: rem(14) }}
+                    <Group gap={7}>
+                      <Avatar
+                        src={user?.avatarImage as string}
+                        alt={user?.lastName}
+                        radius="xl"
+                        size={20}
                       />
+                      <Text fw={500} size="sm" lh={1} mr={3} c={"black"}>
+                        {user?.firstName} {user?.middleName} {user?.lastName}
+                      </Text>
+                      <IconChevronDown
+                        style={{ width: rem(12), height: rem(12) }}
+                        stroke={1.5}
+                        color={"white"}
+                      />
+                    </Group>
+                  </UnstyledButton>
+                </Menu.Target>
+
+                <Menu.Dropdown>
+                  <Menu.Label>Application</Menu.Label>
+                  {user.userRole?.toLowerCase()!.includes("student") ||
+                  user.userRole?.toLowerCase()!.includes("teacher") ? (
+                    <Menu.Item
+                      leftSection={
+                        <IconSettings
+                          style={{ width: rem(14), height: rem(14) }}
+                        />
+                      }
+                      onClick={() =>
+                        navigate(`profile/${user?.userUID}_${user?.userRole}`)
+                      }
+                    >
+                      Settings
+                    </Menu.Item>
+                  ) : null}
+
+                  {user.userRole?.toLowerCase()!.includes("admin") && (
+                    <Menu.Item
+                      leftSection={
+                        <IconSettings
+                          style={{ width: rem(14), height: rem(14) }}
+                        />
+                      }
+                      onClick={() => navigate(`/dashboard`)}
+                    >
+                      Go to dashboard
+                    </Menu.Item>
+                  )}
+                  <Menu.Divider />
+
+                  <Menu.Label>Danger zone</Menu.Label>
+                  <Menu.Item
+                    color="red"
+                    leftSection={
+                      <IconTrash style={{ width: rem(14), height: rem(14) }} />
                     }
-                    onClick={() => navigate(`/dashboard`)}
+                    onClick={async () => {
+                      await logoutUser();
+                    }}
                   >
-                    Go to dashboard
+                    Log out
                   </Menu.Item>
+                </Menu.Dropdown>
+              </Menu>
+
+              {user?.userRole.toLowerCase().includes("librarian") ||
+                user?.userRole.toLowerCase().includes("admin") ||
+                user?.userRole.toLowerCase().includes("staff") || (
+                  <ModeToggle />
                 )}
-                <Menu.Divider />
-
-                <Menu.Label>Danger zone</Menu.Label>
-                <Menu.Item
-                  color="red"
-                  leftSection={
-                    <IconTrash style={{ width: rem(14), height: rem(14) }} />
-                  }
-                  onClick={async () => {
-                    await logoutUser();
-                  }}
-                >
-                  Log out
-                </Menu.Item>
-              </Menu.Dropdown>
-            </Menu>
+            </>
           )}
         </Group>
         <Burger
