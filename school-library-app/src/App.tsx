@@ -89,9 +89,9 @@ function App() {
             <Route
               path="profile/:manageProfileId"
               element={
-                <ProtectedRoute>
-                  <ProfilePage />
-                </ProtectedRoute>
+                // <ProtectedRoute>
+                // </ProtectedRoute>
+                <ProfilePage />
               }
             />
           </Route>
