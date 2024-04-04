@@ -1,115 +1,172 @@
 import { IStudents } from "@features/Student/models/student.interface";
-import { ITeacher } from "@features/Teachers/models/teacher.interface";
 import {
   rem,
-  Grid,
-  SimpleGrid,
   Text,
   Image,
   Group,
   Box,
   ThemeIcon,
+  Paper,
+  Flex,
+  List,
+  Title,
+  Button,
+  Skeleton,
 } from "@mantine/core";
-import classes from "@pages/ProfilePage/profile-page.module.css";
-import { IconAt, IconUser, IconNumber } from "@tabler/icons-react";
+import { IconAddressBook } from "@tabler/icons-react";
 
-const UserProfile = ({ user }: { user: IStudents | ITeacher | undefined }) => {
+const UserProfile = ({
+  user,
+  handleClickParams,
+  isLoading,
+}: {
+  user: IStudents | undefined;
+  handleClickParams?: (_params: string) => void;
+  isLoading?: boolean;
+}) => {
   return (
-    <div className={classes.wrapper}>
-      <Grid align="center">
-        <Grid.Col span={{ base: 12, md: 5, lg: 3 }}>
-          <Image
-            src={
-              (user as IStudents)?.studentImage ||
-              (user as ITeacher)?.teacherImage
-            }
-            radius={"md"}
-            height={"150rem"}
-          />
-        </Grid.Col>
-        <Grid.Col span={{ base: 12, md: 7, lg: 9 }}>
-          <SimpleGrid cols={{ base: 1, md: 2 }} spacing={30}>
-            <Group>
-              <ThemeIcon size={28} radius="md" variant="light" color="#5C0505">
-                <IconAt
-                  style={{ width: rem(24), height: rem(24) }}
-                  stroke={1.5}
-                />
-              </ThemeIcon>
-              <Box>
-                <Text fz="lg" mt="sm" fw={500}>
-                  {user?.email}
-                </Text>
-                <Text c="dimmed" fz="sm">
-                  Email
-                </Text>
-              </Box>
-            </Group>
+    <Box my={"xs"}>
+      <Paper withBorder shadow="xs" p="md">
+        {isLoading ? (
+          <>
+            <Skeleton height={50} circle mb="xl" />
+            <Skeleton height={8} radius="xl" />
+            <Skeleton height={8} mt={6} radius="xl" />
+            <Skeleton height={8} mt={6} width="70%" radius="xl" />
+          </>
+        ) : (
+          <Flex direction={"column"} justify={"center"} align={"center"}>
+            <Image
+              src={
+                user?.studentImage
+                  ? user?.studentImage
+                  : "https://firebasestorage.googleapis.com/v0/b/library-management-syste-fb3e9.appspot.com/o/def_user.png?alt=media&token=b3ea39b4-cba7-4095-8e6c-6996848f0391"
+              }
+              height={"5rem"}
+              w={"5rem"}
+              loading="lazy"
+            />
 
-            <Group>
-              <ThemeIcon size={28} radius="md" variant="light" color="#5C0505">
-                <IconUser
-                  style={{ width: rem(24), height: rem(24) }}
-                  stroke={1.5}
-                />
-              </ThemeIcon>
-              <Box>
-                <Text fz="lg" mt="sm" fw={500}>
-                  {user?.firstName} {user?.middleName} {user?.lastName}
-                </Text>
-                <Text c="dimmed" fz="sm">
-                  Full Name
-                </Text>
-              </Box>
-            </Group>
+            <Box>
+              <Text fz="lg" mt="sm" fw={500} ff={"Montserrat"}>
+                {user?.firstName} {user?.middleName} {user?.lastName}
+              </Text>
+              <Text c="dimmed" ta={"center"} fz="xs" ff={"Montserrat"}>
+                Name
+              </Text>
+            </Box>
 
-            <Group>
-              <ThemeIcon size={28} radius="md" variant="light" color="#5C0505">
-                <IconNumber
-                  style={{ width: rem(24), height: rem(24) }}
-                  stroke={1.5}
-                />
-              </ThemeIcon>
-              <Box>
-                <Text fz="lg" mt="sm" fw={500}>
-                  {user?.userRole === "Student" &&
-                    (user as IStudents)?.studentNumber}
-                  {user?.userRole === "Teacher" &&
-                    (user as ITeacher)?.teacherNumber}
-                </Text>
-                <Text c="dimmed" fz="sm">
-                  Student Number
-                </Text>
-              </Box>
-            </Group>
+            <Box>
+              <Text fz="lg" mt="sm" fw={500} ff={"Montserrat"}>
+                {user?.userRole === "Student" &&
+                  (user as IStudents)?.studentNumber}
+              </Text>
+              <Text c="dimmed" ta={"center"} fz="xs" ff={"Montserrat"}>
+                Student Number
+              </Text>
+            </Box>
+          </Flex>
+        )}
 
-            <Group>
-              <ThemeIcon size={28} radius="md" variant="light" color="#5C0505">
-                <IconNumber
-                  style={{ width: rem(24), height: rem(24) }}
-                  stroke={1.5}
-                />
-              </ThemeIcon>
-              <Box>
-                <Box>
-                  <Text fz="lg" mt="sm" fw={500}>
-                    {user?.levelOfEducation}
-                    <br />
-                    {user?.gradeLevel && `${user.gradeLevel} - ` && <br />}
-                    {user?.gradeSection && user.gradeSection}
+        <Group gap={"0.8rem"} mt="xs" align="center" justify="center">
+          <Button
+            disabled={isLoading}
+            variant="outline"
+            color="red.8"
+            size="xs"
+            onClick={() => handleClickParams?.("edit_profile")}
+          >
+            Edit Profile
+          </Button>
+          <Button
+            disabled={isLoading}
+            variant="outline"
+            color="yellow.8"
+            size="xs"
+            onClick={() => handleClickParams?.("change_password")}
+          >
+            Change Password
+          </Button>
+        </Group>
+      </Paper>
 
-                    {user?.academicCourse && user.academicCourse}
-                  </Text>
-                </Box>
-                <Text c="dimmed" fz="sm">
-                  Education
-                </Text>
-              </Box>
-            </Group>
-          </SimpleGrid>
-        </Grid.Col>
-      </Grid>
-    </div>
+      <Paper withBorder shadow="xs" p="md" mt={"xs"}>
+        {isLoading ? (
+          <>
+            <Skeleton height={8} radius="xl" />
+            <Skeleton height={8} mt={6} radius="xl" />
+            <Skeleton height={8} mt={6} width="70%" radius="xl" />
+            <Skeleton height={8} mt={6} width="70%" radius="xl" />
+          </>
+        ) : (
+          <>
+            <Title order={5} fw="400" mt={"xs"} mb={"xs"}>
+              Education Info
+            </Title>
+            <List spacing="sm" size="sm">
+              <List.Item
+                ff={"Montserrat"}
+                icon={
+                  <ThemeIcon size={20} radius="xl" color="yellow">
+                    <IconAddressBook
+                      style={{ width: rem(12), height: rem(12) }}
+                      stroke={1.5}
+                    />
+                  </ThemeIcon>
+                }
+              >
+                <b>Education</b> – {user?.levelOfEducation}
+              </List.Item>
+
+              <List.Item
+                ff={"Montserrat"}
+                icon={
+                  <ThemeIcon size={20} radius="xl" color="yellow">
+                    <IconAddressBook
+                      style={{ width: rem(12), height: rem(12) }}
+                      stroke={1.5}
+                    />
+                  </ThemeIcon>
+                }
+              >
+                <b>Academic Course</b> –{" "}
+                {user?.academicCourse ? user?.academicCourse : "N/A"}
+              </List.Item>
+
+              <List.Item
+                ff={"Montserrat"}
+                icon={
+                  <ThemeIcon size={20} radius="xl" color="yellow">
+                    <IconAddressBook
+                      style={{ width: rem(12), height: rem(12) }}
+                      stroke={1.5}
+                    />
+                  </ThemeIcon>
+                }
+              >
+                <b>Grade Level</b> –{" "}
+                {user?.gradeLevel ? user?.gradeLevel : "N/A"}
+              </List.Item>
+
+              <List.Item
+                ff={"Montserrat"}
+                icon={
+                  <ThemeIcon size={20} radius="xl" color="yellow">
+                    <IconAddressBook
+                      style={{ width: rem(12), height: rem(12) }}
+                      stroke={1.5}
+                    />
+                  </ThemeIcon>
+                }
+              >
+                <b>Grade Section</b> –{" "}
+                {user?.gradeSection ? user?.gradeSection : "N/A"}
+              </List.Item>
+            </List>
+          </>
+        )}
+      </Paper>
+    </Box>
   );
 };
 export default UserProfile;

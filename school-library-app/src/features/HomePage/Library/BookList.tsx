@@ -14,6 +14,7 @@ import {
   Spoiler,
   Code,
   Loader,
+  Skeleton,
 } from "@mantine/core";
 import {
   IconBookmark,
@@ -26,6 +27,7 @@ import BookPagination from "./BookPagination";
 import { IBooks } from "@features/Catalogue/models/books.interface";
 import { Link, useSearchParams } from "react-router-dom";
 import { PAGE_SIZE } from "src/shared/constant";
+import NoBooksAvailable from "./NoBooksAvailable";
 
 const BookList = ({
   booksData,
@@ -84,14 +86,357 @@ const BookList = ({
       />
       {isLoading ? (
         <>
-          <Flex justify={"center"} align={"center"} h="100%" pos="relative">
-            <Loader color="red.5" />
-          </Flex>
+          <Grid>
+            <Grid.Col
+              span={{
+                base: 12,
+                md: 6,
+                lg: 4,
+              }}
+            >
+              <Card
+                withBorder
+                padding="lg"
+                radius="md"
+                className={classes.card}
+                mt={"xs"}
+                mah={"25rem"}
+              >
+                <Card.Section mb="sm">
+                  <Skeleton height={180} mb="xl" />
+                </Card.Section>
+
+                <Badge w="fit-content" variant="light">
+                  <Skeleton height={8} radius="xl" />
+                </Badge>
+
+                <Text fw={700} className={classes.title} mt="xs">
+                  <Skeleton height={8} radius="xl" />
+                </Text>
+
+                <Card.Section className={classes.footer}>
+                  <Group justify="space-between">
+                    <Code px={"xs"}>
+                      <Group>
+                        <Skeleton height={8} radius="xl" />
+                      </Group>
+                    </Code>
+                  </Group>
+                </Card.Section>
+              </Card>
+            </Grid.Col>
+            <Grid.Col
+              span={{
+                base: 12,
+                md: 6,
+                lg: 4,
+              }}
+            >
+              <Card
+                withBorder
+                padding="lg"
+                radius="md"
+                className={classes.card}
+                mt={"xs"}
+                mah={"25rem"}
+              >
+                <Card.Section mb="sm">
+                  <Skeleton height={180} mb="xl" />
+                </Card.Section>
+
+                <Badge w="fit-content" variant="light">
+                  <Skeleton height={8} radius="xl" />
+                </Badge>
+
+                <Text fw={700} className={classes.title} mt="xs">
+                  <Skeleton height={8} radius="xl" />
+                </Text>
+
+                <Card.Section className={classes.footer}>
+                  <Group justify="space-between">
+                    <Code px={"xs"}>
+                      <Group>
+                        <Skeleton height={8} radius="xl" />
+                      </Group>
+                    </Code>
+                  </Group>
+                </Card.Section>
+              </Card>
+            </Grid.Col>
+            <Grid.Col
+              span={{
+                base: 12,
+                md: 6,
+                lg: 4,
+              }}
+            >
+              <Card
+                withBorder
+                padding="lg"
+                radius="md"
+                className={classes.card}
+                mt={"xs"}
+                mah={"25rem"}
+              >
+                <Card.Section mb="sm">
+                  <Skeleton height={180} mb="xl" />
+                </Card.Section>
+
+                <Badge w="fit-content" variant="light">
+                  <Skeleton height={8} radius="xl" />
+                </Badge>
+
+                <Text fw={700} className={classes.title} mt="xs">
+                  <Skeleton height={8} radius="xl" />
+                </Text>
+
+                <Card.Section className={classes.footer}>
+                  <Group justify="space-between">
+                    <Code px={"xs"}>
+                      <Group>
+                        <Skeleton height={8} radius="xl" />
+                      </Group>
+                    </Code>
+                  </Group>
+                </Card.Section>
+              </Card>
+            </Grid.Col>
+            <Grid.Col
+              span={{
+                base: 12,
+                md: 6,
+                lg: 4,
+              }}
+            >
+              <Card
+                withBorder
+                padding="lg"
+                radius="md"
+                className={classes.card}
+                mt={"xs"}
+                mah={"25rem"}
+              >
+                <Card.Section mb="sm">
+                  <Skeleton height={180} mb="xl" />
+                </Card.Section>
+
+                <Badge w="fit-content" variant="light">
+                  <Skeleton height={8} radius="xl" />
+                </Badge>
+
+                <Text fw={700} className={classes.title} mt="xs">
+                  <Skeleton height={8} radius="xl" />
+                </Text>
+
+                <Card.Section className={classes.footer}>
+                  <Group justify="space-between">
+                    <Code px={"xs"}>
+                      <Group>
+                        <Skeleton height={8} radius="xl" />
+                      </Group>
+                    </Code>
+                  </Group>
+                </Card.Section>
+              </Card>
+            </Grid.Col>
+            <Grid.Col
+              span={{
+                base: 12,
+                md: 6,
+                lg: 4,
+              }}
+            >
+              <Card
+                withBorder
+                padding="lg"
+                radius="md"
+                className={classes.card}
+                mt={"xs"}
+                mah={"25rem"}
+              >
+                <Card.Section mb="sm">
+                  <Skeleton height={180} mb="xl" />
+                </Card.Section>
+
+                <Badge w="fit-content" variant="light">
+                  <Skeleton height={8} radius="xl" />
+                </Badge>
+
+                <Text fw={700} className={classes.title} mt="xs">
+                  <Skeleton height={8} radius="xl" />
+                </Text>
+
+                <Card.Section className={classes.footer}>
+                  <Group justify="space-between">
+                    <Code px={"xs"}>
+                      <Group>
+                        <Skeleton height={8} radius="xl" />
+                      </Group>
+                    </Code>
+                  </Group>
+                </Card.Section>
+              </Card>
+            </Grid.Col>
+            <Grid.Col
+              span={{
+                base: 12,
+                md: 6,
+                lg: 4,
+              }}
+            >
+              <Card
+                withBorder
+                padding="lg"
+                radius="md"
+                className={classes.card}
+                mt={"xs"}
+                mah={"25rem"}
+              >
+                <Card.Section mb="sm">
+                  <Skeleton height={180} mb="xl" />
+                </Card.Section>
+
+                <Badge w="fit-content" variant="light">
+                  <Skeleton height={8} radius="xl" />
+                </Badge>
+
+                <Text fw={700} className={classes.title} mt="xs">
+                  <Skeleton height={8} radius="xl" />
+                </Text>
+
+                <Card.Section className={classes.footer}>
+                  <Group justify="space-between">
+                    <Code px={"xs"}>
+                      <Group>
+                        <Skeleton height={8} radius="xl" />
+                      </Group>
+                    </Code>
+                  </Group>
+                </Card.Section>
+              </Card>
+            </Grid.Col>
+            <Grid.Col
+              span={{
+                base: 12,
+                md: 6,
+                lg: 4,
+              }}
+            >
+              <Card
+                withBorder
+                padding="lg"
+                radius="md"
+                className={classes.card}
+                mt={"xs"}
+                mah={"25rem"}
+              >
+                <Card.Section mb="sm">
+                  <Skeleton height={180} mb="xl" />
+                </Card.Section>
+
+                <Badge w="fit-content" variant="light">
+                  <Skeleton height={8} radius="xl" />
+                </Badge>
+
+                <Text fw={700} className={classes.title} mt="xs">
+                  <Skeleton height={8} radius="xl" />
+                </Text>
+
+                <Card.Section className={classes.footer}>
+                  <Group justify="space-between">
+                    <Code px={"xs"}>
+                      <Group>
+                        <Skeleton height={8} radius="xl" />
+                      </Group>
+                    </Code>
+                  </Group>
+                </Card.Section>
+              </Card>
+            </Grid.Col>
+            <Grid.Col
+              span={{
+                base: 12,
+                md: 6,
+                lg: 4,
+              }}
+            >
+              <Card
+                withBorder
+                padding="lg"
+                radius="md"
+                className={classes.card}
+                mt={"xs"}
+                mah={"25rem"}
+              >
+                <Card.Section mb="sm">
+                  <Skeleton height={180} mb="xl" />
+                </Card.Section>
+
+                <Badge w="fit-content" variant="light">
+                  <Skeleton height={8} radius="xl" />
+                </Badge>
+
+                <Text fw={700} className={classes.title} mt="xs">
+                  <Skeleton height={8} radius="xl" />
+                </Text>
+
+                <Card.Section className={classes.footer}>
+                  <Group justify="space-between">
+                    <Code px={"xs"}>
+                      <Group>
+                        <Skeleton height={8} radius="xl" />
+                      </Group>
+                    </Code>
+                  </Group>
+                </Card.Section>
+              </Card>
+            </Grid.Col>
+            <Grid.Col
+              span={{
+                base: 12,
+                md: 6,
+                lg: 4,
+              }}
+            >
+              <Card
+                withBorder
+                padding="lg"
+                radius="md"
+                className={classes.card}
+                mt={"xs"}
+                mah={"25rem"}
+              >
+                <Card.Section mb="sm">
+                  <Skeleton height={180} mb="xl" />
+                </Card.Section>
+
+                <Badge w="fit-content" variant="light">
+                  <Skeleton height={8} radius="xl" />
+                </Badge>
+
+                <Text fw={700} className={classes.title} mt="xs">
+                  <Skeleton height={8} radius="xl" />
+                </Text>
+
+                <Card.Section className={classes.footer}>
+                  <Group justify="space-between">
+                    <Code px={"xs"}>
+                      <Group>
+                        <Skeleton height={8} radius="xl" />
+                      </Group>
+                    </Code>
+                  </Group>
+                </Card.Section>
+              </Card>
+            </Grid.Col>
+          </Grid>
         </>
       ) : (
         <>
           {count === 0 ? (
-            <>No available books here</>
+            <>
+              <NoBooksAvailable />
+            </>
           ) : (
             <>
               <Grid>

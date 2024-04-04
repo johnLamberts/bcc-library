@@ -17,23 +17,23 @@ import { Controller, useFormContext } from "react-hook-form";
 import { IMaskInput } from "react-imask";
 import { useSearchParams } from "react-router-dom";
 
-const removeHyphens = (value: string) => {
-  return value.replace(/-/g, "");
-};
+// const removeHyphens = (value: string) => {
+//   return value.replace(/-/g, "");
+// };
 
-const isValidISBN10 = (isbn: string) => {
-  // Validation logic for ISBN-10 format
-  // You can replace this with your own validation logic
-  return isbn.length === 10;
-};
+// const isValidISBN10 = (isbn: string) => {
+//   // Validation logic for ISBN-10 format
+//   // You can replace this with your own validation logic
+//   return isbn.length === 10;
+// };
 
-// Validation logic for ISBN-13 format
-// You can replace this with your own validation logic
-const isValidISBN13 = (isbn: string) => {
-  // Validation logic for ISBN-13 format
-  // You can replace this with your own validation logic
-  return isbn.length === 13;
-};
+// // Validation logic for ISBN-13 format
+// // You can replace this with your own validation logic
+// const isValidISBN13 = (isbn: string) => {
+//   // Validation logic for ISBN-13 format
+//   // You can replace this with your own validation logic
+//   return isbn.length === 13;
+// };
 
 const BookLocationAndDetailsForm = () => {
   const {
@@ -87,20 +87,20 @@ const BookLocationAndDetailsForm = () => {
               control={control}
               rules={{
                 required: "This field is required",
-                validate: (value) => {
-                  const cleaned = removeHyphens(value);
-                  if (!isFormatISBN13) {
-                    if (!isValidISBN13(cleaned)) {
-                      return "Badly formatted ISBN-13";
-                    }
-                  } else {
-                    if (!isValidISBN10(cleaned)) {
-                      return "Badly formatted ISBN-10";
-                    }
-                  }
+                // validate: (value) => {
+                //   const cleaned = removeHyphens(value);
+                //   if (!isFormatISBN13) {
+                //     if (!isValidISBN13(cleaned)) {
+                //       return "Badly formatted ISBN-13";
+                //     }
+                //   } else {
+                //     if (!isValidISBN10(cleaned)) {
+                //       return "Badly formatted ISBN-10";
+                //     }
+                //   }
 
-                  return true;
-                },
+                //   return true;
+                // },
               }}
               render={({
                 field: { onChange, onBlur, ref, value },
@@ -109,26 +109,28 @@ const BookLocationAndDetailsForm = () => {
                 return (
                   <InputBase
                     component={IMaskInput}
-                    mask={isFormatISBN13 ? "0-000-000000" : "000-0-000-000000"}
-                    label={isFormatISBN13 ? "ISBN-10" : "ISBN-13"}
+                    // mask={isFormatISBN13 ? "0-000-000000" : "000-0-000-000000"}
+                    // label={isFormatISBN13 ? "ISBN-10" : "ISBN-13"}
+                    label="Book ISBN"
                     onChange={onChange}
                     value={value}
                     onBlur={onBlur}
                     inputRef={ref}
-                    description={
-                      <Checkbox
-                        label={"Use ISBN-10 instead"}
-                        onChange={handleFormatISBN}
-                        style={{
-                          transform: "scale(1)",
-                        }}
-                        size="xs"
-                        checked={isFormatISBN13}
-                      />
-                    }
-                    placeholder={
-                      isFormatISBN13 ? "0-000-00000-0" : "000-0-000-00000-0"
-                    }
+                    // description={
+                    //   <Checkbox
+                    //     label={"Use ISBN-10 instead"}
+                    //     onChange={handleFormatISBN}
+                    //     style={{
+                    //       transform: "scale(1)",
+                    //     }}
+                    //     size="xs"
+                    //     checked={isFormatISBN13}
+                    //   />
+                    // }
+                    // placeholder={
+                    //   isFormatISBN13 ? "0-000-00000-0" : "000-0-000-00000-0"
+                    // }
+                    placeholder="Customize your own format"
                     withErrorStyles={errors.bookISBN?.message ? true : false}
                     error={<>{errors.bookISBN?.message}</> || error}
                   />
@@ -198,7 +200,7 @@ const BookLocationAndDetailsForm = () => {
               render={({ field }) => {
                 return (
                   <Select
-                    label="Book Section"
+                    label="Book Location"
                     placeholder={"Select book section"}
                     data={bookSectionData.map((type) => ({
                       label: type.categorySection,
@@ -240,8 +242,8 @@ const BookLocationAndDetailsForm = () => {
 
           <Form.Col span={{ base: 12, md: 6, lg: 6 }}>
             <TextInput
-              label="Book Location"
-              placeholder="Your Book Location..."
+              label="Book Section"
+              placeholder="Your Book Section..."
               withAsterisk
               withErrorStyles={errors.bookLocation?.message ? true : false}
               {...register("bookLocation", {
@@ -261,8 +263,7 @@ const BookLocationAndDetailsForm = () => {
                 required: `This field is required`,
               })}
               error={<>{errors.bookDescription?.message}</>}
-              minRows={2}
-              maxRows={5}
+              resize="vertical"
             />
           </Form.Col>
         </Form.Grid>
