@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   Group,
   Box,
@@ -45,6 +46,19 @@ const BorrowTransactionTable = () => {
     isLoading: isTransactionLoading,
     isFetching: isTransactionFetching,
   } = useReadTransactionList();
+
+  const transactionRequestList = useMemo(() => {
+    return transactionList?.slice().sort((a: any, b: any) => {
+      // Convert createdAt timestamps to Date objects
+      const timestampA =
+        a.createdAt?.seconds * 1000 + (a.createdAt?.nanoseconds || 0) / 1000;
+      const timestampB =
+        b.createdAt?.seconds * 1000 + (b.createdAt?.nanoseconds || 0) / 1000;
+
+      // Sort by timestamp in descending order
+      return timestampB - timestampA;
+    });
+  }, [transactionList]);
 
   const customColumns = useMemo<MRT_ColumnDef<ICirculation>[]>(
     () => [
@@ -235,7 +249,7 @@ const BorrowTransactionTable = () => {
     };
 
   const table = useMantineReactTable({
-    data: transactionList,
+    data: transactionRequestList,
     columns: customColumns,
     createDisplayMode: "modal",
     editDisplayMode: "modal",
