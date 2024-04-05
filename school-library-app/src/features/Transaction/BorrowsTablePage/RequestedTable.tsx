@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   Box,
   Flex,
@@ -6,11 +7,13 @@ import {
   Badge,
   Tooltip,
   Button,
+  Stack,
 } from "@mantine/core";
 import {
   MRT_ColumnDef,
   MRT_Row,
   MRT_ShowHideColumnsButton,
+  MRT_TableOptions,
   MRT_ToggleDensePaddingButton,
   MRT_ToggleGlobalFilterButton,
   MantineReactTable,
@@ -23,6 +26,8 @@ import useReadRequest from "../hooks/useReadRequest";
 import { modals } from "@mantine/modals";
 import { useCreateApproveRequest } from "../hooks/useApproveRequest";
 import { format } from "date-fns";
+import DeclineForm from "../Forms/DeclineForm";
+import { useCreateDeclineRequestedBook } from "../hooks/useCancelledRequestedBooks";
 
 const BookRequestedTable = () => {
   const {
@@ -31,10 +36,26 @@ const BookRequestedTable = () => {
     isFetching: isRequestFetching,
   } = useReadRequest();
 
+  const { isCreatingCancelledReqBook, createCancelledReqBook } =
+    useCreateDeclineRequestedBook();
+
   const {
     isCreatingApproveRequestTransaction,
     createApproveRequestTransaction,
   } = useCreateApproveRequest();
+
+  const transactionRequestList = useMemo(() => {
+    return transactionList?.slice().sort((a: any, b: any) => {
+      // Convert createdAt timestamps to Date objects
+      const timestampA =
+        a.createdAt?.seconds * 1000 + (a.createdAt?.nanoseconds || 0) / 1000;
+      const timestampB =
+        b.createdAt?.seconds * 1000 + (b.createdAt?.nanoseconds || 0) / 1000;
+
+      // Sort by timestamp in descending order
+      return timestampB - timestampA;
+    });
+  }, [transactionList]);
 
   const customColumns = useMemo<MRT_ColumnDef<ICirculation>[]>(
     () => [
@@ -49,7 +70,6 @@ const BookRequestedTable = () => {
         accessorKey: "createdAt",
         header: "Date Created",
         Cell: ({ row }) => {
-          console.log(row.original);
           if (
             row.getValue("createdAt") === undefined ||
             typeof row.getValue("createdAt") === "string"
@@ -129,14 +149,22 @@ const BookRequestedTable = () => {
       },
     });
 
+  // Modal `DECLINE` action
+
+  const handleSaveLevel: MRT_TableOptions<ICirculation>["onEditingRowSave"] =
+    async ({ values, table }) => {
+      // await modifyCatalogue(values);
+      createCancelledReqBook(values);
+      table.setEditingRow(null);
+    };
+
   const table = useMantineReactTable({
-    data: transactionList,
+    data: transactionRequestList,
     columns: customColumns,
     createDisplayMode: "modal",
     editDisplayMode: "modal",
     enableRowActions: true,
-    // positionActionsColumn: "last",
-    // onCreatingRowSave: handleCreateLevel,
+    onEditingRowSave: handleSaveLevel,
     mantineTableContainerProps: {
       style: {
         height: "100%",
@@ -151,7 +179,7 @@ const BookRequestedTable = () => {
     mantineEditRowModalProps: {
       centered: true,
       size: "xl",
-      title: "Editing form for Catalogue",
+      title: "Reason for Declining",
       scrollAreaComponent: ScrollArea.Autosize,
     },
     mantineTableProps: {
@@ -164,7 +192,9 @@ const BookRequestedTable = () => {
       isLoading: isRequestLoading,
       showProgressBars: isRequestFetching,
       showLoadingOverlay:
-        isCreatingApproveRequestTransaction || isRequestLoading,
+        isCreatingApproveRequestTransaction ||
+        isRequestLoading ||
+        isCreatingCancelledReqBook,
     },
 
     initialState: {
@@ -187,24 +217,56 @@ const BookRequestedTable = () => {
     renderRowActions: ({ row }) => (
       <>
         <Flex gap="md">
-          <Tooltip label="Edit">
+          <Tooltip
+            label={
+              row.original.numberOfBooksAvailable_QUANTITY === 0
+                ? "No available copy"
+                : "Approve"
+            }
+          >
             <Button
               variant="light"
               color="green"
               size="sm"
+              disabled={row.original.numberOfBooksAvailable_QUANTITY === 0}
               onClick={() => openApproveConfirmModal(row)}
             >
               Approve
             </Button>
           </Tooltip>
           <Tooltip label="Edit">
-            <Button variant="light" size="sm">
+            <Button
+              variant="light"
+              size="sm"
+              onClick={() => table.setEditingRow(row)}
+            >
               Decline
             </Button>
           </Tooltip>
         </Flex>
       </>
     ),
+
+    renderEditRowModalContent: ({ row, table }) => {
+      return (
+        <>
+          <Stack>
+            <DeclineForm
+              table={table}
+              row={row}
+              onSave={(data) =>
+                handleSaveLevel({
+                  values: data,
+                  table: table,
+                  row: row,
+                  exitEditingMode: () => null,
+                })
+              }
+            />
+          </Stack>
+        </>
+      );
+    },
 
     renderToolbarInternalActions: ({ table }) => {
       return (
