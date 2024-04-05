@@ -17,21 +17,9 @@ const EducationForm = <TData extends MRT_RowData>({
   table,
   row,
 }: EducationFormProps<TData>) => {
-  const { control, watch, setValue } = useFormContext();
+  const { control, watch, setValue, getValues } = useFormContext();
 
   const isEditing = table.getState().editingRow?.id === row.id;
-
-  useEffect(() => {
-    if (isEditing) {
-      setValue("levelOfEducation", row.original.levelOfEducation);
-      setValue("gradeLevel", row.original.gradeLevel);
-    }
-  }, [
-    isEditing,
-    row.original.gradeLevel,
-    row.original.levelOfEducation,
-    setValue,
-  ]);
 
   const {
     data: levelOfEducationData = [],
@@ -48,10 +36,13 @@ const EducationForm = <TData extends MRT_RowData>({
     useReadGradeSection();
 
   const selectedLevelOfEducation =
-    row.original.levelOfEducation || watch("levelOfEducation");
-  const selectedGradeLevel = row.original.gradeLevel || watch("gradeLevel");
-
-  console.log(selectedGradeLevel, selectedLevelOfEducation);
+    isEditing && row.original.levelOfEducation === getValues("levelOfEducation")
+      ? row.original.levelOfEducation
+      : watch("levelOfEducation");
+  const selectedGradeLevel =
+    isEditing && row.original.gradeLevel === getValues("gradeLevel")
+      ? row.original.gradeLevel
+      : watch("gradeLevel");
 
   const filteredCourses = courseData
     .filter((item) => item?.levelOfEducation === selectedLevelOfEducation)
@@ -67,9 +58,34 @@ const EducationForm = <TData extends MRT_RowData>({
     .filter((gradeLevel) => gradeLevel.gradeLevel === selectedGradeLevel)
     .map((level) => level.gradeSection || "");
 
-  const handleChangeLevel = (e: string | null) => {
-    setValue("levelOfEducation", e);
+  useEffect(() => {
+    if (
+      isEditing &&
+      row.original.levelOfEducation === watch("levelOfEducation")
+    ) {
+      setValue("levelOfEducation", row.original.levelOfEducation);
+      setValue("gradeLevel", row.original.gradeLevel);
+    }
 
+    console.log(filteredCourses.length);
+  }, [
+    filteredCourses.length,
+    isEditing,
+    row.original.gradeLevel,
+    row.original.levelOfEducation,
+    setValue,
+    watch,
+  ]);
+
+  const handleChangeLevel = (e: string | null) => {
+    if (
+      isEditing &&
+      row.original.levelOfEducation === watch("levelOfEducation")
+    ) {
+      setValue("levelOfEducation", getValues("levelOfEducation"));
+    } else {
+      setValue("levelOfEducation", e);
+    }
     setValue("academicCourse", null);
     setValue("gradeLevel", null);
     setValue("gradeSection", null);

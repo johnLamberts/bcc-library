@@ -4,10 +4,20 @@ import useReadGradeLevel from "@features/SysSettings/GradeLevel/useReadGradeLeve
 import useReadGradeSection from "@features/SysSettings/GradeSection/useReadGradeSection";
 import useReadEducation from "@features/SysSettings/LevelEducation/useReadEducation";
 import { Select } from "@mantine/core";
+import { MRT_RowData, MRT_TableInstance, MRT_Row } from "mantine-react-table";
+import { useEffect } from "react";
 import { Controller, useFormContext } from "react-hook-form";
+interface EducationFormProps<TData extends MRT_RowData> {
+  table: MRT_TableInstance<TData>;
+  row: MRT_Row<TData>;
+}
+const EducationForm = <TData extends MRT_RowData>({
+  table,
+  row,
+}: EducationFormProps<TData>) => {
+  const { control, watch, setValue, getValues } = useFormContext();
 
-const EducationForm = () => {
-  const { control, watch, setValue } = useFormContext();
+  const isEditing = table.getState().editingRow?.id === row.id;
 
   const {
     data: levelOfEducationData = [],
@@ -23,7 +33,15 @@ const EducationForm = () => {
   const { data: gradeSectionData = [], isFetching: isFetchingSectionevel } =
     useReadGradeSection();
 
-  const selectedLevelOfEducation = watch("levelOfEducation");
+  const selectedLevelOfEducation =
+    isEditing && row.original.levelOfEducation === watch("levelOfEducation")
+      ? row.original.levelOfEducation
+      : watch("levelOfEducation");
+  const selectedGradeLevel =
+    isEditing && row.original.gradeLevel === watch("gradeLevel")
+      ? row.original.gradeLevel
+      : watch("gradeLevel");
+
   const filteredCourses = courseData
     .filter((item) => item?.levelOfEducation === selectedLevelOfEducation)
     .map((item) => item?.academicCourse || "");
@@ -35,12 +53,34 @@ const EducationForm = () => {
     .map((level) => level.gradeLevel || "");
 
   const filterGradeSection = gradeSectionData
-    .filter((gradeLevel) => gradeLevel.gradeLevel === watch("gradeLevel"))
+    .filter((gradeLevel) => gradeLevel.gradeLevel === selectedGradeLevel)
     .map((level) => level.gradeSection || "");
 
-  const handleChangeLevel = (e: string | null) => {
-    setValue("levelOfEducation", e);
+  useEffect(() => {
+    if (
+      isEditing &&
+      row.original.levelOfEducation === watch("levelOfEducation")
+    ) {
+      setValue("levelOfEducation", row.original.levelOfEducation);
+      setValue("gradeLevel", row.original.gradeLevel);
+    }
+  }, [
+    isEditing,
+    row.original.gradeLevel,
+    row.original.levelOfEducation,
+    setValue,
+    watch,
+  ]);
 
+  const handleChangeLevel = (e: string | null) => {
+    if (
+      isEditing &&
+      row.original.levelOfEducation === watch("levelOfEducation")
+    ) {
+      setValue("levelOfEducation", getValues("levelOfEducation"));
+    } else {
+      setValue("levelOfEducation", e);
+    }
     setValue("academicCourse", null);
     setValue("gradeLevel", null);
     setValue("gradeSection", null);

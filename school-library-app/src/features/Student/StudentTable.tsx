@@ -70,6 +70,19 @@ const StudentTable = () => {
 
   const optimizedStudentsData = useMemo(() => studentData, [studentData]);
 
+  const studentsList = useMemo(() => {
+    return optimizedStudentsData?.slice().sort((a: any, b: any) => {
+      // Convert createdAt timestamps to Date objects
+      const timestampA =
+        a.createdAt?.seconds * 1000 + (a.createdAt?.nanoseconds || 0) / 1000;
+      const timestampB =
+        b.createdAt?.seconds * 1000 + (b.createdAt?.nanoseconds || 0) / 1000;
+
+      // Sort by timestamp in descending order
+      return timestampB - timestampA;
+    });
+  }, [optimizedStudentsData]);
+
   const customColumns = useMemo<MRT_ColumnDef<IStudents>[]>(
     () => [
       {
@@ -202,7 +215,7 @@ const StudentTable = () => {
   };
 
   const table = useMantineReactTable({
-    data: optimizedStudentsData,
+    data: studentsList,
     columns: customColumns,
     createDisplayMode: "modal",
     editDisplayMode: "modal",
