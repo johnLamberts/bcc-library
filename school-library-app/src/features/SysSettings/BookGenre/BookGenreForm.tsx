@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Title,
   Select,
@@ -35,41 +35,42 @@ function BookGenreForm<TData extends MRT_RowData>({
 
   const isEditing = table.getState().editingRow?.id === row.id;
 
-  const { control, handleSubmit, register, watch } = useForm<IGenre>({
+  const {
+    control,
+    handleSubmit,
+    register,
+    formState: { errors },
+  } = useForm<IGenre>({
     defaultValues: isEditing ? row.original : {},
   });
-
-  console.log(bookTypeData);
-
   const isCreating = table.getState().creatingRow?.id === row.id;
   const [genresName, setGenresName] = useState("");
 
-  const onSubmit = useCallback(
-    (data: IGenre) => {
-      if (!data.genres.trim()) {
-        toast.error(
-          "Uh-oh! It seems like you forgot to fill in some required information. Please make sure all fields are filled out before submitting."
-        );
-        return;
-      }
-      if (watch("bookType") === "") {
-        toast.error(
-          "Uh-oh! It seems like you forgot to fill in some required information. Please make sure all fields are filled out before submitting."
-        );
-        return;
-      }
+  const onSubmit = (data: IGenre) => {
+    if (!data.genres.trim()) {
+      toast.error(
+        "Uh-oh! It seems like you forgot to fill in some required information. Please make sure all fields are filled out before submitting."
+      );
+      return;
+    }
+    if (data.bookType === undefined || data.bookType === null) {
+      toast.error(
+        "Uh-oh! It seems like you forgot to fill in some required information. Please make sure all fields are filled out before submitting."
+      );
+      return;
+    }
 
-      if (isEditing) {
-        onSave?.({
-          ...data,
-          genresName,
-        });
-      } else if (isCreating) {
-        onCreate?.(data);
-      }
-    },
-    [watch, isEditing, isCreating, onSave, genresName, onCreate]
-  );
+    console.log(data);
+
+    if (isEditing) {
+      onSave?.({
+        ...data,
+        genresName,
+      });
+    } else if (isCreating) {
+      onCreate?.(data);
+    }
+  };
 
   useEffect(() => {
     if (isEditing) {
@@ -97,6 +98,9 @@ function BookGenreForm<TData extends MRT_RowData>({
               <Controller
                 control={control}
                 name="bookType"
+                rules={{
+                  required: true,
+                }}
                 render={({ field: { onChange, ...field } }) => {
                   return (
                     <Select
@@ -107,7 +111,7 @@ function BookGenreForm<TData extends MRT_RowData>({
                           (type) =>
                             type.bookType
                               .toLowerCase()
-                              .includes("non fiction") ||
+                              .includes("non fiction" || "non-fiction") ||
                             type.bookType.toLowerCase().includes("fiction")
                         )
                         .map((type) => ({
@@ -119,6 +123,8 @@ function BookGenreForm<TData extends MRT_RowData>({
                       }}
                       withAsterisk
                       {...field}
+                      error={<>{errors.bookType?.message}</>}
+                      withErrorStyles={errors.bookType?.message ? true : false}
                     />
                   );
                 }}
@@ -128,7 +134,7 @@ function BookGenreForm<TData extends MRT_RowData>({
               <TextInput
                 label="Your Genre"
                 placeholder="Genre"
-                {...register("genres")}
+                {...register("genres", { required: "This field is required" })}
               />
             </Grid.Col>
           </Grid>
