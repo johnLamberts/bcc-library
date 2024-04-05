@@ -51,8 +51,6 @@ export default function StudentForm<TData extends MRT_RowData>({
         },
   });
 
-  console.log(row.original);
-
   const [edit, setEdit] = useState<boolean>(true);
 
   const onSubmit = useCallback(

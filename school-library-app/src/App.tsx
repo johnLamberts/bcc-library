@@ -45,6 +45,7 @@ import useCurrentUser from "@pages/Authentication/hooks/useCurrentUser";
 import AdminRequired from "./routes/AdminRequired";
 import ProtectedRoute from "./routes/ProtectedRoute";
 import AnnouncementDetails from "@pages/Homepage/AnnouncementDetails";
+import NavigateRoleRoute from "./routes/NavigateRoleRoute";
 
 function App() {
   const { user } = useCurrentUser();
@@ -97,41 +98,13 @@ function App() {
           </Route>
           <Route
             element={
-              <ProtectedRoute>
-                <AdminLayout />
-              </ProtectedRoute>
+              // <ProtectedRoute>
+              // </ProtectedRoute>
+              <AdminLayout />
             }
           >
-            <Route
-              index
-              element={
-                <>
-                  {user?.userRole.toLowerCase().includes("admin") && (
-                    <AdminDashboard />
-                  )}
-                  {user?.userRole.toLowerCase().includes("librarian") && (
-                    <>Librarian</>
-                  )}
-
-                  {user?.userRole.toLowerCase().includes("staff") && <>staff</>}
-                </>
-              }
-            />
-            <Route
-              path="/dashboard"
-              element={
-                <>
-                  {user?.userRole.toLowerCase().includes("admin") && (
-                    <AdminDashboard />
-                  )}
-                  {user?.userRole.toLowerCase().includes("librarian") && (
-                    <>Librarian</>
-                  )}
-
-                  {user?.userRole.toLowerCase().includes("staff") && <>staff</>}
-                </>
-              }
-            />
+            <Route index element={<NavigateRoleRoute />} />
+            <Route path="/dashboard" element={<NavigateRoleRoute />} />
             <Route
               path="/manage-announcement"
               element={<AnnouncementManagement />}

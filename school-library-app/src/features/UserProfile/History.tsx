@@ -12,7 +12,7 @@ import {
 } from "mantine-react-table";
 import { useMemo } from "react";
 import useBorrowersHistory from "./hooks/useBorrowersHistory";
-
+import classes from "./history.module.css";
 const History = () => {
   const { isLoading, userHistory = [] } = useBorrowersHistory();
 
@@ -111,7 +111,7 @@ const History = () => {
 
   return (
     <>
-      <Box>
+      <Box className={classes.table__history}>
         <Box mt={"xs"}>
           <MantineReactTable table={table} />
         </Box>

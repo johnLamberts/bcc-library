@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   Box,
   Text,
@@ -30,6 +31,7 @@ import { modals } from "@mantine/modals";
 import { useReadGenre } from "@features/SysSettings/BookGenre/hooks/useReadGenre";
 import { useArchiveGenre } from "@features/SysSettings/BookGenre/hooks/useArchiveGenre";
 import BookGenreForm from "./BookGenreForm";
+import { format } from "date-fns";
 
 const BookGenreTable = () => {
   const { createGenre, isPending: isCreating } = useCreateGenre();
@@ -88,16 +90,49 @@ const BookGenreTable = () => {
         accessorKey: "genres",
         header: "Genre",
       },
+
+      {
+        accessorKey: "createdAt",
+        header: "Date Created",
+        Cell: ({ row }) => {
+          if (
+            row.getValue("createdAt") === undefined ||
+            typeof row.getValue("createdAt") === "string"
+          )
+            return <>-</>;
+          const date = format(
+            new Date(
+              (row as any).original.createdAt?.seconds * 1000 +
+                (row as any).original.createdAt?.nanoseconds / 1000
+            ),
+            "MMMM dd yyyy"
+          );
+
+          return <Text>{date}</Text>;
+        },
+      },
     ],
     []
   );
 
+  const genres = useMemo(() => {
+    return genresData?.slice().sort((a: any, b: any) => {
+      // Convert createdAt timestamps to Date objects
+      const timestampA =
+        a.createdAt?.seconds * 1000 + (a.createdAt?.nanoseconds || 0) / 1000;
+      const timestampB =
+        b.createdAt?.seconds * 1000 + (b.createdAt?.nanoseconds || 0) / 1000;
+
+      // Sort by timestamp in descending order
+      return timestampB - timestampA;
+    });
+  }, [genresData]);
+
   // CREATE action
   const handleCreateLevel: MRT_TableOptions<IGenre>["onCreatingRowSave"] =
     async ({ values, table }) => {
-      createGenre(values).then(() => {
-        table.setCreatingRow(null);
-      });
+      await createGenre(values);
+      table.setCreatingRow(null);
     };
 
   const handleSaveLevel: MRT_TableOptions<IGenre>["onEditingRowSave"] = async ({
@@ -109,7 +144,7 @@ const BookGenreTable = () => {
   };
 
   const table = useMantineReactTable({
-    data: genresData,
+    data: genres,
     columns: customColumns,
     createDisplayMode: "modal",
     editDisplayMode: "modal",
@@ -165,7 +200,7 @@ const BookGenreTable = () => {
           <BookGenreForm
             table={table}
             row={row}
-            onSave={(data) =>
+            onCreate={(data) =>
               handleCreateLevel({
                 values: data,
                 table: table,
@@ -262,7 +297,7 @@ const BookGenreTable = () => {
 
   return (
     <>
-      <Box maw={"90vw"}>
+      <Box>
         <Group
           justify="end"
           pos={"absolute"}
