@@ -8,10 +8,9 @@ export function useFavorites() {
   const { isPending: isFavoriteBook, mutateAsync: createFavorites } =
     useMutation({
       mutationFn: addToFavorites,
-      onSuccess: (_newArr, data) => {
+      onSuccess: () => {
         toast.success(
-          `Success! You have successfully completed the request transaction.
-              I'm so glad to hear that you're interested in ${data.bookTitle}
+          `You added this book in your favorites
             `
         );
         queryClient.invalidateQueries({
