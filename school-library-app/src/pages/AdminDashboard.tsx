@@ -38,6 +38,7 @@ import useCountUsers from "@features/AdminDashboard/hooks/useCountUsers";
 import TodayTransaction from "@features/AdminDashboard/TodayTransaction";
 import useReadRecentOverdue from "@features/AdminDashboard/hooks/useReadRecentOverdue";
 import WeeklyDatePicker from "@features/AdminDashboard/WeeklyDatePicker";
+import { useMemo } from "react";
 
 export default function AdminDashboard() {
   const theme = useMantineTheme();
@@ -56,12 +57,23 @@ export default function AdminDashboard() {
   const { data: requests, isLoading: isRequestIncoming } =
     useReadIncomingRequest();
 
-  const allBorrowers =
-    isStudent || isTeacher ? <Loader size={15} /> : students! + teachers!;
+  const allBorrowers = useMemo(
+    () =>
+      isStudent || isTeacher ? <Loader size={15} /> : students! + teachers!,
+    [isStudent, isTeacher, students, teachers]
+  );
+
+  const memoizedTransaction = useMemo(() => transaction, [transaction]);
+
+  const memoizedUser = useMemo(() => users, [users]);
+
+  const memoizedRequest = useMemo(() => requests, [requests]);
+  const memoizedRecentOverdue = useMemo(() => recentOverdue, [recentOverdue]);
+
   const mockdata = [
     {
       id: 1,
-      title: isAllTransaction ? <Loader size={15} /> : transaction,
+      title: isAllTransaction ? <Loader size={15} /> : memoizedTransaction,
       description: "All Transactions",
       icon: IconTransactionBitcoin,
     },
@@ -73,7 +85,7 @@ export default function AdminDashboard() {
     },
     {
       id: 3,
-      title: isUsers ? <Loader size={15} /> : users,
+      title: isUsers ? <Loader size={15} /> : memoizedUser,
       description: "Number of Users",
       icon: IconCookie,
     },
@@ -126,6 +138,8 @@ export default function AdminDashboard() {
 
   const navigate = useNavigate();
 
+  const memoziedOverviewComponents = useMemo(() => <Overview />, []);
+
   return (
     <div>
       {/*  */}
@@ -147,9 +161,7 @@ export default function AdminDashboard() {
                 </Group>
               </CardSection>
 
-              <CardSection p={"md"}>
-                <Overview />
-              </CardSection>
+              <CardSection p={"md"}>{memoziedOverviewComponents}</CardSection>
             </Card>
           </Grid.Col>
           <Grid.Col span={{ base: 12, sm: 12, md: 4, lg: 4 }}>
@@ -194,7 +206,7 @@ export default function AdminDashboard() {
                   />
                   {!isTodayTransaction &&
                     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                    recentOverdue?.map((overdue: any) => (
+                    memoizedRecentOverdue?.map((overdue: any) => (
                       <Box key={overdue.id}>
                         {/* <Group justify="space-between"> */}
                         <List.Item>
@@ -272,7 +284,7 @@ export default function AdminDashboard() {
                   />
                   {!isRequestIncoming &&
                     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                    requests?.map((overdue: any) => (
+                    memoizedRequest?.map((overdue: any) => (
                       <Box key={overdue.id}>
                         {/* <Group justify="space-between"> */}
                         <List.Item>
