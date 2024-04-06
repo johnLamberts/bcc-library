@@ -12,7 +12,6 @@ const getAllUsers = async () => {
   return snapshot.docs.map((docs) => {
     return {
       ...docs.data(),
-      createdAt: docs.data().createdAt.toDate(),
       id: docs.id,
     };
   });
