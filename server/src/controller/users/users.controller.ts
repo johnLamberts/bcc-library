@@ -1,10 +1,12 @@
 import { Request, Response } from "express";
 import { UserService } from "../../service/users.service";
+import console from "console";
 
 const getAllUsers = async (req: Request, res: Response) => {
   try {
     const users = await UserService.getAllUsers();
 
+    console.log(users);
     return res.json({
       data: users,
       status: "Success",
