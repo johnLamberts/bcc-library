@@ -49,7 +49,7 @@ const UserButton = forwardRef<HTMLButtonElement, UserButtonProps>(
       <Group>
         <Avatar src={image} radius="xl" />
 
-        <div style={{ flex: 1 }}>
+        <Group justify="center" align="center" visibleFrom="md">
           <Text size="xs" fw={500}>
             {name}
           </Text>
@@ -57,7 +57,7 @@ const UserButton = forwardRef<HTMLButtonElement, UserButtonProps>(
           <Text c="dimmed" size="xs">
             {email}
           </Text>
-        </div>
+        </Group>
 
         {icon || <IconChevronRight size="1rem" />}
       </Group>
@@ -77,149 +77,151 @@ const WrapperUserMode = () => {
   const memoizedUser = useMemo(() => user, [user]);
   return (
     <>
-      <UserMenu />
-      <Box hiddenFrom="xs">
-        <Menu withArrow>
-          <Menu.Target>
-            <UserButton
-              image={memoizedUser?.avatarImage as string}
-              name={`${memoizedUser?.firstName} ${memoizedUser?.middleName} ${memoizedUser?.lastName}`}
-              email={memoizedUser?.email as string}
-              disabled={isLoading}
-            />
-          </Menu.Target>
-          {/* ... menu items */}
+      <Group justify="center" align="center">
+        <UserMenu />
+        <Box hiddenFrom="xs">
+          <Menu withArrow>
+            <Menu.Target>
+              <UserButton
+                image={memoizedUser?.avatarImage as string}
+                name={`${memoizedUser?.firstName} ${memoizedUser?.middleName} ${memoizedUser?.lastName}`}
+                email={memoizedUser?.email as string}
+                disabled={isLoading}
+              />
+            </Menu.Target>
+            {/* ... menu items */}
 
-          <Menu.Dropdown>
-            <Menu.Label>Settings</Menu.Label>
-            <Menu.Item
-              leftSection={
-                <IconSettings
-                  style={{ width: rem(16), height: rem(16) }}
-                  stroke={1.5}
-                />
-              }
-              onClick={open}
-            >
-              Profile
-            </Menu.Item>
-            <Menu.Item
-              leftSection={
-                <IconSettings
-                  style={{ width: rem(16), height: rem(16) }}
-                  stroke={1.5}
-                />
-              }
-              onClick={() => navigate("/library")}
-            >
-              Go to Library Page
-            </Menu.Item>
+            <Menu.Dropdown>
+              <Menu.Label>Settings</Menu.Label>
+              <Menu.Item
+                leftSection={
+                  <IconSettings
+                    style={{ width: rem(16), height: rem(16) }}
+                    stroke={1.5}
+                  />
+                }
+                onClick={open}
+              >
+                Profile
+              </Menu.Item>
+              <Menu.Item
+                leftSection={
+                  <IconSettings
+                    style={{ width: rem(16), height: rem(16) }}
+                    stroke={1.5}
+                  />
+                }
+                onClick={() => navigate("/library")}
+              >
+                Go to Library Page
+              </Menu.Item>
 
-            <Menu.Item
-              leftSection={
-                <IconLogout
-                  style={{ width: rem(16), height: rem(16) }}
-                  stroke={1.5}
-                />
-              }
-              onClick={() => logoutUser()}
-            >
-              Logout
-            </Menu.Item>
-          </Menu.Dropdown>
-        </Menu>
-      </Box>
-      <ModeToggle />
+              <Menu.Item
+                leftSection={
+                  <IconLogout
+                    style={{ width: rem(16), height: rem(16) }}
+                    stroke={1.5}
+                  />
+                }
+                onClick={() => logoutUser()}
+              >
+                Logout
+              </Menu.Item>
+            </Menu.Dropdown>
+          </Menu>
+        </Box>
+        <ModeToggle />
 
-      <Modal.Root opened={opened} onClose={close} centered size={"xl"}>
-        <Modal.Overlay />
-        <Modal.Content>
-          <Modal.Header>
-            <Modal.Title>Account settings</Modal.Title>
-            <Modal.CloseButton />
-          </Modal.Header>
-          <Modal.Body>
-            <Tabs defaultValue={"gallery"}>
-              <Tabs.List>
-                <Tabs.Tab
-                  value="gallery"
-                  leftSection={<IconPhoto style={iconStyle} />}
-                >
-                  My profile
-                </Tabs.Tab>
-                <Tabs.Tab
-                  value="messages"
-                  leftSection={<IconMessageCircle style={iconStyle} />}
-                >
-                  Edit Profile
-                </Tabs.Tab>
-                <Tabs.Tab
-                  value="settings"
-                  leftSection={<IconSettings style={iconStyle} />}
-                >
-                  Change Password
-                </Tabs.Tab>
-              </Tabs.List>
+        <Modal.Root opened={opened} onClose={close} centered size={"xl"}>
+          <Modal.Overlay />
+          <Modal.Content>
+            <Modal.Header>
+              <Modal.Title>Account settings</Modal.Title>
+              <Modal.CloseButton />
+            </Modal.Header>
+            <Modal.Body>
+              <Tabs defaultValue={"gallery"}>
+                <Tabs.List>
+                  <Tabs.Tab
+                    value="gallery"
+                    leftSection={<IconPhoto style={iconStyle} />}
+                  >
+                    My profile
+                  </Tabs.Tab>
+                  <Tabs.Tab
+                    value="messages"
+                    leftSection={<IconMessageCircle style={iconStyle} />}
+                  >
+                    Edit Profile
+                  </Tabs.Tab>
+                  <Tabs.Tab
+                    value="settings"
+                    leftSection={<IconSettings style={iconStyle} />}
+                  >
+                    Change Password
+                  </Tabs.Tab>
+                </Tabs.List>
 
-              {/*  */}
-              <Tabs.Panel value="gallery">
-                <Box mt="xs">
-                  <Group wrap="nowrap">
-                    <Avatar
-                      src={memoizedUser?.avatarImage as string}
-                      size={94}
-                      radius="md"
-                    />
-                    <div>
-                      <Text fz="xs" tt="uppercase" fw={700} c="dimmed">
-                        {memoizedUser?.userRole}
-                      </Text>
-
-                      <Text fz="lg" fw={500} className={classes.name}>
-                        {memoizedUser?.firstName} {memoizedUser?.lastName}
-                      </Text>
-
-                      <Group wrap="nowrap" gap={10} mt={3}>
-                        <IconAt
-                          stroke={1.5}
-                          size="1rem"
-                          className={classes.icon}
-                        />
-                        <Text fz="xs" c="dimmed">
-                          {memoizedUser?.email}
+                {/*  */}
+                <Tabs.Panel value="gallery">
+                  <Box mt="xs">
+                    <Group wrap="nowrap">
+                      <Avatar
+                        src={memoizedUser?.avatarImage as string}
+                        size={94}
+                        radius="md"
+                      />
+                      <div>
+                        <Text fz="xs" tt="uppercase" fw={700} c="dimmed">
+                          {memoizedUser?.userRole}
                         </Text>
-                      </Group>
 
-                      <Group wrap="nowrap" gap={10} mt={5}>
-                        <IconPhoneCall
-                          stroke={1.5}
-                          size="1rem"
-                          className={classes.icon}
-                        />
-                        <Text fz="xs" c="dimmed">
-                          {new Date(
-                            (memoizedUser as any)?.createdAt.seconds * 1000 +
-                              (memoizedUser as any)?.createdAt.nanoseconds /
-                                1000
-                          ).toLocaleString()}
+                        <Text fz="lg" fw={500} className={classes.name}>
+                          {memoizedUser?.firstName} {memoizedUser?.lastName}
                         </Text>
-                      </Group>
-                    </div>
-                  </Group>
-                </Box>
-              </Tabs.Panel>
 
-              <Tabs.Panel value="messages">
-                <EditProfile user={memoizedUser} />
-              </Tabs.Panel>
+                        <Group wrap="nowrap" gap={10} mt={3}>
+                          <IconAt
+                            stroke={1.5}
+                            size="1rem"
+                            className={classes.icon}
+                          />
+                          <Text fz="xs" c="dimmed">
+                            {memoizedUser?.email}
+                          </Text>
+                        </Group>
 
-              <Tabs.Panel value="settings">
-                <ChangePassword user={memoizedUser} />
-              </Tabs.Panel>
-            </Tabs>
-          </Modal.Body>
-        </Modal.Content>
-      </Modal.Root>
+                        <Group wrap="nowrap" gap={10} mt={5}>
+                          <IconPhoneCall
+                            stroke={1.5}
+                            size="1rem"
+                            className={classes.icon}
+                          />
+                          <Text fz="xs" c="dimmed">
+                            {new Date(
+                              (memoizedUser as any)?.createdAt.seconds * 1000 +
+                                (memoizedUser as any)?.createdAt.nanoseconds /
+                                  1000
+                            ).toLocaleString()}
+                          </Text>
+                        </Group>
+                      </div>
+                    </Group>
+                  </Box>
+                </Tabs.Panel>
+
+                <Tabs.Panel value="messages">
+                  <EditProfile user={memoizedUser} />
+                </Tabs.Panel>
+
+                <Tabs.Panel value="settings">
+                  <ChangePassword user={memoizedUser} />
+                </Tabs.Panel>
+              </Tabs>
+            </Modal.Body>
+          </Modal.Content>
+        </Modal.Root>
+      </Group>
     </>
   );
 };
