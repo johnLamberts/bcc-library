@@ -1,20 +1,23 @@
-import { IUser } from "@features/Users/models/user.interface";
-import { addDoc, collection, serverTimestamp } from "firebase/firestore";
+import { Timestamp, addDoc, collection } from "firebase/firestore";
 import { FIRESTORE_COLLECTION_QUERY_KEY } from "../enums";
 import { firestore } from "../firebase/firebase";
+import { IUser } from "@features/Users/models/user.interface";
 
 const activityLogs = async (
-  user: IUser,
-  action: string,
-  action_type: string
+  actions: string,
+  currentUser: Partial<IUser> | undefined,
+  actionType: string
 ) => {
+  // console.log(actions, currentUser, actionType);
+
   return await addDoc(
     collection(firestore, FIRESTORE_COLLECTION_QUERY_KEY.ACTIVITY_LOGS),
     {
-      name: `${user.firstName} ${user.middleName} ${user.lastName}`,
-      action_type: action_type,
-      action: action,
-      createdAt: serverTimestamp(),
+      currentUser: `${currentUser?.firstName} ${currentUser?.middleName} ${currentUser?.lastName}`,
+      actionType: actionType,
+      actions: actions,
+      createdAt: Timestamp.now(),
+      image: currentUser?.avatarImage,
     }
   );
 };
