@@ -12,21 +12,6 @@ import IAuditTrail from "../audit-trail.interface";
 import { endOfDay, startOfDay } from "date-fns";
 
 const getAllLogs = async (dateBy?: Date) => {
-  // const logsRef = await getDocs(
-  //   query(
-  //     collection(firestore, FIRESTORE_COLLECTION_QUERY_KEY.ACTIVITY_LOGS),
-  //     orderBy("createdAt", "desc")
-  //   )
-  // );
-
-  // return logsRef.docs.map((doc) => ({
-  //   ...doc.data(),
-  //   createdAt: doc.data().createdAt.toDate(),
-  //   id: doc.id,
-  // })) as IAuditTrail[];
-
-  // Get the current date and time
-
   // Get the start of today (midnight)
 
   const startOfToday = startOfDay((dateBy as Date) || new Date());
@@ -60,7 +45,6 @@ const getAllLogs = async (dateBy?: Date) => {
     id: doc.id,
   })) as IAuditTrail[];
 
-  console.log(todayTransactions);
   // Return the transactions
   return todayTransactions;
 };
