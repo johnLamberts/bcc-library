@@ -37,7 +37,17 @@ exports.welcomeEmailv2 = functions.firestore
   .document("users/{userId}")
   .onCreate(async (snapshot, _context) => {
     const result = snapshot.data();
-
+    await admin
+      .firestore()
+      .collection("activity-logs-timeline")
+      .add({
+        actionType: "Automatic Welcome Email Notification",
+        actions: `kuwago@bcc-opac-library.site sent an email to ${result.email}`,
+        createdAt: admin.firestore.Timestamp.now(),
+        currentUser: `kuwago@bcc-opac-library.site mailer-sender`,
+        image:
+          "https://firebasestorage.googleapis.com/v0/b/library-management-syste-fb3e9.appspot.com/o/def_user.png?alt=media&token=b3ea39b4-cba7-4095-8e6c-6996848f0391",
+      });
     const msg = {
       to: result.email,
       from: "kuwago@bcc-opac-library.site",
@@ -64,6 +74,7 @@ exports.taskRunner = functions
       return data.docs.forEach(async (doc) => {
         const snapshot = doc.data();
         const { expiryTime } = snapshot;
+
         const timeNow = admin.firestore.Timestamp.now().toMillis();
         if (expiryTime < timeNow) {
           doc.ref.update({ status: "Overdue" });
@@ -101,7 +112,21 @@ exports.taskRunner = functions
               status: "Overdue",
               modifiedAt: admin.firestore.Timestamp.now(),
             });
+
+          await admin
+            .firestore()
+            .collection("activity-logs-timeline")
+            .add({
+              actionType: "Automatic Overdue Email Notification",
+              actions: `kuwago@bcc-opac-library.site sent an overdue email to ${snapshot.email}`,
+              createdAt: admin.firestore.Timestamp.now(),
+              currentUser: `kuwago@bcc-opac-library.site mailer-sender`,
+              image:
+                "https://firebasestorage.googleapis.com/v0/b/library-management-syste-fb3e9.appspot.com/o/def_user.png?alt=media&token=b3ea39b4-cba7-4095-8e6c-6996848f0391",
+            });
+
           await admin.firestore().doc(`availability/${doc.id}`).delete();
+
           return sgMail.send(msg);
         } else {
           doc.ref.update({ status: "Active" });
@@ -206,8 +231,18 @@ exports.documentReservedChecker = functions
                     : booksRef.data().bookStatus,
               });
 
+            await admin
+              .firestore()
+              .collection("activity-logs-timeline")
+              .add({
+                actionType: "Automatic Cancel Reserved Email Notifiaction",
+                actions: `kuwago@bcc-opac-library.site sent an email to cancel reserve to ${snapshot.bookTitle} by ${snapshot.firstName} ${snapshot.lastName}`,
+                createdAt: admin.firestore.Timestamp.now(),
+                currentUser: `kuwago@bcc-opac-library.site mailer-sender`,
+                image:
+                  "https://firebasestorage.googleapis.com/v0/b/library-management-syste-fb3e9.appspot.com/o/def_user.png?alt=media&token=b3ea39b4-cba7-4095-8e6c-6996848f0391",
+              });
             await admin.firestore().doc(`books-reserved/${doc.id}`).delete();
-
             return sgMail.send(msg);
           } else {
             doc.ref.update({ status: "Reserved" });
