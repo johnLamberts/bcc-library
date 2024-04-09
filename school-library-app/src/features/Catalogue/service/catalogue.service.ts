@@ -3,6 +3,7 @@ import {
   collection,
   doc,
   getDocs,
+  orderBy,
   query,
   serverTimestamp,
   updateDoc,
@@ -23,17 +24,21 @@ const addCatalogue = async (catalogue: Partial<IBooks>) => {
       )
     );
 
+    if (
+      !catalogue.bookISBN?.trim().toLowerCase().includes("n/a") &&
+      bookIsbnSnapshot.size
+    ) {
+      throw new Error(
+        "Oops! It seems that the Book ISBN you entered already exists in our library system."
+      );
+    }
+
     const callNumberSnapshot = await getDocs(
       query(
         collection(firestore, FIRESTORE_COLLECTION_QUERY_KEY.CATALOGUE),
         where("callNumber", "==", catalogue.callNumber)
       )
     );
-
-    if (bookIsbnSnapshot.size)
-      throw new Error(
-        "Oops! It seems that the ISBN you entered already exists in our library system."
-      );
 
     if (callNumberSnapshot.size)
       throw new Error(
@@ -136,12 +141,16 @@ const updateCatalogue = async (
 
 const getAllBooksCatalogue = async () => {
   const booksCatalogueSnapshot = await getDocs(
-    collection(firestore, FIRESTORE_COLLECTION_QUERY_KEY.CATALOGUE)
+    query(
+      collection(firestore, FIRESTORE_COLLECTION_QUERY_KEY.CATALOGUE),
+      orderBy("createdAt", "desc")
+    )
   );
 
   return booksCatalogueSnapshot.docs.map((doc) => ({
-    id: doc.id,
     ...doc.data(),
+    createdAt: doc.data().createdAt.toDate(),
+    id: doc.id,
   })) as IBooks[];
 };
 
