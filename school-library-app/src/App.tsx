@@ -1,5 +1,4 @@
-import AdminLayout from "@layouts/AdminLayout";
-import AdminDashboard from "@pages/AdminDashboard";
+import AppLayout from "@layouts/AdminLayout";
 import StudentManagement from "@pages/StudentManagement";
 import LevelEducation from "@pages/SystemSettings/LevelEducation";
 import TeacherManagement from "@pages/TeacherManagement";
@@ -7,7 +6,7 @@ import UserManagement from "@pages/UserManagement";
 import { Suspense } from "react";
 import { Route, Routes } from "react-router-dom";
 import { Toaster } from "sonner";
-import { GradeSection, GradeLevel, AcademicCourse } from "./routes";
+import { GradeSection, GradeLevel, AcademicCourse, AuditTrail } from "./routes";
 import { Flex, Loader } from "@mantine/core";
 import UserRole from "@pages/SystemSettings/UserRoles";
 import UserReport from "@pages/Reports/UserReport";
@@ -41,18 +40,15 @@ import AnnouncementManagement from "@pages/AnnouncementManagement";
 import ManageAcquisationStock from "@pages/ManageAcquisationStock";
 import StockReport from "@pages/Reports/StockReport";
 import { NewsCategory } from "@pages/SystemSettings/NewsCategory";
-import useCurrentUser from "@pages/Authentication/hooks/useCurrentUser";
 import AdminRequired from "./routes/AdminRequired";
 import ProtectedRoute from "./routes/ProtectedRoute";
 import AnnouncementDetails from "@pages/Homepage/AnnouncementDetails";
+import ContactUs from "@pages/Homepage/ContactUs/ContactUs";
 import NavigateRoleRoute from "./routes/NavigateRoleRoute";
 
 function App() {
-  const { user } = useCurrentUser();
-
   // Will Refactor this after I finish the admin page with fully functionality
 
-  console.log(user?.userRole);
   return (
     <>
       <Toaster richColors />
@@ -90,17 +86,19 @@ function App() {
             <Route
               path="profile/:manageProfileId"
               element={
-                // <ProtectedRoute>
-                // </ProtectedRoute>
-                <ProfilePage />
+                <ProtectedRoute>
+                  <ProfilePage />
+                </ProtectedRoute>
               }
             />
+            <Route path="contact-us" element={<ContactUs />} />
           </Route>
+
           <Route
             element={
-              // <ProtectedRoute>
-              // </ProtectedRoute>
-              <AdminLayout />
+              <ProtectedRoute>
+                <AppLayout />
+              </ProtectedRoute>
             }
           >
             <Route index element={<NavigateRoleRoute />} />
@@ -140,8 +138,11 @@ function App() {
             />
 
             <Route path="/return-transaction" element={<ReturnTransaction />} />
-
             {/* END OF TRANSACTION */}
+
+            {/* Audit Trail */}
+            <Route path="/audit-trail" element={<AuditTrail />} />
+            {/* End of Audit Trail */}
 
             {/* System Settings */}
             {/* student settings */}
