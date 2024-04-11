@@ -202,6 +202,33 @@ const sendCancelledRequestedBook = async (snapshot: Record<string, any>) => {
   return await sgMail.send(msg as any);
 };
 
+const sendSuccessfullyBorrowedBook = async (snapshot: Record<string, any>) => {
+  const msg = {
+    to: snapshot.borrowersEmail,
+    subject: "",
+    from: "kuwago@bcc-opac-library.site",
+    templateId: process.env.VITE_BORROWED_BOOK,
+    dynamic_template_data: {
+      fullName: snapshot.fullName,
+      bookTitle: snapshot.bookTitle,
+    },
+  };
+
+  await admin
+    .firestore()
+    .collection("activity-logs-timeline")
+    .add({
+      actionType: "Automatic Successfully Borrowed Books Email Notification",
+      actions: `kuwago@bcc-opac-library.site sent  An email confirmation has been sent to ${snapshot.borrowersEmail} for declining/canceling requested book on ${snapshot.bookTitle}`,
+      createdAt: admin.firestore.Timestamp.now(),
+      currentUser: `kuwago@bcc-opac-library.site mailer-sender`,
+      image:
+        "https://firebasestorage.googleapis.com/v0/b/library-management-syste-fb3e9.appspot.com/o/def_user.png?alt=media&token=b3ea39b4-cba7-4095-8e6c-6996848f0391",
+    });
+
+  return await sgMail.send(msg as any);
+};
+
 export const EmailReturnedService = {
   sendEmailReturned,
   sendOverdueEmailReturned,
@@ -210,4 +237,5 @@ export const EmailReturnedService = {
   sendRequestedBook,
   sendEmailReturnedWithPendingPayment,
   sendCancelledRequestedBook,
+  sendSuccessfullyBorrowedBook,
 };
