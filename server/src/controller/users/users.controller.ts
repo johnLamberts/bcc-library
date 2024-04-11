@@ -6,7 +6,6 @@ const getAllUsers = async (req: Request, res: Response) => {
   try {
     const users = await UserService.getAllUsers();
 
-    console.log(users);
     return res.json({
       data: users,
       status: "Success",

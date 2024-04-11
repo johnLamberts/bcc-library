@@ -20,7 +20,6 @@ const getAllStudents = async (req: Request, res: Response) => {
 
 const createStudent = async (req: Request, res: Response) => {
   try {
-    console.log(req.body);
     const newStudent = await StudentService.createStudent({ ...req.body });
 
     return res.json({
@@ -38,7 +37,6 @@ const createStudent = async (req: Request, res: Response) => {
 
 const modifyStudent = async (req: Request, res: Response) => {
   try {
-    console.log(req.body);
     const { studentId } = req.params;
 
     const updateStudent = await StudentService.updateStudent({
@@ -72,7 +70,6 @@ const importStudents = async (req: Request, res: Response) => {
       if (currentProgress > progress) {
         progress = currentProgress;
         // Emit progress update to the client (optional)
-        console.log(`Progress: ${progress}%`);
       }
     };
 
