@@ -1,10 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Box, Collapse, Group, ThemeIcon, rem } from "@mantine/core";
+import { Box, Collapse, Group, Text, ThemeIcon, rem } from "@mantine/core";
 import { useState } from "react";
 import classes from "./LinkGroups.module.css";
 import { IconChevronRight } from "@tabler/icons-react";
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
+import activityLogs from "src/shared/services/activity-logs";
+import useCurrentUser from "@pages/Authentication/hooks/useCurrentUser";
 
 interface NestedLinkGroupProps {
   label?: string;
@@ -22,9 +24,13 @@ export interface LinkGroupProps {
 
 export interface ItemLinkedGroupProps {
   items: LinkGroupProps[];
+
+  closeSideBar: () => void;
 }
 
-const LinkGroups = ({ items }: ItemLinkedGroupProps) => {
+const LinkGroups = ({ items, closeSideBar }: ItemLinkedGroupProps) => {
+  const { user } = useCurrentUser();
+
   const { pathname } = useLocation();
 
   const [opened, setOpened] = useState<{ [key: string]: boolean }>({});
@@ -44,7 +50,18 @@ const LinkGroups = ({ items }: ItemLinkedGroupProps) => {
             <Link
               key={item.label}
               to={item.link || pathname}
-              onClick={() => toggleOpened(index)}
+              onClick={() => {
+                if (!pathname.toLowerCase().includes("audit-trail")) {
+                  activityLogs(
+                    `${user?.firstName} ${user?.lastName} navigated to the '${item.label}' page`,
+                    user,
+                    "Navigation"
+                  );
+                }
+                toggleOpened(index);
+
+                !item.links?.length && closeSideBar();
+              }}
               data-active={item.link === pathname}
               className={classes.control}
             >
@@ -55,7 +72,11 @@ const LinkGroups = ({ items }: ItemLinkedGroupProps) => {
                       <item.icon style={{ width: rem(18), height: rem(18) }} />
                     )}
                   </ThemeIcon>
-                  <Box ml="md">{item.label}</Box>
+                  <Box ml="md">
+                    <Text ff={"Montserrat"} fw={500} fz={"sm"}>
+                      {item.label}
+                    </Text>
+                  </Box>
                 </Box>
                 {Array.isArray(item.links) && (
                   <IconChevronRight
@@ -79,6 +100,16 @@ const LinkGroups = ({ items }: ItemLinkedGroupProps) => {
                       to={link.link}
                       key={link.label}
                       data-active={link.link === pathname}
+                      onClick={async () => {
+                        if (!pathname.toLowerCase().includes("audit-trail")) {
+                          activityLogs(
+                            `${user?.firstName} ${user?.lastName} navigated to the '${item.label}' page`,
+                            user,
+                            "Navigation"
+                          );
+                        }
+                        closeSideBar();
+                      }}
                     >
                       {link.label}
                     </Link>
@@ -108,6 +139,7 @@ const LinkGroups = ({ items }: ItemLinkedGroupProps) => {
                           to={link.link}
                           key={link.label}
                           data-active={link.link === pathname}
+                          onClick={() => closeSideBar()}
                         >
                           {link.label}
                         </Link>

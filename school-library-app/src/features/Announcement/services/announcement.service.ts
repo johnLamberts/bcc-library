@@ -17,6 +17,7 @@ import { firestore } from "src/shared/firebase/firebase";
 import { FIRESTORE_COLLECTION_QUERY_KEY } from "src/shared/enums";
 import { IBooks } from "@features/Catalogue/models/books.interface";
 import { ANNOUNCEMENT_PAGE_SIZE } from "src/shared/constant";
+import { FirebaseError } from "firebase/app";
 
 const addAnnouncement = async (payload: Partial<Record<string, unknown>>) => {
   try {
@@ -111,16 +112,29 @@ const getAnnouncement = async (
     queryBooks = query(newsCollectionRef, where("title", "==", q.trim()));
   }
 
-  if (fq) {
+  if (fq && act) {
+    // Apply both filters
     queryBooks = query(
       newsCollectionRef,
-      where("newsCategory", "==", fq.trim())
+      where("newsCategory", "==", fq.trim()),
+      where("status", "==", act.trim())
     );
+  } else {
+    if (fq) {
+      // Filter by news category
+      queryBooks = query(
+        newsCollectionRef,
+        where("newsCategory", "==", fq.trim())
+      );
+    }
+
+    if (act) {
+      // Filter by status
+      queryBooks = query(newsCollectionRef, where("status", "==", act.trim()));
+    }
   }
 
-  if (act) {
-    queryBooks = query(newsCollectionRef, where("status", "==", act.trim()));
-  }
+  console.log(q, fq, act);
 
   if (page > 1) {
     for (let i = 0; i < page - 1; i++) {
@@ -140,7 +154,7 @@ const getAnnouncement = async (
 
   const booksSnapshot = await getDocs(queryBooks);
   const newsData = booksSnapshot.docs.map(
-    (doc) => ({ id: doc.id, ...doc.data() } as IBooks)
+    (doc) => ({ id: doc.id, ...doc.data() } as IPost)
   );
 
   const countSnapshot = await getDocs(
@@ -157,9 +171,30 @@ const getAnnouncement = async (
 
   return { newsData, count, hasMore: !booksSnapshot.empty };
 };
+
+const modifyNewsStatus = async (payload: Partial<IPost>) => {
+  try {
+    return await updateDoc(
+      doc(
+        firestore,
+        FIRESTORE_COLLECTION_QUERY_KEY.NEWS_ANNOUNCEMENT,
+        payload.id as string
+      ),
+      {
+        status: payload.status === "Active" ? "Inactive" : "Active",
+        modifiedAt: serverTimestamp(),
+      }
+    );
+  } catch (err) {
+    if (err instanceof FirebaseError) {
+      throw new Error(err.message);
+    }
+  }
+};
 export {
   addAnnouncement,
   updateAnnouncement,
   getAllNewsAnnouncement,
   getAnnouncement,
+  modifyNewsStatus,
 };
