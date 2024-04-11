@@ -20,7 +20,6 @@ const getAllTeachers = async (req: Request, res: Response) => {
 
 const createTeacher = async (req: Request, res: Response) => {
   try {
-    console.log(req.body);
     const newTeacher = await TeacherService.createTeacher({ ...req.body });
 
     return res.json({
@@ -38,7 +37,6 @@ const createTeacher = async (req: Request, res: Response) => {
 
 const modifyTeacher = async (req: Request, res: Response) => {
   try {
-    console.log(req.body);
     const { teacherId } = req.params;
 
     const updateTeacher = await TeacherService.updateTeacher({
