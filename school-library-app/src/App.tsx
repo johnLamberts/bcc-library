@@ -45,6 +45,7 @@ import ProtectedRoute from "./routes/ProtectedRoute";
 import AnnouncementDetails from "@pages/Homepage/AnnouncementDetails";
 import ContactUs from "@pages/Homepage/ContactUs/ContactUs";
 import NavigateRoleRoute from "./routes/NavigateRoleRoute";
+import ContactSupport from "@features/ContactUs/ContactSupport";
 
 function App() {
   // Will Refactor this after I finish the admin page with fully functionality
@@ -171,6 +172,8 @@ function App() {
             <Route path="/inventory-report" element={<InventoryReport />} />
             <Route path="/fee-report" element={<FeeReport />} />
             <Route path="/stock-report" element={<StockReport />} />
+
+            <Route path="/contact-us-support" element={<ContactSupport />} />
           </Route>
         </Routes>
       </Suspense>
