@@ -4,6 +4,7 @@ import {
   collection,
   getDocs,
   limit,
+  orderBy,
   query,
   where,
 } from "firebase/firestore";
@@ -247,6 +248,30 @@ async function getTotalTransactionsByDateRange(startDate: Date, endDate: Date) {
   return totalTransactionsByDay;
 }
 
+const getAllMissings = async () => {
+  const conditionRef = await getDocs(
+    query(
+      collection(firestore, FIRESTORE_COLLECTION_QUERY_KEY.COMPLETE_PAYMENT),
+      where("bookCondition", "==", "Missing")
+    )
+  );
+
+  return conditionRef.size;
+};
+
+const getAllPendingFees = async () => {
+  const conditionRef = await getDocs(
+    query(collection(firestore, FIRESTORE_COLLECTION_QUERY_KEY.PARTIAL_PAYMENT))
+  );
+
+  const totalFees = conditionRef.docs.reduce((acc, doc) => {
+    return acc + doc.data().totalFee;
+  }, 0);
+
+  console.log(totalFees);
+  return totalFees;
+};
+
 export {
   getAllRecentOverdue,
   getTeachers,
@@ -258,4 +283,6 @@ export {
   getBooks,
   getUsers,
   getTodayTransaction,
+  getAllMissings,
+  getAllPendingFees,
 };
