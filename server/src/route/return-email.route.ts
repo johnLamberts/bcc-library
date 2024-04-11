@@ -22,4 +22,10 @@ router.post(
   "/return-overdue-email",
   EmailReturnedController.createReturnOVerdueEmail
 );
+
+router.post(
+  "/borrowed-books",
+  EmailReturnedController.createEmailForSuccessfullyBorrowedBookTransaction
+);
+
 export const EmailReturnedRoute = router;
