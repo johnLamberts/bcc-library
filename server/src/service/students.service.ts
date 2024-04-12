@@ -172,13 +172,10 @@ const importStudents = async (student: TStudents) => {
   const studentNumberSnapshot = await admin
     .firestore()
     .collection("students")
+    .where("studentNumber", "==", student.studentNumber)
     .get();
 
-  if (
-    studentNumberSnapshot.docs.some(
-      (doc) => doc.data().studentNumber === student.studentNumber
-    )
-  ) {
+  if (studentNumberSnapshot.size) {
     throw new Error("Student Number were already existed.");
   }
 
